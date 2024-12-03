@@ -1,0 +1,17 @@
+{
+  "name": "monorepo",
+  "private": true,
+  "workspaces": [
+    "src/*"
+  ],
+  "scripts": {
+    "start:frontend": "yarn workspace @monorepo/frontend start",
+    "start:backend": "yarn workspace @monorepo/backend start:dev",
+    "dev": "concurrently \"yarn start:frontend\" \"yarn start:backend\"",
+    "build": "yarn workspaces run build",
+    "test": "yarn workspaces run test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
