@@ -1,0 +1,46 @@
+version: "3"
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: _mysql
+      MYSQL_ROOT_PASSWORD: tlaznd@0801
+      TZ: Etc/Universal
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./docker/mysql/db:/var/lib/mysql
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+  redis:
+    image: redis:7.0
+    container_name: redis
+    restart: always
+    ports:
+      - 6379:6379
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    command: redis-server --appendonly yes --requirepass tlaznd@0801 --port 6379
+    volumes:
+      - ./docker/redis/data:/data
+  mongo:
+    image: mongo:4.2
+    container_name: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: tlaznd@0801
+    volumes:
+      - ./docker/mongo/db:/data/db
+
+networks:
+  backend:
+    name: backend
+    driver: bridge
