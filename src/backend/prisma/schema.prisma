@@ -14,7 +14,232 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  nickname String?
+  id             Int        @id @default(autoincrement())
+  uuid           String     @default(uuid())
+  email          String     @unique
+  nickname       String
+  introduction   String     @default("등록된 소개말이 없습니다.")
+  refreshToken   String?
+  eventAgree     Boolean
+  emailAgree     Boolean    @default(false)
+  provider       Provider?
+  role           Role       @default(USER)
+  status         UserStatus @default(ACTIVE)
+  lastLogin      DateTime?
+  lastPwdChanged DateTime?
+
+  ProfilePhoto ProfilePhoto[]
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  deletedAt    DateTime?
+  Join         Join[]
+  PhotoComment PhotoComment[]
+  Payment      Payment[]
+}
+
+enum Provider {
+  GOOGLE
+  NAVER
+  KAKAO
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+  WITHDRAWN
+}
+
+model ProfilePhoto {
+  id     Int    @id @default(autoincrement())
+  url    String @default("base photo url - to be changed")
+  userId Int
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Group {
+  id          Int         @id @default(autoincrement())
+  title       String
+  price       Int
+  description String?
+  status      GroupStatus @default(OPEN)
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+  GroupTagMap GroupTagMap[]
+  Join        Join[]
+  GroupDate   GroupDate[]
+  Payment     Payment[]
+}
+
+enum GroupStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+  GroupTagMap GroupTagMap[]
+}
+
+model GroupTagMap {
+  id      Int   @id @default(autoincrement())
+  groupId Int
+  tagId   Int
+  group   Group @relation(fields: [groupId], references: [id])
+  tag     Tag   @relation(fields: [tagId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Join {
+  id       Int        @id @default(autoincrement())
+  groupId  Int
+  userId   Int
+  status   JoinStatus @default(RESERVED)
+  joinRole JoinRole
+
+  group Group @relation(fields: [groupId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+enum JoinStatus {
+  RESERVED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum JoinRole {
+  HOST
+  ATTENDEE
+}
+
+model GroupDate {
+  id      Int      @id @default(autoincrement())
+  groupId Int
+  date    DateTime /// format: YYYY-MM-DD
+  group   Group    @relation(fields: [groupId], references: [id])
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  deletedAt     DateTime?
+  GroupProgress GroupProgress[]
+}
+
+model GroupProgress {
+  id          Int                 @id @default(autoincrement())
+  groupDateId Int
+  status      GroupProgressStatus
+  groupDate   GroupDate           @relation(fields: [groupDateId], references: [id])
+
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  deletedAt  DateTime?
+  GroupPhoto GroupPhoto[]
+}
+
+enum GroupProgressStatus {
+  PENDING
+  COMPLETED
+}
+
+model GroupPhoto {
+  id              Int           @id @default(autoincrement())
+  groupProgressId Int
+  url             String
+  like            Int           @default(0)
+  view            Int           @default(0)
+  groupProgress   GroupProgress @relation(fields: [groupProgressId], references: [id])
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  deletedAt    DateTime?
+  PhotoComment PhotoComment[]
+}
+
+model PhotoComment {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  groupPhotoId Int
+  contents     String
+  like         Int
+  parentId     Int
+  depth        Int /// root=1
+  user         User       @relation(fields: [userId], references: [id])
+  groupPhoto   GroupPhoto @relation(fields: [groupPhotoId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Payment {
+  id           Int           @id @default(autoincrement())
+  userId       Int
+  groupId      Int
+  orderNo      String
+  method       PaymentMethod
+  status       PaymentStatus
+  amount       Int
+  refundDate   DateTime?
+  refundAmount Int?
+  receiptUrl   String
+
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
+
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  deletedAt      DateTime?
+  PaymentHistory PaymentHistory[]
+}
+
+enum PaymentMethod {
+  CARD
+  INJUNG_MONEY
+  PHONE
+}
+
+enum PaymentStatus {
+  FAIL
+  IN_PROGRESS
+  SUCCESS
+  REFUND
+}
+
+model PaymentHistory {
+  id             Int           @id @default(autoincrement())
+  paymentId      Int
+  previousStatus PaymentStatus /// IN_PROGRESS, SUCCESS
+  currentStatus  PaymentStatus
+
+  payment Payment @relation(fields: [paymentId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
