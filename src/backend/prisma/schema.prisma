@@ -186,9 +186,9 @@ model PhotoComment {
   userId       Int
   groupPhotoId Int
   contents     String
-  like         Int
-  parentId     Int
-  depth        Int /// root=1
+  like         Int        @default(0)
+  parentId     Int?
+  depth        Int        @default(1) /// root=1 
   user         User       @relation(fields: [userId], references: [id])
   groupPhoto   GroupPhoto @relation(fields: [groupPhotoId], references: [id])
 

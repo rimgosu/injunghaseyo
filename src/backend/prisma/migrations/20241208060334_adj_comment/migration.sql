@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "PhotoComment" ALTER COLUMN "like" SET DEFAULT 0,
+ALTER COLUMN "parentId" DROP NOT NULL,
+ALTER COLUMN "depth" SET DEFAULT 1;
