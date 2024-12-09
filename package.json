@@ -13,5 +13,10 @@
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
-  }
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:rimgosu/injunghaseyo.git",
+  "author": "ji-hyup <newnyup@gmail.com>",
+  "license": "MIT"
 }
