@@ -17,11 +17,11 @@ services:
     container_name: redis
     restart: always
     ports:
-      - 0.0.0.0:6379:6379
+      - 6379:6379
     labels:
       - "name=redis"
       - "mode=standalone"
-    command: redis-server --appendonly yes --requirepass tlaznd@0801 --port 6379 --bind 0.0.0.0
+    command: redis-server --appendonly yes --requirepass tlaznd@0801 --port 6379
     volumes:
       - ./docker/redis/data:/data
   mongo:
