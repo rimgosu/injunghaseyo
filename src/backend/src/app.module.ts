@@ -7,6 +7,7 @@ import { redisStore } from 'cache-manager-redis-yet';
 import configuration from './config/configuration';
 import { PrismaModule } from 'prisma/prisma.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         return { store };
       },
     }),
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

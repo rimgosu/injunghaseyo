@@ -4,12 +4,14 @@ import { VerifyEmailParam } from './dtos/verify-email-param.dto';
 import { generateVerificationCode } from './auth.helper';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly emailService: EmailService,
   ) {}
 
   async verifyEmail(param: VerifyEmailParam) {
@@ -22,5 +24,7 @@ export class AuthService {
     const authCode = generateVerificationCode();
 
     await this.cacheManager.set(email, authCode);
+
+    await this.emailService.sendVerificationEmail(email, authCode);
   }
 }
