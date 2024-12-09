@@ -5,9 +5,9 @@ import { UsersAuthModule } from './users-auth/user-auth.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import configuration from './config/configuration';
-import { PrismaModule } from 'prisma/prisma.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [

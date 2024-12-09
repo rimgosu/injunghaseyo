@@ -4,13 +4,13 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
 import { VerifyEmailParam } from './dtos/verify-email-param.dto';
 import { generateVerificationCode } from './auth.helper';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { EmailService } from 'src/email/email.service';
 import { VerifyCodeParams } from './dtos/verify-code-params.dto';
+import { EmailService } from '@/email/email.service';
+import { PrismaService } from '@/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
