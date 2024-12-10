@@ -17,11 +17,12 @@ model User {
   id             Int        @id @default(autoincrement())
   uuid           String     @default(uuid())
   email          String     @unique
-  nickname       String
+  nickname       String     @unique
   introduction   String     @default("등록된 소개말이 없습니다.")
   refreshToken   String?
   eventAgree     Boolean
-  emailAgree     Boolean    @default(false)
+  password       String?
+  salt           String?
   provider       Provider?
   role           Role       @default(USER)
   status         UserStatus @default(ACTIVE)

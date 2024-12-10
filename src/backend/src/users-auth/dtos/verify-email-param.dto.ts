@@ -1,11 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail } from 'class-validator';
+import { PickType } from '@nestjs/swagger';
+import { BaseUseraAuthDto } from './base.dto';
 
-export class VerifyEmailParam {
-  @ApiProperty({
-    description: 'email',
-    type: String,
-  })
-  @IsEmail()
-  email: string;
-}
+export class VerifyEmailParam extends PickType(BaseUseraAuthDto, ['email']) {}
