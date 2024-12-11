@@ -1,60 +1,84 @@
-import { BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import * as crypto from 'crypto';
+import { GeneratedJwt, JwtPaylaod } from './utils/types';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
-const SALT_LENGTH = 16;
-const ITERATIONS = 100000;
-const KEY_LENGTH = 64;
-const DIGEST = 'sha512';
+@Injectable()
+export class AuthHelper {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-export function generateVerificationCode(): string {
-  const code = Math.floor(Math.random() * 1000000);
-  return code.toString().padStart(6, '0');
-}
+  private readonly SALT_LENGTH = 16;
+  private readonly ITERATIONS = 100000;
+  private readonly KEY_LENGTH = 64;
+  private readonly DIGEST = 'sha512';
 
-export async function hashPassword(password: string): Promise<{
-  hashedPassword: string;
-  salt: string;
-}> {
-  if (!password)
-    throw new BadRequestException('비밀번호는 공백을 허용하지 않는다.');
-  const salt = crypto.randomBytes(SALT_LENGTH);
+  generateVerificationCode(): string {
+    const code = Math.floor(Math.random() * 1000000);
+    return code.toString().padStart(6, '0');
+  }
 
-  return new Promise((resolve, reject) => {
-    crypto.pbkdf2(
-      password,
-      salt,
-      ITERATIONS,
-      KEY_LENGTH,
-      DIGEST,
-      (err, derivedKey) => {
-        if (err) reject(err);
-        resolve({
-          hashedPassword: derivedKey.toString('hex'),
-          salt: salt.toString('hex'),
-        });
-      },
-    );
-  });
-}
+  async hashPassword(password: string): Promise<{
+    hashedPassword: string;
+    salt: string;
+  }> {
+    if (!password) {
+      throw new BadRequestException('비밀번호는 공백을 허용하지 않습니다.');
+    }
+    const salt = crypto.randomBytes(this.SALT_LENGTH);
 
-export async function verifyPassword(
-  password: string,
-  hashedPassword: string,
-  salt: string,
-): Promise<boolean> {
-  const saltBuffer = Buffer.from(salt, 'hex');
+    return new Promise((resolve, reject) => {
+      crypto.pbkdf2(
+        password,
+        salt,
+        this.ITERATIONS,
+        this.KEY_LENGTH,
+        this.DIGEST,
+        (err, derivedKey) => {
+          if (err) reject(err);
+          resolve({
+            hashedPassword: derivedKey.toString('hex'),
+            salt: salt.toString('hex'),
+          });
+        },
+      );
+    });
+  }
 
-  return new Promise((resolve, reject) => {
-    crypto.pbkdf2(
-      password,
-      saltBuffer,
-      ITERATIONS,
-      KEY_LENGTH,
-      DIGEST,
-      (err, derivedKey) => {
-        if (err) reject(err);
-        resolve(derivedKey.toString('hex') === hashedPassword);
-      },
-    );
-  });
+  async verifyPassword(
+    password: string,
+    hashedPassword: string,
+    salt: string,
+  ): Promise<boolean> {
+    const saltBuffer = Buffer.from(salt, 'hex');
+
+    return new Promise((resolve, reject) => {
+      crypto.pbkdf2(
+        password,
+        saltBuffer,
+        this.ITERATIONS,
+        this.KEY_LENGTH,
+        this.DIGEST,
+        (err, derivedKey) => {
+          if (err) reject(err);
+          resolve(derivedKey.toString('hex') === hashedPassword);
+        },
+      );
+    });
+  }
+
+  generateJwt(jwtPayload: JwtPaylaod): GeneratedJwt {
+    const accessToken = this.jwtService.sign(jwtPayload, {
+      secret: this.configService.get<string>('jwt.accessSecret'),
+      expiresIn: '1d',
+    });
+    const refreshToken = this.jwtService.sign(jwtPayload, {
+      secret: this.configService.get<string>('jwt.refreshSecret'),
+      expiresIn: '30d',
+    });
+    return { accessToken, refreshToken };
+  }
 }

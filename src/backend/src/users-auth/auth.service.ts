@@ -6,13 +6,16 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { VerifyEmailParam } from './dtos/verify-email-param.dto';
-import { generateVerificationCode, hashPassword } from './auth.helper';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { VerifyCodeParams } from './dtos/verify-code-params.dto';
 import { EmailService } from '@/email/email.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { SignUpParam } from './dtos/sign-up-params.dto';
+import { SignInParams } from './dtos/sign-in-params.dto';
+import { SignInRes } from './dtos/sign-in-res.dto';
+import { AuthHelper } from './auth.helper';
+import { GeneratedJwt, TokenWithUser } from './utils/types';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +23,36 @@ export class AuthService {
     private readonly prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly emailService: EmailService,
+    private readonly authHelper: AuthHelper,
   ) {}
+
+  async signIn(params: SignInParams): Promise<TokenWithUser> {
+    const { email, password } = params;
+
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) throw new UnauthorizedException('로그인 실패');
+
+    const passwordMatch = await this.authHelper.verifyPassword(
+      password,
+      user.password,
+      user.salt,
+    );
+
+    if (!passwordMatch) throw new UnauthorizedException('로그인 실패');
+
+    const generatedJwt: GeneratedJwt = this.authHelper.generateJwt({
+      uuid: user.uuid,
+      role: user.role,
+    });
+
+    return {
+      email: user.email,
+      generatedJwt,
+    };
+  }
 
   async signUp(param: SignUpParam) {
     const { email, eventAgree, nickname, password } = param;
@@ -35,7 +67,8 @@ export class AuthService {
     const verified = await this.cacheManager.get(`verified:${email}`);
     if (!verified) throw new NotAcceptableException('인증코드 확인 필요');
 
-    const { hashedPassword, salt } = await hashPassword(password);
+    const { hashedPassword, salt } =
+      await this.authHelper.hashPassword(password);
 
     return this.prisma.user.create({
       data: {
@@ -73,7 +106,7 @@ export class AuthService {
 
     if (user) throw new ConflictException('이메일 중복');
 
-    const authCode = generateVerificationCode();
+    const authCode = this.authHelper.generateVerificationCode();
 
     await this.cacheManager.set(`code:${email}`, authCode);
 

@@ -8,4 +8,8 @@ export default () => ({
     user: process.env.EMAIL_USER,
     password: process.env.EMAIL_PASSWORD,
   },
+  jwt: {
+    accessSecret: process.env.JWT_ACCESS_SECRET,
+    refreshSecret: process.env.JWT_REFRESH_SECRET,
+  },
 });

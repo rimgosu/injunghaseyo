@@ -40,6 +40,7 @@ export class BaseUseraAuthDto {
   @ApiProperty({
     description: 'email',
     type: String,
+    example: 'newnyup@gmail.com',
   })
   @IsEmail()
   email: string;
@@ -54,6 +55,7 @@ export class BaseUseraAuthDto {
   @ApiProperty({
     description: 'password',
     type: String,
+    example: 'injung123!@#',
   })
   @IsStrongPassword({
     minLowercase: 1,
@@ -64,6 +66,7 @@ export class BaseUseraAuthDto {
   @ApiProperty({
     description: 'confirm password',
     type: String,
+    example: 'injung123!@#',
   })
   @IsStrongPassword({
     minLowercase: 1,
@@ -75,6 +78,7 @@ export class BaseUseraAuthDto {
   @ApiProperty({
     description: 'nickname',
     type: String,
+    example: 'injung2',
   })
   @IsString()
   @IsNotEmpty()
@@ -83,6 +87,7 @@ export class BaseUseraAuthDto {
   @ApiProperty({
     description: 'agree require',
     type: Boolean,
+    example: true,
   })
   @IsBoolean()
   @Transform(({ value }) => {
@@ -96,6 +101,7 @@ export class BaseUseraAuthDto {
   @ApiProperty({
     description: 'agree event',
     type: Boolean,
+    example: false,
   })
   @IsBoolean()
   @Transform(({ value }) => {
