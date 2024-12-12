@@ -1,6 +1,10 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as crypto from 'crypto';
-import { GeneratedJwt, JwtPaylaod } from './utils/types';
+import { ExtractedJwt, GeneratedJwt, JwtPaylaod } from './utils/types';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
@@ -80,5 +84,24 @@ export class AuthHelper {
       expiresIn: '30d',
     });
     return { accessToken, refreshToken };
+  }
+
+  /**
+   * @description JWT 토큰으로부터 페이로드를 추출한다.
+   */
+  extractPayload(token: string, tokenType: 'access' | 'refresh'): ExtractedJwt {
+    try {
+      const secret = this.configService.get<string>(
+        tokenType === 'access' ? 'jwt.accessSecret' : 'jwt.refreshSecret',
+      );
+      const payload = this.jwtService.verify(token, { secret });
+
+      return payload;
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException('Invalid or expired token');
+    }
   }
 }

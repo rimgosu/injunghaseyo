@@ -13,9 +13,9 @@ import { EmailService } from '@/email/email.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { SignUpParam } from './dtos/sign-up-params.dto';
 import { SignInParams } from './dtos/sign-in-params.dto';
-import { SignInRes } from './dtos/sign-in-res.dto';
 import { AuthHelper } from './auth.helper';
-import { GeneratedJwt, TokenWithUser } from './utils/types';
+import { ExtractedJwt, GeneratedJwt, TokenWithUser } from './utils/types';
+import { ReissueAtkRes } from './dtos/reissue-atk-res.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +24,15 @@ export class AuthService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly emailService: EmailService,
     private readonly authHelper: AuthHelper,
-  ) { }
+  ) {}
+
+  async reissueAtk(extractedJwt: ExtractedJwt): Promise<ReissueAtkRes> {
+    const { role, uuid } = extractedJwt;
+
+    const { accessToken } = this.authHelper.generateJwt({ role, uuid });
+
+    return new ReissueAtkRes(accessToken);
+  }
 
   async signIn(params: SignInParams): Promise<TokenWithUser> {
     const { email, password } = params;
@@ -49,11 +57,12 @@ export class AuthService {
     });
 
     await this.prisma.user.update({
-      where: { uuid: user.uuid }, data: {
+      where: { uuid: user.uuid },
+      data: {
         lastLogin: new Date(),
-        refreshToken: generatedJwt.refreshToken
-      }
-    })
+        refreshToken: generatedJwt.refreshToken,
+      },
+    });
 
     return {
       email: user.email,

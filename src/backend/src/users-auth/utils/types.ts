@@ -14,3 +14,10 @@ export interface TokenWithUser {
   email: string;
   generatedJwt: GeneratedJwt;
 }
+
+export interface ExtractedJwt {
+  uuid: string;
+  role: Role;
+  iat: number;
+  exp: number;
+}
