@@ -24,7 +24,7 @@ export class AuthService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly emailService: EmailService,
     private readonly authHelper: AuthHelper,
-  ) {}
+  ) { }
 
   async signIn(params: SignInParams): Promise<TokenWithUser> {
     const { email, password } = params;
@@ -47,6 +47,13 @@ export class AuthService {
       uuid: user.uuid,
       role: user.role,
     });
+
+    await this.prisma.user.update({
+      where: { uuid: user.uuid }, data: {
+        lastLogin: new Date(),
+        refreshToken: generatedJwt.refreshToken
+      }
+    })
 
     return {
       email: user.email,

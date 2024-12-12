@@ -15,7 +15,7 @@ datasource db {
 
 model User {
   id             Int        @id @default(autoincrement())
-  uuid           String     @default(uuid())
+  uuid           String     @default(uuid()) @unique
   email          String     @unique
   nickname       String     @unique
   introduction   String     @default("등록된 소개말이 없습니다.")
