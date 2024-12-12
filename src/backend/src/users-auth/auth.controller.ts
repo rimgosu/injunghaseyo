@@ -1,4 +1,4 @@
-import { Controller, Post, Query, Res } from '@nestjs/common';
+import { Controller, Get, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { VerifyEmailParam } from './dtos/verify-email-param.dto';
 import { VerifyCodeParams } from './dtos/verify-code-params.dto';
@@ -6,6 +6,8 @@ import { SignUpParam } from './dtos/sign-up-params.dto';
 import { SignInParams } from './dtos/sign-in-params.dto';
 import { SignInRes } from './dtos/sign-in-res.dto';
 import { Response } from 'express';
+import { AtkGuard } from './guards/atk.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -59,5 +61,12 @@ export class AuthController {
     });
 
     return new SignInRes(email, accessToken);
+  }
+
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  @Get()
+  async test() {
+    return 'good';
   }
 }

@@ -25,7 +25,7 @@ const swaggerConfig = new DocumentBuilder()
       description: 'Enter JWT token',
       in: 'header',
     },
-    'access-token',
+    'jwt',
   )
   .build();
 
