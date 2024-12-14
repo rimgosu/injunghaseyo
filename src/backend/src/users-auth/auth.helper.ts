@@ -20,6 +20,58 @@ export class AuthHelper {
   private readonly KEY_LENGTH = 64;
   private readonly DIGEST = 'sha512';
 
+  /**
+   * @description 강력한 임시 비밀번호를 생성한다. (10자리)
+   * - 대문자, 소문자, 숫자, 특수문자를 모두 포함
+   * - crypto.randomBytes를 사용하여 안전한 난수 생성
+   */
+  generateStrongPassword(length: number = 10): string {
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+    const allChars = lowercase + uppercase + numbers + symbols;
+
+    // 각 문자 유형이 최소 1개씩 포함되도록 보장
+    let password =
+      this.getRandomChar(uppercase) +
+      this.getRandomChar(lowercase) +
+      this.getRandomChar(numbers) +
+      this.getRandomChar(symbols);
+
+    // 나머지 자리 채우기
+    while (password.length < length) {
+      const randomBytes = crypto.randomBytes(1);
+      const randomChar = allChars[randomBytes[0] % allChars.length];
+      password += randomChar;
+    }
+
+    // 문자열을 무작위로 섞기
+    return this.shuffleString(password);
+  }
+
+  /**
+   * @description 주어진 문자열에서 무작위 문자 하나를 선택한다.
+   */
+  private getRandomChar(characters: string): string {
+    const randomBytes = crypto.randomBytes(1);
+    return characters[randomBytes[0] % characters.length];
+  }
+
+  /**
+   * @description Fisher-Yates 알고리즘을 사용하여 문자열을 무작위로 섞는다.
+   */
+  private shuffleString(str: string): string {
+    const array = str.split('');
+    for (let i = array.length - 1; i > 0; i--) {
+      const randomBytes = crypto.randomBytes(1);
+      const j = randomBytes[0] % (i + 1);
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array.join('');
+  }
+
   generateVerificationCode(): string {
     const code = Math.floor(Math.random() * 1000000);
     return code.toString().padStart(6, '0');

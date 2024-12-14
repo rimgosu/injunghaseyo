@@ -15,6 +15,7 @@ import { SignInRes } from './dtos/sign-in-res.dto';
 import { Response } from 'express';
 import { RtkGuard } from './guards/rtk.guard';
 import { ReissueAtkRes } from './dtos/reissue-atk-res.dto';
+import { FindPasswordParam } from './dtos/find-password-param.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -79,5 +80,16 @@ export class AuthController {
   @UseGuards(RtkGuard)
   async reissueAtk(@Request() req): Promise<ReissueAtkRes> {
     return await this.authService.reissueAtk(req.user);
+  }
+
+  /**
+   * @description 비밀번호 찾기
+   * @see sign-in 로그인 시 redis에 있는 임시 비밀번호부터 체크하도록 한다.
+   *
+   * - 비밀번호 있는 유저만 가능
+   */
+  @Post('find-password')
+  async findPassword(@Query() findPasswordParam: FindPasswordParam) {
+    return await this.authService.findPassword(findPasswordParam);
   }
 }

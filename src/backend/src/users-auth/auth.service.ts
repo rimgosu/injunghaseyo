@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Inject,
   Injectable,
@@ -17,6 +18,7 @@ import { AuthHelper } from './auth.helper';
 import { GeneratedJwt, TokenWithUser } from './utils/types';
 import { ReissueAtkRes } from './dtos/reissue-atk-res.dto';
 import { User } from '@prisma/client';
+import { FindPasswordParam } from './dtos/find-password-param.dto';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +28,36 @@ export class AuthService {
     private readonly emailService: EmailService,
     private readonly authHelper: AuthHelper,
   ) {}
+
+  async findPassword(findPasswordParam: FindPasswordParam) {
+    const { email } = findPasswordParam;
+
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user?.password)
+      throw new BadRequestException('user 또는 password 없음');
+
+    const tempPassword = this.authHelper.generateStrongPassword();
+
+    await this.cacheManager.set(
+      `temp:password:${email}`,
+      tempPassword,
+      1000 * 60 * 5,
+    );
+
+    await this.emailService.sendVerificationEmail(
+      email,
+      tempPassword,
+      'find-password',
+      5,
+    );
+
+    return {
+      message: `${email}로 정상적으로 임시 비밀번호 전송`,
+    };
+  }
 
   async reissueAtk(user: User): Promise<ReissueAtkRes> {
     const { role, uuid } = user;
@@ -44,13 +76,17 @@ export class AuthService {
 
     if (!user) throw new UnauthorizedException('로그인 실패');
 
-    const passwordMatch = await this.authHelper.verifyPassword(
-      password,
-      user.password,
-      user.salt,
-    );
+    const isTempPassword = await this.isTempPassword(params);
 
-    if (!passwordMatch) throw new UnauthorizedException('로그인 실패');
+    if (!isTempPassword) {
+      const passwordMatch = await this.authHelper.verifyPassword(
+        password,
+        user.password,
+        user.salt,
+      );
+
+      if (!passwordMatch) throw new UnauthorizedException('로그인 실패');
+    }
 
     const generatedJwt: GeneratedJwt = this.authHelper.generateJwt({
       uuid: user.uuid,
@@ -69,6 +105,36 @@ export class AuthService {
       email: user.email,
       generatedJwt,
     };
+  }
+
+  /**
+   * @description 임시 비밀번호를 발급받은 사용자 로직
+   */
+  private async isTempPassword(params: SignInParams): Promise<boolean> {
+    const { email, password } = params;
+    const tempPassword = await this.cacheManager.get(`temp:password:${email}`);
+
+    if (!tempPassword) return false;
+
+    if (password !== tempPassword)
+      throw new UnauthorizedException('임시 비밀번호가 틀렸습니다.');
+
+    const { hashedPassword, salt } =
+      await this.authHelper.hashPassword(tempPassword);
+
+    await Promise.all([
+      this.prisma.user.update({
+        where: { email },
+        data: {
+          password: hashedPassword,
+          salt,
+          lastPwdChanged: new Date(),
+        },
+      }),
+      this.cacheManager.del(`temp:password:${email}`),
+    ]);
+
+    return true;
   }
 
   async signUp(param: SignUpParam) {
@@ -127,6 +193,11 @@ export class AuthService {
 
     await this.cacheManager.set(`code:${email}`, authCode);
 
-    await this.emailService.sendVerificationEmail(email, authCode);
+    await this.emailService.sendVerificationEmail(
+      email,
+      authCode,
+      'email-verify',
+      3,
+    );
   }
 }

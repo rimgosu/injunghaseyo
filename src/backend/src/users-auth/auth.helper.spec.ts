@@ -15,6 +15,66 @@ describe('AuthHelper', () => {
     authHelper = moduleRef.get<AuthHelper>(AuthHelper);
   });
 
+  describe('generateStrongPassword', () => {
+    test('기본 길이는 10자리여야 함', () => {
+      const password = authHelper.generateStrongPassword();
+      expect(password.length).toBe(10);
+    });
+
+    test('지정한 길이로 비밀번호가 생성되어야 함', () => {
+      const password = authHelper.generateStrongPassword(15);
+      expect(password.length).toBe(15);
+    });
+
+    test('대문자를 최소 1개 이상 포함해야 함', () => {
+      const password = authHelper.generateStrongPassword();
+      expect(password).toMatch(/[A-Z]/);
+    });
+
+    test('소문자를 최소 1개 이상 포함해야 함', () => {
+      const password = authHelper.generateStrongPassword();
+      expect(password).toMatch(/[a-z]/);
+    });
+
+    test('숫자를 최소 1개 이상 포함해야 함', () => {
+      const password = authHelper.generateStrongPassword();
+      expect(password).toMatch(/[0-9]/);
+    });
+
+    test('특수문자를 최소 1개 이상 포함해야 함', () => {
+      const password = authHelper.generateStrongPassword();
+      expect(password).toMatch(/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/);
+    });
+
+    test('연속 생성된 비밀번호는 서로 달라야 함', () => {
+      const password1 = authHelper.generateStrongPassword();
+      const password2 = authHelper.generateStrongPassword();
+      const password3 = authHelper.generateStrongPassword();
+
+      expect(password1).not.toBe(password2);
+      expect(password2).not.toBe(password3);
+      expect(password3).not.toBe(password1);
+    });
+
+    test('100개의 비밀번호를 생성했을 때 모든 요구사항을 충족해야 함', () => {
+      const passwords = Array.from({ length: 100 }, () =>
+        authHelper.generateStrongPassword(),
+      );
+
+      passwords.forEach((password) => {
+        expect(password.length).toBe(10);
+        expect(password).toMatch(/[A-Z]/); // 대문자
+        expect(password).toMatch(/[a-z]/); // 소문자
+        expect(password).toMatch(/[0-9]/); // 숫자
+        expect(password).toMatch(/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/); // 특수문자
+      });
+
+      // 모든 비밀번호가 유니크한지 검증
+      const uniquePasswords = new Set(passwords);
+      expect(uniquePasswords.size).toBe(passwords.length);
+    });
+  });
+
   describe('generateVerificationCode', () => {
     test('생성된 코드는 문자열이어야 함', () => {
       const code = authHelper.generateVerificationCode();
