@@ -14,8 +14,9 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { SignUpParam } from './dtos/sign-up-params.dto';
 import { SignInParams } from './dtos/sign-in-params.dto';
 import { AuthHelper } from './auth.helper';
-import { ExtractedJwt, GeneratedJwt, TokenWithUser } from './utils/types';
+import { GeneratedJwt, TokenWithUser } from './utils/types';
 import { ReissueAtkRes } from './dtos/reissue-atk-res.dto';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -26,8 +27,8 @@ export class AuthService {
     private readonly authHelper: AuthHelper,
   ) {}
 
-  async reissueAtk(extractedJwt: ExtractedJwt): Promise<ReissueAtkRes> {
-    const { role, uuid } = extractedJwt;
+  async reissueAtk(user: User): Promise<ReissueAtkRes> {
+    const { role, uuid } = user;
 
     const { accessToken } = this.authHelper.generateJwt({ role, uuid });
 

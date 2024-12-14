@@ -1,10 +1,16 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { ExtractedJwt, JwtPaylaod } from '../utils/types';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtPaylaod } from '../utils/types';
 import { ConfigService } from '@nestjs/config';
-import { Request } from 'express';
 import { AuthHelper } from '../auth.helper';
+import { User } from '@prisma/client';
+import { PrismaService } from '@/prisma/prisma.service';
 
 /**
  * 해당 전략은 쿠키(httpOnly)에 저장되어 있는 rtk(리프레시 토큰)를 검증.
@@ -17,6 +23,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'rtk') {
   constructor(
     private readonly configService: ConfigService,
     private readonly authHelper: AuthHelper,
+    private readonly prisma: PrismaService,
   ) {
     super({
       passReqToCallback: true,
@@ -35,11 +42,15 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'rtk') {
     });
   }
 
-  async validate(req: Request): Promise<ExtractedJwt> {
-    const rtk = req?.cookies._SESSION;
+  async validate(req, paylaod: JwtPaylaod): Promise<User> {
+    console.log('payload:', paylaod);
 
-    const payload = this.authHelper.extractPayload(rtk, 'refresh');
+    const user = this.prisma.user.findUnique({
+      where: { uuid: paylaod.uuid },
+    });
 
-    return payload;
+    if (!user) throw new UnauthorizedException('유저를 찾을 수 없음');
+
+    return user;
   }
 }
