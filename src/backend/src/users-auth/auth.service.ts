@@ -19,6 +19,7 @@ import { GeneratedJwt, TokenWithUser } from './utils/types';
 import { ReissueAtkRes } from './dtos/reissue-atk-res.dto';
 import { User } from '@prisma/client';
 import { FindPasswordParam } from './dtos/find-password-param.dto';
+import { ChgPasswordParams } from './dtos/chg-password-params.dto';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +29,37 @@ export class AuthService {
     private readonly emailService: EmailService,
     private readonly authHelper: AuthHelper,
   ) {}
+
+  async changePassword(chgPasswordParams: ChgPasswordParams, user: User) {
+    const { changePassword, password } = chgPasswordParams;
+
+    const isPasswordMatch = await this.authHelper.verifyPassword(
+      password,
+      user.password,
+      user.salt,
+    );
+
+    if (!isPasswordMatch)
+      throw new UnauthorizedException('기존 패스워드 불일치');
+
+    const { hashedPassword, salt } =
+      await this.authHelper.hashPassword(changePassword);
+
+    return this.prisma.user.update({
+      data: {
+        password: hashedPassword,
+        salt,
+        lastPwdChanged: new Date(),
+      },
+      where: {
+        id: user.id,
+      },
+      select: {
+        email: true,
+        lastPwdChanged: true,
+      },
+    });
+  }
 
   async findPassword(findPasswordParam: FindPasswordParam) {
     const { email } = findPasswordParam;

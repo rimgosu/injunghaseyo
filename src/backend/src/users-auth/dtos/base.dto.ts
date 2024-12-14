@@ -36,6 +36,21 @@ class PasswordMatchConstraint implements ValidatorConstraintInterface {
   }
 }
 
+@ValidatorConstraint({ name: 'changePasswordMatch', async: false })
+class ChgPasswordMatchConstraint implements ValidatorConstraintInterface {
+  validate(confirmChangePassword: string, args: ValidationArguments) {
+    const obj = args.object as BaseUseraAuthDto;
+    return (
+      confirmChangePassword === obj.changePassword &&
+      obj.changePassword !== obj.password
+    );
+  }
+
+  defaultMessage() {
+    return '비밀번호가 일치하지 않습니다';
+  }
+}
+
 export class BaseUseraAuthDto {
   @ApiProperty({
     description: 'email',
@@ -74,6 +89,29 @@ export class BaseUseraAuthDto {
   })
   @Validate(PasswordMatchConstraint)
   confirmPassword: string;
+
+  @ApiProperty({
+    description: 'change password',
+    type: String,
+    example: 'injung123!@#1',
+  })
+  @IsStrongPassword({
+    minLowercase: 1,
+    minUppercase: 0,
+  })
+  changePassword: string;
+
+  @ApiProperty({
+    description: 'change password',
+    type: String,
+    example: 'injung123!@#1',
+  })
+  @IsStrongPassword({
+    minLowercase: 1,
+    minUppercase: 0,
+  })
+  @Validate(ChgPasswordMatchConstraint)
+  confirmChangePassword: string;
 
   @ApiProperty({
     description: 'nickname',

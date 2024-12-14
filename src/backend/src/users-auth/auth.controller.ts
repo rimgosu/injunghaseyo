@@ -1,5 +1,6 @@
 import {
   Controller,
+  Patch,
   Post,
   Query,
   Request,
@@ -16,6 +17,11 @@ import { Response } from 'express';
 import { RtkGuard } from './guards/rtk.guard';
 import { ReissueAtkRes } from './dtos/reissue-atk-res.dto';
 import { FindPasswordParam } from './dtos/find-password-param.dto';
+import { ChgPasswordParams } from './dtos/chg-password-params.dto';
+import { AtkGuard } from './guards/atk.guard';
+import { GetUser } from '@/common/get-user.decorator';
+import { User } from '@prisma/client';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -51,6 +57,7 @@ export class AuthController {
 
   /**
    * @description 로그인
+   * @todo e2e test
    *
    * - access token: response로 준다.
    * - refresh token: 쿠키에 '_SESSION' 이름으로 주입한다.
@@ -91,5 +98,18 @@ export class AuthController {
   @Post('find-password')
   async findPassword(@Query() findPasswordParam: FindPasswordParam) {
     return await this.authService.findPassword(findPasswordParam);
+  }
+
+  /**
+   * @description 비밀번호 변경
+   */
+  @Patch('change-password')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async changePassword(
+    @Query() chgPasswordParams: ChgPasswordParams,
+    @GetUser() user: User,
+  ) {
+    return await this.authService.changePassword(chgPasswordParams, user);
   }
 }
