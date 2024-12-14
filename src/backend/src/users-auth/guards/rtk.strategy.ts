@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { JwtPaylaod } from '../utils/types';
 import { ConfigService } from '@nestjs/config';
-import { AuthHelper } from '../auth.helper';
 import { User } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
 
@@ -22,7 +21,6 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'rtk') {
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly authHelper: AuthHelper,
     private readonly prisma: PrismaService,
   ) {
     super({
@@ -43,13 +41,14 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'rtk') {
   }
 
   async validate(req, paylaod: JwtPaylaod): Promise<User> {
-    console.log('payload:', paylaod);
+    const rtk = req?.cookies?._SESSION;
 
-    const user = this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { uuid: paylaod.uuid },
     });
 
-    if (!user) throw new UnauthorizedException('유저를 찾을 수 없음');
+    if (rtk !== user?.refreshToken)
+      throw new UnauthorizedException('rtk 불일치');
 
     return user;
   }
