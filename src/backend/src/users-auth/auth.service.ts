@@ -17,7 +17,7 @@ import { SignInParams } from './dtos/sign-in-params.dto';
 import { AuthHelper } from './auth.helper';
 import { GeneratedJwt, TokenWithUser } from './utils/types';
 import { ReissueAtkRes } from './dtos/reissue-atk-res.dto';
-import { User } from '@prisma/client';
+import { User, UserStatus } from '@prisma/client';
 import { FindPasswordParam } from './dtos/find-password-param.dto';
 import { ChgPasswordParams } from './dtos/chg-password-params.dto';
 
@@ -29,6 +29,23 @@ export class AuthService {
     private readonly emailService: EmailService,
     private readonly authHelper: AuthHelper,
   ) {}
+
+  async withdraw(user: User) {
+    return await this.prisma.user.update({
+      data: {
+        deletedAt: new Date(),
+        status: UserStatus.WITHDRAWN,
+      },
+      where: {
+        id: user.id,
+      },
+      select: {
+        deletedAt: true,
+        status: true,
+        email: true,
+      },
+    });
+  }
 
   async changePassword(chgPasswordParams: ChgPasswordParams, user: User) {
     const { changePassword, password } = chgPasswordParams;

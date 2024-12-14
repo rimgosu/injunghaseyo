@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Patch,
   Post,
   Query,
@@ -49,6 +50,7 @@ export class AuthController {
 
   /**
    * @description 회원 가입
+   * @todo 프로필 photo 업데이트
    */
   @Post('sign-up')
   async signUp(@Query() param: SignUpParam) {
@@ -111,5 +113,15 @@ export class AuthController {
     @GetUser() user: User,
   ) {
     return await this.authService.changePassword(chgPasswordParams, user);
+  }
+
+  /**
+   * @description 회원 탈퇴
+   */
+  @Delete('withdraw')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async withdraw(@GetUser() user: User) {
+    return await this.authService.withdraw(user);
   }
 }

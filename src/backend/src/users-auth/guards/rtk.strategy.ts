@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { JwtPaylaod } from '../utils/types';
 import { ConfigService } from '@nestjs/config';
-import { User } from '@prisma/client';
+import { User, UserStatus } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
 
 /**
@@ -49,6 +49,9 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'rtk') {
 
     if (rtk !== user?.refreshToken)
       throw new UnauthorizedException('rtk 불일치');
+
+    if (user.status !== UserStatus.ACTIVE)
+      throw new UnauthorizedException('활동 중인 유저가 아닙니다.');
 
     return user;
   }

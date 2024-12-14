@@ -1951,6 +1951,11 @@
     consola "^2.15.0"
     node-fetch "^2.6.1"
 
+"@open-draft/deferred-promise@^2.1.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@open-draft/deferred-promise/-/deferred-promise-2.2.0.tgz#4a822d10f6f0e316be4d67b4d4f8c9a124b073bd"
+  integrity sha512-CecwLWx3rhxVQF6V4bAgPS5t+So2sTbPgAzafKkVizyi7tlwpcFpdFqq+wqF2OwNBmqFuu6tOyouTuxgpMfzmA==
+
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
@@ -9475,6 +9480,21 @@ pretty-format@^29.0.0, pretty-format@^29.7.0:
     "@jest/schemas" "^29.6.3"
     ansi-styles "^5.0.0"
     react-is "^18.0.0"
+
+prisma-nested-middleware@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/prisma-nested-middleware/-/prisma-nested-middleware-4.0.0.tgz#e4743f7c943c32dae21f7597be7d2d700722bffb"
+  integrity sha512-WSx0nl7KNXEzGaNC87fuDBOdAjj3V6um/JoQUo24PaMzMy8tvOYfb2Mw25OZhnrMXNTBhqgk4rJTUW3CVcDsHQ==
+  dependencies:
+    "@open-draft/deferred-promise" "^2.1.0"
+    lodash "^4.17.21"
+
+prisma-soft-delete-middleware@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/prisma-soft-delete-middleware/-/prisma-soft-delete-middleware-1.3.1.tgz#32e7361c37418856835247a0cdcf8fb15e31ad50"
+  integrity sha512-oQ2Ba8wb23ho6PqMXkOSTQTXNKouLmZuILYDHrnKk1Ui3cGIXuj9zNWyJkoaTcWHznsiAaoP1Oy8ytDhwQNQqA==
+  dependencies:
+    prisma-nested-middleware "^4.0.0"
 
 prisma@^6.0.1:
   version "6.0.1"
