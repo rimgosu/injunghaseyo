@@ -9,5 +9,6 @@
     },
     "[prisma]": {
         "editor.defaultFormatter": "Prisma.prisma"
-    }
+    },
+    "jest.jestCommandLine": "yarn workspace @monorepo/backend test"
 }
