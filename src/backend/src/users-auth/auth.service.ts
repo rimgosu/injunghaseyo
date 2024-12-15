@@ -234,7 +234,8 @@ export class AuthService {
   async verifyEmail(param: VerifyEmailParam) {
     const { email } = param;
 
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma
+      .$queryRaw`SELECT * FROM "User" WHERE email = ${email}`;
 
     if (user) throw new ConflictException('이메일 중복');
 
