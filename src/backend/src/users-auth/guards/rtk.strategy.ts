@@ -44,7 +44,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'rtk') {
     const rtk = req?.cookies?._SESSION;
 
     const user = await this.prisma.user.findUnique({
-      where: { uuid: paylaod.uuid, deletedAt: null },
+      where: { uuid: paylaod.uuid, deletedAt: null, status: UserStatus.ACTIVE },
     });
 
     if (rtk !== user?.refreshToken)

@@ -91,7 +91,7 @@ export class AuthService {
     const { email } = findPasswordParam;
 
     const user = await this.prisma.user.findUnique({
-      where: { email, deletedAt: null },
+      where: { email, deletedAt: null, status: UserStatus.ACTIVE },
     });
 
     if (!user?.password)
@@ -129,7 +129,7 @@ export class AuthService {
     const { email, password } = params;
 
     const user = await this.prisma.user.findUnique({
-      where: { email, deletedAt: null },
+      where: { email, deletedAt: null, status: UserStatus.ACTIVE },
     });
 
     if (!user) throw new UnauthorizedException('로그인 실패');
