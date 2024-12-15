@@ -20,6 +20,7 @@ import { ReissueAtkRes } from './dtos/reissue-atk-res.dto';
 import { User, UserStatus } from '@prisma/client';
 import { FindPasswordParam } from './dtos/find-password-param.dto';
 import { ChgPasswordParams } from './dtos/chg-password-params.dto';
+import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
 
 @Injectable()
 export class AuthService {
@@ -209,6 +210,7 @@ export class AuthService {
         nickname,
         password: hashedPassword,
         salt: salt,
+        ProfilePhoto: { create: { url: BASE_PROFILE_PHOTO_S3_URL } },
       },
       select: {
         email: true,
