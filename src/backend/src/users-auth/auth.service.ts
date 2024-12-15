@@ -36,6 +36,14 @@ export class AuthService {
       data: {
         deletedAt: new Date(),
         status: UserStatus.WITHDRAWN,
+        ProfilePhoto: {
+          updateMany: {
+            data: {
+              deletedAt: new Date(),
+            },
+            where: {},
+          },
+        },
       },
       where: {
         id: user.id,
@@ -83,7 +91,7 @@ export class AuthService {
     const { email } = findPasswordParam;
 
     const user = await this.prisma.user.findUnique({
-      where: { email },
+      where: { email, deletedAt: null },
     });
 
     if (!user?.password)
@@ -121,7 +129,7 @@ export class AuthService {
     const { email, password } = params;
 
     const user = await this.prisma.user.findUnique({
-      where: { email },
+      where: { email, deletedAt: null },
     });
 
     if (!user) throw new UnauthorizedException('로그인 실패');
@@ -236,8 +244,9 @@ export class AuthService {
   async verifyEmail(param: VerifyEmailParam) {
     const { email } = param;
 
-    const user = await this.prisma
-      .$queryRaw`SELECT * FROM "User" WHERE email = ${email}`;
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
 
     if (user) throw new ConflictException('이메일 중복');
 
