@@ -1,6 +1,7 @@
 import {
   Controller,
   Delete,
+  Get,
   Patch,
   Post,
   Query,
@@ -22,7 +23,8 @@ import { ChgPasswordParams } from './dtos/chg-password-params.dto';
 import { AtkGuard } from './guards/atk.guard';
 import { GetUser } from '@/common/get-user.decorator';
 import { User } from '@prisma/client';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -123,5 +125,22 @@ export class AuthController {
   @ApiBearerAuth('jwt')
   async withdraw(@GetUser() user: User) {
     return await this.authService.withdraw(user);
+  }
+
+  /**
+   * @description google oauth
+   */
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {}
+
+  /**
+   * @description google oauth callback
+   */
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  @ApiOperation({ deprecated: true })
+  googleAuthRedirect(@GetUser() user: User) {
+    return user;
   }
 }

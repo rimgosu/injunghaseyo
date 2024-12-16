@@ -7,6 +7,7 @@ import { AuthHelper } from './auth.helper';
 import { JwtService } from '@nestjs/jwt';
 import { JwtStrategy } from './guards/atk.strategy';
 import { RefreshTokenStrategy } from './guards/rtk.strategy';
+import { GoogleStrategy } from './guards/google.strategy';
 
 @Module({
   controllers: [UsersController, AuthController],
@@ -17,6 +18,7 @@ import { RefreshTokenStrategy } from './guards/rtk.strategy';
     JwtService,
     JwtStrategy,
     RefreshTokenStrategy,
+    GoogleStrategy,
   ],
 })
 export class UsersAuthModule {}
