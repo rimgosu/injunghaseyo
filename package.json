@@ -2,7 +2,7 @@
   "name": "monorepo",
   "private": true,
   "workspaces": [
-    "src/*"
+    "packages/*"
   ],
   "scripts": {
     "start:frontend": "yarn workspace @monorepo/frontend start",
