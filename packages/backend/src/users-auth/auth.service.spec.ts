@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { EmailService } from '@/email/email.service';
 import { JwtService } from '@nestjs/jwt';
 import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
+import { BadRequestException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -71,6 +72,98 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
     prismaService = module.get<PrismaService>(PrismaService);
     cacheManager = module.get<Cache>(CACHE_MANAGER);
+  });
+
+  describe('activateOauth', () => {
+    const activateOauthParams = {
+      eventAgree: true,
+      nickname: 'newNickname',
+      requireAgree: true,
+    };
+
+    it('OAuth 대기 상태의 유저 활성화 성공', async () => {
+      // Given
+      const oauthPendingUser = {
+        ...mockUser,
+        status: UserStatus.OAUTH_PENDING,
+        provider: Provider.GOOGLE,
+      };
+
+      const expectedActivatedUser = {
+        email: oauthPendingUser.email,
+        nickname: activateOauthParams.nickname,
+        eventAgree: activateOauthParams.eventAgree,
+        provider: Provider.GOOGLE,
+        status: UserStatus.ACTIVE,
+      } as User;
+
+      jest
+        .spyOn(prismaService.user, 'update')
+        .mockResolvedValue(expectedActivatedUser);
+
+      // When
+      const result = await service.activateOauth(
+        oauthPendingUser,
+        activateOauthParams,
+      );
+
+      // Then
+      expect(prismaService.user.update).toHaveBeenCalledWith({
+        where: {
+          email: oauthPendingUser.email,
+        },
+        data: {
+          nickname: activateOauthParams.nickname,
+          eventAgree: activateOauthParams.eventAgree,
+          status: UserStatus.ACTIVE,
+        },
+        select: {
+          email: true,
+          nickname: true,
+          eventAgree: true,
+          provider: true,
+          status: true,
+        },
+      });
+
+      expect(result).toEqual(expectedActivatedUser);
+    });
+
+    it('이미 활성화된 유저의 경우 BadRequestException 발생', async () => {
+      // Given
+      const activeUser = {
+        ...mockUser,
+        status: UserStatus.ACTIVE,
+        provider: Provider.GOOGLE,
+      };
+
+      // When & Then
+      await expect(
+        service.activateOauth(activeUser, activateOauthParams),
+      ).rejects.toThrow(
+        new BadRequestException('oauth 활성화가 필요한 유저가 아닙니다.'),
+      );
+
+      expect(prismaService.user.update).not.toHaveBeenCalled();
+    });
+
+    it('일반 유저의 경우 BadRequestException 발생', async () => {
+      // Given
+      const normalUser = {
+        ...mockUser,
+        status: UserStatus.ACTIVE,
+        provider: null,
+      };
+
+      // When & Then
+      await expect(
+        service.activateOauth(normalUser, activateOauthParams),
+      ).rejects.toThrow(
+        new BadRequestException('oauth 활성화가 필요한 유저가 아닙니다.'),
+      );
+
+      expect(prismaService.user.update).not.toHaveBeenCalled();
+    });
   });
 
   describe('oauthLogin', () => {
