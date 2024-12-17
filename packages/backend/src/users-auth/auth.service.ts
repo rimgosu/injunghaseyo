@@ -206,6 +206,8 @@ export class AuthService {
 
     if (!user) throw new UnauthorizedException('로그인 실패');
 
+    if (user.provider) throw new BadRequestException('oauth 유저');
+
     const isTempPassword = await this.isTempPassword(params);
 
     if (!isTempPassword) {
