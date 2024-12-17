@@ -28,6 +28,7 @@ model User {
   status         UserStatus @default(ACTIVE)
   lastLogin      DateTime?
   lastPwdChanged DateTime?
+  loginFailCount Int        @default(0)
 
   ProfilePhoto ProfilePhoto[]
 

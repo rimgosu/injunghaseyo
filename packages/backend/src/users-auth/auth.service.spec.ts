@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { EmailService } from '@/email/email.service';
 import { JwtService } from '@nestjs/jwt';
 import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -34,6 +34,7 @@ describe('AuthService', () => {
     createdAt: new Date(),
     updatedAt: new Date(),
     deletedAt: null,
+    loginFailCount: 0,
   };
 
   const mockGeneratedJwt = {
@@ -442,6 +443,109 @@ describe('AuthService', () => {
           refreshToken: mockGeneratedJwt.refreshToken,
         }),
       });
+    });
+  });
+
+  describe('비밀번호 실패 케이스', () => {
+    const signInParams = {
+      email: 'test@example.com',
+      password: 'wrongPassword',
+    };
+
+    it('비밀번호 10회 실패시 계정 비활성화', async () => {
+      // Given
+      const userWithFailCount = {
+        ...mockUser,
+        loginFailCount: 10,
+      };
+
+      jest
+        .spyOn(prismaService.user, 'findUnique')
+        .mockResolvedValue(userWithFailCount);
+      jest.spyOn(cacheManager, 'get').mockResolvedValue(null);
+      jest
+        .spyOn(service['authHelper'], 'verifyPassword')
+        .mockResolvedValue(false);
+
+      const updateMock = jest.spyOn(prismaService.user, 'update');
+      updateMock
+        .mockResolvedValueOnce({ loginFailCount: 11 } as User) // 첫 번째 update 호출 (실패 카운트 증가)
+        .mockResolvedValueOnce({
+          ...userWithFailCount,
+          status: UserStatus.INACTIVE,
+        }); // 두 번째 update 호출 (계정 비활성화)
+
+      // When & Then
+      await expect(service.signIn(signInParams)).rejects.toThrow(
+        new UnauthorizedException(
+          `해당 이메일은 비활성화 되었습니다. 관리자에게 문의하세요. ${undefined}`,
+        ),
+      );
+
+      expect(updateMock).toHaveBeenCalledTimes(2);
+      expect(updateMock).toHaveBeenNthCalledWith(1, {
+        where: { email: signInParams.email },
+        data: { loginFailCount: 11 },
+        select: { loginFailCount: true },
+      });
+      expect(updateMock).toHaveBeenNthCalledWith(2, {
+        where: { email: signInParams.email },
+        data: { status: UserStatus.INACTIVE },
+      });
+    });
+
+    it('비밀번호 실패시 loginFailCount 증가', async () => {
+      // Given
+      const userWithFailCount = {
+        ...mockUser,
+        loginFailCount: 5,
+      };
+
+      jest
+        .spyOn(prismaService.user, 'findUnique')
+        .mockResolvedValue(userWithFailCount);
+      jest.spyOn(cacheManager, 'get').mockResolvedValue(null);
+      jest
+        .spyOn(service['authHelper'], 'verifyPassword')
+        .mockResolvedValue(false);
+
+      const updateMock = jest.spyOn(prismaService.user, 'update');
+      updateMock.mockResolvedValueOnce({ loginFailCount: 6 } as User);
+
+      // When & Then
+      await expect(service.signIn(signInParams)).rejects.toThrow(
+        new UnauthorizedException('로그인 실패'),
+      );
+
+      expect(updateMock).toHaveBeenCalledTimes(1);
+      expect(updateMock).toHaveBeenCalledWith({
+        where: { email: signInParams.email },
+        data: { loginFailCount: 6 },
+        select: { loginFailCount: true },
+      });
+    });
+
+    it('임시 비밀번호가 아닐 경우 비밀번호 검증 실행', async () => {
+      // Given
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(mockUser);
+      jest.spyOn(cacheManager, 'get').mockResolvedValue(null);
+      jest
+        .spyOn(service['authHelper'], 'verifyPassword')
+        .mockResolvedValue(false);
+
+      const updateMock = jest.spyOn(prismaService.user, 'update');
+      updateMock.mockResolvedValueOnce({ loginFailCount: 1 } as User);
+
+      // When & Then
+      await expect(service.signIn(signInParams)).rejects.toThrow(
+        new UnauthorizedException('로그인 실패'),
+      );
+
+      expect(service['authHelper'].verifyPassword).toHaveBeenCalledWith(
+        signInParams.password,
+        mockUser.password,
+        mockUser.salt,
+      );
     });
   });
 });

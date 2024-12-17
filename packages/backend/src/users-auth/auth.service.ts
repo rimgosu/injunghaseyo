@@ -22,6 +22,7 @@ import { FindPasswordParam } from './dtos/find-password-param.dto';
 import { ChgPasswordParams } from './dtos/chg-password-params.dto';
 import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
 import { ActivateOauthParams } from './dtos/activate-oauth-params.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -30,6 +31,7 @@ export class AuthService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly emailService: EmailService,
     private readonly authHelper: AuthHelper,
+    private readonly configService: ConfigService,
   ) {}
 
   async activateOauth(user: User, params: ActivateOauthParams) {
@@ -213,7 +215,9 @@ export class AuthService {
         user.salt,
       );
 
-      if (!passwordMatch) throw new UnauthorizedException('로그인 실패');
+      if (!passwordMatch) {
+        await this.passwordMismatch(email, user);
+      }
     }
 
     const generatedJwt: GeneratedJwt = this.authHelper.generateJwt({
@@ -233,6 +237,39 @@ export class AuthService {
       email: user.email,
       generatedJwt,
     };
+  }
+
+  /**
+   * @description password 10회 이상 틀리면 계정 비활성화
+   */
+  private async passwordMismatch(email: string, user: User) {
+    const loginFailedUser = await this.prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        loginFailCount: user.loginFailCount + 1,
+      },
+      select: {
+        loginFailCount: true,
+      },
+    });
+
+    if (loginFailedUser.loginFailCount > 10) {
+      await this.prisma.user.update({
+        where: {
+          email,
+        },
+        data: {
+          status: UserStatus.INACTIVE,
+        },
+      });
+
+      throw new UnauthorizedException(
+        `해당 이메일은 비활성화 되었습니다. 관리자에게 문의하세요. ${this.configService.get('email.user')}`,
+      );
+    }
+    throw new UnauthorizedException('로그인 실패');
   }
 
   /**
