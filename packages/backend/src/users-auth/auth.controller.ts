@@ -2,6 +2,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Patch,
   Post,
   Query,
@@ -25,6 +26,7 @@ import { GetUser } from '@/common/get-user.decorator';
 import { User } from '@prisma/client';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { KaKaoUser } from './utils/types';
 
 @Controller('auth')
 export class AuthController {
@@ -132,6 +134,7 @@ export class AuthController {
    */
   @Get('google')
   @UseGuards(AuthGuard('google'))
+  @HttpCode(301)
   async googleAuth() {}
 
   /**
@@ -140,7 +143,25 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   @ApiOperation({ deprecated: true })
-  googleAuthRedirect(@GetUser() user: User) {
+  googleAuthRedirect(@GetUser() user: any) {
+    return user;
+  }
+
+  /**
+   * @description kakao login
+   */
+  @Get('kakao')
+  @UseGuards(AuthGuard('kakao'))
+  @HttpCode(301)
+  async kakaoLogin() {}
+
+  /**
+   * @description kakao oauth callback
+   */
+  @Get('kakao/callback')
+  @UseGuards(AuthGuard('kakao'))
+  @ApiOperation({ deprecated: true })
+  async kakaoCallback(@GetUser() user: KaKaoUser) {
     return user;
   }
 }

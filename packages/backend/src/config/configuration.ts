@@ -18,4 +18,8 @@ export default () => ({
     callbackUrl: process.env.GOOGLE_CALLBACK_URL,
     scope: process.env.GOOGLE_SCOPE?.split(',') || [],
   },
+  kakao: {
+    clientId: process.env.KAKAO_CLIENT_ID,
+    callback: process.env.KAKAO_CALLBACK_URL,
+  },
 });

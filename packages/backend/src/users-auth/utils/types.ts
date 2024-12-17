@@ -21,3 +21,16 @@ export interface ExtractedJwt {
   iat: number;
   exp: number;
 }
+
+export interface KaKaoUser {
+  nickname: string;
+  profile_image?: string;
+  email: string;
+}
+
+export interface GoogleUser {
+  email: string;
+  firstName: string;
+  lastName?: string;
+  picture: string;
+}

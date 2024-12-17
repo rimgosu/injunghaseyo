@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtStrategy } from './guards/atk.strategy';
 import { RefreshTokenStrategy } from './guards/rtk.strategy';
 import { GoogleStrategy } from './guards/google.strategy';
+import { KakaoStrategy } from './guards/kakao.strategy';
 
 @Module({
   controllers: [UsersController, AuthController],
@@ -19,6 +20,7 @@ import { GoogleStrategy } from './guards/google.strategy';
     JwtStrategy,
     RefreshTokenStrategy,
     GoogleStrategy,
+    KakaoStrategy,
   ],
 })
 export class UsersAuthModule {}
