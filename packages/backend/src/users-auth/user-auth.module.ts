@@ -9,6 +9,7 @@ import { JwtStrategy } from './guards/atk.strategy';
 import { RefreshTokenStrategy } from './guards/rtk.strategy';
 import { GoogleStrategy } from './guards/google.strategy';
 import { KakaoStrategy } from './guards/kakao.strategy';
+import { NaverStrategy } from './guards/naver.strategy';
 
 @Module({
   controllers: [UsersController, AuthController],
@@ -21,6 +22,7 @@ import { KakaoStrategy } from './guards/kakao.strategy';
     RefreshTokenStrategy,
     GoogleStrategy,
     KakaoStrategy,
+    NaverStrategy,
   ],
 })
 export class UsersAuthModule {}

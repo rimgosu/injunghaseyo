@@ -22,4 +22,9 @@ export default () => ({
     clientId: process.env.KAKAO_CLIENT_ID,
     callback: process.env.KAKAO_CALLBACK_URL,
   },
+  naver: {
+    clientId: process.env.NAVER_CLIENT_ID,
+    callback: process.env.NAVER_CALLBACK_URL,
+    clientSecret: process.env.NAVER_CLIENT_SECRET,
+  },
 });

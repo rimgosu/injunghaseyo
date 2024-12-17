@@ -34,3 +34,12 @@ export interface GoogleUser {
   lastName?: string;
   picture: string;
 }
+
+export interface NaverUser {
+  email: string;
+  nickname: string;
+  profile_image: string;
+  accessToken?: string;
+  refreshToken?: string;
+  provider: string;
+}

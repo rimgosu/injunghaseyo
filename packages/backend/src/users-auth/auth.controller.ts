@@ -26,7 +26,7 @@ import { GetUser } from '@/common/get-user.decorator';
 import { User } from '@prisma/client';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { KaKaoUser } from './utils/types';
+import { GoogleUser, KaKaoUser, NaverUser } from './utils/types';
 
 @Controller('auth')
 export class AuthController {
@@ -143,7 +143,7 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   @ApiOperation({ deprecated: true })
-  googleAuthRedirect(@GetUser() user: any) {
+  googleAuthRedirect(@GetUser() user: GoogleUser) {
     return user;
   }
 
@@ -162,6 +162,26 @@ export class AuthController {
   @UseGuards(AuthGuard('kakao'))
   @ApiOperation({ deprecated: true })
   async kakaoCallback(@GetUser() user: KaKaoUser) {
+    return user;
+  }
+
+  /**
+   * @description naver login
+   */
+  @Get('naver')
+  @UseGuards(AuthGuard('naver'))
+  @HttpCode(301)
+  async naverLogin() {
+    return;
+  }
+
+  /**
+   * @description naver login callback
+   */
+  @Get('naver/callback')
+  @UseGuards(AuthGuard('naver'))
+  @ApiOperation({ deprecated: true })
+  async naverCallback(@GetUser() user: NaverUser) {
     return user;
   }
 }
