@@ -201,12 +201,21 @@ export class AuthService {
     const { email, password } = params;
 
     const user = await this.prisma.user.findUnique({
-      where: { email, deletedAt: null, status: UserStatus.ACTIVE },
+      where: {
+        email,
+        deletedAt: null,
+        status: { in: [UserStatus.ACTIVE, UserStatus.INACTIVE] },
+      },
     });
 
     if (!user) throw new UnauthorizedException('로그인 실패');
 
     if (user.provider) throw new BadRequestException('oauth 유저');
+
+    if (user.loginFailCount > 10 && user.status === UserStatus.INACTIVE)
+      throw new UnauthorizedException(
+        `해당 이메일은 비밀번호를 10회 이상 틀려 비활성화 되었습니다. 관리자에게 문의하세요. ${this.configService.get('email.user')}`,
+      );
 
     const isTempPassword = await this.isTempPassword(params);
 
@@ -266,10 +275,6 @@ export class AuthService {
           status: UserStatus.INACTIVE,
         },
       });
-
-      throw new UnauthorizedException(
-        `해당 이메일은 비활성화 되었습니다. 관리자에게 문의하세요. ${this.configService.get('email.user')}`,
-      );
     }
     throw new UnauthorizedException('로그인 실패');
   }

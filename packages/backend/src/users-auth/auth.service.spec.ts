@@ -477,9 +477,7 @@ describe('AuthService', () => {
 
       // When & Then
       await expect(service.signIn(signInParams)).rejects.toThrow(
-        new UnauthorizedException(
-          `해당 이메일은 비활성화 되었습니다. 관리자에게 문의하세요. ${undefined}`,
-        ),
+        new UnauthorizedException('로그인 실패'),
       );
 
       expect(updateMock).toHaveBeenCalledTimes(2);
