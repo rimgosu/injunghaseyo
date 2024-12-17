@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "UserStatus" ADD VALUE 'OAUTH_PENDING';

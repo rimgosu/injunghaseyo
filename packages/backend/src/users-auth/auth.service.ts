@@ -15,9 +15,9 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { SignUpParam } from './dtos/sign-up-params.dto';
 import { SignInParams } from './dtos/sign-in-params.dto';
 import { AuthHelper } from './auth.helper';
-import { GeneratedJwt, TokenWithUser } from './utils/types';
+import { GeneratedJwt, OauthUser, TokenWithUser } from './utils/types';
 import { ReissueAtkRes } from './dtos/reissue-atk-res.dto';
-import { User, UserStatus } from '@prisma/client';
+import { Provider, User, UserStatus } from '@prisma/client';
 import { FindPasswordParam } from './dtos/find-password-param.dto';
 import { ChgPasswordParams } from './dtos/chg-password-params.dto';
 import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
@@ -30,6 +30,50 @@ export class AuthService {
     private readonly emailService: EmailService,
     private readonly authHelper: AuthHelper,
   ) {}
+
+  async oauthLogin(
+    oauthUser: OauthUser,
+    provider: Provider,
+  ): Promise<TokenWithUser> {
+    const { email, nickname, profile_image } = oauthUser;
+
+    let user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          nickname,
+          eventAgree: false,
+          ProfilePhoto: {
+            create: { url: profile_image ?? BASE_PROFILE_PHOTO_S3_URL },
+          },
+          status: UserStatus.OAUTH_PENDING,
+          provider,
+        },
+      });
+    }
+
+    const generatedJwt: GeneratedJwt = this.authHelper.generateJwt({
+      uuid: user.uuid,
+      role: user.role,
+    });
+
+    await this.prisma.user.update({
+      where: { uuid: user.uuid },
+      data: {
+        lastLogin: new Date(),
+        refreshToken: generatedJwt.refreshToken,
+      },
+    });
+
+    return {
+      email: user.email,
+      generatedJwt,
+    };
+  }
 
   async withdraw(user: User) {
     return await this.prisma.user.update({

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import axios from 'axios';
 import { Strategy } from 'passport-kakao';
-import { KaKaoUser } from '../utils/types';
+import { OauthUser } from '../utils/types';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy) {
@@ -15,7 +15,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(accessToken: string): Promise<KaKaoUser> {
+  async validate(accessToken: string): Promise<OauthUser> {
     const user = await axios.get('https://kapi.kakao.com/v2/user/me', {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',

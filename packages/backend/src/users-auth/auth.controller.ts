@@ -23,10 +23,10 @@ import { FindPasswordParam } from './dtos/find-password-param.dto';
 import { ChgPasswordParams } from './dtos/chg-password-params.dto';
 import { AtkGuard } from './guards/atk.guard';
 import { GetUser } from '@/common/get-user.decorator';
-import { User } from '@prisma/client';
+import { Provider, User } from '@prisma/client';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { GoogleUser, KaKaoUser, NaverUser } from './utils/types';
+import { OauthUser } from './utils/types';
 
 @Controller('auth')
 export class AuthController {
@@ -143,8 +143,8 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   @ApiOperation({ deprecated: true })
-  googleAuthRedirect(@GetUser() user: GoogleUser) {
-    return user;
+  async googleAuthRedirect(@GetUser() user: OauthUser) {
+    return await this.authService.oauthLogin(user, Provider.GOOGLE);
   }
 
   /**
@@ -161,8 +161,8 @@ export class AuthController {
   @Get('kakao/callback')
   @UseGuards(AuthGuard('kakao'))
   @ApiOperation({ deprecated: true })
-  async kakaoCallback(@GetUser() user: KaKaoUser) {
-    return user;
+  async kakaoCallback(@GetUser() user: OauthUser) {
+    return await this.authService.oauthLogin(user, Provider.KAKAO);
   }
 
   /**
@@ -171,9 +171,7 @@ export class AuthController {
   @Get('naver')
   @UseGuards(AuthGuard('naver'))
   @HttpCode(301)
-  async naverLogin() {
-    return;
-  }
+  async naverLogin() {}
 
   /**
    * @description naver login callback
@@ -181,7 +179,7 @@ export class AuthController {
   @Get('naver/callback')
   @UseGuards(AuthGuard('naver'))
   @ApiOperation({ deprecated: true })
-  async naverCallback(@GetUser() user: NaverUser) {
-    return user;
+  async naverCallback(@GetUser() user: OauthUser) {
+    return await this.authService.oauthLogin(user, Provider.NAVER);
   }
 }

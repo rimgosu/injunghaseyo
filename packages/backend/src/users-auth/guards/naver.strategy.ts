@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-naver';
-import { NaverUser } from '../utils/types';
+import { OauthUser } from '../utils/types';
 
 @Injectable()
 export class NaverStrategy extends PassportStrategy(Strategy) {
@@ -23,13 +23,10 @@ export class NaverStrategy extends PassportStrategy(Strategy) {
     try {
       const { email, nickname, profile_image } = profile._json;
 
-      const user: NaverUser = {
+      const user: OauthUser = {
         email,
         nickname,
         profile_image,
-        accessToken,
-        refreshToken,
-        provider: 'naver',
       };
 
       done(null, user);

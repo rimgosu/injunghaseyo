@@ -8,6 +8,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from '@/email/email.service';
 import { JwtService } from '@nestjs/jwt';
+import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -53,6 +54,7 @@ describe('AuthService', () => {
             user: {
               findUnique: jest.fn(),
               update: jest.fn(),
+              create: jest.fn(),
             },
           },
         },
@@ -69,6 +71,214 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
     prismaService = module.get<PrismaService>(PrismaService);
     cacheManager = module.get<Cache>(CACHE_MANAGER);
+  });
+
+  describe('oauthLogin', () => {
+    const mockOauthUser = {
+      email: 'oauth@example.com',
+      nickname: 'oauthUser',
+      profile_image: 'https://example.com/profile.jpg',
+    };
+
+    it('OAuth 대기 상태의 기존 유저 로그인 성공', async () => {
+      // Given
+      const existingOAuthUser = {
+        ...mockUser,
+        email: mockOauthUser.email,
+        nickname: mockOauthUser.nickname,
+        status: UserStatus.OAUTH_PENDING,
+        provider: Provider.GOOGLE,
+      };
+
+      jest
+        .spyOn(prismaService.user, 'findUnique')
+        .mockResolvedValue(existingOAuthUser);
+      jest
+        .spyOn(service['authHelper'], 'generateJwt')
+        .mockReturnValue(mockGeneratedJwt);
+      jest
+        .spyOn(prismaService.user, 'update')
+        .mockResolvedValue(existingOAuthUser);
+
+      // When
+      const result = await service.oauthLogin(mockOauthUser, Provider.GOOGLE);
+
+      // Then
+      expect(result).toEqual({
+        email: existingOAuthUser.email,
+        generatedJwt: mockGeneratedJwt,
+      });
+      expect(prismaService.user.findUnique).toHaveBeenCalledWith({
+        where: { email: mockOauthUser.email },
+      });
+      expect(prismaService.user.update).toHaveBeenCalledWith({
+        where: { uuid: existingOAuthUser.uuid },
+        data: expect.objectContaining({
+          lastLogin: expect.any(Date),
+          refreshToken: mockGeneratedJwt.refreshToken,
+        }),
+      });
+    });
+
+    it('신규 유저 생성 시 상태가 OAUTH_PENDING으로 설정됨', async () => {
+      // Given
+      const mockCreatedUser = {
+        ...mockUser,
+        ProfilePhoto: [],
+        Join: [],
+        PhotoComment: [],
+        Payment: [],
+      };
+
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(prismaService.user, 'create').mockResolvedValue({
+        ...mockCreatedUser,
+        status: UserStatus.OAUTH_PENDING,
+        provider: Provider.GOOGLE,
+      });
+      jest
+        .spyOn(service['authHelper'], 'generateJwt')
+        .mockReturnValue(mockGeneratedJwt);
+      jest
+        .spyOn(prismaService.user, 'update')
+        .mockResolvedValue(mockCreatedUser);
+
+      // When
+      await service.oauthLogin(mockOauthUser, Provider.GOOGLE);
+
+      // Then
+      expect(prismaService.user.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          email: mockOauthUser.email,
+          nickname: mockOauthUser.nickname,
+          status: UserStatus.OAUTH_PENDING,
+          provider: Provider.GOOGLE,
+          ProfilePhoto: {
+            create: { url: mockOauthUser.profile_image },
+          },
+        }),
+      });
+    });
+
+    it('기존 유저가 있을 경우 로그인 성공', async () => {
+      // Given
+      const existingUser = {
+        ...mockUser,
+        email: mockOauthUser.email,
+        nickname: mockOauthUser.nickname,
+      };
+
+      jest
+        .spyOn(prismaService.user, 'findUnique')
+        .mockResolvedValue(existingUser);
+      jest
+        .spyOn(service['authHelper'], 'generateJwt')
+        .mockReturnValue(mockGeneratedJwt);
+      jest.spyOn(prismaService.user, 'update').mockResolvedValue(existingUser);
+
+      // When
+      const result = await service.oauthLogin(mockOauthUser, Provider.GOOGLE);
+
+      // Then
+      expect(result).toEqual({
+        email: existingUser.email,
+        generatedJwt: mockGeneratedJwt,
+      });
+      expect(prismaService.user.update).toHaveBeenCalledWith({
+        where: { uuid: existingUser.uuid },
+        data: expect.objectContaining({
+          lastLogin: expect.any(Date),
+          refreshToken: mockGeneratedJwt.refreshToken,
+        }),
+      });
+    });
+
+    it('신규 유저일 경우 회원가입 후 로그인 성공', async () => {
+      // Given
+      const newUser = {
+        ...mockUser,
+        email: mockOauthUser.email,
+        nickname: mockOauthUser.nickname,
+        status: UserStatus.OAUTH_PENDING,
+        provider: Provider.GOOGLE,
+      };
+
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(prismaService.user, 'create').mockResolvedValue(newUser);
+      jest
+        .spyOn(service['authHelper'], 'generateJwt')
+        .mockReturnValue(mockGeneratedJwt);
+      jest.spyOn(prismaService.user, 'update').mockResolvedValue(newUser);
+
+      // When
+      const result = await service.oauthLogin(mockOauthUser, Provider.GOOGLE);
+
+      // Then
+      expect(prismaService.user.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          email: mockOauthUser.email,
+          nickname: mockOauthUser.nickname,
+          eventAgree: false,
+          status: UserStatus.OAUTH_PENDING,
+          provider: Provider.GOOGLE,
+          ProfilePhoto: {
+            create: { url: mockOauthUser.profile_image },
+          },
+        }),
+      });
+      expect(result).toEqual({
+        email: newUser.email,
+        generatedJwt: mockGeneratedJwt,
+      });
+      expect(prismaService.user.update).toHaveBeenCalledWith({
+        where: { uuid: newUser.uuid },
+        data: expect.objectContaining({
+          lastLogin: expect.any(Date),
+          refreshToken: mockGeneratedJwt.refreshToken,
+        }),
+      });
+    });
+
+    it('프로필 이미지가 없는 경우 기본 이미지로 회원가입', async () => {
+      // Given
+      const oauthUserWithoutImage = {
+        ...mockOauthUser,
+        profile_image: null,
+      };
+      const newUser = {
+        ...mockUser,
+        email: oauthUserWithoutImage.email,
+        nickname: oauthUserWithoutImage.nickname,
+        status: UserStatus.OAUTH_PENDING,
+        provider: Provider.GOOGLE,
+      };
+
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(prismaService.user, 'create').mockResolvedValue(newUser);
+      jest
+        .spyOn(service['authHelper'], 'generateJwt')
+        .mockReturnValue(mockGeneratedJwt);
+      jest.spyOn(prismaService.user, 'update').mockResolvedValue(newUser);
+
+      // When
+      const result = await service.oauthLogin(
+        oauthUserWithoutImage,
+        Provider.GOOGLE,
+      );
+
+      // Then
+      expect(prismaService.user.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          ProfilePhoto: {
+            create: { url: BASE_PROFILE_PHOTO_S3_URL },
+          },
+        }),
+      });
+      expect(result).toEqual({
+        email: newUser.email,
+        generatedJwt: mockGeneratedJwt,
+      });
+    });
   });
 
   describe('signIn', () => {

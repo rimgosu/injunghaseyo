@@ -22,24 +22,8 @@ export interface ExtractedJwt {
   exp: number;
 }
 
-export interface KaKaoUser {
+export interface OauthUser {
+  email: string;
   nickname: string;
   profile_image?: string;
-  email: string;
-}
-
-export interface GoogleUser {
-  email: string;
-  firstName: string;
-  lastName?: string;
-  picture: string;
-}
-
-export interface NaverUser {
-  email: string;
-  nickname: string;
-  profile_image: string;
-  accessToken?: string;
-  refreshToken?: string;
-  provider: string;
 }
