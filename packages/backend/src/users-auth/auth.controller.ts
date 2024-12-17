@@ -27,6 +27,7 @@ import { Provider, User } from '@prisma/client';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { OauthUser } from './utils/types';
+import { ActivateOauthParams } from './dtos/activate-oauth-params.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -181,5 +182,18 @@ export class AuthController {
   @ApiOperation({ deprecated: true })
   async naverCallback(@GetUser() user: OauthUser) {
     return await this.authService.oauthLogin(user, Provider.NAVER);
+  }
+
+  /**
+   * @description oauth 대기 상태를 해제한다.
+   */
+  @Post('activate-oauth')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async activateOauth(
+    @GetUser() user: User,
+    @Query() params: ActivateOauthParams,
+  ) {
+    return await this.authService.activateOauth(user, params);
   }
 }

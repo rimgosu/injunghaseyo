@@ -21,6 +21,7 @@ import { Provider, User, UserStatus } from '@prisma/client';
 import { FindPasswordParam } from './dtos/find-password-param.dto';
 import { ChgPasswordParams } from './dtos/chg-password-params.dto';
 import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
+import { ActivateOauthParams } from './dtos/activate-oauth-params.dto';
 
 @Injectable()
 export class AuthService {
@@ -30,6 +31,31 @@ export class AuthService {
     private readonly emailService: EmailService,
     private readonly authHelper: AuthHelper,
   ) {}
+
+  async activateOauth(user: User, params: ActivateOauthParams) {
+    const { eventAgree, nickname } = params;
+
+    if (user.status !== UserStatus.OAUTH_PENDING)
+      throw new BadRequestException('oauth 활성화가 필요한 유저가 아닙니다.');
+
+    return await this.prisma.user.update({
+      where: {
+        email: user.email,
+      },
+      data: {
+        nickname,
+        eventAgree,
+        status: UserStatus.ACTIVE,
+      },
+      select: {
+        email: true,
+        nickname: true,
+        eventAgree: true,
+        provider: true,
+        status: true,
+      },
+    });
+  }
 
   async oauthLogin(
     oauthUser: OauthUser,
