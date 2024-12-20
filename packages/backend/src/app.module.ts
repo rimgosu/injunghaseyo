@@ -8,6 +8,7 @@ import configuration from './config/configuration';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PrismaModule } from './prisma/prisma.module';
       },
     }),
     EmailModule,
+    GroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],

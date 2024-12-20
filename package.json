@@ -9,7 +9,8 @@
     "start:backend": "yarn workspace @monorepo/backend start:dev",
     "dev": "concurrently \"yarn start:frontend\" \"yarn start:backend\"",
     "build": "yarn workspaces run build",
-    "test": "yarn workspaces run test"
+    "test": "yarn workspaces run test",
+    "db": "docker compose -f docker-compose.db.yaml up -d"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
