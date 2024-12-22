@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "GroupDate" ALTER COLUMN "date" SET DATA TYPE TEXT;

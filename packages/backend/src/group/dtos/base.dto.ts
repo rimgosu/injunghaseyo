@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  Matches,
 } from 'class-validator';
 
 export class BaseGroupDto {
@@ -21,10 +22,11 @@ export class BaseGroupDto {
   @ApiProperty({
     description: '모임 가격 (원)',
     type: Number,
-    example: '30000',
+    example: 30000,
   })
   @IsNumber()
   @IsNotEmpty()
+  @Transform(({ value }) => +value)
   price: number;
 
   @ApiProperty({
@@ -49,19 +51,21 @@ export class BaseGroupDto {
     description:
       '시간 (일자), ?dates=2024-12-21&dates=2024-12-22 꼴로 날짜 배열로 받음',
     type: [String],
-    isArray: true,
     example: ['2024-12-21', '2024-12-22'],
   })
   @IsArray()
   @ArrayMinSize(1)
   @IsString({ each: true })
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
+    each: true,
+    message: '날짜는 yyyy-mm-dd 형식이어야 합니다.',
+  })
   dates: string[];
 
   @ApiProperty({
     description: '태그, ?tags=헬스&tags=건강 꼴로 날짜 배열로 받음',
     type: [String],
-    isArray: true,
     example: ['헬스', '건강'],
   })
   @IsArray()

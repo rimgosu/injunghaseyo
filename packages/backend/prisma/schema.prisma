@@ -130,6 +130,7 @@ model Group {
   title       String
   price       Int
   description String?
+  proofMethod String
   status      GroupStatus @default(OPEN)
 
   createdAt   DateTime      @default(now())
@@ -149,7 +150,7 @@ enum GroupStatus {
 
 model Tag {
   id   Int    @id @default(autoincrement())
-  name String
+  name String @unique
 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -196,10 +197,10 @@ enum JoinRole {
 }
 
 model GroupDate {
-  id      Int      @id @default(autoincrement())
+  id      Int    @id @default(autoincrement())
   groupId Int
-  date    DateTime /// format: YYYY-MM-DD
-  group   Group    @relation(fields: [groupId], references: [id])
+  date    String /// format: YYYY-MM-DD
+  group   Group  @relation(fields: [groupId], references: [id])
 
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
