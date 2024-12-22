@@ -27,4 +27,7 @@ export default () => ({
     callback: process.env.NAVER_CALLBACK_URL,
     clientSecret: process.env.NAVER_CLIENT_SECRET,
   },
+  openai: {
+    apiKey: process.env.OPENAPI_API_KEY,
+  },
 });

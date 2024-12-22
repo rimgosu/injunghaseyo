@@ -2,10 +2,14 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { JoinRole, Tag, User } from '@prisma/client';
 import { CreateGroupParams } from './dtos/create-group-params.dto';
+import { OpenaiService } from '@/openai/openai.service';
 
 @Injectable()
 export class GroupService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly openAiService: OpenaiService,
+  ) {}
 
   async createGroup(user: User, params: CreateGroupParams) {
     const { dates, price, proofMethod, tags, title, description } = params;
@@ -56,7 +60,7 @@ export class GroupService {
     const newTagNames = tags.filter((tag) => !existingNames.includes(tag));
 
     const newTags = await Promise.all(
-      newTagNames.map((name) =>
+      newTagNames.map(async (name) =>
         this.prisma.tag.create({
           data: { name },
         }),

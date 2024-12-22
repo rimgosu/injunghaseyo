@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { GroupModule } from './group/group.module';
+import { OpenaiModule } from './openai/openai.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { GroupModule } from './group/group.module';
     }),
     EmailModule,
     GroupModule,
+    OpenaiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
