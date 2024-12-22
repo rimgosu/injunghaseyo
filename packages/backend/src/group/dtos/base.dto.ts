@@ -5,6 +5,7 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Matches,
 } from 'class-validator';
@@ -73,4 +74,25 @@ export class BaseGroupDto {
   @IsString({ each: true })
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   tags: string[];
+
+  @ApiProperty({
+    description: '태그 검색',
+    type: String,
+    example: '헰',
+  })
+  @IsString()
+  @IsNotEmpty()
+  tagSearch: string;
+
+  @ApiProperty({
+    description: '태그, ?tags=헬스&tags=건강 꼴로 날짜 배열로 받음',
+    type: [String],
+    example: ['건강'],
+    required: false,
+  })
+  @IsOptional()
+  @IsArray({})
+  @IsString({ each: true })
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  selectedTags?: string[];
 }
