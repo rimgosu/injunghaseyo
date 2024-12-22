@@ -38,6 +38,8 @@ model User {
   Join         Join[]
   PhotoComment PhotoComment[]
   Payment      Payment[]
+  MyCharacter  MyCharacter?
+  Wallet       Wallet?
 }
 
 enum Provider {
@@ -57,6 +59,58 @@ enum UserStatus {
   BLOCKED
   WITHDRAWN
   OAUTH_PENDING
+}
+
+model Wallet {
+  id     Int @id @default(autoincrement())
+  money  Int @default(1000)
+  userId Int @unique
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  user    User      @relation(fields: [userId], references: [id])
+  Payment Payment[]
+}
+
+model Character {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  deletedAt     DateTime?
+  CharacterInfo CharacterInfo[]
+  MyCharacter   MyCharacter[]
+}
+
+model CharacterInfo {
+  id          Int    @id @default(autoincrement())
+  level       Int    @default(1)
+  expNeed     Int    @default(0)
+  photoUrl    String
+  characterId Int
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  character Character @relation(fields: [characterId], references: [id])
+}
+
+model MyCharacter {
+  id          Int @id @default(autoincrement())
+  characterId Int
+  userId      Int @unique
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  character Character @relation(fields: [characterId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
 }
 
 model ProfilePhoto {
@@ -201,19 +255,24 @@ model PhotoComment {
 }
 
 model Payment {
-  id           Int           @id @default(autoincrement())
-  userId       Int
-  groupId      Int
-  orderNo      String
-  method       PaymentMethod
-  status       PaymentStatus
-  amount       Int
-  refundDate   DateTime?
-  refundAmount Int?
-  receiptUrl   String
+  id              Int           @id @default(autoincrement())
+  userId          Int
+  groupId         Int
+  walletId        Int?
+  orderNo         String
+  method          PaymentMethod
+  status          PaymentStatus
+  amount          Int
+  refundDate      DateTime?
+  refundAmount    Int?
+  discountAmount  Int?
+  walletMoneyPaid Int?
+  totalPaid       Int
+  receiptUrl      String
 
-  user  User  @relation(fields: [userId], references: [id])
-  group Group @relation(fields: [groupId], references: [id])
+  user   User    @relation(fields: [userId], references: [id])
+  group  Group   @relation(fields: [groupId], references: [id])
+  wallet Wallet? @relation(fields: [walletId], references: [id])
 
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
