@@ -15,11 +15,34 @@ import {
   yelloLv3,
   yelloLv4,
   yelloLv5,
-} from './svgs/svgs';
+} from './utils/svgs';
+import { tags } from './utils/tags';
 
 const prisma = new PrismaClient();
 
 async function main() {
+  await createCharacters();
+  await createTags();
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+
+async function createTags() {
+  const createdTags = await prisma.tag.createMany({
+    data: tags.map((tag) => ({ name: tag })),
+  });
+
+  console.log(`tag generated: ${createdTags.count}`);
+}
+
+async function createCharacters() {
   const yello = await prisma.character.create({
     data: {
       name: '노랑이',
@@ -150,12 +173,3 @@ async function main() {
   console.log('Character:', yello, green, blue);
   console.log('CharacterInfo:', yelloInfo, greenInfo, blueInfo);
 }
-
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });

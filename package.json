@@ -10,7 +10,8 @@
     "dev": "concurrently \"yarn start:frontend\" \"yarn start:backend\"",
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test",
-    "db": "docker compose -f docker-compose.db.yaml up -d"
+    "db": "docker compose -f docker-compose.db.yaml up -d",
+    "prisma:setting": "yarn workspace @monorepo/backend prisma:migrate:dev && yarn workspace @monorepo/backend prisma:seed"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
