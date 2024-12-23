@@ -137,6 +137,9 @@ export class AuthService {
           },
           status: UserStatus.OAUTH_PENDING,
           provider,
+          wallet: {
+            create: true,
+          },
         },
       });
     }
