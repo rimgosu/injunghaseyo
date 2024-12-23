@@ -391,11 +391,22 @@ export class AuthService {
         salt: salt,
         status: UserStatus.CHARACTER_CHOOSE,
         profilePhoto: { create: { url: BASE_PROFILE_PHOTO_S3_URL } },
+        wallet: { create: true },
       },
       select: {
         email: true,
         eventAgree: true,
         nickname: true,
+        wallet: {
+          select: {
+            money: true,
+          },
+        },
+        profilePhoto: {
+          select: {
+            url: true,
+          },
+        },
       },
     });
   }
