@@ -23,6 +23,9 @@ import { ChgPasswordParams } from './dtos/chg-password-params.dto';
 import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
 import { ActivateOauthParams } from './dtos/activate-oauth-params.dto';
 import { ConfigService } from '@nestjs/config';
+import { VerifyNicknameParam } from './dtos/verify-nickname-params.dto';
+import { CharacterSelectParam } from './dtos/character-select-param.dto';
+import { GetCharacter } from './dtos/get-character.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,11 +37,57 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
+  async getCharacters(): Promise<GetCharacter[]> {
+    const characters = await this.prisma.character.findMany({
+      include: { characterInfo: true },
+    });
+
+    return characters.map((character) => new GetCharacter(character));
+  }
+
+  async characterSelect(user: User, param: CharacterSelectParam) {
+    const { characterId } = param;
+
+    const existingCharacter = await this.prisma.character.findUnique({
+      where: { id: characterId },
+    });
+
+    if (!existingCharacter)
+      throw new BadRequestException('존재하지 않는 캐릭터입니다.');
+
+    const selectCharacter = this.prisma.myCharacter.create({
+      data: {
+        characterId,
+        userId: user.id,
+      },
+      select: {
+        character: true,
+      },
+    });
+
+    return selectCharacter;
+  }
+
+  async verifyNickname(param: VerifyNicknameParam) {
+    const { nickname } = param;
+
+    const existingNickname = await this.prisma.user.findUnique({
+      where: { nickname },
+    });
+
+    if (existingNickname) throw new BadRequestException('닉네임 중복');
+
+    return { message: '가능한 닉네임입니다.' };
+  }
+
   async activateOauth(user: User, params: ActivateOauthParams) {
     const { eventAgree, nickname } = params;
 
-    if (user.status !== UserStatus.OAUTH_PENDING)
-      throw new BadRequestException('oauth 활성화가 필요한 유저가 아닙니다.');
+    const existingNickname = await this.prisma.user.findUnique({
+      where: { nickname },
+    });
+
+    if (existingNickname) throw new BadRequestException('닉네임 중복');
 
     return await this.prisma.user.update({
       where: {
@@ -47,7 +96,7 @@ export class AuthService {
       data: {
         nickname,
         eventAgree,
-        status: UserStatus.ACTIVE,
+        status: UserStatus.CHARACTER_CHOOSE,
       },
       select: {
         email: true,
@@ -75,7 +124,7 @@ export class AuthService {
           email,
           nickname,
           eventAgree: false,
-          ProfilePhoto: {
+          profilePhoto: {
             create: { url: profile_image ?? BASE_PROFILE_PHOTO_S3_URL },
           },
           status: UserStatus.OAUTH_PENDING,
@@ -108,7 +157,7 @@ export class AuthService {
       data: {
         deletedAt: new Date(),
         status: UserStatus.WITHDRAWN,
-        ProfilePhoto: {
+        profilePhoto: {
           updateMany: {
             data: {
               deletedAt: new Date(),
@@ -332,7 +381,8 @@ export class AuthService {
         nickname,
         password: hashedPassword,
         salt: salt,
-        ProfilePhoto: { create: { url: BASE_PROFILE_PHOTO_S3_URL } },
+        status: UserStatus.CHARACTER_CHOOSE,
+        profilePhoto: { create: { url: BASE_PROFILE_PHOTO_S3_URL } },
       },
       select: {
         email: true,

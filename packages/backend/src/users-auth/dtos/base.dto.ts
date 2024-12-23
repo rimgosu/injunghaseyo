@@ -12,6 +12,44 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+@ValidatorConstraint({ name: 'nicknameFormat', async: false })
+class NicknameFormatConstraint implements ValidatorConstraintInterface {
+  validate(nickname: string) {
+    // 닉네임 길이 체크 (2-20자)
+    if (nickname.length < 2 || nickname.length > 20) {
+      return false;
+    }
+
+    // 완성형 한글, 영문자, 숫자만 허용하는 정규식
+    const validCharacterPattern = /^[가-힣a-zA-Z0-9]+$/;
+
+    // 자음/모음만 있는 한글 체크 (ㄱㄴㄷ, ㅏㅑㅓ 등)
+    const incompleteHangulPattern = /[\u3131-\u314E\u314F-\u3163]/g;
+
+    // 연속된 특수문자 체크
+    const consecutiveSpecialCharsPattern =
+      /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]{2,}/g;
+
+    // 모든 조건 체크
+    if (!validCharacterPattern.test(nickname)) {
+      return false;
+    }
+
+    if (incompleteHangulPattern.test(nickname)) {
+      return false;
+    }
+
+    if (consecutiveSpecialCharsPattern.test(nickname)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  defaultMessage() {
+    return '닉네임은 2-20자의 완성된 한글, 영문자, 숫자만 사용할 수 있습니다.';
+  }
+}
 
 @ValidatorConstraint({ name: 'validate require agree', async: false })
 class RequireAgreeConstraint implements ValidatorConstraintInterface {
@@ -120,6 +158,7 @@ export class BaseUseraAuthDto {
   })
   @IsString()
   @IsNotEmpty()
+  @Validate(NicknameFormatConstraint)
   nickname: string;
 
   @ApiProperty({

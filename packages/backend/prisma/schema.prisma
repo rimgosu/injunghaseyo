@@ -30,16 +30,16 @@ model User {
   lastPwdChanged DateTime?
   loginFailCount Int        @default(0)
 
-  ProfilePhoto ProfilePhoto[]
+  profilePhoto ProfilePhoto[]
 
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   deletedAt    DateTime?
-  Join         Join[]
-  PhotoComment PhotoComment[]
-  Payment      Payment[]
-  MyCharacter  MyCharacter?
-  Wallet       Wallet?
+  join         Join[]
+  photoComment PhotoComment[]
+  payment      Payment[]
+  myCharacter  MyCharacter?
+  wallet       Wallet?
 }
 
 enum Provider {
@@ -59,6 +59,7 @@ enum UserStatus {
   BLOCKED
   WITHDRAWN
   OAUTH_PENDING
+  CHARACTER_CHOOSE
 }
 
 model Wallet {
@@ -71,7 +72,7 @@ model Wallet {
   deletedAt DateTime?
 
   user    User      @relation(fields: [userId], references: [id])
-  Payment Payment[]
+  payment Payment[]
 }
 
 model Character {
@@ -82,8 +83,8 @@ model Character {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   deletedAt     DateTime?
-  CharacterInfo CharacterInfo[]
-  MyCharacter   MyCharacter[]
+  characterInfo CharacterInfo[]
+  myCharacter   MyCharacter[]
 }
 
 model CharacterInfo {
@@ -136,10 +137,10 @@ model Group {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   deletedAt   DateTime?
-  GroupTagMap GroupTagMap[]
-  Join        Join[]
-  GroupDate   GroupDate[]
-  Payment     Payment[]
+  groupTagMap GroupTagMap[]
+  join        Join[]
+  groupDate   GroupDate[]
+  payment     Payment[]
 }
 
 enum GroupStatus {
@@ -155,7 +156,7 @@ model Tag {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   deletedAt   DateTime?
-  GroupTagMap GroupTagMap[]
+  groupTagMap GroupTagMap[]
 }
 
 model GroupTagMap {
@@ -205,7 +206,7 @@ model GroupDate {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   deletedAt     DateTime?
-  GroupProgress GroupProgress[]
+  groupProgress GroupProgress[]
 }
 
 model GroupProgress {
@@ -217,7 +218,7 @@ model GroupProgress {
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   deletedAt  DateTime?
-  GroupPhoto GroupPhoto[]
+  groupPhoto GroupPhoto[]
 }
 
 enum GroupProgressStatus {
@@ -236,7 +237,7 @@ model GroupPhoto {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   deletedAt    DateTime?
-  PhotoComment PhotoComment[]
+  photoComment PhotoComment[]
 }
 
 model PhotoComment {
@@ -278,7 +279,7 @@ model Payment {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   deletedAt      DateTime?
-  PaymentHistory PaymentHistory[]
+  paymentHistory PaymentHistory[]
 }
 
 enum PaymentMethod {

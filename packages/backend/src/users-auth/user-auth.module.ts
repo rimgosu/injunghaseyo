@@ -10,6 +10,8 @@ import { RefreshTokenStrategy } from './guards/rtk.strategy';
 import { GoogleStrategy } from './guards/google.strategy';
 import { KakaoStrategy } from './guards/kakao.strategy';
 import { NaverStrategy } from './guards/naver.strategy';
+import { OauthPendingStrategy } from './guards/oauth-pending.strategy';
+import { CharacterSelectStrategy } from './guards/character-choose.strategy';
 
 @Module({
   controllers: [UsersController, AuthController],
@@ -23,6 +25,8 @@ import { NaverStrategy } from './guards/naver.strategy';
     GoogleStrategy,
     KakaoStrategy,
     NaverStrategy,
+    OauthPendingStrategy,
+    CharacterSelectStrategy,
   ],
 })
 export class UsersAuthModule {}

@@ -34,20 +34,20 @@ export class GroupService {
         price,
         description,
         proofMethod,
-        Join: {
+        join: {
           create: {
             userId: user.id,
             joinRole: JoinRole.HOST,
           },
         },
-        GroupTagMap: {
+        groupTagMap: {
           createMany: {
             data: allTags.map((tag) => {
               return { tagId: tag.id };
             }),
           },
         },
-        GroupDate: {
+        groupDate: {
           createMany: {
             data: dates.map((date) => {
               return { date };

@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 
 export interface JwtPaylaod {
   uuid: string;
@@ -27,3 +27,7 @@ export interface OauthUser {
   nickname: string;
   profile_image?: string;
 }
+
+export type CharacterWithInfo = Prisma.CharacterGetPayload<{
+  include: { characterInfo: true };
+}>;

@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { EmailService } from '@/email/email.service';
 import { JwtService } from '@nestjs/jwt';
 import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
-import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -95,7 +95,7 @@ describe('AuthService', () => {
         nickname: activateOauthParams.nickname,
         eventAgree: activateOauthParams.eventAgree,
         provider: Provider.GOOGLE,
-        status: UserStatus.ACTIVE,
+        status: UserStatus.CHARACTER_CHOOSE,
       } as User;
 
       jest
@@ -116,7 +116,7 @@ describe('AuthService', () => {
         data: {
           nickname: activateOauthParams.nickname,
           eventAgree: activateOauthParams.eventAgree,
-          status: UserStatus.ACTIVE,
+          status: UserStatus.CHARACTER_CHOOSE,
         },
         select: {
           email: true,
@@ -128,42 +128,6 @@ describe('AuthService', () => {
       });
 
       expect(result).toEqual(expectedActivatedUser);
-    });
-
-    it('이미 활성화된 유저의 경우 BadRequestException 발생', async () => {
-      // Given
-      const activeUser = {
-        ...mockUser,
-        status: UserStatus.ACTIVE,
-        provider: Provider.GOOGLE,
-      };
-
-      // When & Then
-      await expect(
-        service.activateOauth(activeUser, activateOauthParams),
-      ).rejects.toThrow(
-        new BadRequestException('oauth 활성화가 필요한 유저가 아닙니다.'),
-      );
-
-      expect(prismaService.user.update).not.toHaveBeenCalled();
-    });
-
-    it('일반 유저의 경우 BadRequestException 발생', async () => {
-      // Given
-      const normalUser = {
-        ...mockUser,
-        status: UserStatus.ACTIVE,
-        provider: null,
-      };
-
-      // When & Then
-      await expect(
-        service.activateOauth(normalUser, activateOauthParams),
-      ).rejects.toThrow(
-        new BadRequestException('oauth 활성화가 필요한 유저가 아닙니다.'),
-      );
-
-      expect(prismaService.user.update).not.toHaveBeenCalled();
     });
   });
 
@@ -247,7 +211,7 @@ describe('AuthService', () => {
           nickname: mockOauthUser.nickname,
           status: UserStatus.OAUTH_PENDING,
           provider: Provider.GOOGLE,
-          ProfilePhoto: {
+          profilePhoto: {
             create: { url: mockOauthUser.profile_image },
           },
         }),
@@ -315,7 +279,7 @@ describe('AuthService', () => {
           eventAgree: false,
           status: UserStatus.OAUTH_PENDING,
           provider: Provider.GOOGLE,
-          ProfilePhoto: {
+          profilePhoto: {
             create: { url: mockOauthUser.profile_image },
           },
         }),
@@ -363,7 +327,7 @@ describe('AuthService', () => {
       // Then
       expect(prismaService.user.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
-          ProfilePhoto: {
+          profilePhoto: {
             create: { url: BASE_PROFILE_PHOTO_S3_URL },
           },
         }),

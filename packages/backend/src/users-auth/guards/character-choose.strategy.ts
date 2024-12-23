@@ -7,7 +7,10 @@ import { User, UserStatus } from '@prisma/client';
 import { JwtPaylaod } from '../utils/types';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class CharacterSelectStrategy extends PassportStrategy(
+  Strategy,
+  'character-select',
+) {
   constructor(
     private readonly configService: ConfigService,
     private readonly prisma: PrismaService,
@@ -27,16 +30,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       },
     });
 
-    if (!user) throw new UnauthorizedException('해당 유저가 없습니다.');
-
-    if (user.status === UserStatus.CHARACTER_CHOOSE)
-      throw new UnauthorizedException('캐릭터를 선택해야 합니다.');
-
-    if (user.status === UserStatus.OAUTH_PENDING)
-      throw new UnauthorizedException('회원 정보를 입력해야 합니다.');
-
-    if (user.status !== UserStatus.ACTIVE)
-      throw new UnauthorizedException('활동 가능한 유저가 아닙니다.');
+    if (user?.status !== UserStatus.CHARACTER_CHOOSE)
+      throw new UnauthorizedException('캐릭터를 선택할 단계가 아닙니다.');
 
     return user;
   }

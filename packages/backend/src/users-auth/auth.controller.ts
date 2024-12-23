@@ -28,6 +28,9 @@ import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { OauthUser } from './utils/types';
 import { ActivateOauthParams } from './dtos/activate-oauth-params.dto';
+import { VerifyNicknameParam } from './dtos/verify-nickname-params.dto';
+import { CharacterSelectParam } from './dtos/character-select-param.dto';
+import { GetCharacter } from './dtos/get-character.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -185,15 +188,49 @@ export class AuthController {
   }
 
   /**
+   * @description nickname 중복 확인
+   */
+  @Get('verify-nickname')
+  async verifyNickname(@Query() param: VerifyNicknameParam) {
+    return await this.authService.verifyNickname(param);
+  }
+
+  /**
    * @description oauth 대기 상태를 해제한다.
    */
   @Post('activate-oauth')
-  @UseGuards(AtkGuard)
+  @UseGuards(AuthGuard('oauth-pending'))
   @ApiBearerAuth('jwt')
   async activateOauth(
     @GetUser() user: User,
     @Query() params: ActivateOauthParams,
   ) {
     return await this.authService.activateOauth(user, params);
+  }
+
+  /**
+   * @description 전체 character를 조회한다.
+   */
+  @Get('characters')
+  @UseGuards(AuthGuard('character-select'))
+  @ApiBearerAuth('jwt')
+  async getCharacters(): Promise<GetCharacter[]> {
+    return await this.authService.getCharacters();
+  }
+
+  /**
+   * @description character를 선택한다.
+   *
+   * - 유저는 캐릭터를 선택한다.
+   * - 유저 status를 ACTIVE로 변경한다.
+   */
+  @Post('character-select')
+  @UseGuards(AuthGuard('character-select'))
+  @ApiBearerAuth('jwt')
+  async characterSelect(
+    @GetUser() user: User,
+    @Query() param: CharacterSelectParam,
+  ) {
+    return await this.authService.characterSelect(user, param);
   }
 }

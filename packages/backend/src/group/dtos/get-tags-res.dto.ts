@@ -17,7 +17,7 @@ export class GetTagsRes extends PickType(BaseGroupDto, ['tags']) {
           searchCharArray,
         ),
       }))
-      .filter((tag) => tag.similarity > 0.2) // 유사도 50% 이상만
+      .filter((tag) => tag.similarity > 0.2) // 유사도 20% 이상만
       .sort((a, b) => b.similarity - a.similarity)
       .map((tag) => tag.name)
       .slice(0, 5);

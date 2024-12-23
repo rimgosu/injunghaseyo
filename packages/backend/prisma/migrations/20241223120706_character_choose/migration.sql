@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "UserStatus" ADD VALUE 'CHARACTER_CHOOSE';
