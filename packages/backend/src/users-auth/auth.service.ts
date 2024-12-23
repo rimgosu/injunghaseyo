@@ -55,17 +55,25 @@ export class AuthService {
     if (!existingCharacter)
       throw new BadRequestException('존재하지 않는 캐릭터입니다.');
 
-    const selectCharacter = this.prisma.myCharacter.create({
-      data: {
-        characterId,
-        userId: user.id,
-      },
-      select: {
-        character: true,
-      },
-    });
-
-    return selectCharacter;
+    return await Promise.all([
+      this.prisma.myCharacter.create({
+        data: {
+          characterId,
+          userId: user.id,
+        },
+        select: {
+          character: true,
+        },
+      }),
+      this.prisma.user.update({
+        where: { id: user.id },
+        data: { status: UserStatus.ACTIVE },
+        select: {
+          email: true,
+          status: true,
+        },
+      }),
+    ]);
   }
 
   async verifyNickname(param: VerifyNicknameParam) {
