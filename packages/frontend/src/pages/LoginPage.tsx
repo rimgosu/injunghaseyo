@@ -1,69 +1,40 @@
 import { Component } from "react";
-import { SocialLogin } from "../components/login/SocialLogin";
-import { SignupForm } from "../components/login/SignUpForm";
-import { LoginForm } from "../components/login/LoginForm";
-import { CharacterSelect } from "../components/login/CharacterSelect";
+import { connect } from "react-redux";
+import { RootState } from "../store";
 import { InitInjung } from "../components/login/InitInjung";
+import { LoginForm } from "../components/login/LoginForm";
+import { SocialLogin } from "../components/login/SocialLogin";
+import { AuthView } from "../store/auth/types";
+import { SignupForm } from "../components/login/SignUpForm";
 
-interface LoginPageState {
-  currentView:
-    | "init"
-    | "login"
-    | "signup"
-    | "search-password"
-    | "oauth-pending"
-    | "select-character";
+interface LoginPageProps {
+  currentView: AuthView;
 }
 
-export class LoginPage extends Component<{}, LoginPageState> {
-  state: LoginPageState = {
-    currentView: "init",
-  };
-
-  setCurrentView = (view: LoginPageState["currentView"]) => {
-    this.setState({ currentView: view });
-  };
-
+class LoginPageComponent extends Component<LoginPageProps> {
   render() {
-    const { currentView } = this.state;
+    const { currentView } = this.props;
 
     return (
-      <div className="min-h-screen bg-gray-100 px-4 flex flex-col">
-        <div className="flex-1 max-w-md w-full mx-auto bg-white p-6">
-          {currentView === "init" && (
-            <>
-              <InitInjung />
-            </>
-          )}
-
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+        <div className="min-h-screen w-full max-w-md bg-white flex">
+          {currentView === "init" && <InitInjung />}
           {currentView === "login" && (
-            <>
+            <div className="space-y-6">
               <LoginForm />
-              <button
-                onClick={() => this.setCurrentView("signup")}
-                className="mt-4 text-blue-500 hover:underline"
-              >
-                회원가입하기
-              </button>
               <SocialLogin />
-            </>
+            </div>
           )}
-
-          {currentView === "signup" && (
-            <>
-              <SignupForm />
-              <button
-                onClick={() => this.setCurrentView("login")}
-                className="mt-4 text-blue-500 hover:underline"
-              >
-                이미 계정이 있으신가요? 로그인하기
-              </button>
-            </>
-          )}
-
-          {currentView === "select-character" && <CharacterSelect />}
+          {currentView === "signup" && <SignupForm />}
+          {/* ... 나머지 뷰들 ... */}
         </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = (state: RootState) => ({
+  currentView: state.auth.currentView,
+});
+
+export const LoginPage = connect(mapStateToProps)(LoginPageComponent);

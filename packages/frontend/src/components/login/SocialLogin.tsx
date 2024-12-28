@@ -14,21 +14,21 @@ export class SocialLogin extends Component {
         <div className="flex gap-2">
           <button
             onClick={() => this.handleSocialLogin("google")}
-            className="flex items-center justify-center p-2 border rounded-lg w-12 h-12"
+            className="flex items-center justify-center p-2 border border-gray-500 rounded-lg w-12 h-12"
           >
-            <img src={googleIcon} alt="Google" className="w-9 h-9 p-1" />
+            <img src={googleIcon} alt="Google" className="w-10 h-10 p-1" />
           </button>
           <button
             onClick={() => this.handleSocialLogin("kakao")}
-            className="flex items-center justify-center p-2 border rounded-lg w-12 h-12"
+            className="flex items-center justify-center p-2 border border-gray-500 rounded-lg w-12 h-12"
           >
-            <img src={kakaoIcon} alt="Kakao" className="w-9 h-9 p-1" />
+            <img src={kakaoIcon} alt="Kakao" className="w-10 h-10 p-1" />
           </button>
           <button
             onClick={() => this.handleSocialLogin("naver")}
-            className="flex items-center justify-center p-2 border rounded-lg w-12 h-12"
+            className="flex items-center justify-center p-2 border border-gray-500 rounded-lg w-12 h-12"
           >
-            <img src={naverIcon} alt="Naver" className="w-9 h-9 p-1" />
+            <img src={naverIcon} alt="Naver" className="w-10 h-10 p-1" />
           </button>
         </div>
       </div>
