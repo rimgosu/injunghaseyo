@@ -1,5 +1,5 @@
 import React, { Component, FormEvent } from "react";
-import { UserInfo } from "../types";
+import { UserInfo } from "../../types";
 
 interface SignupState {
   formData: UserInfo;

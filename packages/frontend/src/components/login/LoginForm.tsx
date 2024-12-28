@@ -1,5 +1,5 @@
 import React, { Component, FormEvent } from "react";
-import { UserInfo } from "../types";
+import { UserInfo } from "../../types";
 
 interface LoginState {
   loginData: Pick<UserInfo, "email" | "password">;

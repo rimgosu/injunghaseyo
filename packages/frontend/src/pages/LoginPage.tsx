@@ -1,16 +1,23 @@
-import React, { Component } from "react";
-import { SocialLogin } from "../components/SocialLogin";
-import { SignupForm } from "../components/SignUpForm";
-import { LoginForm } from "../components/LoginForm";
-import { CharacterSelect } from "../components/CharacterSelect";
+import { Component } from "react";
+import { SocialLogin } from "../components/login/SocialLogin";
+import { SignupForm } from "../components/login/SignUpForm";
+import { LoginForm } from "../components/login/LoginForm";
+import { CharacterSelect } from "../components/login/CharacterSelect";
+import { InitInjung } from "../components/login/InitInjung";
 
 interface LoginPageState {
-  currentView: "login" | "signup" | "character";
+  currentView:
+    | "init"
+    | "login"
+    | "signup"
+    | "search-password"
+    | "oauth-pending"
+    | "select-character";
 }
 
 export class LoginPage extends Component<{}, LoginPageState> {
   state: LoginPageState = {
-    currentView: "login",
+    currentView: "init",
   };
 
   setCurrentView = (view: LoginPageState["currentView"]) => {
@@ -21,9 +28,13 @@ export class LoginPage extends Component<{}, LoginPageState> {
     const { currentView } = this.state;
 
     return (
-      <div className="min-h-screen bg-gray-100 py-12 px-4">
-        <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
-          <SocialLogin />
+      <div className="min-h-screen bg-gray-100 px-4 flex flex-col">
+        <div className="flex-1 max-w-md w-full mx-auto bg-white p-6">
+          {currentView === "init" && (
+            <>
+              <InitInjung />
+            </>
+          )}
 
           {currentView === "login" && (
             <>
@@ -34,6 +45,7 @@ export class LoginPage extends Component<{}, LoginPageState> {
               >
                 회원가입하기
               </button>
+              <SocialLogin />
             </>
           )}
 
@@ -49,7 +61,7 @@ export class LoginPage extends Component<{}, LoginPageState> {
             </>
           )}
 
-          {currentView === "character" && <CharacterSelect />}
+          {currentView === "select-character" && <CharacterSelect />}
         </div>
       </div>
     );

@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import kakaoIcon from "./svgs/btn_kakao.svg";
+import googleIcon from "./svgs/btn_google.svg";
+import naverIcon from "./svgs/btn_naver.svg";
 
 export class SocialLogin extends Component {
   handleSocialLogin = (provider: "google" | "kakao" | "naver") => {
@@ -8,25 +11,24 @@ export class SocialLogin extends Component {
   render() {
     return (
       <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-bold">이메일로 로그인</h2>
         <div className="flex gap-2">
           <button
             onClick={() => this.handleSocialLogin("google")}
             className="flex items-center justify-center p-2 border rounded-lg w-12 h-12"
           >
-            <img src="/google-icon.png" alt="Google" className="w-6 h-6" />
+            <img src={googleIcon} alt="Google" className="w-9 h-9 p-1" />
           </button>
           <button
             onClick={() => this.handleSocialLogin("kakao")}
             className="flex items-center justify-center p-2 border rounded-lg w-12 h-12"
           >
-            <img src="/kakao-icon.png" alt="Kakao" className="w-6 h-6" />
+            <img src={kakaoIcon} alt="Kakao" className="w-9 h-9 p-1" />
           </button>
           <button
             onClick={() => this.handleSocialLogin("naver")}
             className="flex items-center justify-center p-2 border rounded-lg w-12 h-12"
           >
-            <img src="/naver-icon.png" alt="Naver" className="w-6 h-6" />
+            <img src={naverIcon} alt="Naver" className="w-9 h-9 p-1" />
           </button>
         </div>
       </div>
