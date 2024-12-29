@@ -1,33 +1,28 @@
 import { Route, Routes, Navigate } from "react-router-dom";
-import { LoginLayout } from "../layouts/LoginLayout";
-import { InitInjung } from "../components/login/InitInjung";
-import { LoginPage } from "../pages/auth/LoginPage";
+import { AuthLayout } from "../layouts/AuthLayout";
+import { InitPage } from "../pages/auth/InitPage";
 
 export const AuthRoutes = () => (
   <Routes>
     <Route path="/" element={<Navigate to="/auth/init" replace />} />
     <Route path="/auth">
+      <Route path="init" element={<InitPage />} />
+      <Route path="login" element={<InitPage />} />
       <Route
-        path="init"
-        element={
-          <LoginLayout>
-            <InitInjung />
-          </LoginLayout>
-        }
+        path="signup"
+        element={<AuthLayout>회원 가입 컴포넌트</AuthLayout>}
       />
-      <Route path="login" element={<LoginPage />} />
-      {/* <Route path="signup" element={<SignupPage />} /> */}
       <Route
         path="search-password"
-        element={<LoginLayout>비밀번호 찾기 컴포넌트</LoginLayout>}
+        element={<AuthLayout>비밀번호 찾기 컴포넌트</AuthLayout>}
       />
       <Route
         path="oauth-pending"
-        element={<LoginLayout>OAuth 처리중 컴포넌트</LoginLayout>}
+        element={<AuthLayout>OAuth 처리중 컴포넌트</AuthLayout>}
       />
       <Route
         path="select-character"
-        element={<LoginLayout>캐릭터 선택 컴포넌트</LoginLayout>}
+        element={<AuthLayout>캐릭터 선택 컴포넌트</AuthLayout>}
       />
     </Route>
   </Routes>
