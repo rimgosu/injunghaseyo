@@ -17,7 +17,7 @@ class LoginPageComponent extends Component<LoginPageProps> {
 
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-        <div className="min-h-screen w-full max-w-md bg-white flex">
+        <div className="min-h-screen w-full max-w-xl bg-white flex">
           {currentView === "init" && <InitInjung />}
           {currentView === "login" && (
             <div className="space-y-6">
@@ -26,7 +26,6 @@ class LoginPageComponent extends Component<LoginPageProps> {
             </div>
           )}
           {currentView === "signup" && <SignupForm />}
-          {/* ... 나머지 뷰들 ... */}
         </div>
       </div>
     );
