@@ -1,8 +1,8 @@
 {
   "name": "@rimgosu/libs",
-  "version": "0.1.4",
-  "main": "dist/injunghaseyo.js",
-  "types": "dist/injunghaseyo.d.ts",
+  "version": "0.1.5",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
