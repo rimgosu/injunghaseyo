@@ -4,6 +4,8 @@ import {
   DocumentBuilder,
   SwaggerCustomOptions,
 } from '@nestjs/swagger';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const swaggerCustomOptions: SwaggerCustomOptions = {
   swaggerOptions: {
@@ -31,5 +33,14 @@ const swaggerConfig = new DocumentBuilder()
 
 export const setupSwagger = (app: INestApplication): void => {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
+
+  if (process.env.NODE_ENV === 'sdk') {
+    const outputPath = path.join(process.cwd(), './sdk/swagger.json');
+    fs.writeFileSync(outputPath, JSON.stringify(document, null, 2), 'utf8');
+    console.log('Swagger JSON generated at:', outputPath);
+    app.close();
+    process.exit(0);
+  }
+
   SwaggerModule.setup('docs', app, document, swaggerCustomOptions);
 };
