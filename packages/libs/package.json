@@ -1,6 +1,6 @@
 {
   "name": "@rimgosu/libs",
-  "version": "0.1.5",
+  "version": "0.1.25",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -12,5 +12,8 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "repository": "git://github.com/rimgosu/injunghaseyo.git"
+  "repository": "git://github.com/rimgosu/injunghaseyo.git",
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
 }
