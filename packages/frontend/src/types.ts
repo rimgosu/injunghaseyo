@@ -1,6 +1,9 @@
-export interface UserInfo {
-  email: string;
-  password: string;
-  nickname?: string;
-  agreeToTerms?: boolean[];
+import { AuthControllerSignUpParams } from "@rimgosu/libs";
+
+export interface SignUpFormData extends AuthControllerSignUpParams {
+  ageAgree: boolean;
+  termsAgree: boolean;
+  privacyAgree: boolean;
+  marketingAgree: boolean;
+  smsAgree: boolean;
 }

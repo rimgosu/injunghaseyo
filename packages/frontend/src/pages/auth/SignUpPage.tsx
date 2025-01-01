@@ -1,20 +1,31 @@
 import { Input } from "../../components/common/Input";
 import { AuthLayout } from "../../layouts/AuthLayout";
 import React, { useState } from "react";
+import { AgreementSection } from "../../components/auth/Agreement";
+import { SignUpFormData } from "../../types";
 
 export const SignUpPage = () => {
-  const [formData, setFormData] = useState({
+  const authState: SignUpFormData = {
     email: "",
     nickname: "",
+    confirmPassword: "",
     password: "",
-    passwordConfirm: "",
-  });
+    eventAgree: false,
+    requireAgree: false,
+    ageAgree: false,
+    termsAgree: false,
+    privacyAgree: false,
+    marketingAgree: false,
+    smsAgree: false,
+  };
+
+  const [formData, setFormData] = useState(authState);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -54,12 +65,14 @@ export const SignUpPage = () => {
         <Input
           label="비밀번호 확인"
           type="password"
-          value={formData.password}
+          value={formData.confirmPassword}
           onChange={handleChange}
-          name="password"
+          name="confirmPassword"
           placeholder="패스워드 입력"
           required
         />
+
+        <AgreementSection formData={formData} onChange={handleChange} />
       </div>
     </AuthLayout>
   );
