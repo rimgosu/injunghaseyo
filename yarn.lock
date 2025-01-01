@@ -2064,11 +2064,6 @@
     redux-thunk "^3.1.0"
     reselect "^5.1.0"
 
-"@rimgosu/libs@^0.1.25":
-  version "0.1.25"
-  resolved "https://npm.pkg.github.com/download/@rimgosu/libs/0.1.25/3afba578af75f22bdb2faf5f1c75f762dbdb00cd#3afba578af75f22bdb2faf5f1c75f762dbdb00cd"
-  integrity sha512-GR8j07oJWhwBzKJorHEnG3uz93O3NLEiDj6+GHrIXKOPNykccUeVXrtxnJAk8CvmVuy9HVzpiT3mHkFx6yLL+g==
-
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-babel/-/plugin-babel-5.3.1.tgz#04bc0608f4aa4b2e4b1aebf284344d0f68fda283"
@@ -11690,7 +11685,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typescript@5.7.2, typescript@^5.1.3:
+typescript@5.7.2, typescript@^5.1.3, typescript@^5.7.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.7.2.tgz#3169cf8c4c8a828cde53ba9ecb3d2b1d5dd67be6"
   integrity sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==
