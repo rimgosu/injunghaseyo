@@ -42,6 +42,10 @@ export const SignUpPage = () => {
           required
         />
 
+        <div className="border border-green-300 p-4 rounded">
+          <button className="text-green-500">이메일 인증하기</button>
+        </div>
+
         <Input
           label="닉네임"
           type="text"
