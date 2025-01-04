@@ -25,7 +25,7 @@ export class Input extends Component<InputProps> {
           name={name}
           placeholder={placeholder}
           required={required}
-          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
         />
       </div>
     );
