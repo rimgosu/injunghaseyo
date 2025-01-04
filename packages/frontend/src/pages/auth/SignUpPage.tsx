@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { AgreementSection } from "../../components/auth/Agreement";
 import { SignUpFormData } from "../../types";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const SignUpPage = () => {
   const authState: SignUpFormData = {
@@ -23,7 +24,9 @@ export const SignUpPage = () => {
   const [formData, setFormData] = useState(authState);
   const [showVerification, setShowVerification] = useState(false);
   const [timer, setTimer] = useState(180); // 3분 = 180초
-  const [isEmailSent, setIsEmailSent] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
+  const navigate = useNavigate();
 
   // 타이머 로직
   useEffect(() => {
@@ -64,13 +67,77 @@ export const SignUpPage = () => {
         }
       );
 
-      setIsEmailSent(true);
       setShowVerification(true);
 
       alert("인증 메일이 발송되었습니다. 이메일을 확인해주세요.");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         alert(error.response?.data?.message || "이메일 발송에 실패했습니다.");
+      }
+    }
+  };
+
+  const handleVerificationCodeChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setVerificationCode(e.target.value);
+  };
+
+  const handleVerifyCode = async () => {
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/verify-code`,
+        null,
+        {
+          params: {
+            email: formData.email,
+            code: verificationCode,
+          },
+        }
+      );
+
+      setIsVerified(true);
+      alert("이메일 인증이 완료되었습니다.");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.message || "인증번호 확인에 실패했습니다.");
+      }
+    }
+  };
+
+  const handleSignUp = async () => {
+    if (!isVerified) {
+      alert("이메일 인증이 필요합니다.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    if (!formData.requireAgree) {
+      alert("필수 약관에 동의해주세요.");
+      return;
+    }
+
+    try {
+      await axios.post(`${process.env.REACT_APP_API_URL}/auth/sign-up`, null, {
+        params: {
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          nickname: formData.nickname,
+          requireAgree: formData.requireAgree,
+          eventAgree: formData.eventAgree,
+        },
+      });
+
+      alert("회원가입이 완료되었습니다.");
+      navigate("/auth/login");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.message || "회원가입에 실패했습니다.");
       }
     }
   };
@@ -104,9 +171,22 @@ export const SignUpPage = () => {
                 type="text"
                 className="p-2 flex-1 outline-none"
                 placeholder="인증번호확인"
+                value={verificationCode}
+                onChange={handleVerificationCodeChange}
+                disabled={isVerified}
               />
               <span className="text-red-500">{formatTime(timer)}</span>
-              <button className="text-gray-500 px-4 py-2 rounded">확인</button>
+              <button
+                className={`px-4 py-2 rounded ${
+                  isVerified
+                    ? "bg-gray-200 text-gray-400"
+                    : "bg-green-500 text-white hover:bg-green-600"
+                }`}
+                onClick={handleVerifyCode}
+                disabled={isVerified || !verificationCode}
+              >
+                {isVerified ? "인증완료" : "확인"}
+              </button>
             </div>
           </div>
         )}
@@ -142,6 +222,20 @@ export const SignUpPage = () => {
         />
 
         <AgreementSection formData={formData} onChange={handleChange} />
+
+        <div className="border border-green-300 p-4 rounded">
+          <button
+            className={`w-full text-center py-2 rounded ${
+              isVerified
+                ? "bg-green-500 text-white hover:bg-green-600"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+            onClick={handleSignUp}
+            disabled={!isVerified}
+          >
+            회원가입
+          </button>
+        </div>
       </div>
     </AuthLayout>
   );

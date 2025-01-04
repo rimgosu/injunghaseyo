@@ -394,7 +394,7 @@ export class AuthService {
         salt: salt,
         status: UserStatus.CHARACTER_CHOOSE,
         profilePhoto: { create: { url: BASE_PROFILE_PHOTO_S3_URL } },
-        wallet: { create: true },
+        wallet: { create: {} },
       },
       select: {
         email: true,
@@ -440,11 +440,8 @@ export class AuthService {
 
     await this.cacheManager.set(`code:${email}`, authCode);
 
-    await this.emailService.sendVerificationEmail(
-      email,
-      authCode,
-      'email-verify',
-      3,
-    );
+    this.emailService.sendVerificationEmail(email, authCode, 'email-verify', 3);
+
+    return { message: '인증 코드가 발송되었습니다.' };
   }
 }
