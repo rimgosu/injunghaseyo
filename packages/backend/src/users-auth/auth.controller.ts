@@ -33,10 +33,14 @@ import { CharacterSelectParam } from './dtos/character-select-param.dto';
 import { GetCharacter } from './dtos/get-character.dto';
 import { VerifyPasswordParams } from './dtos/verify-password.dto';
 import { GetCheckSignIn } from './dtos/get-check-sign-in.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   /**
    * @description 이메일 중복 확인 -> 인증 코드 생성 후 redis 저장 -> 인증 코드 이메일 송신
@@ -190,8 +194,15 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   @ApiOperation({ deprecated: true })
-  async googleAuthRedirect(@GetUser() user: OauthUser) {
-    return await this.authService.oauthLogin(user, Provider.GOOGLE);
+  async googleAuthRedirect(@GetUser() user: OauthUser, @Res() res: Response) {
+    const result = await this.authService.oauthLogin(user, Provider.GOOGLE);
+    res.cookie('_SESSION', result.generatedJwt.refreshToken, {
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30일
+    });
+    res.redirect(
+      `${this.configService.get('callbackUrl')}?accessToken=${result.generatedJwt.accessToken}`,
+    );
   }
 
   /**
@@ -208,8 +219,15 @@ export class AuthController {
   @Get('kakao/callback')
   @UseGuards(AuthGuard('kakao'))
   @ApiOperation({ deprecated: true })
-  async kakaoCallback(@GetUser() user: OauthUser) {
-    return await this.authService.oauthLogin(user, Provider.KAKAO);
+  async kakaoCallback(@GetUser() user: OauthUser, @Res() res: Response) {
+    const result = await this.authService.oauthLogin(user, Provider.KAKAO);
+    res.cookie('_SESSION', result.generatedJwt.refreshToken, {
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30일
+    });
+    res.redirect(
+      `${this.configService.get('callbackUrl')}?accessToken=${result.generatedJwt.accessToken}`,
+    );
   }
 
   /**
@@ -226,8 +244,15 @@ export class AuthController {
   @Get('naver/callback')
   @UseGuards(AuthGuard('naver'))
   @ApiOperation({ deprecated: true })
-  async naverCallback(@GetUser() user: OauthUser) {
-    return await this.authService.oauthLogin(user, Provider.NAVER);
+  async naverCallback(@GetUser() user: OauthUser, @Res() res: Response) {
+    const result = await this.authService.oauthLogin(user, Provider.NAVER);
+    res.cookie('_SESSION', result.generatedJwt.refreshToken, {
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30일
+    });
+    res.redirect(
+      `${this.configService.get('callbackUrl')}?accessToken=${result.generatedJwt.accessToken}`,
+    );
   }
 
   /**

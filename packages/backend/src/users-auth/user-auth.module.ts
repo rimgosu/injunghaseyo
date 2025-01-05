@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { AuthHelper } from './auth.helper';
+import { AuthHelper } from './utils/auth.helper';
 import { JwtService } from '@nestjs/jwt';
 import { JwtStrategy } from './guards/atk.strategy';
 import { RefreshTokenStrategy } from './guards/rtk.strategy';

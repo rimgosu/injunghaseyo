@@ -14,7 +14,7 @@ import { EmailService } from '@/email/email.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { SignUpParam } from './dtos/sign-up-params.dto';
 import { SignInParams } from './dtos/sign-in-params.dto';
-import { AuthHelper } from './auth.helper';
+import { AuthHelper } from './utils/auth.helper';
 import { GeneratedJwt, OauthUser, TokenWithUser } from './utils/types';
 import { ReissueAtkRes } from './dtos/reissue-atk-res.dto';
 import { Provider, User, UserStatus } from '@prisma/client';
@@ -158,7 +158,7 @@ export class AuthService {
           status: UserStatus.OAUTH_PENDING,
           provider,
           wallet: {
-            create: true,
+            create: {},
           },
         },
       });

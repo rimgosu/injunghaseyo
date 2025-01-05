@@ -1,4 +1,10 @@
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { AuthLayout } from "./AuthLayout";
 import { InitPage } from "./pages/InitPage";
 import { SignUpPage } from "./pages/SignUpPage";
@@ -6,12 +12,23 @@ import { LoginPage } from "./pages/LoginPage";
 import { useAuth } from "./hooks/useAuth";
 import { useEffect } from "react";
 import { GetCheckSignInUserStatusEnum } from "@rimgosu/libs";
-import { CharacterSelectPage } from "./pages/CharacterSelect";
+import { CharacterSelectPage } from "./pages/CharacterSelectPage";
+import { OauthPendingPage } from "./pages/OauthPendingPage";
 
 export const AuthRoutes = () => {
   const { checkSignIn } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const accessToken = searchParams.get("accessToken");
+
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken);
+      navigate(location.pathname, { replace: true });
+    }
+
     const checkAuthStatus = async () => {
       const res = await checkSignIn();
 
@@ -32,11 +49,12 @@ export const AuthRoutes = () => {
     };
 
     checkAuthStatus();
-  }, [navigate, checkSignIn]);
+  }, [navigate, checkSignIn, location]);
 
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/auth/init" replace />} />
+      <Route path="/auth" element={<Navigate to="/auth/init" replace />} />
       <Route path="/auth">
         <Route path="init" element={<InitPage />} />
         <Route path="login" element={<LoginPage />} />
@@ -45,10 +63,7 @@ export const AuthRoutes = () => {
           path="search-password"
           element={<AuthLayout>비밀번호 찾기</AuthLayout>}
         />
-        <Route
-          path="oauth-pending"
-          element={<AuthLayout>OAuth 처리중 컴포넌트</AuthLayout>}
-        />
+        <Route path="oauth-pending" element={<OauthPendingPage />} />
         <Route path="select-character" element={<CharacterSelectPage />} />
       </Route>
     </Routes>

@@ -30,4 +30,5 @@ export default () => ({
   openai: {
     apiKey: process.env.OPENAPI_API_KEY,
   },
+  callbackUrl: process.env.CALLBACK_URL,
 });

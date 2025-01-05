@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { AuthService } from './auth.service';
-import { AuthHelper } from './auth.helper';
+import { AuthHelper } from './utils/auth.helper';
 import { Provider, Role, User, UserStatus } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';

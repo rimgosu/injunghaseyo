@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as crypto from 'crypto';
-import { ExtractedJwt, GeneratedJwt, JwtPaylaod } from './utils/types';
+import { ExtractedJwt, GeneratedJwt, JwtPaylaod } from './types';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 

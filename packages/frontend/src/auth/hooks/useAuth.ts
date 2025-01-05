@@ -1,6 +1,7 @@
 import axios from "axios";
 import { LocalStorageKeys, LoginFormData, SignUpFormData } from "../types";
 import {
+  AuthControllerActivateOauthParams,
   AuthControllerVerifyCodeParams,
   AuthControllerVerifyEmailParams,
   AuthControllerVerifyNicknameParams,
@@ -144,6 +145,37 @@ export const useAuth = () => {
     } catch (error) {}
   }, []);
 
+  const activateOauth = useCallback(
+    async (params: AuthControllerActivateOauthParams) => {
+      try {
+        const token = localStorage.getItem(accessToken);
+        if (!token) {
+          throw new Error("로그인이 필요합니다.");
+        }
+
+        await axios.post(
+          `${process.env.REACT_APP_API_URL}/auth/activate-oauth`,
+          null,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params,
+          }
+        );
+
+        return { success: true, message: "회원가입이 완료되었습니다." };
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          throw new Error(
+            error.response?.data?.message || "회원가입에 실패했습니다."
+          );
+        }
+      }
+    },
+    []
+  );
+
   return {
     sendVerificationEmail,
     verifyEmailCode,
@@ -152,5 +184,6 @@ export const useAuth = () => {
     verifyNickname,
     login,
     checkSignIn,
+    activateOauth,
   };
 };
