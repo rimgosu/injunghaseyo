@@ -29,7 +29,33 @@ export interface ReissueAtkRes {
   accessToken: string;
 }
 
-export type GetCharacter = object;
+export interface CharacterInfo {
+  /**
+   * 캐릭터 레벨
+   * @example 1
+   */
+  level: number;
+  /**
+   * 캐릭터 이미지 URL
+   * @example "https://example.com/image.jpg"
+   */
+  photoUrl: string;
+}
+
+export interface GetCharacter {
+  /**
+   * 캐릭터 ID
+   * @example 1
+   */
+  id: number;
+  /**
+   * 캐릭터 이름
+   * @example "캐릭터 이름"
+   */
+  name: string;
+  /** 캐릭터 정보 */
+  characterInfos: CharacterInfo[];
+}
 
 /** sign in status */
 export enum GetCheckSignInUserStatusEnum {

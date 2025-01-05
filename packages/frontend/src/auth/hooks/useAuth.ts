@@ -5,11 +5,14 @@ import {
   AuthControllerVerifyEmailParams,
   AuthControllerVerifyNicknameParams,
   AuthControllerVerifyPasswordParams,
+  GetCharacter,
   GetCheckSignIn,
   SignInRes,
 } from "@rimgosu/libs";
 
 export const useAuth = () => {
+  const accessToken: LocalStorageKeys = "accessToken";
+
   const sendVerificationEmail = async (
     params: AuthControllerVerifyEmailParams
   ) => {
@@ -132,7 +135,6 @@ export const useAuth = () => {
   };
 
   const checkSignIn = async (): Promise<GetCheckSignIn | void> => {
-    const accessToken: LocalStorageKeys = "accessToken";
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/auth/check-sign-in`,
@@ -146,6 +148,22 @@ export const useAuth = () => {
     } catch (error) {}
   };
 
+  const getCharacter = async (): Promise<GetCharacter[]> => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/auth/characters`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem(accessToken)}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return [];
+    }
+  };
+
   return {
     sendVerificationEmail,
     verifyEmailCode,
@@ -154,5 +172,6 @@ export const useAuth = () => {
     verifyNickname,
     login,
     checkSignIn,
+    getCharacter,
   };
 };
