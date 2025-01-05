@@ -3,6 +3,7 @@ import { SignUpFormData } from "../types";
 import {
   AuthControllerVerifyCodeParams,
   AuthControllerVerifyEmailParams,
+  AuthControllerVerifyNicknameParams,
   AuthControllerVerifyPasswordParams,
 } from "@rimgosu/libs";
 
@@ -70,18 +71,37 @@ export const useAuth = () => {
 
   const verifyPassword = async (params: AuthControllerVerifyPasswordParams) => {
     try {
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/auth/verify-password`,
-        null,
-        { params }
-      );
+      await axios.get(`${process.env.REACT_APP_API_URL}/auth/verify-password`, {
+        params,
+      });
       return { success: true, message: "비밀번호 검증이 완료되었습니다." };
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(
-          error.response?.data?.message || "비밀번호 검증에 실패했습니다."
+          "비밀번호는 특수문자, 문자, 숫자를 포함한 8자 이상이어야 합니다."
         );
       }
+      return {
+        success: false,
+        message:
+          "비밀번호는 특수문자, 문자, 숫자를 포함한 8자 이상이어야 합니다.",
+      };
+    }
+  };
+
+  const verifyNickname = async (params: AuthControllerVerifyNicknameParams) => {
+    try {
+      await axios.get(`${process.env.REACT_APP_API_URL}/auth/verify-nickname`, {
+        params,
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || "닉네임 중복");
+      }
+      return {
+        success: false,
+        message: "닉네임 중복",
+      };
     }
   };
 
@@ -90,5 +110,6 @@ export const useAuth = () => {
     verifyEmailCode,
     signUp,
     verifyPassword,
+    verifyNickname,
   };
 };

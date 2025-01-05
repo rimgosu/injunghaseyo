@@ -1,6 +1,10 @@
 import { AuthLayout } from "../AuthLayout";
 import React, { useEffect, useState } from "react";
-import { EmailVerificationState, SignUpFormData } from "../types";
+import {
+  EmailVerificationState,
+  SignUpFormData,
+  VerificationState,
+} from "../types";
 import { useNavigate } from "react-router-dom";
 import { AgreementSection } from "../components/Agreement";
 import { Input } from "../../common/Input";
@@ -26,11 +30,22 @@ export const SignUpPage = () => {
       code: "",
       isVerified: false,
       timer: 180,
+      message: "",
     });
+  const [verification, setVerification] = useState<VerificationState>({
+    validPassword: "",
+    passwordConfirm: "",
+    validNickname: "",
+  });
   const navigate = useNavigate();
 
-  const { sendVerificationEmail, verifyEmailCode, signUp, verifyPassword } =
-    useAuth();
+  const {
+    sendVerificationEmail,
+    verifyEmailCode,
+    signUp,
+    verifyPassword,
+    verifyNickname,
+  } = useAuth();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -57,6 +72,66 @@ export const SignUpPage = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+
+    if (name === "password") {
+      value &&
+        verifyPassword({ password: value })
+          .then((result) => {
+            setVerification((prev) => ({
+              ...prev,
+              validPassword: "",
+            }));
+          })
+          .catch((error) => {
+            setVerification((prev) => ({
+              ...prev,
+              validPassword: error.message,
+            }));
+          });
+      !value &&
+        setVerification((prev) => ({
+          ...prev,
+          validPassword: "",
+        }));
+    }
+
+    if (name === "confirmPassword") {
+      value &&
+        formData.password !== value &&
+        setVerification((prev) => ({
+          ...prev,
+          passwordConfirm: "비밀번호가 일치하지 않습니다.",
+        }));
+
+      (formData.password === value || !value) &&
+        setVerification((prev) => ({
+          ...prev,
+          passwordConfirm: "",
+        }));
+    }
+
+    if (name === "nickname") {
+      value &&
+        verifyNickname({ nickname: value })
+          .then((result) => {
+            setVerification((prev) => ({
+              ...prev,
+              validNickname: "",
+            }));
+          })
+          .catch((error) => {
+            setVerification((prev) => ({
+              ...prev,
+              validNickname: error.message,
+            }));
+          });
+
+      !value &&
+        setVerification((prev) => ({
+          ...prev,
+          validNickname: "",
+        }));
+    }
   };
 
   const handleVerificationCodeChange = (
@@ -197,6 +272,12 @@ export const SignUpPage = () => {
           required
         />
 
+        {verification.validNickname && (
+          <p className="text-red-500 text-sm text-right">
+            {verification.validNickname}
+          </p>
+        )}
+
         <Input
           label="비밀번호"
           type="password"
@@ -207,6 +288,12 @@ export const SignUpPage = () => {
           required
         />
 
+        {verification.validPassword && (
+          <p className="text-red-500 text-sm text-right">
+            {verification.validPassword}
+          </p>
+        )}
+
         <Input
           label="비밀번호 확인"
           type="password"
@@ -216,6 +303,12 @@ export const SignUpPage = () => {
           placeholder="비밀번호 확인"
           required
         />
+
+        {verification.passwordConfirm && (
+          <p className="text-red-500 text-sm text-right">
+            {verification.passwordConfirm}
+          </p>
+        )}
 
         <AgreementSection formData={formData} onChange={handleInputChange} />
 

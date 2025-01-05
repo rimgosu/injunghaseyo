@@ -13,4 +13,11 @@ export interface EmailVerificationState {
   code: string;
   isVerified: boolean;
   timer: number;
+  message: string;
+}
+
+export interface VerificationState {
+  validPassword: string;
+  passwordConfirm: string;
+  validNickname: string;
 }

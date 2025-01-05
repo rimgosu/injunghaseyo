@@ -60,7 +60,7 @@ export class AuthController {
   /**
    * @description 올바른 패스워드인지 확인
    */
-  @Post('verify-password')
+  @Get('verify-password')
   async verifyPassword(@Query() param: VerifyPasswordParams) {
     return this.authService.verifyPassword(param);
   }
