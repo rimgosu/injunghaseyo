@@ -1,7 +1,7 @@
-import { AuthLayout } from "../../layouts/AuthLayout";
-import { SocialLoginHome } from "../../components/auth/SocialLoginHome";
-import { OtherPage } from "../../components/auth/OtherPage";
+import { AuthLayout } from "../AuthLayout";
 import React from "react";
+import { OtherPage } from "../components/OtherPage";
+import { SocialLoginHome } from "../components/SocialLoginHome";
 
 export const InitPage = () => (
   <AuthLayout>

@@ -1,10 +1,10 @@
-import { Input } from "../../components/common/Input";
-import { AuthLayout } from "../../layouts/AuthLayout";
+import { AuthLayout } from "../AuthLayout";
 import React, { useEffect, useState } from "react";
-import { AgreementSection } from "../../components/auth/Agreement";
 import { SignUpFormData } from "../../types";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { AgreementSection } from "../components/Agreement";
+import { Input } from "../../common/Input";
 
 export const SignUpPage = () => {
   const authState: SignUpFormData = {
