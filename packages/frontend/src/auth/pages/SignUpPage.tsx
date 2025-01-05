@@ -1,13 +1,13 @@
 import { AuthLayout } from "../AuthLayout";
 import React, { useEffect, useState } from "react";
-import { SignUpFormData } from "../../types";
-import axios from "axios";
+import { EmailVerificationState, SignUpFormData } from "../types";
 import { useNavigate } from "react-router-dom";
 import { AgreementSection } from "../components/Agreement";
 import { Input } from "../../common/Input";
+import { useAuth } from "../hooks/useAuth";
 
 export const SignUpPage = () => {
-  const authState: SignUpFormData = {
+  const [formData, setFormData] = useState<SignUpFormData>({
     email: "",
     nickname: "",
     confirmPassword: "",
@@ -19,34 +19,38 @@ export const SignUpPage = () => {
     privacyAgree: false,
     marketingAgree: false,
     smsAgree: false,
-  };
-
-  const [formData, setFormData] = useState(authState);
-  const [showVerification, setShowVerification] = useState(false);
-  const [timer, setTimer] = useState(180); // 3분 = 180초
-  const [verificationCode, setVerificationCode] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
+  });
+  const [emailVerification, setEmailVerification] =
+    useState<EmailVerificationState>({
+      show: false,
+      code: "",
+      isVerified: false,
+      timer: 180,
+    });
   const navigate = useNavigate();
 
-  // 타이머 로직
+  const { sendVerificationEmail, verifyEmailCode, signUp } = useAuth();
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (showVerification && timer > 0) {
+    if (emailVerification.show && emailVerification.timer > 0) {
       interval = setInterval(() => {
-        setTimer((prev) => prev - 1);
+        setEmailVerification((prev) => ({
+          ...prev,
+          timer: prev.timer - 1,
+        }));
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [showVerification, timer]);
+  }, [emailVerification.show, emailVerification.timer]);
 
-  // 시간 포맷팅 함수
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -54,91 +58,78 @@ export const SignUpPage = () => {
     }));
   };
 
-  const handleEmailVerification = async () => {
-    try {
-      console.log(process.env.REACT_APP_API_URL);
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/auth/verify-email`,
-        null,
-        {
-          params: {
-            email: formData.email,
-          },
-        }
-      );
-
-      setShowVerification(true);
-
-      alert("인증 메일이 발송되었습니다. 이메일을 확인해주세요.");
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        alert(error.response?.data?.message || "이메일 발송에 실패했습니다.");
-      }
-    }
-  };
-
   const handleVerificationCodeChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setVerificationCode(e.target.value);
+    setEmailVerification((prev) => ({
+      ...prev,
+      code: e.target.value,
+    }));
   };
 
-  const handleVerifyCode = async () => {
+  const handleEmailVerification = async () => {
     try {
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/auth/verify-code`,
-        null,
-        {
-          params: {
-            email: formData.email,
-            code: verificationCode,
-          },
-        }
-      );
-
-      setIsVerified(true);
-      alert("이메일 인증이 완료되었습니다.");
+      const result = await sendVerificationEmail({ email: formData.email });
+      setEmailVerification((prev) => ({
+        ...prev,
+        show: true,
+      }));
+      alert(result?.message);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        alert(error.response?.data?.message || "인증번호 확인에 실패했습니다.");
-      }
+      alert(
+        error instanceof Error ? error.message : "이메일 발송에 실패했습니다."
+      );
     }
   };
 
-  const handleSignUp = async () => {
-    if (!isVerified) {
+  const handleVerifyEmailCode = async () => {
+    try {
+      const result = await verifyEmailCode({
+        email: formData.email,
+        code: emailVerification.code,
+      });
+      setEmailVerification((prev) => ({
+        ...prev,
+        isVerified: true,
+      }));
+      alert(result?.message);
+    } catch (error) {
+      alert(
+        error instanceof Error ? error.message : "인증번호 확인에 실패했습니다."
+      );
+    }
+  };
+
+  const validateSignUpData = () => {
+    if (!emailVerification.isVerified) {
       alert("이메일 인증이 필요합니다.");
-      return;
+      return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
       alert("비밀번호가 일치하지 않습니다.");
-      return;
+      return false;
     }
 
     if (!formData.requireAgree) {
       alert("필수 약관에 동의해주세요.");
-      return;
+      return false;
     }
 
-    try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/auth/sign-up`, null, {
-        params: {
-          email: formData.email,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-          nickname: formData.nickname,
-          requireAgree: formData.requireAgree,
-          eventAgree: formData.eventAgree,
-        },
-      });
+    return true;
+  };
 
-      alert("회원가입이 완료되었습니다.");
+  const handleSignUp = async () => {
+    if (!validateSignUpData()) return;
+
+    try {
+      const result = await signUp(formData);
+      alert(result?.message);
       navigate("/auth/login");
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        alert(error.response?.data?.message || "회원가입에 실패했습니다.");
-      }
+      alert(
+        error instanceof Error ? error.message : "회원가입에 실패했습니다."
+      );
     }
   };
 
@@ -149,7 +140,7 @@ export const SignUpPage = () => {
           label="이메일"
           type="email"
           value={formData.email}
-          onChange={handleChange}
+          onChange={handleInputChange}
           name="email"
           placeholder="이메일 입력"
           required
@@ -161,7 +152,7 @@ export const SignUpPage = () => {
           </button>
         </div>
 
-        {showVerification && (
+        {emailVerification.show && (
           <div className="mt-4 border border-gray-300 rounded p-4">
             <p className="text-sm text-gray-600 mb-2">
               이메일로 받은 인증 코드를 입력해주세요
@@ -171,21 +162,25 @@ export const SignUpPage = () => {
                 type="text"
                 className="p-2 flex-1 outline-none"
                 placeholder="인증번호확인"
-                value={verificationCode}
+                value={emailVerification.code}
                 onChange={handleVerificationCodeChange}
-                disabled={isVerified}
+                disabled={emailVerification.isVerified}
               />
-              <span className="text-red-500">{formatTime(timer)}</span>
+              <span className="text-red-500">
+                {formatTime(emailVerification.timer)}
+              </span>
               <button
                 className={`px-4 py-2 rounded ${
-                  isVerified
+                  emailVerification.isVerified
                     ? "bg-gray-200 text-gray-400"
                     : "bg-green-500 text-white hover:bg-green-600"
                 }`}
-                onClick={handleVerifyCode}
-                disabled={isVerified || !verificationCode}
+                onClick={handleVerifyEmailCode}
+                disabled={
+                  emailVerification.isVerified || !emailVerification.code
+                }
               >
-                {isVerified ? "인증완료" : "확인"}
+                {emailVerification.isVerified ? "인증완료" : "확인"}
               </button>
             </div>
           </div>
@@ -195,7 +190,7 @@ export const SignUpPage = () => {
           label="닉네임"
           type="text"
           value={formData.nickname}
-          onChange={handleChange}
+          onChange={handleInputChange}
           name="nickname"
           placeholder="닉네임 입력"
           required
@@ -205,7 +200,7 @@ export const SignUpPage = () => {
           label="비밀번호"
           type="password"
           value={formData.password}
-          onChange={handleChange}
+          onChange={handleInputChange}
           name="password"
           placeholder="패스워드 입력"
           required
@@ -215,23 +210,23 @@ export const SignUpPage = () => {
           label="비밀번호 확인"
           type="password"
           value={formData.confirmPassword}
-          onChange={handleChange}
+          onChange={handleInputChange}
           name="confirmPassword"
-          placeholder="패스워드 입력"
+          placeholder="비밀번호 확인"
           required
         />
 
-        <AgreementSection formData={formData} onChange={handleChange} />
+        <AgreementSection formData={formData} onChange={handleInputChange} />
 
         <div className="border border-green-300 p-4 rounded">
           <button
             className={`w-full text-center py-2 rounded ${
-              isVerified
+              emailVerification.isVerified
                 ? "bg-green-500 text-white hover:bg-green-600"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
             onClick={handleSignUp}
-            disabled={!isVerified}
+            disabled={!emailVerification.isVerified}
           >
             회원가입
           </button>

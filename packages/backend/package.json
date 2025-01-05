@@ -21,6 +21,7 @@
     "prisma:generate:dev": "dotenv -e ./envs/.dev.env -- prisma generate",
     "prisma:migrate:dev": "dotenv -e ./envs/.dev.env -- prisma migrate dev",
     "prisma:studio:dev": "dotenv -e ./envs/.dev.env -- prisma studio",
+    "prisma:reset": "dotenv -e ./envs/.dev.env -- prisma migrate reset --force",
     "prisma:seed": "dotenv -e ./envs/.dev.env -- ts-node ./prisma/seed.ts",
     "gen:swagger": "dotenv -e ./envs/.sdk.env -- nest start",
     "gen:sdk": "swagger-typescript-api -p ./sdk/swagger.json -o ./sdk -n injunghaseyo-api.ts --extract-request-params"
