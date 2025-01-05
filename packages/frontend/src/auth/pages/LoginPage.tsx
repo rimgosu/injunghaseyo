@@ -9,9 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { AgreementSection } from "../components/Agreement";
 import { Input } from "../../common/Input";
 import { useAuth } from "../hooks/useAuth";
-import { ValidationMessage } from "../components/ValidationMessage";
 
-export const SignUpPage = () => {
+export const LoginPage = () => {
   const [formData, setFormData] = useState<SignUpFormData>({
     email: "",
     nickname: "",
@@ -273,7 +272,11 @@ export const SignUpPage = () => {
           required
         />
 
-        <ValidationMessage message={verification.validNickname} />
+        {verification.validNickname && (
+          <p className="text-red-500 text-sm text-right">
+            {verification.validNickname}
+          </p>
+        )}
 
         <Input
           label="비밀번호"
@@ -285,7 +288,11 @@ export const SignUpPage = () => {
           required
         />
 
-        <ValidationMessage message={verification.validPassword} />
+        {verification.validPassword && (
+          <p className="text-red-500 text-sm text-right">
+            {verification.validPassword}
+          </p>
+        )}
 
         <Input
           label="비밀번호 확인"
@@ -297,7 +304,11 @@ export const SignUpPage = () => {
           required
         />
 
-        <ValidationMessage message={verification.passwordConfirm} />
+        {verification.passwordConfirm && (
+          <p className="text-red-500 text-sm text-right">
+            {verification.passwordConfirm}
+          </p>
+        )}
 
         <AgreementSection formData={formData} onChange={handleInputChange} />
 
