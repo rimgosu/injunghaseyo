@@ -32,7 +32,7 @@ export const AuthRoutes = () => {
     };
 
     checkAuthStatus();
-  }, [checkSignIn, navigate]);
+  }, [navigate, checkSignIn]);
 
   return (
     <Routes>

@@ -8,7 +8,7 @@ export class BaseCharacterDto {
     type: Number,
     example: 1,
   })
-  @IsNumber()
   @Transform(({ value }) => +value)
+  @IsNumber()
   characterId: number;
 }

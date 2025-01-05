@@ -1,13 +1,20 @@
 import { AuthLayout } from "../AuthLayout";
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import { GetCharacter } from "@rimgosu/libs";
+import {
+  AuthControllerCharacterSelectParams,
+  GetCharacter,
+} from "@rimgosu/libs";
+import { useCharacter } from "../hooks/useCharacter";
+import { GreenButton } from "../components/GreenButton";
 
-// async 제거
 export const CharacterSelectPage = () => {
-  const { getCharacter } = useAuth();
+  const { getCharacter, selectCharacter } = useCharacter();
+
   const [characters, setCharacters] = useState<GetCharacter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCharacter, setSelectedCharacter] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     const loadCharacters = async () => {
@@ -23,20 +30,38 @@ export const CharacterSelectPage = () => {
     };
 
     loadCharacters();
-  }, [getCharacter]);
+  }, [getCharacter]); // getCharacter 의존성 제거
 
   if (isLoading) {
     return <AuthLayout>로딩중...</AuthLayout>;
   }
 
+  const handleSelectCharacter = async (
+    param: AuthControllerCharacterSelectParams
+  ) => {
+    const { characterId } = param;
+    setSelectedCharacter(characterId);
+    console.log(selectedCharacter);
+  };
+
+  const handleSubmit = async () => {
+    if (selectedCharacter) {
+      await selectCharacter({ characterId: selectedCharacter });
+    }
+  };
+
   return (
     <AuthLayout>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center mb-6">
         <div className="grid grid-cols-3 gap-4">
           {characters.map((character) => (
             <div
               key={character.id}
-              className="flex flex-col items-center p-4 border rounded-lg cursor-pointer hover:border-green-500"
+              onClick={() =>
+                handleSelectCharacter({ characterId: character.id })
+              }
+              className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer hover:border-green-500 
+                ${selectedCharacter === character.id ? "border-green-500" : ""}`}
             >
               <div
                 className="w-24 h-24 mb-2"
@@ -48,9 +73,13 @@ export const CharacterSelectPage = () => {
             </div>
           ))}
         </div>
-        <button className="mt-6 px-6 py-2 bg-green-500 text-white rounded-full hover:bg-green-600">
-          선택하기
-        </button>
+      </div>
+      <div className="w-full p-2">
+        <GreenButton
+          onClick={handleSubmit}
+          text="선택하기"
+          disabled={selectedCharacter === null}
+        />
       </div>
     </AuthLayout>
   );
