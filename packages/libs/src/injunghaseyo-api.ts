@@ -9,6 +9,38 @@
  * ---------------------------------------------------------------
  */
 
+export interface SignInRes {
+  /**
+   * email
+   * @example "newnyup@gmail.com"
+   */
+  email: string;
+  /** access token */
+  accessToken: string;
+}
+
+export interface GetCheckSignIn {
+  /** sign in status */
+  userStatus: GetCheckSignInUserStatusEnum;
+}
+
+export interface ReissueAtkRes {
+  /** access token */
+  accessToken: string;
+}
+
+export type GetCharacter = object;
+
+/** sign in status */
+export enum GetCheckSignInUserStatusEnum {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  BLOCKED = 'BLOCKED',
+  WITHDRAWN = 'WITHDRAWN',
+  OAUTH_PENDING = 'OAUTH_PENDING',
+  CHARACTER_CHOOSE = 'CHARACTER_CHOOSE',
+}
+
 export interface AuthControllerVerifyEmailParams {
   /**
    * email
@@ -33,6 +65,14 @@ export interface AuthControllerVerifyPasswordParams {
    * @example "injung123!@#"
    */
   password: string;
+}
+
+export interface AuthControllerVerifyNicknameParams {
+  /**
+   * nickname
+   * @example "injung2"
+   */
+  nickname: string;
 }
 
 export interface AuthControllerSignUpParams {
@@ -105,14 +145,6 @@ export interface AuthControllerChangePasswordParams {
    * @example "injung123!@#1"
    */
   confirmChangePassword: string;
-}
-
-export interface AuthControllerVerifyNicknameParams {
-  /**
-   * nickname
-   * @example "injung2"
-   */
-  nickname: string;
 }
 
 export interface AuthControllerActivateOauthParams {
@@ -457,12 +489,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags Auth
      * @name AuthControllerVerifyPassword
-     * @request POST:/auth/verify-password
+     * @request GET:/auth/verify-password
      */
     authControllerVerifyPassword: (query: AuthControllerVerifyPasswordParams, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/auth/verify-password`,
-        method: 'POST',
+        method: 'GET',
+        query: query,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Auth
+     * @name AuthControllerVerifyNickname
+     * @request GET:/auth/verify-nickname
+     */
+    authControllerVerifyNickname: (query: AuthControllerVerifyNicknameParams, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/auth/verify-nickname`,
+        method: 'GET',
         query: query,
         ...params,
       }),
@@ -490,10 +537,28 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/auth/sign-in
      */
     authControllerSignIn: (query: AuthControllerSignInParams, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<SignInRes, any>({
         path: `/auth/sign-in`,
         method: 'POST',
         query: query,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Auth
+     * @name AuthControllerCheckSignIn
+     * @request GET:/auth/check-sign-in
+     * @secure
+     */
+    authControllerCheckSignIn: (params: RequestParams = {}) =>
+      this.request<GetCheckSignIn, any>({
+        path: `/auth/check-sign-in`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
         ...params,
       }),
 
@@ -505,9 +570,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/auth/reissue-atk
      */
     authControllerReissueAtk: (params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<ReissueAtkRes, any>({
         path: `/auth/reissue-atk`,
         method: 'POST',
+        format: 'json',
         ...params,
       }),
 
@@ -650,21 +716,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Auth
-     * @name AuthControllerVerifyNickname
-     * @request GET:/auth/verify-nickname
-     */
-    authControllerVerifyNickname: (query: AuthControllerVerifyNicknameParams, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/auth/verify-nickname`,
-        method: 'GET',
-        query: query,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Auth
      * @name AuthControllerActivateOauth
      * @request POST:/auth/activate-oauth
      * @secure
@@ -687,10 +738,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     authControllerGetCharacters: (params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<GetCharacter, any>({
         path: `/auth/characters`,
         method: 'GET',
         secure: true,
+        format: 'json',
         ...params,
       }),
 

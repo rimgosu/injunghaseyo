@@ -4,6 +4,8 @@ import { LoginFormData } from "../types";
 import { Input } from "../../common/Input";
 import { GreenButton } from "../components/GreenButton";
 import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { GetCheckSignInUserStatusEnum } from "@rimgosu/libs";
 
 export const LoginPage = () => {
   const [formData, setFormData] = useState<LoginFormData>({
@@ -11,7 +13,8 @@ export const LoginPage = () => {
     password: "",
   });
 
-  const { login } = useAuth();
+  const { login, checkSignIn } = useAuth();
+  const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,6 +22,19 @@ export const LoginPage = () => {
 
   const handleLogin = async () => {
     const result = await login(formData);
+    if (result) {
+      localStorage.setItem("accessToken", result.accessToken);
+      const checkSignInRes = await checkSignIn();
+      if (
+        checkSignInRes?.userStatus ===
+        GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE
+      ) {
+        navigate("/auth/select-character");
+        return;
+      }
+
+      navigate("/");
+    }
   };
 
   return (

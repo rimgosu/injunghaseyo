@@ -24,7 +24,7 @@ import { ChgPasswordParams } from './dtos/chg-password-params.dto';
 import { AtkGuard } from './guards/atk.guard';
 import { GetUser } from '@/common/get-user.decorator';
 import { Provider, User } from '@prisma/client';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { OauthUser } from './utils/types';
 import { ActivateOauthParams } from './dtos/activate-oauth-params.dto';
@@ -32,6 +32,7 @@ import { VerifyNicknameParam } from './dtos/verify-nickname-params.dto';
 import { CharacterSelectParam } from './dtos/character-select-param.dto';
 import { GetCharacter } from './dtos/get-character.dto';
 import { VerifyPasswordParams } from './dtos/verify-password.dto';
+import { GetCheckSignIn } from './dtos/get-check-sign-in.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -66,6 +67,14 @@ export class AuthController {
   }
 
   /**
+   * @description nickname 중복 확인
+   */
+  @Get('verify-nickname')
+  async verifyNickname(@Query() param: VerifyNicknameParam) {
+    return await this.authService.verifyNickname(param);
+  }
+
+  /**
    * @description 회원 가입
    * @todo 프로필 photo 업데이트
    */
@@ -82,6 +91,11 @@ export class AuthController {
    * - refresh token: 쿠키에 '_SESSION' 이름으로 주입한다.
    */
   @Post('sign-in')
+  @ApiResponse({
+    status: 200,
+    description: '로그인 성공',
+    type: SignInRes,
+  })
   async signIn(
     @Query() param: SignInParams,
     @Res({ passthrough: true }) res: Response,
@@ -98,12 +112,32 @@ export class AuthController {
   }
 
   /**
+   * @description 로그인 상태 확인
+   */
+  @Get('check-sign-in')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  @ApiResponse({
+    status: 200,
+    description: '로그인 상태 확인 성공',
+    type: GetCheckSignIn,
+  })
+  async checkSignIn(@GetUser() user: User): Promise<GetCheckSignIn> {
+    return await this.authService.checkSignIn(user);
+  }
+
+  /**
    * @description atk 재발급
    *
    * - 유효한 refresh token이 필요하다.
    */
   @Post('reissue-atk')
   @UseGuards(RtkGuard)
+  @ApiResponse({
+    status: 200,
+    description: 'atk 재발급 성공',
+    type: ReissueAtkRes,
+  })
   async reissueAtk(@Request() req): Promise<ReissueAtkRes> {
     return await this.authService.reissueAtk(req.user);
   }
@@ -197,14 +231,6 @@ export class AuthController {
   }
 
   /**
-   * @description nickname 중복 확인
-   */
-  @Get('verify-nickname')
-  async verifyNickname(@Query() param: VerifyNicknameParam) {
-    return await this.authService.verifyNickname(param);
-  }
-
-  /**
    * @description oauth 대기 상태를 해제한다.
    */
   @Post('activate-oauth')
@@ -223,6 +249,11 @@ export class AuthController {
   @Get('characters')
   @UseGuards(AuthGuard('character-select'))
   @ApiBearerAuth('jwt')
+  @ApiResponse({
+    status: 200,
+    description: '전체 character 조회 성공',
+    type: GetCharacter,
+  })
   async getCharacters(): Promise<GetCharacter[]> {
     return await this.authService.getCharacters();
   }

@@ -26,3 +26,5 @@ export interface VerificationState {
 }
 
 export interface LoginFormData extends AuthControllerSignInParams {}
+
+export type LocalStorageKeys = "accessToken";

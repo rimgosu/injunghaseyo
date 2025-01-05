@@ -28,6 +28,7 @@ import { CharacterSelectParam } from './dtos/character-select-param.dto';
 import { GetCharacter } from './dtos/get-character.dto';
 import { VerifyPasswordParams } from './dtos/verify-password.dto';
 import { verifyPassword } from './utils/auth.util';
+import { GetCheckSignIn } from './dtos/get-check-sign-in.dto';
 
 @Injectable()
 export class AuthService {
@@ -38,6 +39,10 @@ export class AuthService {
     private readonly authHelper: AuthHelper,
     private readonly configService: ConfigService,
   ) {}
+
+  async checkSignIn(user: User): Promise<GetCheckSignIn> {
+    return new GetCheckSignIn(user);
+  }
 
   async verifyPassword(params: VerifyPasswordParams) {
     const { password } = params;
@@ -279,7 +284,6 @@ export class AuthService {
       where: {
         email,
         deletedAt: null,
-        status: { in: [UserStatus.ACTIVE, UserStatus.INACTIVE] },
       },
     });
 

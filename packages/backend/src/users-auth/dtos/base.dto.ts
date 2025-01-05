@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserStatus } from '@prisma/client';
 import { Transform } from 'class-transformer';
 import {
   IsBoolean,
@@ -188,5 +189,15 @@ export class BaseUseraAuthDto {
   })
   eventAgree: boolean;
 
+  @ApiProperty({
+    description: 'access token',
+    type: String,
+  })
   accessToken: string;
+
+  @ApiProperty({
+    description: 'sign in status',
+    enum: UserStatus,
+  })
+  userStatus: UserStatus;
 }

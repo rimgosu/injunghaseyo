@@ -1,10 +1,12 @@
 import axios from "axios";
-import { LoginFormData, SignUpFormData } from "../types";
+import { LocalStorageKeys, LoginFormData, SignUpFormData } from "../types";
 import {
   AuthControllerVerifyCodeParams,
   AuthControllerVerifyEmailParams,
   AuthControllerVerifyNicknameParams,
   AuthControllerVerifyPasswordParams,
+  GetCheckSignIn,
+  SignInRes,
 } from "@rimgosu/libs";
 
 export const useAuth = () => {
@@ -105,15 +107,21 @@ export const useAuth = () => {
     }
   };
 
-  const login = async (formData: LoginFormData) => {
+  const login = async (
+    formData: LoginFormData
+  ): Promise<SignInRes | undefined> => {
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/auth/sign-in`, null, {
-        params: {
-          email: formData.email,
-          password: formData.password,
-        },
-      });
-      return { success: true, message: "로그인이 완료되었습니다." };
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/sign-in`,
+        null,
+        {
+          params: {
+            email: formData.email,
+            password: formData.password,
+          },
+        }
+      );
+      return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(
@@ -123,6 +131,21 @@ export const useAuth = () => {
     }
   };
 
+  const checkSignIn = async (): Promise<GetCheckSignIn | void> => {
+    const accessToken: LocalStorageKeys = "accessToken";
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/auth/check-sign-in`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem(accessToken)}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {}
+  };
+
   return {
     sendVerificationEmail,
     verifyEmailCode,
@@ -130,5 +153,6 @@ export const useAuth = () => {
     verifyPassword,
     verifyNickname,
     login,
+    checkSignIn,
   };
 };
