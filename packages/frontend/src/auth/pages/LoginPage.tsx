@@ -6,6 +6,8 @@ import { GreenButton } from "../components/GreenButton";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { GetCheckSignInUserStatusEnum } from "@rimgosu/libs";
+import { SocialLogin } from "../components/SocialLogin";
+import { OtherPage } from "../components/OtherPage";
 
 export const LoginPage = () => {
   const [formData, setFormData] = useState<LoginFormData>({
@@ -64,6 +66,12 @@ export const LoginPage = () => {
         onClick={handleLogin}
         disabled={!formData.email || !formData.password}
       />
+
+      <div className="mt-4 flex justify-end">
+        <SocialLogin />
+      </div>
+
+      <OtherPage />
     </AuthLayout>
   );
 };
