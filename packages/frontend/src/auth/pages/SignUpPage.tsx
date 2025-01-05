@@ -10,6 +10,7 @@ import { AgreementSection } from "../components/Agreement";
 import { Input } from "../../common/Input";
 import { useAuth } from "../hooks/useAuth";
 import { ValidationMessage } from "../components/ValidationMessage";
+import { GreenButton } from "../components/GreenButton";
 
 export const SignUpPage = () => {
   const [formData, setFormData] = useState<SignUpFormData>({
@@ -247,11 +248,7 @@ export const SignUpPage = () => {
                 {formatTime(emailVerification.timer)}
               </span>
               <button
-                className={`px-4 py-2 rounded ${
-                  emailVerification.isVerified
-                    ? "bg-gray-200 text-gray-400"
-                    : "bg-green-500 text-white hover:bg-green-600"
-                }`}
+                className={"px-4 py-2 rounded text-gray-400"}
                 onClick={handleVerifyEmailCode}
                 disabled={
                   emailVerification.isVerified || !emailVerification.code
@@ -301,19 +298,11 @@ export const SignUpPage = () => {
 
         <AgreementSection formData={formData} onChange={handleInputChange} />
 
-        <div className="border border-green-300 p-4 rounded">
-          <button
-            className={`w-full text-center py-2 rounded ${
-              emailVerification.isVerified
-                ? "bg-green-500 text-white hover:bg-green-600"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-            onClick={handleSignUp}
-            disabled={!emailVerification.isVerified}
-          >
-            회원가입
-          </button>
-        </div>
+        <GreenButton
+          text="회원가입"
+          onClick={handleSignUp}
+          disabled={!emailVerification.isVerified}
+        />
       </div>
     </AuthLayout>
   );

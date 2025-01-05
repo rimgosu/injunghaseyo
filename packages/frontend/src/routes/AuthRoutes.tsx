@@ -2,13 +2,14 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { AuthLayout } from "../auth/AuthLayout";
 import { InitPage } from "../auth/pages/InitPage";
 import { SignUpPage } from "../auth/pages/SignUpPage";
+import { LoginPage } from "../auth/pages/LoginPage";
 
 export const AuthRoutes = () => (
   <Routes>
     <Route path="/" element={<Navigate to="/auth/init" replace />} />
     <Route path="/auth">
       <Route path="init" element={<InitPage />} />
-      <Route path="login" element={<InitPage />} />
+      <Route path="login" element={<LoginPage />} />
       <Route path="signup" element={<SignUpPage />} />
       <Route
         path="search-password"

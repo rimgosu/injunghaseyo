@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SignUpFormData } from "../types";
+import { LoginFormData, SignUpFormData } from "../types";
 import {
   AuthControllerVerifyCodeParams,
   AuthControllerVerifyEmailParams,
@@ -105,11 +105,30 @@ export const useAuth = () => {
     }
   };
 
+  const login = async (formData: LoginFormData) => {
+    try {
+      await axios.post(`${process.env.REACT_APP_API_URL}/auth/sign-in`, null, {
+        params: {
+          email: formData.email,
+          password: formData.password,
+        },
+      });
+      return { success: true, message: "로그인이 완료되었습니다." };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          error.response?.data?.message || "로그인에 실패했습니다."
+        );
+      }
+    }
+  };
+
   return {
     sendVerificationEmail,
     verifyEmailCode,
     signUp,
     verifyPassword,
     verifyNickname,
+    login,
   };
 };

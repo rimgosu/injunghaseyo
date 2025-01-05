@@ -2,6 +2,7 @@ import { AuthLayout } from "../AuthLayout";
 import React from "react";
 import { OtherPage } from "../components/OtherPage";
 import { SocialLoginHome } from "../components/SocialLoginHome";
+import { Link } from "react-router-dom";
 
 export const InitPage = () => (
   <AuthLayout>
@@ -16,9 +17,11 @@ export const InitPage = () => (
         <div className="flex-grow border-t border-gray-300"></div>
       </div>
       <div className="w-full">
-        <button className="text-left w-full border px-4 py-3 border-gray-300 rounded-xl">
-          <h2 className="text-l">이메일로 로그인</h2>
-        </button>
+        <Link to="/auth/login" className="block">
+          <button className="text-left w-full border px-4 py-3 border-gray-300 rounded-xl">
+            <h2 className="text-l">이메일로 로그인</h2>
+          </button>
+        </Link>
       </div>
       <div className="my-2">
         <OtherPage />

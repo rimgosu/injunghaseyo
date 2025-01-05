@@ -1,4 +1,7 @@
-import { AuthControllerSignUpParams } from "@rimgosu/libs";
+import {
+  AuthControllerSignInParams,
+  AuthControllerSignUpParams,
+} from "@rimgosu/libs";
 
 export interface SignUpFormData extends AuthControllerSignUpParams {
   ageAgree: boolean;
@@ -21,3 +24,5 @@ export interface VerificationState {
   passwordConfirm: string;
   validNickname: string;
 }
+
+export interface LoginFormData extends AuthControllerSignInParams {}
