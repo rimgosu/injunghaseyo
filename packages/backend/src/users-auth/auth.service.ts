@@ -26,6 +26,8 @@ import { ConfigService } from '@nestjs/config';
 import { VerifyNicknameParam } from './dtos/verify-nickname-params.dto';
 import { CharacterSelectParam } from './dtos/character-select-param.dto';
 import { GetCharacter } from './dtos/get-character.dto';
+import { VerifyPasswordParams } from './dtos/verify-password.dto';
+import { verifyPassword } from './utils/auth.util';
 
 @Injectable()
 export class AuthService {
@@ -36,6 +38,19 @@ export class AuthService {
     private readonly authHelper: AuthHelper,
     private readonly configService: ConfigService,
   ) {}
+
+  async verifyPassword(params: VerifyPasswordParams) {
+    const { password } = params;
+
+    const isPasswordValid = verifyPassword(password);
+
+    if (!isPasswordValid)
+      throw new BadRequestException(
+        '비밀번호는 특수문자, 영문, 숫자를 포함한 8자리 이상의 글자여야합니다.',
+      );
+
+    return { message: '비밀번호 형식 오류' };
+  }
 
   async getCharacters(): Promise<GetCharacter[]> {
     const characters = await this.prisma.character.findMany({

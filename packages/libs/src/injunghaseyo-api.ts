@@ -27,6 +27,14 @@ export interface AuthControllerVerifyCodeParams {
   code: string;
 }
 
+export interface AuthControllerVerifyPasswordParams {
+  /**
+   * password
+   * @example "injung123!@#"
+   */
+  password: string;
+}
+
 export interface AuthControllerSignUpParams {
   /**
    * email
@@ -439,6 +447,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authControllerVerifyCode: (query: AuthControllerVerifyCodeParams, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/auth/verify-code`,
+        method: 'POST',
+        query: query,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Auth
+     * @name AuthControllerVerifyPassword
+     * @request POST:/auth/verify-password
+     */
+    authControllerVerifyPassword: (query: AuthControllerVerifyPasswordParams, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/auth/verify-password`,
         method: 'POST',
         query: query,
         ...params,

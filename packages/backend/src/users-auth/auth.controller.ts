@@ -31,6 +31,7 @@ import { ActivateOauthParams } from './dtos/activate-oauth-params.dto';
 import { VerifyNicknameParam } from './dtos/verify-nickname-params.dto';
 import { CharacterSelectParam } from './dtos/character-select-param.dto';
 import { GetCharacter } from './dtos/get-character.dto';
+import { VerifyPasswordParams } from './dtos/verify-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -54,6 +55,14 @@ export class AuthController {
   @Post('verify-code')
   async verifyCode(@Query() param: VerifyCodeParams) {
     return this.authService.verifyCode(param);
+  }
+
+  /**
+   * @description 올바른 패스워드인지 확인
+   */
+  @Post('verify-password')
+  async verifyPassword(@Query() param: VerifyPasswordParams) {
+    return this.authService.verifyPassword(param);
   }
 
   /**

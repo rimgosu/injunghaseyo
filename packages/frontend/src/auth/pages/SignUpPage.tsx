@@ -29,7 +29,8 @@ export const SignUpPage = () => {
     });
   const navigate = useNavigate();
 
-  const { sendVerificationEmail, verifyEmailCode, signUp } = useAuth();
+  const { sendVerificationEmail, verifyEmailCode, signUp, verifyPassword } =
+    useAuth();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
