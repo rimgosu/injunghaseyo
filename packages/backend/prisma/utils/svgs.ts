@@ -1,6 +1,6 @@
 export const yelloLv1 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="15" fill="#FFE87C"/>
   <!-- 귀 -->
@@ -14,7 +14,7 @@ export const yelloLv1 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10
 
 export const yelloLv2 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="18" fill="#FFE87C"/>
   <!-- 귀 -->
@@ -30,7 +30,7 @@ export const yelloLv2 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10
 
 export const yelloLv3 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="22" fill="#FFE87C"/>
   <!-- 귀 -->
@@ -48,7 +48,7 @@ export const yelloLv3 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10
 
 export const yelloLv4 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="25" fill="#FFE87C"/>
   <!-- 귀 -->
@@ -67,7 +67,7 @@ export const yelloLv4 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10
 
 export const yelloLv5 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="28" fill="#FFE87C"/>
   <!-- 귀 -->
@@ -88,7 +88,7 @@ export const yelloLv5 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10
 
 export const blueLv1 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="15" fill="#FF7F50"/>
   <!-- 머리 -->
@@ -104,7 +104,7 @@ export const blueLv1 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100
 
 export const blueLv2 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="18" fill="#FF7F50"/>
   <!-- 머리 -->
@@ -123,7 +123,7 @@ export const blueLv2 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100
 
 export const blueLv3 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="22" fill="#FF7F50"/>
   <!-- 머리 -->
@@ -145,7 +145,7 @@ export const blueLv3 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100
 
 export const blueLv4 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="25" fill="#FF7F50"/>
   <!-- 머리 -->
@@ -168,7 +168,7 @@ export const blueLv4 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100
 
 export const blueLv5 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="28" fill="#FF7F50"/>
   <!-- 머리 -->
@@ -195,7 +195,7 @@ export const blueLv5 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100
 
 export const greenLv1 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="15" fill="#90EE90"/>
   <!-- 얼굴 -->
@@ -208,7 +208,7 @@ export const greenLv1 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10
 
 export const greenLv2 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="18" fill="#90EE90"/>
   <!-- 얼굴 -->
@@ -223,7 +223,7 @@ export const greenLv2 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10
 
 export const greenLv3 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="22" fill="#90EE90"/>
   <!-- 얼굴 -->
@@ -241,7 +241,7 @@ export const greenLv3 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10
 
 export const greenLv4 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- 배경 (선택사항) -->
-  <rect width="100" height="100" fill="#f0f0f0"/>
+  <rect width="100" height="100" fill="#FFFFFF"/>
   <!-- 몸통 -->
   <circle cx="50" cy="50" r="25" fill="#90EE90"/>
   <!-- 얼굴 -->
