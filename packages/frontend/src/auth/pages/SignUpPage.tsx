@@ -213,97 +213,93 @@ export const SignUpPage = () => {
 
   return (
     <AuthLayout>
-      <div className="flex flex-col gap-4 w-full max-w-md">
-        <Input
-          label="이메일"
-          type="email"
-          value={formData.email}
-          onChange={handleInputChange}
-          name="email"
-          placeholder="이메일 입력"
-          required
-        />
+      <Input
+        label="이메일"
+        type="email"
+        value={formData.email}
+        onChange={handleInputChange}
+        name="email"
+        placeholder="이메일 입력"
+        required
+      />
 
-        <div className="border border-green-300 p-4 rounded">
-          <button className="text-green-500" onClick={handleEmailVerification}>
-            이메일 인증하기
-          </button>
-        </div>
-
-        {emailVerification.show && (
-          <div className="mt-4 border border-gray-300 rounded p-4">
-            <p className="text-sm text-gray-600 mb-2">
-              이메일로 받은 인증 코드를 입력해주세요
-            </p>
-            <div className="flex items-center gap-2 border border-gray-300 rounded p-2">
-              <input
-                type="text"
-                className="p-2 flex-1 outline-none"
-                placeholder="인증번호확인"
-                value={emailVerification.code}
-                onChange={handleVerificationCodeChange}
-                disabled={emailVerification.isVerified}
-              />
-              <span className="text-red-500">
-                {formatTime(emailVerification.timer)}
-              </span>
-              <button
-                className={"px-4 py-2 rounded text-gray-400"}
-                onClick={handleVerifyEmailCode}
-                disabled={
-                  emailVerification.isVerified || !emailVerification.code
-                }
-              >
-                {emailVerification.isVerified ? "인증완료" : "확인"}
-              </button>
-            </div>
-          </div>
-        )}
-
-        <Input
-          label="닉네임"
-          type="text"
-          value={formData.nickname}
-          onChange={handleInputChange}
-          name="nickname"
-          placeholder="닉네임 입력"
-          required
-        />
-
-        <ValidationMessage message={verification.validNickname} />
-
-        <Input
-          label="비밀번호"
-          type="password"
-          value={formData.password}
-          onChange={handleInputChange}
-          name="password"
-          placeholder="패스워드 입력"
-          required
-        />
-
-        <ValidationMessage message={verification.validPassword} />
-
-        <Input
-          label="비밀번호 확인"
-          type="password"
-          value={formData.confirmPassword}
-          onChange={handleInputChange}
-          name="confirmPassword"
-          placeholder="비밀번호 확인"
-          required
-        />
-
-        <ValidationMessage message={verification.passwordConfirm} />
-
-        <AgreementSection formData={formData} onChange={handleInputChange} />
-
-        <GreenButton
-          text="회원가입"
-          onClick={handleSignUp}
-          disabled={!emailVerification.isVerified}
-        />
+      <div className="border border-green-300 p-4 rounded">
+        <button className="text-green-500" onClick={handleEmailVerification}>
+          이메일 인증하기
+        </button>
       </div>
+
+      {emailVerification.show && (
+        <div className="mt-4 border border-gray-300 rounded p-4">
+          <p className="text-sm text-gray-600 mb-2">
+            이메일로 받은 인증 코드를 입력해주세요
+          </p>
+          <div className="flex items-center gap-2 border border-gray-300 rounded p-2">
+            <input
+              type="text"
+              className="p-2 flex-1 outline-none"
+              placeholder="인증번호확인"
+              value={emailVerification.code}
+              onChange={handleVerificationCodeChange}
+              disabled={emailVerification.isVerified}
+            />
+            <span className="text-red-500">
+              {formatTime(emailVerification.timer)}
+            </span>
+            <button
+              className={"px-4 py-2 rounded text-gray-400"}
+              onClick={handleVerifyEmailCode}
+              disabled={emailVerification.isVerified || !emailVerification.code}
+            >
+              {emailVerification.isVerified ? "인증완료" : "확인"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <Input
+        label="닉네임"
+        type="text"
+        value={formData.nickname}
+        onChange={handleInputChange}
+        name="nickname"
+        placeholder="닉네임 입력"
+        required
+      />
+
+      <ValidationMessage message={verification.validNickname} />
+
+      <Input
+        label="비밀번호"
+        type="password"
+        value={formData.password}
+        onChange={handleInputChange}
+        name="password"
+        placeholder="패스워드 입력"
+        required
+      />
+
+      <ValidationMessage message={verification.validPassword} />
+
+      <Input
+        label="비밀번호 확인"
+        type="password"
+        value={formData.confirmPassword}
+        onChange={handleInputChange}
+        name="confirmPassword"
+        placeholder="비밀번호 확인"
+        required
+      />
+
+      <ValidationMessage message={verification.passwordConfirm} />
+
+      <AgreementSection formData={formData} onChange={handleInputChange} />
+
+      <GreenButton
+        text="회원가입"
+        onClick={handleSignUp}
+        disabled={!emailVerification.isVerified}
+      />
     </AuthLayout>
   );
 };

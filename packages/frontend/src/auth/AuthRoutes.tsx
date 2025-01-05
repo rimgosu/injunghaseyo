@@ -4,7 +4,7 @@ import { InitPage } from "./pages/InitPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { LoginPage } from "./pages/LoginPage";
 import { useAuth } from "./hooks/useAuth";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { GetCheckSignInUserStatusEnum } from "@rimgosu/libs";
 import { CharacterSelectPage } from "./pages/CharacterSelect";
 

@@ -39,33 +39,31 @@ export const LoginPage = () => {
 
   return (
     <AuthLayout>
-      <div className="flex flex-col gap-4 w-full max-w-md">
-        <Input
-          label="이메일"
-          type="email"
-          value={formData.email}
-          onChange={handleInputChange}
-          name="email"
-          placeholder="이메일 입력"
-          required
-        />
+      <Input
+        label="이메일"
+        type="email"
+        value={formData.email}
+        onChange={handleInputChange}
+        name="email"
+        placeholder="이메일 입력"
+        required
+      />
 
-        <Input
-          label="비밀번호"
-          type="password"
-          value={formData.password}
-          onChange={handleInputChange}
-          name="password"
-          placeholder="패스워드 입력"
-          required
-        />
+      <Input
+        label="비밀번호"
+        type="password"
+        value={formData.password}
+        onChange={handleInputChange}
+        name="password"
+        placeholder="패스워드 입력"
+        required
+      />
 
-        <GreenButton
-          text="로그인"
-          onClick={handleLogin}
-          disabled={!formData.email || !formData.password}
-        />
-      </div>
+      <GreenButton
+        text="로그인"
+        onClick={handleLogin}
+        disabled={!formData.email || !formData.password}
+      />
     </AuthLayout>
   );
 };
