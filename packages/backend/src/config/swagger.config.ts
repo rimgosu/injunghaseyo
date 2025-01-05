@@ -33,9 +33,12 @@ const swaggerConfig = new DocumentBuilder()
 
 export const setupSwagger = (app: INestApplication): void => {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-
   if (process.env.NODE_ENV === 'sdk') {
-    const outputPath = path.join(process.cwd(), './sdk/swagger.json');
+    const sdkDir = path.join(process.cwd(), './sdk');
+    if (!fs.existsSync(sdkDir)) {
+      fs.mkdirSync(sdkDir);
+    }
+    const outputPath = path.join(sdkDir, 'swagger.json');
     fs.writeFileSync(outputPath, JSON.stringify(document, null, 2), 'utf8');
     console.log('Swagger JSON generated at:', outputPath);
     app.close();
