@@ -32,12 +32,12 @@ export const SignUpPage = () => {
       code: "",
       isVerified: false,
       timer: 180,
-      message: "",
     });
   const [verification, setVerification] = useState<VerificationState>({
     validPassword: "",
     passwordConfirm: "",
     validNickname: "",
+    validCode: "",
   });
   const navigate = useNavigate();
 
@@ -51,7 +51,11 @@ export const SignUpPage = () => {
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (emailVerification.show && emailVerification.timer > 0) {
+    if (
+      emailVerification.show &&
+      emailVerification.timer > 0 &&
+      !emailVerification.isVerified
+    ) {
       interval = setInterval(() => {
         setEmailVerification((prev) => ({
           ...prev,
@@ -60,7 +64,11 @@ export const SignUpPage = () => {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [emailVerification.show, emailVerification.timer]);
+  }, [
+    emailVerification.show,
+    emailVerification.timer,
+    emailVerification.isVerified,
+  ]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -151,6 +159,9 @@ export const SignUpPage = () => {
       setEmailVerification((prev) => ({
         ...prev,
         show: true,
+        code: "",
+        isVerified: false,
+        timer: 180,
       }));
       alert(result?.message);
     } catch (error) {
@@ -161,20 +172,25 @@ export const SignUpPage = () => {
   };
 
   const handleVerifyEmailCode = async () => {
-    try {
-      const result = await verifyEmailCode({
-        email: formData.email,
-        code: emailVerification.code,
-      });
+    const result = await verifyEmailCode({
+      email: formData.email,
+      code: emailVerification.code,
+    });
+
+    if (result?.success) {
+      setVerification((prev) => ({
+        ...prev,
+        validCode: "",
+      }));
       setEmailVerification((prev) => ({
         ...prev,
         isVerified: true,
       }));
-      alert(result?.message);
-    } catch (error) {
-      alert(
-        error instanceof Error ? error.message : "인증번호 확인에 실패했습니다."
-      );
+    } else {
+      setVerification((prev) => ({
+        ...prev,
+        validCode: "인증번호가 일치하지 않습니다.",
+      }));
     }
   };
 
@@ -230,29 +246,40 @@ export const SignUpPage = () => {
       </div>
 
       {emailVerification.show && (
-        <div className="mt-4 border border-gray-300 rounded p-4">
+        <div
+          className={`mt-4 border border-gray-300 rounded p-4 ${
+            emailVerification.isVerified && "bg-gray-100"
+          }`}
+        >
           <p className="text-sm text-gray-600 mb-2">
             이메일로 받은 인증 코드를 입력해주세요
           </p>
           <div className="flex items-center gap-2 border border-gray-300 rounded p-2">
             <input
               type="text"
-              className="p-2 flex-1 outline-none"
+              className={`p-2 flex-1 outline-none ${emailVerification.isVerified && "text-gray-400"}`}
               placeholder="인증번호확인"
               value={emailVerification.code}
               onChange={handleVerificationCodeChange}
               disabled={emailVerification.isVerified}
             />
-            <span className="text-red-500">
+            <span
+              className={
+                emailVerification.isVerified ? "text-gray-400" : "text-red-500"
+              }
+            >
               {formatTime(emailVerification.timer)}
             </span>
             <button
               className={"px-4 py-2 rounded text-gray-400"}
               onClick={handleVerifyEmailCode}
-              disabled={emailVerification.isVerified || !emailVerification.code}
+              disabled={emailVerification.isVerified}
             >
               {emailVerification.isVerified ? "인증완료" : "확인"}
             </button>
+          </div>
+          <div className="mt-4">
+            <ValidationMessage message={verification.validCode} />
           </div>
         </div>
       )}

@@ -44,11 +44,7 @@ export const useAuth = () => {
       );
       return { success: true, message: "이메일 인증이 완료되었습니다." };
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(
-          error.response?.data?.message || "인증번호 확인에 실패했습니다."
-        );
-      }
+      return { success: false, message: "인증번호가 일치하지 않습니다." };
     }
   };
 
