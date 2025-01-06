@@ -30,8 +30,6 @@ export class OauthPendingStrategy extends PassportStrategy(
       },
     });
 
-    console.log('here');
-
     if (user?.status !== UserStatus.OAUTH_PENDING)
       throw new UnauthorizedException('회원 정보를 입력할 단계가 아닙니다.');
 

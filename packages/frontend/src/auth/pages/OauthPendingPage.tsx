@@ -60,19 +60,30 @@ export const OauthPendingPage = () => {
   };
 
   const handleContinue = async () => {
-    const params: AuthControllerActivateOauthParams = {
-      nickname,
-      eventAgree: agreementData.eventAgree,
-      requireAgree: agreementData.requireAgree,
-    };
+    try {
+      if (!agreementData.requireAgree) {
+        throw new Error("필수 약관에 동의해주세요");
+      }
 
-    await activateOauth({
-      nickname,
-      eventAgree: agreementData.eventAgree,
-      requireAgree: agreementData.requireAgree,
-    });
+      if (validNickname) {
+        throw new Error("유효하지 않은 닉네임입니다");
+      }
 
-    navigate("/auth/select-character");
+      const params: AuthControllerActivateOauthParams = {
+        nickname,
+        eventAgree: agreementData.eventAgree,
+        requireAgree: agreementData.requireAgree,
+      };
+
+      await activateOauth(params);
+      navigate("/auth/select-character");
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("오류가 발생했습니다. 다시 시도해주세요.");
+      }
+    }
   };
 
   return (
