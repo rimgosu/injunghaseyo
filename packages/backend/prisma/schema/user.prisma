@@ -22,9 +22,9 @@ model User {
     deletedAt    DateTime?
     join         Join[]
     photoComment PhotoComment[]
-    payment      Payment[]
     myCharacter  MyCharacter?
     wallet       Wallet?
+    order        Order[]
 }
 
 enum Provider {

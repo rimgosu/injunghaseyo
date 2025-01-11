@@ -7,6 +7,6 @@ model Wallet {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    user    User      @relation(fields: [userId], references: [id])
-    payment Payment[]
+    user          User            @relation(fields: [userId], references: [id])
+    walletHistory WalletHistory[]
 }

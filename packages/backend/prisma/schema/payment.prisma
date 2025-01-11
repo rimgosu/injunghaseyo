@@ -1,8 +1,6 @@
 model Payment {
     id              Int           @id @default(autoincrement())
-    userId          Int
-    groupId         Int
-    walletId        Int?
+    orderId         Int           @unique
     orderNo         String
     method          PaymentMethod
     status          PaymentStatus
@@ -13,15 +11,13 @@ model Payment {
     walletMoneyPaid Int?
     totalPaid       Int
     receiptUrl      String
-
-    user   User    @relation(fields: [userId], references: [id])
-    group  Group   @relation(fields: [groupId], references: [id])
-    wallet Wallet? @relation(fields: [walletId], references: [id])
+    order           Order         @relation(fields: [orderId], references: [id])
 
     createdAt      DateTime         @default(now())
     updatedAt      DateTime         @updatedAt
     deletedAt      DateTime?
     paymentHistory PaymentHistory[]
+    walletHistory  WalletHistory[]
 }
 
 enum PaymentMethod {

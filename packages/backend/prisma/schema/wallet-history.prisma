@@ -1,0 +1,23 @@
+model WalletHistory {
+    id            Int                 @id @default(autoincrement())
+    walletId      Int
+    paymentId     Int?
+    joinId        Int?
+    previousMoney Int
+    currentMoney  Int
+    reason        WalletHistoryReason
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+    Wallet    Wallet    @relation(fields: [walletId], references: [id])
+    Payment   Payment?  @relation(fields: [paymentId], references: [id])
+    Join      Join?     @relation(fields: [joinId], references: [id])
+}
+
+enum WalletHistoryReason {
+    JOIN /// 모임 참여
+    REFUND /// 환불
+    PAYMENT /// 결제 (인증 머니 충전)
+    TEST /// 테스트
+}

@@ -12,7 +12,6 @@ model Group {
     groupTagMap GroupTagMap[]
     join        Join[]
     groupDate   GroupDate[]
-    payment     Payment[]
 }
 
 enum GroupStatus {
