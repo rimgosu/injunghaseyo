@@ -1,0 +1,12 @@
+model PaymentHistory {
+    id             Int           @id @default(autoincrement())
+    paymentId      Int
+    previousStatus PaymentStatus /// IN_PROGRESS, SUCCESS
+    currentStatus  PaymentStatus
+
+    payment Payment @relation(fields: [paymentId], references: [id])
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+}

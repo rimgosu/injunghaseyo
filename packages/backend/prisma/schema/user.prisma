@@ -1,0 +1,48 @@
+model User {
+    id             Int        @id @default(autoincrement())
+    uuid           String     @unique @default(uuid())
+    email          String     @unique
+    nickname       String     @unique
+    introduction   String     @default("등록된 소개말이 없습니다.")
+    refreshToken   String?
+    eventAgree     Boolean
+    password       String?
+    salt           String?
+    provider       Provider?
+    role           Role       @default(USER)
+    status         UserStatus @default(ACTIVE)
+    lastLogin      DateTime?
+    lastPwdChanged DateTime?
+    loginFailCount Int        @default(0)
+
+    profilePhoto ProfilePhoto[]
+
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+    deletedAt    DateTime?
+    join         Join[]
+    photoComment PhotoComment[]
+    payment      Payment[]
+    myCharacter  MyCharacter?
+    wallet       Wallet?
+}
+
+enum Provider {
+    GOOGLE
+    NAVER
+    KAKAO
+}
+
+enum Role {
+    ADMIN
+    USER
+}
+
+enum UserStatus {
+    ACTIVE
+    INACTIVE
+    BLOCKED
+    WITHDRAWN
+    OAUTH_PENDING
+    CHARACTER_CHOOSE
+}

@@ -1,0 +1,25 @@
+model Join {
+    id       Int        @id @default(autoincrement())
+    groupId  Int
+    userId   Int
+    status   JoinStatus @default(RESERVED)
+    joinRole JoinRole
+
+    group Group @relation(fields: [groupId], references: [id])
+    user  User  @relation(fields: [userId], references: [id])
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+}
+
+enum JoinStatus {
+    RESERVED
+    IN_PROGRESS
+    COMPLETED
+}
+
+enum JoinRole {
+    HOST
+    ATTENDEE
+}

@@ -1,0 +1,16 @@
+model GroupProgress {
+    id          Int                 @id @default(autoincrement())
+    groupDateId Int
+    status      GroupProgressStatus
+    groupDate   GroupDate           @relation(fields: [groupDateId], references: [id])
+
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+    deletedAt  DateTime?
+    groupPhoto GroupPhoto[]
+}
+
+enum GroupProgressStatus {
+    PENDING
+    COMPLETED
+}

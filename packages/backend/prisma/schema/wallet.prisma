@@ -1,0 +1,12 @@
+model Wallet {
+    id     Int @id @default(autoincrement())
+    money  Int @default(1000)
+    userId Int @unique
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    user    User      @relation(fields: [userId], references: [id])
+    payment Payment[]
+}

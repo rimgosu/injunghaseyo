@@ -1,0 +1,38 @@
+model Payment {
+    id              Int           @id @default(autoincrement())
+    userId          Int
+    groupId         Int
+    walletId        Int?
+    orderNo         String
+    method          PaymentMethod
+    status          PaymentStatus
+    amount          Int
+    refundDate      DateTime?
+    refundAmount    Int?
+    discountAmount  Int?
+    walletMoneyPaid Int?
+    totalPaid       Int
+    receiptUrl      String
+
+    user   User    @relation(fields: [userId], references: [id])
+    group  Group   @relation(fields: [groupId], references: [id])
+    wallet Wallet? @relation(fields: [walletId], references: [id])
+
+    createdAt      DateTime         @default(now())
+    updatedAt      DateTime         @updatedAt
+    deletedAt      DateTime?
+    paymentHistory PaymentHistory[]
+}
+
+enum PaymentMethod {
+    CARD
+    INJUNG_MONEY
+    PHONE
+}
+
+enum PaymentStatus {
+    FAIL
+    IN_PROGRESS
+    SUCCESS
+    REFUND
+}

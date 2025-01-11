@@ -31,4 +31,16 @@ export class GroupController {
   async getTags(@Query() param: GetTagsParams): Promise<GetTagsRes> {
     return this.groupService.getTags(param);
   }
+
+  // /**
+  //  * @description 모임 참여
+  //  *
+  //  * TODO: 결제 시스템 연동
+  //  */
+  // @Post(':groupId/join')
+  // @ApiBearerAuth('jwt')
+  // @UseGuards(AtkGuard)
+  // async joinGroup(@GetUser() user: User, @Param('groupId') groupId: string) {
+  //   return this.groupService.joinGroup(user, groupId);
+  // }
 }

@@ -1,0 +1,11 @@
+model ProfilePhoto {
+    id     Int    @id @default(autoincrement())
+    url    String @default("base photo url - to be changed")
+    userId Int
+
+    user User @relation(fields: [userId], references: [id])
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+}

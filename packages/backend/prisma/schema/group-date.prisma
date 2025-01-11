@@ -1,0 +1,11 @@
+model GroupDate {
+    id      Int    @id @default(autoincrement())
+    groupId Int
+    date    String /// format: YYYY-MM-DD
+    group   Group  @relation(fields: [groupId], references: [id])
+
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    deletedAt     DateTime?
+    groupProgress GroupProgress[]
+}

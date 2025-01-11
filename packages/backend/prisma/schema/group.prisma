@@ -1,0 +1,22 @@
+model Group {
+    id          Int         @id @default(autoincrement())
+    title       String
+    price       Int
+    description String?
+    proofMethod String
+    status      GroupStatus @default(OPEN)
+
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    deletedAt   DateTime?
+    groupTagMap GroupTagMap[]
+    join        Join[]
+    groupDate   GroupDate[]
+    payment     Payment[]
+}
+
+enum GroupStatus {
+    OPEN
+    IN_PROGRESS
+    COMPLETED
+}
