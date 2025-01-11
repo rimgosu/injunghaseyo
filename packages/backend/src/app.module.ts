@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersAuthModule } from './users-auth/user-auth.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import configuration from './config/configuration';
@@ -10,10 +9,11 @@ import { EmailModule } from './email/email.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { GroupModule } from './group/group.module';
 import { OpenaiModule } from './openai/openai.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    UsersAuthModule,
+    AuthModule,
     PrismaModule,
     ConfigModule.forRoot({
       load: [configuration],

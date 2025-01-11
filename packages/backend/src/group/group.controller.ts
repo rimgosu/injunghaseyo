@@ -4,7 +4,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { GetUser } from '@/common/get-user.decorator';
 import { User } from '@prisma/client';
 import { CreateGroupParams } from './dtos/create-group-params.dto';
-import { AtkGuard } from '@/users-auth/guards/atk.guard';
+import { AtkGuard } from '@/auth/guards/atk.guard';
 import { GetTagsParams } from './dtos/get-tags-param.dto';
 import { GetTagsRes } from './dtos/get-tags-res.dto';
 

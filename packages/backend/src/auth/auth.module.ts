@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AuthHelper } from './utils/auth.helper';
@@ -14,9 +12,8 @@ import { OauthPendingStrategy } from './guards/oauth-pending.strategy';
 import { CharacterSelectStrategy } from './guards/character-choose.strategy';
 
 @Module({
-  controllers: [UsersController, AuthController],
+  controllers: [AuthController],
   providers: [
-    UsersService,
     AuthService,
     AuthHelper,
     JwtService,
@@ -29,4 +26,4 @@ import { CharacterSelectStrategy } from './guards/character-choose.strategy';
     CharacterSelectStrategy,
   ],
 })
-export class UsersAuthModule {}
+export class AuthModule {}
