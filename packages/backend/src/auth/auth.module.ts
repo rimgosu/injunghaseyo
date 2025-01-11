@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AuthHelper } from './utils/auth.helper';
@@ -10,7 +10,9 @@ import { KakaoStrategy } from './guards/kakao.strategy';
 import { NaverStrategy } from './guards/naver.strategy';
 import { OauthPendingStrategy } from './guards/oauth-pending.strategy';
 import { CharacterSelectStrategy } from './guards/character-choose.strategy';
+import { RoleStrategy } from './guards/role.strategy';
 
+@Global()
 @Module({
   controllers: [AuthController],
   providers: [
@@ -24,6 +26,7 @@ import { CharacterSelectStrategy } from './guards/character-choose.strategy';
     NaverStrategy,
     OauthPendingStrategy,
     CharacterSelectStrategy,
+    RoleStrategy,
   ],
 })
 export class AuthModule {}
