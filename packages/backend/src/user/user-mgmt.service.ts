@@ -1,6 +1,6 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { Role, User } from '@prisma/client';
+import { Role, User, Wallet, WalletHistoryReason } from '@prisma/client';
 import { GainMoneyParam } from './dtos/gain-money-param.dto';
 
 @Injectable()
@@ -13,6 +13,17 @@ export class UserMgmtService {
   async gainMoney(user: User, param: GainMoneyParam) {
     const { money } = param;
 
+    const userWithWallet: User & { wallet: Wallet } =
+      await this.prisma.user.findUnique({
+        where: {
+          uuid: user.uuid,
+          deletedAt: null,
+        },
+        include: {
+          wallet: true,
+        },
+      });
+
     return await this.prisma.wallet.update({
       where: {
         userId: user.id,
@@ -22,9 +33,27 @@ export class UserMgmtService {
         money: {
           increment: money,
         },
+        walletHistory: {
+          create: {
+            previousMoney: userWithWallet.wallet.money,
+            currentMoney: userWithWallet.wallet.money + money,
+            reason: WalletHistoryReason.TEST,
+          },
+        },
       },
       select: {
         money: true,
+        walletHistory: {
+          select: {
+            previousMoney: true,
+            currentMoney: true,
+            reason: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+        },
       },
     });
   }

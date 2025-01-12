@@ -1,13 +1,14 @@
 import { AtkGuard } from '@/auth/guards/atk.guard';
 import { RoleGuard } from '@/auth/guards/role.guard';
 import { GetUser } from '@/common/get-user.decorator';
-import { Post, UseGuards, Query } from '@nestjs/common';
+import { Post, UseGuards, Query, Controller } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { GainAdminRoleParam } from './dtos/gain-admin-role-param.dto';
 import { GainMoneyParam } from './dtos/gain-money-param.dto';
 import { UserMgmtService } from './user-mgmt.service';
 
+@Controller('user-mgmt')
 export class UserMgmtController {
   constructor(private readonly userMgmtService: UserMgmtService) {}
 
