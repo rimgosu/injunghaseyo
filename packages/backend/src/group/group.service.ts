@@ -42,50 +42,82 @@ export class GroupService {
       throw new ForbiddenException('잔액이 부족합니다.');
 
     return await this.prisma.$transaction(async (tx) => {
-      return await Promise.all([
-        tx.group.create({
-          data: {
-            title,
-            price,
-            description,
-            proofMethod,
-            join: {
-              create: {
-                userId: user.id,
-                joinRole: JoinRole.HOST,
-              },
+      const group = await tx.group.create({
+        data: {
+          title,
+          price,
+          description,
+          proofMethod,
+          join: {
+            create: {
+              userId: user.id,
+              joinRole: JoinRole.HOST,
             },
-            groupTagMap: {
-              createMany: {
-                data: allTags.map((tag) => {
-                  return { tagId: tag.id };
-                }),
-              },
+          },
+          groupTagMap: {
+            createMany: {
+              data: allTags.map((tag) => {
+                return { tagId: tag.id };
+              }),
             },
-            groupDate: {
-              createMany: {
-                data: dates.map((date) => {
-                  return { date };
-                }),
+          },
+          groupDate: {
+            createMany: {
+              data: dates.map((date) => {
+                return { date };
+              }),
+            },
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          price: true,
+          description: true,
+          proofMethod: true,
+          groupTagMap: {
+            select: {
+              tag: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
-        }),
+          groupDate: {
+            select: {
+              date: true,
+            },
+          },
+          join: {
+            select: {
+              id: true,
+              joinRole: true,
+            },
+            take: 1,
+          },
+        },
+      });
 
-        tx.wallet.update({
-          where: { userId: user.id, deletedAt: null },
-          data: {
-            money: { decrement: price },
-            walletHistory: {
-              create: {
-                previousMoney: wallet.money,
-                currentMoney: wallet.money - price,
-                reason: WalletHistoryReason.JOIN,
-              },
+      const updatedWallet = await tx.wallet.update({
+        where: { userId: user.id, deletedAt: null },
+        data: {
+          money: { decrement: price },
+          walletHistory: {
+            create: {
+              previousMoney: wallet.money,
+              currentMoney: wallet.money - price,
+              reason: WalletHistoryReason.JOIN,
+              joinId: group.join[0].id,
             },
           },
-        }),
-      ]);
+        },
+      });
+
+      return {
+        group,
+        wallet: updatedWallet,
+      };
     });
   }
 
