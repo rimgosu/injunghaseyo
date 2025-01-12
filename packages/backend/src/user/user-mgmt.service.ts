@@ -62,7 +62,7 @@ export class UserMgmtService {
    * @description 관리자 권한을 얻습니다.
    */
   async getAdminRole(user: User) {
-    if (user.email !== 'newnyup@gmail.com')
+    if (!['newnyup@gmail.com', 'newnyup2@gmail.com'].includes(user.email))
       throw new ForbiddenException('관리자 권한을 얻을 수 없습니다.');
 
     const { uuid } = user;

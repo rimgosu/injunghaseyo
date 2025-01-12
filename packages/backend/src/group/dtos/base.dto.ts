@@ -95,4 +95,14 @@ export class BaseGroupDto {
   @IsString({ each: true })
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   selectedTags?: string[];
+
+  @ApiProperty({
+    description: '모임 ID',
+    type: Number,
+    example: 1,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  @Transform(({ value }) => +value)
+  groupId: number;
 }

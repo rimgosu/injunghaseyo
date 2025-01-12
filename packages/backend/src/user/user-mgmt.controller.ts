@@ -8,7 +8,7 @@ import { GainAdminRoleParam } from './dtos/gain-admin-role-param.dto';
 import { GainMoneyParam } from './dtos/gain-money-param.dto';
 import { UserMgmtService } from './user-mgmt.service';
 
-@Controller('user-mgmt')
+@Controller('users-mgmt')
 export class UserMgmtController {
   constructor(private readonly userMgmtService: UserMgmtService) {}
 

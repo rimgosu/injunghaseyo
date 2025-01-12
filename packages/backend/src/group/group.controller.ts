@@ -1,14 +1,15 @@
-import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { GroupService } from './group.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { GetUser } from '@/common/get-user.decorator';
 import { User } from '@prisma/client';
 import { CreateGroupParams } from './dtos/create-group-params.dto';
 import { AtkGuard } from '@/auth/guards/atk.guard';
 import { GetTagsParams } from './dtos/get-tags-param.dto';
 import { GetTagsRes } from './dtos/get-tags-res.dto';
+import { JoinGroupParam } from './dtos/join-group-param.dto';
 
-@Controller('group')
+@Controller('groups')
 export class GroupController {
   constructor(private readonly groupService: GroupService) {}
 
@@ -28,19 +29,21 @@ export class GroupController {
   @Get('tags')
   @ApiBearerAuth('jwt')
   @UseGuards(AtkGuard)
+  @ApiResponse({
+    description: '태그 검색 - 자동완성',
+    type: GetTagsRes,
+  })
   async getTags(@Query() param: GetTagsParams): Promise<GetTagsRes> {
     return this.groupService.getTags(param);
   }
 
-  // /**
-  //  * @description 모임 참여
-  //  *
-  //  * TODO: 결제 시스템 연동
-  //  */
-  // @Post(':groupId/join')
-  // @ApiBearerAuth('jwt')
-  // @UseGuards(AtkGuard)
-  // async joinGroup(@GetUser() user: User, @Param('groupId') groupId: string) {
-  //   return this.groupService.joinGroup(user, groupId);
-  // }
+  /**
+   * @description 모임 참여
+   */
+  @Post(':groupId/join')
+  @ApiBearerAuth('jwt')
+  @UseGuards(AtkGuard)
+  async joinGroup(@GetUser() user: User, @Param() param: JoinGroupParam) {
+    return this.groupService.joinGroup(user, param);
+  }
 }

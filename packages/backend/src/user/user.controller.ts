@@ -6,7 +6,7 @@ import { GetUser } from '@/common/get-user.decorator';
 import { User } from '@prisma/client';
 import { GetMoneyDto } from './dtos/get-money.dto';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
