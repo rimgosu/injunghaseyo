@@ -9,7 +9,11 @@ export const GROUP_WITH_INCLUDE = Prisma.validator<Prisma.GroupDefaultArgs>()({
     },
     join: {
       include: {
-        user: true,
+        user: {
+          include: {
+            profilePhoto: true,
+          },
+        },
       },
     },
     groupDate: true,

@@ -1,9 +1,9 @@
 import { PickType } from '@nestjs/swagger';
-import { BaseGroupDto } from './base.dto';
+import { BaseGroup } from './base.dto';
 import { Tag } from '@prisma/client';
 import * as Hangul from 'hangul-js';
 
-export class GetTagsRes extends PickType(BaseGroupDto, ['tags']) {
+export class GetTagsRes extends PickType(BaseGroup, ['tags']) {
   constructor(tags: Tag[], tagSearch: string) {
     super();
 

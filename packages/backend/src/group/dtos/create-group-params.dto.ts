@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { BaseGroupDto } from './base.dto';
+import { BaseGroup } from './base.dto';
 
-export class CreateGroupParams extends PickType(BaseGroupDto, [
+export class CreateGroupParams extends PickType(BaseGroup, [
   'title',
   'price',
   'proofMethod',

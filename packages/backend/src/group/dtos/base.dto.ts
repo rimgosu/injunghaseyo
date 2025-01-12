@@ -10,7 +10,7 @@ import {
   Matches,
 } from 'class-validator';
 
-export class BaseGroupDto {
+export class BaseGroup {
   @ApiProperty({
     description: '모임 제목',
     type: String,

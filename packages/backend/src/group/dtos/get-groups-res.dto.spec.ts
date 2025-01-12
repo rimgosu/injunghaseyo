@@ -1,9 +1,10 @@
-import { JoinRole, User } from '@prisma/client';
+import { Group, JoinRole, ProfilePhoto, User } from '@prisma/client';
 import { GetGroupsRes } from '../dtos/get-groups-res.dto';
 import { JoinStatus, GroupStatus } from '../utils/enums';
+import { GroupWith } from '../utils/types';
 
 describe('GetGroupsRes', () => {
-  const mockUser: User = {
+  const mockUser: User & { profilePhoto: ProfilePhoto[] } = {
     id: 1,
     uuid: 'test-uuid',
     email: 'test@example.com',
@@ -22,6 +23,7 @@ describe('GetGroupsRes', () => {
     updatedAt: new Date(),
     deletedAt: null,
     loginFailCount: 0,
+    profilePhoto: [],
   };
 
   beforeEach(() => {
@@ -37,14 +39,13 @@ describe('GetGroupsRes', () => {
   describe('constructor', () => {
     it('그룹 목록을 올바르게 변환해야 함', () => {
       // Given
-      const mockGroups = [
+      const mockGroups: GroupWith[] = [
         {
           id: 1,
           title: '테스트 그룹',
           price: 30000,
           description: '테스트 설명',
           proofMethod: '인증 방법',
-          status: GroupStatus.NOT_STARTED,
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null,
@@ -142,26 +143,25 @@ describe('GetGroupsRes', () => {
         price: 30000,
         description: '테스트 설명',
         proofMethod: '인증 방법',
-        status: GroupStatus.NOT_STARTED,
         startDate: '2024-03-20',
         endDate: '2024-03-22',
-        joinStatus: JoinStatus.RESERVED,
         numberOfParticipants: 2,
         tags: ['운동', '건강'],
+        joinStatus: JoinStatus.RESERVED,
+        status: GroupStatus.NOT_STARTED,
       });
     });
 
     it('유저가 참여하지 않은 그룹은 NOT_JOINED 상태여야 함', () => {
       // Given
       const otherUser = { ...mockUser, id: 999 };
-      const mockGroups = [
+      const mockGroups: GroupWith[] = [
         {
           id: 1,
           title: '테스트 그룹',
           price: 30000,
           description: '테스트 설명',
           proofMethod: '인증 방법',
-          status: GroupStatus.NOT_STARTED,
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null,
@@ -224,7 +224,6 @@ describe('GetGroupsRes', () => {
           price: 30000,
           description: '테스트 설명',
           proofMethod: '인증 방법',
-          status: GroupStatus.IN_PROGRESS,
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null,
@@ -296,7 +295,6 @@ describe('GetGroupsRes', () => {
           price: 30000,
           description: '테스트 설명',
           proofMethod: '인증 방법',
-          status: GroupStatus.COMPLETED,
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null,
@@ -367,7 +365,6 @@ describe('GetGroupsRes', () => {
           price: 30000,
           description: '테스트 설명 1',
           proofMethod: '인증 방법',
-          status: GroupStatus.NOT_STARTED,
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null,
@@ -417,7 +414,6 @@ describe('GetGroupsRes', () => {
           price: 40000,
           description: '테스트 설명 2',
           proofMethod: '인증 방법',
-          status: GroupStatus.IN_PROGRESS,
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null,

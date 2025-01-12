@@ -1,7 +1,10 @@
 import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
-import { GetOptionalUser, GetUser } from '@/common/get-user.decorator';
+import {
+  GetOptionalUser as GetUserOptional,
+  GetUser,
+} from '@/common/get-user.decorator';
 import { User } from '@prisma/client';
 import { CreateGroupParams } from './dtos/create-group-params.dto';
 import { AtkGuard } from '@/auth/guards/atk.guard';
@@ -10,6 +13,8 @@ import { GetTagsRes } from './dtos/get-tags-res.dto';
 import { JoinGroupParam } from './dtos/join-group-param.dto';
 import { AtkOptionalGuard } from '@/auth/guards/atk-optional.guard';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
+import { GetGroupParam } from './dtos/get-group-param.dto';
+import { GetGroupRes } from './dtos/get-group-res.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -53,15 +58,30 @@ export class GroupController {
    * @description 모임 전체 조회
    */
   @Get()
-  @ApiBearerAuth('jwt')
   @UseGuards(AtkOptionalGuard)
   @ApiResponse({
     description: '모임 전체 조회',
     type: GetGroupsRes,
   })
   async getGroups(
-    @GetOptionalUser() user: User | undefined,
+    @GetUserOptional() user: User | undefined,
   ): Promise<GetGroupsRes> {
     return this.groupService.getGroups(user);
+  }
+
+  /**
+   * @description 모임 상세 조회
+   */
+  @Get(':groupId')
+  @UseGuards(AtkOptionalGuard)
+  @ApiResponse({
+    description: '모임 상세 조회',
+    type: GetGroupRes,
+  })
+  async getGroup(
+    @Param() param: GetGroupParam,
+    @GetUserOptional() user: User | undefined,
+  ): Promise<GetGroupRes> {
+    return this.groupService.getGroup(param, user);
   }
 }

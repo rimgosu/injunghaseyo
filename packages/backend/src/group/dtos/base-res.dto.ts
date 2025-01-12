@@ -1,0 +1,90 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { GroupStatus, JoinStatus } from '../utils/enums';
+
+class Participant {
+  @ApiProperty({
+    description: '참여자 ID',
+    type: Number,
+  })
+  id: number;
+
+  @ApiProperty({
+    description: '참여자 사진',
+    type: String,
+  })
+  profilePhoto: string;
+}
+
+export class BaseGroupRes {
+  @ApiProperty({
+    description: '그룹 ID',
+    type: Number,
+  })
+  id: number;
+
+  @ApiProperty({
+    description: '그룹 제목',
+    type: String,
+  })
+  title: string;
+
+  @ApiProperty({
+    description: '그룹 가격',
+    type: Number,
+  })
+  price: number;
+
+  @ApiProperty({
+    description: '그룹 설명',
+    type: String,
+  })
+  description: string;
+
+  @ApiProperty({
+    description: '그룹 증명 방법',
+    type: String,
+  })
+  proofMethod: string;
+
+  @ApiProperty({
+    description: '그룹 상태',
+    enum: GroupStatus,
+  })
+  status: GroupStatus;
+
+  @ApiProperty({
+    description: '그룹 시작일',
+    type: String,
+  })
+  startDate: string;
+
+  @ApiProperty({
+    description: '그룹 종료일',
+    type: String,
+  })
+  endDate: string;
+
+  @ApiProperty({
+    description: '참여자 수',
+    type: Number,
+  })
+  numberOfParticipants: number;
+
+  @ApiProperty({
+    description: '참여 상태',
+    enum: JoinStatus,
+  })
+  joinStatus?: JoinStatus;
+
+  @ApiProperty({
+    description: '태그',
+    type: [String],
+  })
+  tags: string[];
+
+  @ApiProperty({
+    description: '참여자 목록',
+    type: [Participant],
+  })
+  participants: Participant[];
+}

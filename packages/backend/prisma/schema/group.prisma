@@ -12,9 +12,3 @@ model Group {
     join        Join[]
     groupDate   GroupDate[]
 }
-
-enum GroupStatus {
-    OPEN
-    IN_PROGRESS
-    COMPLETED
-}

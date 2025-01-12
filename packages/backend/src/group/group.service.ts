@@ -16,10 +16,31 @@ import {
   isValidGroup,
   validateGroupDates,
 } from './utils/utils';
+import { GetGroupParam } from './dtos/get-group-param.dto';
+import { GetGroupRes } from './dtos/get-group-res.dto';
 
 @Injectable()
 export class GroupService {
   constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * @description 모임 상세 조회
+   */
+  async getGroup(
+    param: GetGroupParam,
+    user: User | undefined,
+  ): Promise<GetGroupRes> {
+    const { groupId } = param;
+
+    const group = await this.prisma.group.findUnique({
+      where: { id: groupId, deletedAt: null },
+      ...GROUP_WITH_INCLUDE,
+    });
+
+    if (!group) throw new NotFoundException('모임이 존재하지 않습니다.');
+
+    return new GetGroupRes(group, user);
+  }
 
   /**
    * @description 모임 전체 조회

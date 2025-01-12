@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { BaseGroupDto } from './base.dto';
+import { BaseGroup } from './base.dto';
 
-export class GetTagsParams extends PickType(BaseGroupDto, [
+export class GetTagsParams extends PickType(BaseGroup, [
   'tagSearch',
   'selectedTags',
 ]) {}
