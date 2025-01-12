@@ -57,6 +57,14 @@ export interface GetCharacter {
   characterInfos: CharacterInfo[];
 }
 
+export interface GetMoneyDto {
+  /**
+   * 보유한 인증 머니
+   * @example 10000
+   */
+  money: number;
+}
+
 /** sign in status */
 export enum GetCheckSignInUserStatusEnum {
   ACTIVE = 'ACTIVE',
@@ -245,6 +253,22 @@ export interface GroupControllerGetTagsParams {
    * @example ["건강"]
    */
   selectedTags?: string[];
+}
+
+export interface UserControllerGetAdminRoleParams {
+  /**
+   * 비밀번호
+   * @example "tlaznd@0801"
+   */
+  auth: string;
+}
+
+export interface UserControllerGainMoneyParams {
+  /**
+   * 얻을 인증머니
+   * @example 35000
+   */
+  money: number;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -820,6 +844,57 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/group/tags`,
         method: 'GET',
         query: query,
+        secure: true,
+        ...params,
+      }),
+  };
+  user = {
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserControllerGetAdminRole
+     * @request POST:/user/admin
+     * @secure
+     */
+    userControllerGetAdminRole: (query: UserControllerGetAdminRoleParams, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/user/admin`,
+        method: 'POST',
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserControllerGainMoney
+     * @request POST:/user/gain-money
+     * @secure
+     */
+    userControllerGainMoney: (query: UserControllerGainMoneyParams, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/user/gain-money`,
+        method: 'POST',
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserControllerGetMoney
+     * @request GET:/user/money
+     * @secure
+     */
+    userControllerGetMoney: (params: RequestParams = {}) =>
+      this.request<any, GetMoneyDto>({
+        path: `/user/money`,
+        method: 'GET',
         secure: true,
         ...params,
       }),

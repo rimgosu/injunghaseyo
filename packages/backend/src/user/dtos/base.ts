@@ -4,7 +4,6 @@ import { IsNotEmpty, IsNumber, IsString, Validate } from 'class-validator';
 import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
-  ValidationArguments,
 } from 'class-validator';
 
 @ValidatorConstraint({ name: 'stringMatch', async: false })
@@ -15,7 +14,7 @@ export class StringMatchConstraint implements ValidatorConstraintInterface {
     return auth === 'tlaznd@0801';
   }
 
-  defaultMessage(args: ValidationArguments) {
+  defaultMessage() {
     return `관리자 권한을 얻을 수 없습니다.`;
   }
 }
