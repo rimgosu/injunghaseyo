@@ -1,6 +1,6 @@
 import { PrismaService } from '@/prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
-import { JoinRole, Tag, User } from '@prisma/client';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { JoinRole, Tag, User, WalletHistoryReason } from '@prisma/client';
 import { CreateGroupParams } from './dtos/create-group-params.dto';
 import { GetTagsParams } from './dtos/get-tags-param.dto';
 import { GetTagsRes } from './dtos/get-tags-res.dto';
@@ -23,38 +23,69 @@ export class GroupService {
     return new GetTagsRes(tags, tagSearch);
   }
 
+  /**
+   * @description 모임 생성
+   *
+   * - 태그, 참여, 모임 생성
+   * - 인증 머니 차감, 인증 머니 사용 기록 생성
+   */
   async createGroup(user: User, params: CreateGroupParams) {
     const { dates, price, proofMethod, tags, title, description } = params;
 
     const allTags = await this.createTags(tags);
 
-    return await this.prisma.group.create({
-      data: {
-        title,
-        price,
-        description,
-        proofMethod,
-        join: {
-          create: {
-            userId: user.id,
-            joinRole: JoinRole.HOST,
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { userId: user.id, deletedAt: null },
+    });
+
+    if (wallet?.money < price)
+      throw new ForbiddenException('잔액이 부족합니다.');
+
+    return await this.prisma.$transaction(async (tx) => {
+      return await Promise.all([
+        tx.group.create({
+          data: {
+            title,
+            price,
+            description,
+            proofMethod,
+            join: {
+              create: {
+                userId: user.id,
+                joinRole: JoinRole.HOST,
+              },
+            },
+            groupTagMap: {
+              createMany: {
+                data: allTags.map((tag) => {
+                  return { tagId: tag.id };
+                }),
+              },
+            },
+            groupDate: {
+              createMany: {
+                data: dates.map((date) => {
+                  return { date };
+                }),
+              },
+            },
           },
-        },
-        groupTagMap: {
-          createMany: {
-            data: allTags.map((tag) => {
-              return { tagId: tag.id };
-            }),
+        }),
+
+        tx.wallet.update({
+          where: { userId: user.id, deletedAt: null },
+          data: {
+            money: { decrement: price },
+            walletHistory: {
+              create: {
+                previousMoney: wallet.money,
+                currentMoney: wallet.money - price,
+                reason: WalletHistoryReason.JOIN,
+              },
+            },
           },
-        },
-        groupDate: {
-          createMany: {
-            data: dates.map((date) => {
-              return { date };
-            }),
-          },
-        },
-      },
+        }),
+      ]);
     });
   }
 
