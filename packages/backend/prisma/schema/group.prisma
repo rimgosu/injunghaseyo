@@ -1,10 +1,9 @@
 model Group {
-    id          Int         @id @default(autoincrement())
+    id          Int     @id @default(autoincrement())
     title       String
     price       Int
     description String?
     proofMethod String
-    status      GroupStatus @default(OPEN)
 
     createdAt   DateTime      @default(now())
     updatedAt   DateTime      @updatedAt

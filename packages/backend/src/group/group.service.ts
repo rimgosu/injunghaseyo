@@ -4,21 +4,35 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import {
-  GroupStatus,
-  JoinRole,
-  Tag,
-  User,
-  WalletHistoryReason,
-} from '@prisma/client';
+import { JoinRole, Tag, User, WalletHistoryReason } from '@prisma/client';
 import { CreateGroupParams } from './dtos/create-group-params.dto';
 import { GetTagsParams } from './dtos/get-tags-param.dto';
 import { GetTagsRes } from './dtos/get-tags-res.dto';
 import { JoinGroupParam } from './dtos/join-group-param.dto';
+import { GROUP_WITH_INCLUDE, GroupWith } from './utils/types';
+import { GetGroupsRes } from './dtos/get-groups-res.dto';
+import { getLastDayNight, isValidGroup } from './utils/utils';
 
 @Injectable()
 export class GroupService {
   constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * @description 모임 전체 조회
+   */
+  async getGroups(user: User | undefined): Promise<GetGroupsRes> {
+    const groups: GroupWith[] = await this.prisma.group.findMany({
+      where: { deletedAt: null },
+      ...GROUP_WITH_INCLUDE,
+    });
+
+    const validGroups = groups.filter((gr) => {
+      const lastDayNight = getLastDayNight(gr.groupDate);
+      return isValidGroup(lastDayNight);
+    });
+
+    return new GetGroupsRes(validGroups, user);
+  }
 
   /**
    * @description 모임 참여
@@ -31,7 +45,9 @@ export class GroupService {
         where: {
           id: groupId,
           deletedAt: null,
-          NOT: { status: GroupStatus.COMPLETED },
+        },
+        include: {
+          groupDate: true,
         },
       }),
       this.prisma.wallet.findUnique({
@@ -45,7 +61,10 @@ export class GroupService {
       }),
     ]);
 
-    if (!group) throw new NotFoundException('모임이 존재하지 않습니다.');
+    const lastDayNight = getLastDayNight(group?.groupDate || []);
+
+    if (!group || !isValidGroup(lastDayNight))
+      throw new NotFoundException('모임이 존재하지 않습니다.');
 
     if (wallet?.money < group.price)
       throw new ForbiddenException('잔액이 부족합니다.');

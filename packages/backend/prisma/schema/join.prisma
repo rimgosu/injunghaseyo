@@ -1,8 +1,7 @@
 model Join {
-    id       Int        @id @default(autoincrement())
+    id       Int      @id @default(autoincrement())
     groupId  Int
     userId   Int
-    status   JoinStatus @default(RESERVED)
     joinRole JoinRole
 
     group Group @relation(fields: [groupId], references: [id])
@@ -13,12 +12,6 @@ model Join {
     deletedAt DateTime?
 
     walletHistory WalletHistory[]
-}
-
-enum JoinStatus {
-    RESERVED
-    IN_PROGRESS
-    COMPLETED
 }
 
 enum JoinRole {

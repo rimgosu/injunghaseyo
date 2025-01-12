@@ -11,6 +11,7 @@ import { NaverStrategy } from './guards/naver.strategy';
 import { OauthPendingStrategy } from './guards/oauth-pending.strategy';
 import { CharacterSelectStrategy } from './guards/character-choose.strategy';
 import { RoleStrategy } from './guards/role.strategy';
+import { AtkOptionalStrategy } from './guards/atk-optional.strategy';
 
 @Global()
 @Module({
@@ -27,6 +28,7 @@ import { RoleStrategy } from './guards/role.strategy';
     OauthPendingStrategy,
     CharacterSelectStrategy,
     RoleStrategy,
+    AtkOptionalStrategy,
   ],
 })
 export class AuthModule {}

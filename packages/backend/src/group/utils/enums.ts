@@ -1,0 +1,12 @@
+export enum JoinStatus {
+  RESERVED = 'RESERVED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  NOT_JOINED = 'NOT_JOINED',
+}
+
+export enum GroupStatus {
+  NOT_STARTED = 'NOT_STARTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+}
