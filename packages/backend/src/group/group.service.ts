@@ -11,7 +11,11 @@ import { GetTagsRes } from './dtos/get-tags-res.dto';
 import { JoinGroupParam } from './dtos/join-group-param.dto';
 import { GROUP_WITH_INCLUDE, GroupWith } from './utils/types';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
-import { getLastDayNight, isValidGroup } from './utils/utils';
+import {
+  getLastDayNight,
+  isValidGroup,
+  validateGroupDates,
+} from './utils/utils';
 
 @Injectable()
 export class GroupService {
@@ -124,6 +128,9 @@ export class GroupService {
    */
   async createGroup(user: User, params: CreateGroupParams) {
     const { dates, price, proofMethod, tags, title, description } = params;
+
+    if (!validateGroupDates(dates))
+      throw new ForbiddenException('최소 3일 전에 모임을 생성해야 합니다.');
 
     const allTags = await this.createTags(tags);
 
