@@ -8,4 +8,6 @@ model ProofMethod {
     deletedAt DateTime?
 
     group Group @relation(fields: [groupId], references: [id])
+
+    groupProgress GroupProgress[]
 }

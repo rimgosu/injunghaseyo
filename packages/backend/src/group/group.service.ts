@@ -4,7 +4,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { JoinRole, Tag, User, WalletHistoryReason } from '@prisma/client';
+import {
+  GroupProgressStatus,
+  JoinRole,
+  Tag,
+  User,
+  WalletHistoryReason,
+} from '@prisma/client';
 import { CreateGroupParams } from './dtos/create-group-params.dto';
 import { GetTagsParams } from './dtos/get-tags-param.dto';
 import { GetTagsRes } from './dtos/get-tags-res.dto';
@@ -201,7 +207,12 @@ export class GroupService {
           title: true,
           price: true,
           description: true,
-          proofMethod: true,
+          proofMethod: {
+            select: {
+              id: true,
+              method: true,
+            },
+          },
           groupTagMap: {
             select: {
               tag: {
@@ -213,6 +224,7 @@ export class GroupService {
           },
           groupDate: {
             select: {
+              id: true,
               date: true,
             },
           },
@@ -224,6 +236,20 @@ export class GroupService {
             take: 1,
           },
         },
+      });
+
+      // 각 날짜, 인�방법, 참여자(호스트)에 대해 GroupProgress 생성
+      const groupProgressData = group.groupDate.flatMap((date) =>
+        group.proofMethod.map((method) => ({
+          groupDateId: date.id,
+          joinId: group.join[0].id,
+          proofMethodId: method.id,
+          status: GroupProgressStatus.PENDING,
+        })),
+      );
+
+      await tx.groupProgress.createMany({
+        data: groupProgressData,
       });
 
       const updatedWallet = await tx.wallet.update({

@@ -1,15 +1,16 @@
 model GroupProgress {
-    id          Int                 @id @default(autoincrement())
-    groupDateId Int
-    joinId      Int
-    status      GroupProgressStatus
-    groupDate   GroupDate           @relation(fields: [groupDateId], references: [id])
-    join        Join                @relation(fields: [joinId], references: [id])
-
-    createdAt  DateTime    @default(now())
-    updatedAt  DateTime    @updatedAt
-    deletedAt  DateTime?
-    proofPhoto ProofPhoto?
+    id            Int                 @id @default(autoincrement())
+    groupDateId   Int
+    joinId        Int
+    proofMethodId Int
+    status        GroupProgressStatus
+    groupDate     GroupDate           @relation(fields: [groupDateId], references: [id])
+    join          Join                @relation(fields: [joinId], references: [id])
+    proofMethod   ProofMethod         @relation(fields: [proofMethodId], references: [id])
+    createdAt     DateTime            @default(now())
+    updatedAt     DateTime            @updatedAt
+    deletedAt     DateTime?
+    proofPhoto    ProofPhoto?
 }
 
 enum GroupProgressStatus {
