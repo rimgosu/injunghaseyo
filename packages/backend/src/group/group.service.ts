@@ -1,4 +1,3 @@
-import { PrismaService } from '@/prisma/prisma.service';
 import {
   ForbiddenException,
   Injectable,
@@ -24,6 +23,7 @@ import {
 } from './utils/utils';
 import { GetGroupParam } from './dtos/get-group-param.dto';
 import { GetGroupRes } from './dtos/get-group-res.dto';
+import { PrismaService } from '@/prisma/prisma.service';
 
 @Injectable()
 export class GroupService {
@@ -79,6 +79,7 @@ export class GroupService {
         },
         include: {
           groupDate: true,
+          proofMethod: true,
         },
       }),
       this.prisma.wallet.findUnique({
@@ -88,6 +89,7 @@ export class GroupService {
         where: {
           userId: user.id,
           groupId,
+          deletedAt: null,
         },
       }),
     ]);
@@ -109,6 +111,22 @@ export class GroupService {
           groupId,
           joinRole: JoinRole.ATTENDEE,
         },
+        select: {
+          id: true,
+        },
+      });
+
+      const groupProgressData = group.groupDate.flatMap((date) =>
+        group.proofMethod.map((method) => ({
+          groupDateId: date.id,
+          joinId: join.id,
+          proofMethodId: method.id,
+          status: GroupProgressStatus.PENDING,
+        })),
+      );
+
+      await tx.groupProgress.createMany({
+        data: groupProgressData,
       });
 
       const updatedWallet = await tx.wallet.update({
@@ -238,7 +256,7 @@ export class GroupService {
         },
       });
 
-      // 각 날짜, 인�방법, 참여자(호스트)에 대해 GroupProgress 생성
+      // 각 날짜, 인증방법, 참여자(호스트)에 대해 GroupProgress 생성
       const groupProgressData = group.groupDate.flatMap((date) =>
         group.proofMethod.map((method) => ({
           groupDateId: date.id,

@@ -1,7 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GroupService } from './group.service';
 import { PrismaService } from '@/prisma/prisma.service';
-import { JoinRole, User, WalletHistoryReason } from '@prisma/client';
+import {
+  GroupProgressStatus,
+  JoinRole,
+  User,
+  WalletHistoryReason,
+} from '@prisma/client';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { GroupStatus } from './utils/enums';
@@ -216,6 +221,9 @@ describe('GroupService', () => {
               findFirst: jest.fn(),
               create: jest.fn(),
             },
+            groupProgress: {
+              createMany: jest.fn(),
+            },
             $transaction: jest.fn((callback) => callback(prismaService)),
           },
         },
@@ -247,10 +255,48 @@ describe('GroupService', () => {
         title: '테스트 모임',
         price: 30000,
         description: '테스트 모임입니다',
-        proofMethod: '인증 방법',
+        proofMethod: [
+          {
+            id: 1,
+            method: '인증 방법1',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+            groupId: mockGroupId,
+          },
+          {
+            id: 2,
+            method: '인증 방법2',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+            groupId: mockGroupId,
+          },
+        ],
         groupDate: [
           {
-            date: '2024-03-20',
+            id: 1,
+            date: '2024-03-15',
+            groupId: mockGroupId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+          },
+          {
+            id: 2,
+            date: '2024-03-16',
+            groupId: mockGroupId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+          },
+          {
+            id: 3,
+            date: '2024-03-17',
+            groupId: mockGroupId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
           },
         ],
         createdAt: new Date(),
@@ -293,6 +339,9 @@ describe('GroupService', () => {
       jest
         .spyOn(prismaService.wallet, 'update')
         .mockResolvedValue(mockUpdatedWallet);
+      jest
+        .spyOn(prismaService.groupProgress, 'createMany')
+        .mockResolvedValue({ count: 1 });
 
       // When
       const result = await service.joinGroup(mockUser, mockJoinGroupParam);
@@ -308,6 +357,9 @@ describe('GroupService', () => {
           userId: mockUser.id,
           groupId: mockGroupId,
           joinRole: JoinRole.ATTENDEE,
+        },
+        select: {
+          id: true,
         },
       });
 
@@ -497,6 +549,189 @@ describe('GroupService', () => {
       await expect(
         service.joinGroup(mockUser, mockJoinGroupParam),
       ).rejects.toThrow(new NotFoundException('모임이 존재하지 않습니다.'));
+    });
+  });
+});
+
+describe('GroupService', () => {
+  let service: GroupService;
+  let prismaService: PrismaService;
+
+  const mockUser: User = {
+    id: 1,
+    uuid: 'test-uuid',
+    email: 'test@example.com',
+    nickname: 'testUser',
+    introduction: '등록된 소개말이 없습니다.',
+    refreshToken: null,
+    eventAgree: true,
+    password: 'hashedPassword',
+    salt: 'salt',
+    provider: null,
+    role: 'USER',
+    status: 'ACTIVE',
+    lastLogin: null,
+    lastPwdChanged: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    deletedAt: null,
+    loginFailCount: 0,
+  };
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        GroupService,
+        {
+          provide: PrismaService,
+          useValue: {
+            group: {
+              findUnique: jest.fn(),
+            },
+            wallet: {
+              findUnique: jest.fn(),
+              update: jest.fn(),
+            },
+            join: {
+              findFirst: jest.fn(),
+              create: jest.fn(),
+            },
+            groupProgress: {
+              createMany: jest.fn(),
+            },
+            $transaction: jest.fn((callback) => callback(prismaService)),
+          },
+        },
+      ],
+    }).compile();
+
+    service = module.get<GroupService>(GroupService);
+    prismaService = module.get<PrismaService>(PrismaService);
+  });
+
+  describe('joinGroup - GroupProgress 생성 테스트', () => {
+    const mockGroupId = 1;
+    const mockJoinGroupParam = { groupId: mockGroupId };
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2024-03-10'));
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('groupDate 수 * proofMethod 수만큼 GroupProgress가 생성되어야 함', async () => {
+      // Given
+      const mockGroup = {
+        id: mockGroupId,
+        title: '테스트 모임',
+        price: 30000,
+        description: '테스트 모임입니다',
+        proofMethod: [
+          {
+            id: 1,
+            method: '인증 방법1',
+            groupId: mockGroupId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+          },
+          {
+            id: 2,
+            method: '인증 방법2',
+            groupId: mockGroupId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+          },
+        ],
+        groupDate: [
+          {
+            id: 1,
+            date: '2024-03-15',
+            groupId: mockGroupId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+          },
+          {
+            id: 2,
+            date: '2024-03-16',
+            groupId: mockGroupId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+          },
+          {
+            id: 3,
+            date: '2024-03-17',
+            groupId: mockGroupId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
+      const mockWallet = {
+        id: 1,
+        userId: mockUser.id,
+        money: 50000,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
+      const mockJoin = {
+        id: 1,
+        userId: mockUser.id,
+        groupId: mockGroupId,
+        joinRole: JoinRole.ATTENDEE,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
+      jest
+        .spyOn(prismaService.group, 'findUnique')
+        .mockResolvedValue(mockGroup);
+      jest
+        .spyOn(prismaService.wallet, 'findUnique')
+        .mockResolvedValue(mockWallet);
+      jest.spyOn(prismaService.join, 'findFirst').mockResolvedValue(null);
+      jest.spyOn(prismaService.join, 'create').mockResolvedValue(mockJoin);
+      jest
+        .spyOn(prismaService.groupProgress, 'createMany')
+        .mockResolvedValue({ count: 6 });
+      jest.spyOn(prismaService.wallet, 'update').mockResolvedValue({
+        ...mockWallet,
+        money: mockWallet.money - mockGroup.price,
+      });
+
+      // When
+      await service.joinGroup(mockUser, mockJoinGroupParam);
+
+      // Then
+      const expectedGroupProgressData = mockGroup.groupDate.flatMap((date) =>
+        mockGroup.proofMethod.map((method) => ({
+          groupDateId: date.id,
+          joinId: mockJoin.id,
+          proofMethodId: method.id,
+          status: GroupProgressStatus.PENDING,
+        })),
+      );
+
+      expect(prismaService.groupProgress.createMany).toHaveBeenCalledWith({
+        data: expectedGroupProgressData,
+      });
+
+      // 생성된 GroupProgress 개수 확인 (3개 날짜 * 2개 인증방법 = 6개)
+      expect(expectedGroupProgressData).toHaveLength(6);
     });
   });
 });
