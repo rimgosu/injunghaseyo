@@ -41,12 +41,13 @@ export class BaseGroup {
 
   @ApiProperty({
     description: '인증 방법',
-    type: String,
-    example: '헬스장 출입 전\n헬스장 출입 후\n인증사진 찍어서 인증',
+    type: [String],
+    example: ['헬스장 출입 전', '헬스장 출입 후', '인증사진 찍어서 인증'],
   })
-  @IsString()
-  @IsNotEmpty()
-  proofMethod: string;
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsString({ each: true })
+  proofMethods: string[];
 
   @ApiProperty({
     description:

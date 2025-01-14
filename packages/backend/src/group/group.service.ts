@@ -148,7 +148,7 @@ export class GroupService {
    * - 인증 머니 차감, 인증 머니 사용 기록 생성
    */
   async createGroup(user: User, params: CreateGroupParams) {
-    const { dates, price, proofMethod, tags, title, description } = params;
+    const { dates, price, proofMethods, tags, title, description } = params;
 
     if (!validateGroupDates(dates))
       throw new ForbiddenException('최소 3일 전에 모임을 생성해야 합니다.');
@@ -168,7 +168,13 @@ export class GroupService {
           title,
           price,
           description,
-          proofMethod,
+          proofMethod: {
+            createMany: {
+              data: proofMethods.map((method) => {
+                return { method };
+              }),
+            },
+          },
           join: {
             create: {
               userId: user.id,

@@ -42,9 +42,9 @@ export class BaseGroupRes {
 
   @ApiProperty({
     description: '그룹 증명 방법',
-    type: String,
+    type: [String],
   })
-  proofMethod: string;
+  proofMethod: string[];
 
   @ApiProperty({
     description: '그룹 상태',

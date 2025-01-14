@@ -4,7 +4,7 @@ import { BaseGroup } from './base.dto';
 export class CreateGroupParams extends PickType(BaseGroup, [
   'title',
   'price',
-  'proofMethod',
+  'proofMethods',
   'dates',
   'tags',
   'description',

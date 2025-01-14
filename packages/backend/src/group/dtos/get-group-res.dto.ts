@@ -35,7 +35,7 @@ export class GetGroupRes extends PickType(BaseGroupRes, [
     this.title = group.title;
     this.price = group.price;
     this.description = group.description;
-    this.proofMethod = group.proofMethod;
+    this.proofMethod = group.proofMethod.map((method) => method.method);
     this.tags = group.groupTagMap.map((tagMap) => tagMap.tag.name);
   }
 

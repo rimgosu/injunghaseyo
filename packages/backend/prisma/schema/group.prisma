@@ -3,7 +3,6 @@ model Group {
     title       String
     price       Int
     description String?
-    proofMethod String
 
     createdAt   DateTime      @default(now())
     updatedAt   DateTime      @updatedAt
@@ -11,4 +10,5 @@ model Group {
     groupTagMap GroupTagMap[]
     join        Join[]
     groupDate   GroupDate[]
+    proofMethod ProofMethod[]
 }

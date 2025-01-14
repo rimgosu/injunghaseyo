@@ -1,13 +1,13 @@
 model PhotoComment {
     id           Int        @id @default(autoincrement())
     userId       Int
-    groupPhotoId Int
+    proofPhotoId Int
     contents     String
     like         Int        @default(0)
     parentId     Int?
     depth        Int        @default(1) /// root=1 
     user         User       @relation(fields: [userId], references: [id])
-    groupPhoto   GroupPhoto @relation(fields: [groupPhotoId], references: [id])
+    proofPhoto   ProofPhoto @relation(fields: [proofPhotoId], references: [id])
 
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt

@@ -1,6 +1,6 @@
-model GroupPhoto {
+model ProofPhoto {
     id              Int           @id @default(autoincrement())
-    groupProgressId Int
+    groupProgressId Int           @unique
     url             String
     like            Int           @default(0)
     view            Int           @default(0)

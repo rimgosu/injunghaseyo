@@ -12,6 +12,7 @@ model Join {
     deletedAt DateTime?
 
     walletHistory WalletHistory[]
+    groupProgress GroupProgress[]
 }
 
 enum JoinRole {

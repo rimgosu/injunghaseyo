@@ -17,6 +17,7 @@ export const GROUP_WITH_INCLUDE = Prisma.validator<Prisma.GroupDefaultArgs>()({
       },
     },
     groupDate: true,
+    proofMethod: true,
   },
 });
 

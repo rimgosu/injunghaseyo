@@ -40,7 +40,7 @@ export class GetGroupsRes {
         title: group.title,
         price: group.price,
         description: group.description,
-        proofMethod: group.proofMethod,
+        proofMethod: group.proofMethod.map((method) => method.method),
         status,
         startDate,
         endDate,
