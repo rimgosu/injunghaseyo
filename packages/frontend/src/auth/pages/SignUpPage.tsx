@@ -1,23 +1,23 @@
-import { AuthLayout } from "../AuthLayout";
-import React, { useEffect, useState } from "react";
+import { AuthLayout } from '../AuthLayout';
+import React, { useEffect, useState } from 'react';
 import {
   EmailVerificationState,
   SignUpFormData,
   VerificationState,
-} from "../types";
-import { useNavigate } from "react-router-dom";
-import { AgreementSection } from "../components/Agreement";
-import { Input } from "../../common/Input";
-import { useAuth } from "../hooks/useAuth";
-import { ValidationMessage } from "../components/ValidationMessage";
-import { GreenButton } from "../components/GreenButton";
+} from '../types';
+import { useNavigate } from 'react-router-dom';
+import { AgreementSection } from '../components/Agreement';
+import { Input } from '../../common/Input';
+import { useAuth } from '../hooks/useAuth';
+import { ValidationMessage } from '../components/ValidationMessage';
+import { GreenButton } from '../components/GreenButton';
 
 export const SignUpPage = () => {
   const [formData, setFormData] = useState<SignUpFormData>({
-    email: "",
-    nickname: "",
-    confirmPassword: "",
-    password: "",
+    email: '',
+    nickname: '',
+    confirmPassword: '',
+    password: '',
     eventAgree: false,
     requireAgree: false,
     ageAgree: false,
@@ -29,15 +29,15 @@ export const SignUpPage = () => {
   const [emailVerification, setEmailVerification] =
     useState<EmailVerificationState>({
       show: false,
-      code: "",
+      code: '',
       isVerified: false,
       timer: 180,
     });
   const [verification, setVerification] = useState<VerificationState>({
-    validPassword: "",
-    passwordConfirm: "",
-    validNickname: "",
-    validCode: "",
+    validPassword: '',
+    passwordConfirm: '',
+    validNickname: '',
+    validCode: '',
   });
   const navigate = useNavigate();
 
@@ -73,23 +73,23 @@ export const SignUpPage = () => {
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === 'checkbox' ? checked : value,
     }));
 
-    if (name === "password") {
+    if (name === 'password') {
       value &&
         verifyPassword({ password: value })
           .then((result) => {
             setVerification((prev) => ({
               ...prev,
-              validPassword: "",
+              validPassword: '',
             }));
           })
           .catch((error) => {
@@ -101,32 +101,32 @@ export const SignUpPage = () => {
       !value &&
         setVerification((prev) => ({
           ...prev,
-          validPassword: "",
+          validPassword: '',
         }));
     }
 
-    if (name === "confirmPassword") {
+    if (name === 'confirmPassword') {
       value &&
         formData.password !== value &&
         setVerification((prev) => ({
           ...prev,
-          passwordConfirm: "비밀번호가 일치하지 않습니다.",
+          passwordConfirm: '비밀번호가 일치하지 않습니다.',
         }));
 
       (formData.password === value || !value) &&
         setVerification((prev) => ({
           ...prev,
-          passwordConfirm: "",
+          passwordConfirm: '',
         }));
     }
 
-    if (name === "nickname") {
+    if (name === 'nickname') {
       value &&
         verifyNickname({ nickname: value })
           .then((result) => {
             setVerification((prev) => ({
               ...prev,
-              validNickname: "",
+              validNickname: '',
             }));
           })
           .catch((error) => {
@@ -139,13 +139,13 @@ export const SignUpPage = () => {
       !value &&
         setVerification((prev) => ({
           ...prev,
-          validNickname: "",
+          validNickname: '',
         }));
     }
   };
 
   const handleVerificationCodeChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setEmailVerification((prev) => ({
       ...prev,
@@ -159,14 +159,14 @@ export const SignUpPage = () => {
       setEmailVerification((prev) => ({
         ...prev,
         show: true,
-        code: "",
+        code: '',
         isVerified: false,
         timer: 180,
       }));
       alert(result?.message);
     } catch (error) {
       alert(
-        error instanceof Error ? error.message : "이메일 발송에 실패했습니다."
+        error instanceof Error ? error.message : '이메일 발송에 실패했습니다.',
       );
     }
   };
@@ -180,7 +180,7 @@ export const SignUpPage = () => {
     if (result?.success) {
       setVerification((prev) => ({
         ...prev,
-        validCode: "",
+        validCode: '',
       }));
       setEmailVerification((prev) => ({
         ...prev,
@@ -189,24 +189,24 @@ export const SignUpPage = () => {
     } else {
       setVerification((prev) => ({
         ...prev,
-        validCode: "인증번호가 일치하지 않습니다.",
+        validCode: '인증번호가 일치하지 않습니다.',
       }));
     }
   };
 
   const validateSignUpData = () => {
     if (!emailVerification.isVerified) {
-      alert("이메일 인증이 필요합니다.");
+      alert('이메일 인증이 필요합니다.');
       return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      alert("비밀번호가 일치하지 않습니다.");
+      alert('비밀번호가 일치하지 않습니다.');
       return false;
     }
 
     if (!formData.requireAgree) {
-      alert("필수 약관에 동의해주세요.");
+      alert('필수 약관에 동의해주세요.');
       return false;
     }
 
@@ -219,10 +219,10 @@ export const SignUpPage = () => {
     try {
       const result = await signUp(formData);
       alert(result?.message);
-      navigate("/auth/login");
+      navigate('/auth/login');
     } catch (error) {
       alert(
-        error instanceof Error ? error.message : "회원가입에 실패했습니다."
+        error instanceof Error ? error.message : '회원가입에 실패했습니다.',
       );
     }
   };
@@ -248,7 +248,7 @@ export const SignUpPage = () => {
       {emailVerification.show && (
         <div
           className={`mt-4 border border-gray-300 rounded p-4 ${
-            emailVerification.isVerified && "bg-gray-100"
+            emailVerification.isVerified && 'bg-gray-100'
           }`}
         >
           <p className="text-sm text-gray-600 mb-2">
@@ -257,7 +257,7 @@ export const SignUpPage = () => {
           <div className="flex items-center gap-2 border border-gray-300 rounded p-2">
             <input
               type="text"
-              className={`p-2 flex-1 outline-none ${emailVerification.isVerified && "text-gray-400"}`}
+              className={`p-2 flex-1 outline-none ${emailVerification.isVerified && 'text-gray-400'}`}
               placeholder="인증번호확인"
               value={emailVerification.code}
               onChange={handleVerificationCodeChange}
@@ -265,17 +265,17 @@ export const SignUpPage = () => {
             />
             <span
               className={
-                emailVerification.isVerified ? "text-gray-400" : "text-red-500"
+                emailVerification.isVerified ? 'text-gray-400' : 'text-red-500'
               }
             >
               {formatTime(emailVerification.timer)}
             </span>
             <button
-              className={"px-4 py-2 rounded text-gray-400"}
+              className={'px-4 py-2 rounded text-gray-400'}
               onClick={handleVerifyEmailCode}
               disabled={emailVerification.isVerified}
             >
-              {emailVerification.isVerified ? "인증완료" : "확인"}
+              {emailVerification.isVerified ? '인증완료' : '확인'}
             </button>
           </div>
           <div className="mt-4">

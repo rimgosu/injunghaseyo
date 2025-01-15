@@ -1,8 +1,8 @@
-import { AuthLayout } from "../AuthLayout";
-import React from "react";
-import { OtherPage } from "../components/OtherPage";
-import { SocialLoginHome } from "../components/SocialLoginHome";
-import { Link } from "react-router-dom";
+import { AuthLayout } from '../AuthLayout';
+import React from 'react';
+import { OtherPage } from '../components/OtherPage';
+import { SocialLoginHome } from '../components/SocialLoginHome';
+import { Link } from 'react-router-dom';
 
 export const InitPage = () => (
   <AuthLayout>

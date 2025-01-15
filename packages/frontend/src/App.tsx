@@ -1,9 +1,9 @@
-import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
-import "./App.css";
-import "./styles/globals.css";
-import { store } from "./store";
-import { AuthRoutes } from "./auth/AuthRoutes";
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import './App.css';
+import './styles/globals.css';
+import { store } from './store';
+import { AuthRoutes } from './auth/AuthRoutes';
 
 function App() {
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface CheckboxProps {
   label: string;
@@ -62,7 +62,7 @@ export const AgreementSection: React.FC<AgreementSectionProps> = ({
     // 모든 체크박스 상태를 한번에 업데이트
     const updateEvent = {
       target: {
-        type: "checkbox",
+        type: 'checkbox',
         checked: checked,
       },
     } as React.ChangeEvent<HTMLInputElement>;
@@ -70,25 +70,25 @@ export const AgreementSection: React.FC<AgreementSectionProps> = ({
     // 필수 항목 업데이트
     onChange({
       ...updateEvent,
-      target: { ...updateEvent.target, name: "ageAgree" },
+      target: { ...updateEvent.target, name: 'ageAgree' },
     });
     onChange({
       ...updateEvent,
-      target: { ...updateEvent.target, name: "termsAgree" },
+      target: { ...updateEvent.target, name: 'termsAgree' },
     });
     onChange({
       ...updateEvent,
-      target: { ...updateEvent.target, name: "privacyAgree" },
+      target: { ...updateEvent.target, name: 'privacyAgree' },
     });
 
     // 선택 항목 업데이트
     onChange({
       ...updateEvent,
-      target: { ...updateEvent.target, name: "marketingAgree" },
+      target: { ...updateEvent.target, name: 'marketingAgree' },
     });
     onChange({
       ...updateEvent,
-      target: { ...updateEvent.target, name: "smsAgree" },
+      target: { ...updateEvent.target, name: 'smsAgree' },
     });
 
     // requireAgree 상태 업데이트 (모든 필수항목이 체크된 경우에만 true)
@@ -96,7 +96,7 @@ export const AgreementSection: React.FC<AgreementSectionProps> = ({
       ...updateEvent,
       target: {
         ...updateEvent.target,
-        name: "requireAgree",
+        name: 'requireAgree',
         checked: checked, // 전체 동의시에만 true가 됨
       },
     });
@@ -106,7 +106,7 @@ export const AgreementSection: React.FC<AgreementSectionProps> = ({
       ...updateEvent,
       target: {
         ...updateEvent.target,
-        name: "eventAgree",
+        name: 'eventAgree',
         checked: checked,
       },
     });
@@ -120,11 +120,11 @@ export const AgreementSection: React.FC<AgreementSectionProps> = ({
     onChange(e);
 
     // 필수 약관 동의 상태 업데이트
-    if (["ageAgree", "termsAgree", "privacyAgree"].includes(name)) {
+    if (['ageAgree', 'termsAgree', 'privacyAgree'].includes(name)) {
       const willAllRequired =
-        name === "ageAgree"
+        name === 'ageAgree'
           ? checked && formData.termsAgree && formData.privacyAgree
-          : name === "termsAgree"
+          : name === 'termsAgree'
             ? formData.ageAgree && checked && formData.privacyAgree
             : formData.ageAgree && formData.termsAgree && checked;
 
@@ -132,16 +132,16 @@ export const AgreementSection: React.FC<AgreementSectionProps> = ({
         ...e,
         target: {
           ...e.target,
-          name: "requireAgree",
+          name: 'requireAgree',
           checked: willAllRequired,
         },
       });
     }
 
     // 선택 약관 동의 상태 업데이트
-    if (["marketingAgree", "smsAgree"].includes(name)) {
+    if (['marketingAgree', 'smsAgree'].includes(name)) {
       const willAllOptional =
-        name === "marketingAgree"
+        name === 'marketingAgree'
           ? checked && formData.smsAgree
           : formData.marketingAgree && checked;
 
@@ -149,7 +149,7 @@ export const AgreementSection: React.FC<AgreementSectionProps> = ({
         ...e,
         target: {
           ...e.target,
-          name: "eventAgree",
+          name: 'eventAgree',
           checked: willAllOptional,
         },
       });

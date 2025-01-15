@@ -1,11 +1,11 @@
-import { AuthLayout } from "../AuthLayout";
-import React, { useEffect, useState } from "react";
+import { AuthLayout } from '../AuthLayout';
+import React, { useEffect, useState } from 'react';
 import {
   AuthControllerCharacterSelectParams,
   GetCharacter,
-} from "@rimgosu/libs";
-import { useCharacter } from "../hooks/useCharacter";
-import { GreenButton } from "../components/GreenButton";
+} from '@rimgosu/libs';
+import { useCharacter } from '../hooks/useCharacter';
+import { GreenButton } from '../components/GreenButton';
 
 export const CharacterSelectPage = () => {
   const { getCharacter, selectCharacter } = useCharacter();
@@ -13,7 +13,7 @@ export const CharacterSelectPage = () => {
   const [characters, setCharacters] = useState<GetCharacter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCharacter, setSelectedCharacter] = useState<number | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export const CharacterSelectPage = () => {
         setCharacters(result);
         console.log(result);
       } catch (error) {
-        console.error("캐릭터 로딩 실패:", error);
+        console.error('캐릭터 로딩 실패:', error);
       } finally {
         setIsLoading(false);
       }
@@ -37,7 +37,7 @@ export const CharacterSelectPage = () => {
   }
 
   const handleSelectCharacter = async (
-    param: AuthControllerCharacterSelectParams
+    param: AuthControllerCharacterSelectParams,
   ) => {
     const { characterId } = param;
     setSelectedCharacter(characterId);
@@ -61,7 +61,7 @@ export const CharacterSelectPage = () => {
                 handleSelectCharacter({ characterId: character.id })
               }
               className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer hover:border-green-500 
-                ${selectedCharacter === character.id ? "border-green-500" : ""}`}
+                ${selectedCharacter === character.id ? 'border-green-500' : ''}`}
             >
               <div
                 className="w-24 h-24 mb-2"

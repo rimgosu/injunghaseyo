@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { AuthLayout } from "../AuthLayout";
-import { Input } from "../../common/Input";
-import { AgreementSection } from "../components/Agreement";
-import { GreenButton } from "../components/GreenButton";
-import { ValidationMessage } from "../components/ValidationMessage";
-import { useAuth } from "../hooks/useAuth";
-import { AuthControllerActivateOauthParams } from "@rimgosu/libs";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { AuthLayout } from '../AuthLayout';
+import { Input } from '../../common/Input';
+import { AgreementSection } from '../components/Agreement';
+import { GreenButton } from '../components/GreenButton';
+import { ValidationMessage } from '../components/ValidationMessage';
+import { useAuth } from '../hooks/useAuth';
+import { AuthControllerActivateOauthParams } from '@rimgosu/libs';
+import { useNavigate } from 'react-router-dom';
 
 export const OauthPendingPage = () => {
   const { verifyNickname, activateOauth } = useAuth();
@@ -22,24 +22,24 @@ export const OauthPendingPage = () => {
     smsAgree: false,
   });
 
-  const [nickname, setNickname] = useState<string>("");
-  const [validNickname, setValidNickname] = useState<string>("");
+  const [nickname, setNickname] = useState<string>('');
+  const [validNickname, setValidNickname] = useState<string>('');
 
   const handleNicknameChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     try {
       const nickname = e.target.value;
       setNickname(nickname);
 
       if (nickname.length < 2 || nickname.length > 10) {
-        setValidNickname("닉네임은 2-10자 사이여야 합니다");
+        setValidNickname('닉네임은 2-10자 사이여야 합니다');
         return;
       }
 
       const result = await verifyNickname({ nickname });
       if (!result) {
-        setValidNickname("");
+        setValidNickname('');
       } else {
         setValidNickname(result.message);
       }
@@ -47,7 +47,7 @@ export const OauthPendingPage = () => {
       if (error instanceof Error) {
         setValidNickname(error.message);
       } else {
-        setValidNickname("닉네임 검증 중 오류가 발생했습니다");
+        setValidNickname('닉네임 검증 중 오류가 발생했습니다');
       }
     }
   };
@@ -62,11 +62,11 @@ export const OauthPendingPage = () => {
   const handleContinue = async () => {
     try {
       if (!agreementData.requireAgree) {
-        throw new Error("필수 약관에 동의해주세요");
+        throw new Error('필수 약관에 동의해주세요');
       }
 
       if (validNickname) {
-        throw new Error("유효하지 않은 닉네임입니다");
+        throw new Error('유효하지 않은 닉네임입니다');
       }
 
       const params: AuthControllerActivateOauthParams = {
@@ -76,12 +76,12 @@ export const OauthPendingPage = () => {
       };
 
       await activateOauth(params);
-      navigate("/auth/select-character");
+      navigate('/auth/select-character');
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
       } else {
-        alert("오류가 발생했습니다. 다시 시도해주세요.");
+        alert('오류가 발생했습니다. 다시 시도해주세요.');
       }
     }
   };

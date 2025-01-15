@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
 interface SocialLoginButtonProps {
-  provider: "google" | "kakao" | "naver";
+  provider: 'google' | 'kakao' | 'naver';
   icon: string;
   text: string;
   className?: string;
-  onClick: (provider: "google" | "kakao" | "naver") => void;
+  onClick: (provider: 'google' | 'kakao' | 'naver') => void;
 }
 
 export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
@@ -15,7 +15,7 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
   className,
   onClick,
 }) => {
-  const baseStyles = "flex gap-2 px-4 py-3 rounded-lg w-full";
+  const baseStyles = 'flex gap-2 px-4 py-3 rounded-lg w-full';
 
   return (
     <button

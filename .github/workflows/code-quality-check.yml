@@ -21,21 +21,10 @@ jobs:
         run: yarn install
 
       - name: Check formatting
-        run: |
-          cd packages/backend
-          yarn format --check
-          cd ../frontend
-          yarn format --check
+        run: yarn format --check
 
-      - name: Run backend tests
-        run: |
-          cd packages/backend
-          yarn test
-
-      - name: Run frontend tests
-        run: |
-          cd packages/frontend
-          yarn test --passWithNoTests
+      - name: Run tests
+        run: yarn test
 
       - name: Build check
         run: yarn build

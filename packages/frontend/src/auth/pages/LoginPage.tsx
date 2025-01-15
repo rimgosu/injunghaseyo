@@ -1,18 +1,18 @@
-import { AuthLayout } from "../AuthLayout";
-import React, { useState } from "react";
-import { LoginFormData } from "../types";
-import { Input } from "../../common/Input";
-import { GreenButton } from "../components/GreenButton";
-import { useAuth } from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { GetCheckSignInUserStatusEnum } from "@rimgosu/libs";
-import { SocialLogin } from "../components/SocialLogin";
-import { OtherPage } from "../components/OtherPage";
+import { AuthLayout } from '../AuthLayout';
+import React, { useState } from 'react';
+import { LoginFormData } from '../types';
+import { Input } from '../../common/Input';
+import { GreenButton } from '../components/GreenButton';
+import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { GetCheckSignInUserStatusEnum } from '@rimgosu/libs';
+import { SocialLogin } from '../components/SocialLogin';
+import { OtherPage } from '../components/OtherPage';
 
 export const LoginPage = () => {
   const [formData, setFormData] = useState<LoginFormData>({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
 
   const { login, checkSignIn } = useAuth();
@@ -25,17 +25,17 @@ export const LoginPage = () => {
   const handleLogin = async () => {
     const result = await login(formData);
     if (result) {
-      localStorage.setItem("accessToken", result.accessToken);
+      localStorage.setItem('accessToken', result.accessToken);
       const checkSignInRes = await checkSignIn();
       if (
         checkSignInRes?.userStatus ===
         GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE
       ) {
-        navigate("/auth/select-character");
+        navigate('/auth/select-character');
         return;
       }
 
-      navigate("/");
+      navigate('/');
     }
   };
 

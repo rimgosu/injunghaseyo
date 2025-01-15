@@ -1,7 +1,7 @@
 import {
   AuthControllerSignInParams,
   AuthControllerSignUpParams,
-} from "@rimgosu/libs";
+} from '@rimgosu/libs';
 
 export interface SignUpFormData extends AuthControllerSignUpParams {
   ageAgree: boolean;
@@ -27,4 +27,4 @@ export interface VerificationState {
 
 export interface LoginFormData extends AuthControllerSignInParams {}
 
-export type LocalStorageKeys = "accessToken";
+export type LocalStorageKeys = 'accessToken';

@@ -17,7 +17,8 @@
     "db": "docker compose -f docker-compose.db.yaml up -d",
     "prisma:setting": "yarn workspace @monorepo/backend prisma:migrate:dev && yarn workspace @monorepo/backend prisma:seed",
     "prisma:clear": "yarn workspace @monorepo/backend prisma:reset && yarn workspace @monorepo/backend prisma:migrate:dev && yarn workspace @monorepo/backend prisma:seed",
-    "gen:sdk": "yarn workspace @monorepo/backend gen:swagger && yarn workspace @monorepo/backend gen:sdk && cp ./packages/backend/sdk/injunghaseyo-api.ts ./packages/libs/src && yarn workspace @rimgosu/libs build"
+    "gen:sdk": "yarn workspace @monorepo/backend gen:swagger && yarn workspace @monorepo/backend gen:sdk && cp ./packages/backend/sdk/injunghaseyo-api.ts ./packages/libs/src && yarn workspace @rimgosu/libs build",
+    "format": "yarn workspace @monorepo/backend format && yarn workspace @monorepo/frontend format"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"

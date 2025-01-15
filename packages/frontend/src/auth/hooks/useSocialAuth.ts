@@ -1,10 +1,10 @@
-import axios from "axios";
-import { useCallback } from "react";
-import { LocalStorageKeys } from "../types";
-import { AuthControllerActivateOauthParams } from "@rimgosu/libs";
+import axios from 'axios';
+import { useCallback } from 'react';
+import { LocalStorageKeys } from '../types';
+import { AuthControllerActivateOauthParams } from '@rimgosu/libs';
 
 export const useSocialAuth = () => {
-  const accessToken: LocalStorageKeys = "accessToken";
+  const accessToken: LocalStorageKeys = 'accessToken';
 
   const googleLogin = useCallback(async () => {
     try {
@@ -12,7 +12,7 @@ export const useSocialAuth = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(
-          error.response?.data?.message || "구글 로그인에 실패했습니다."
+          error.response?.data?.message || '구글 로그인에 실패했습니다.',
         );
       }
     }
@@ -24,7 +24,7 @@ export const useSocialAuth = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(
-          error.response?.data?.message || "카카오 로그인에 실패했습니다."
+          error.response?.data?.message || '카카오 로그인에 실패했습니다.',
         );
       }
     }
@@ -36,7 +36,7 @@ export const useSocialAuth = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(
-          error.response?.data?.message || "네이버 로그인에 실패했습니다."
+          error.response?.data?.message || '네이버 로그인에 실패했습니다.',
         );
       }
     }

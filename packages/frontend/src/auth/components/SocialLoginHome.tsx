@@ -1,9 +1,9 @@
-import React from "react";
-import kakaoIcon from "./svgs/btn_kakao.svg";
-import googleIcon from "./svgs/btn_google.svg";
-import naverIcon from "./svgs/btn_naver.svg";
-import { SocialLoginButton } from "./SocialLoginButton";
-import { useSocialAuth } from "../hooks/useSocialAuth";
+import React from 'react';
+import kakaoIcon from './svgs/btn_kakao.svg';
+import googleIcon from './svgs/btn_google.svg';
+import naverIcon from './svgs/btn_naver.svg';
+import { SocialLoginButton } from './SocialLoginButton';
+import { useSocialAuth } from '../hooks/useSocialAuth';
 
 export const SocialLoginHome = () => {
   const { googleLogin, kakaoLogin, naverLogin } = useSocialAuth();

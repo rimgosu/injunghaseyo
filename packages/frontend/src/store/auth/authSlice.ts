@@ -1,12 +1,12 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AuthState, AuthView } from "./types";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AuthState, AuthView } from './types';
 
 const initialState: AuthState = {
-  currentView: "init",
+  currentView: 'init',
 };
 
 export const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     setView: (state, action: PayloadAction<AuthView>) => {

@@ -1,8 +1,8 @@
-import { FC } from "react";
-import { connect } from "react-redux";
-import { setView } from "../../store/auth/authSlice";
-import { AuthView } from "../../store/auth/types";
-import { Link } from "react-router-dom";
+import { FC } from 'react';
+import { connect } from 'react-redux';
+import { setView } from '../../store/auth/authSlice';
+import { AuthView } from '../../store/auth/types';
+import { Link } from 'react-router-dom';
 
 interface OtherPageProps {
   setView: (view: AuthView) => void;

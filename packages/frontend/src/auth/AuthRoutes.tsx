@@ -4,16 +4,16 @@ import {
   Navigate,
   useNavigate,
   useLocation,
-} from "react-router-dom";
-import { AuthLayout } from "./AuthLayout";
-import { InitPage } from "./pages/InitPage";
-import { SignUpPage } from "./pages/SignUpPage";
-import { LoginPage } from "./pages/LoginPage";
-import { useAuth } from "./hooks/useAuth";
-import { useEffect } from "react";
-import { GetCheckSignInUserStatusEnum } from "@rimgosu/libs";
-import { CharacterSelectPage } from "./pages/CharacterSelectPage";
-import { OauthPendingPage } from "./pages/OauthPendingPage";
+} from 'react-router-dom';
+import { AuthLayout } from './AuthLayout';
+import { InitPage } from './pages/InitPage';
+import { SignUpPage } from './pages/SignUpPage';
+import { LoginPage } from './pages/LoginPage';
+import { useAuth } from './hooks/useAuth';
+import { useEffect } from 'react';
+import { GetCheckSignInUserStatusEnum } from '@rimgosu/libs';
+import { CharacterSelectPage } from './pages/CharacterSelectPage';
+import { OauthPendingPage } from './pages/OauthPendingPage';
 
 export const AuthRoutes = () => {
   const { checkSignIn } = useAuth();
@@ -22,10 +22,10 @@ export const AuthRoutes = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const accessToken = searchParams.get("accessToken");
+    const accessToken = searchParams.get('accessToken');
 
     if (accessToken) {
-      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem('accessToken', accessToken);
       navigate(location.pathname, { replace: true });
     }
 
@@ -33,18 +33,18 @@ export const AuthRoutes = () => {
       const res = await checkSignIn();
 
       if (res?.userStatus === GetCheckSignInUserStatusEnum.OAUTH_PENDING) {
-        navigate("/auth/oauth-pending");
+        navigate('/auth/oauth-pending');
         return;
       } else if (
         res?.userStatus === GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE
       ) {
-        navigate("/auth/select-character");
+        navigate('/auth/select-character');
         return;
       }
 
-      const publicPaths = ["/auth/init", "/auth/login", "/auth/signup"];
+      const publicPaths = ['/auth/init', '/auth/login', '/auth/signup'];
       if (!publicPaths.includes(window.location.pathname)) {
-        navigate("/", { replace: true });
+        navigate('/', { replace: true });
       }
     };
 

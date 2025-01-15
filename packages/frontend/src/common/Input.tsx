@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 interface InputProps {
   label: string;
-  type: "text" | "email" | "password";
+  type: 'text' | 'email' | 'password';
   value: string;
   name: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
