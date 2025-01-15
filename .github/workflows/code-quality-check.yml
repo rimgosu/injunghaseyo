@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Check formatting
+        run: |
+          cd packages/backend
+          yarn format --check
+          cd ../frontend
+          yarn format --check
+
+      - name: Run backend tests
+        run: |
+          cd packages/backend
+          yarn test
+
+      - name: Run frontend tests
+        run: |
+          cd packages/frontend
+          yarn test --passWithNoTests
+
+      - name: Build check
+        run: yarn build
