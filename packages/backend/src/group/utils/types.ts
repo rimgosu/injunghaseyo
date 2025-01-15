@@ -26,3 +26,6 @@ export type GroupWith = Prisma.GroupGetPayload<typeof GROUP_WITH_INCLUDE>;
 export interface DateInterface {
   date: string;
 }
+
+export const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
+export const NINE_HOURS_IN_MS = 1000 * 60 * 60 * 9;

@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/swagger';
 import { BaseGroupRes } from './base-res.dto';
-import { GroupWith } from '../utils/types';
+import { GroupWith, NINE_HOURS_IN_MS, ONE_DAY_IN_MS } from '../utils/types';
 import { User } from '@prisma/client';
 import { JoinStatus, GroupStatus } from '../utils/enums';
 
@@ -53,8 +53,7 @@ export class GetGroupRes extends PickType(BaseGroupRes, [
     joinStatus: JoinStatus;
     status: GroupStatus;
   } {
-    const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
-    const now = new Date().getTime();
+    const now = new Date().getTime() + NINE_HOURS_IN_MS;
     const groupDate: number[] = group.groupDate.map((date) =>
       new Date(date.date).getTime(),
     );

@@ -1,4 +1,4 @@
-import { Group, JoinRole, ProfilePhoto, User } from '@prisma/client';
+import { JoinRole, ProfilePhoto, User } from '@prisma/client';
 import { GetGroupsRes } from '../dtos/get-groups-res.dto';
 import { JoinStatus, GroupStatus } from '../utils/enums';
 import { GroupWith } from '../utils/types';

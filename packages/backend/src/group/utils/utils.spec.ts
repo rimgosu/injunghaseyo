@@ -75,35 +75,67 @@ describe('Group Utils', () => {
 
   describe('validateGroupDates', () => {
     beforeEach(() => {
-      // 테스트를 위해 현재 시간을 고정
       jest.useFakeTimers();
-      jest.setSystemTime(new Date('2024-01-01'));
+      jest.setSystemTime(new Date('2024-01-01T00:00:00+09:00'));
     });
 
     afterEach(() => {
-      // 테스트 후 타이머 초기화
       jest.useRealTimers();
     });
 
-    it('시작 날짜가 3일 이후인 경우 true를 반환', () => {
+    describe('UTC 기준', () => {
+      it('시작 날짜가 3일 이후인 경우 true를 반환', () => {
+        const dates = ['2024-01-05', '2024-01-06', '2024-01-07'];
+
+        const result = validateGroupDates(dates, 'utc');
+        expect(result).toBe(true);
+      });
+
+      it('시작 날짜가 3일 이내인 경우 false를 반환', () => {
+        const dates = ['2024-01-02', '2024-01-03', '2024-01-04'];
+
+        const result = validateGroupDates(dates, 'utc');
+        expect(result).toBe(false);
+      });
+
+      it('시작 날짜가 정확히 3일 후인 경우 true를 반환', () => {
+        const dates = ['2024-01-04', '2024-01-05', '2024-01-06'];
+
+        const result = validateGroupDates(dates, 'utc');
+        expect(result).toBe(true);
+      });
+    });
+
+    describe('KST 기준', () => {
+      it('시작 날짜가 3일 이후인 경우 true를 반환', () => {
+        const dates = ['2024-01-05', '2024-01-06', '2024-01-07'];
+
+        const result = validateGroupDates(dates, 'kst');
+        expect(result).toBe(true);
+      });
+
+      it('시작 날짜가 3일 이내인 경우 false를 반환', () => {
+        const dates = ['2024-01-02', '2024-01-03', '2024-01-04'];
+
+        const result = validateGroupDates(dates, 'kst');
+        expect(result).toBe(false);
+      });
+
+      it('시작 날짜가 정확히 3일 후인 경우 true를 반환', () => {
+        const dates = ['2024-01-04', '2024-01-05', '2024-01-06'];
+
+        const result = validateGroupDates(dates, 'kst');
+        expect(result).toBe(true);
+      });
+    });
+
+    it('타임존 파라미터가 없을 경우 기본값으로 KST를 사용', () => {
       const dates = ['2024-01-05', '2024-01-06', '2024-01-07'];
 
       const result = validateGroupDates(dates);
-      expect(result).toBe(true);
-    });
+      const resultWithKST = validateGroupDates(dates, 'kst');
 
-    it('시작 날짜가 3일 이내인 경우 false를 반환', () => {
-      const dates = ['2024-01-02', '2024-01-03', '2024-01-04'];
-
-      const result = validateGroupDates(dates);
-      expect(result).toBe(false);
-    });
-
-    it('시작 날짜가 정확히 3일 후인 경우 true를 반환', () => {
-      const dates = ['2024-01-04', '2024-01-05', '2024-01-06'];
-
-      const result = validateGroupDates(dates);
-      expect(result).toBe(true);
+      expect(result).toBe(resultWithKST);
     });
   });
 });
