@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { GroupService } from './group.service';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import {
@@ -15,6 +23,7 @@ import { AtkOptionalGuard } from '@/auth/guards/atk-optional.guard';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import { GetGroupParam } from './dtos/get-group-param.dto';
 import { GetGroupRes } from './dtos/get-group-res.dto';
+import { LeaveGroupParam } from './dtos/leave-group-param.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -83,5 +92,23 @@ export class GroupController {
     @GetUserOptional() user: User | undefined,
   ): Promise<GetGroupRes> {
     return this.groupService.getGroup(param, user);
+  }
+
+  /**
+   * @description 모임 탈퇴
+   *
+   * - 모임 참여자 수가 1명 이하일 경우 모임 삭제
+   * - 모임 참여자 수가 2명 이상일 경우 참여 및 모임 진행 삭제
+   *
+   * 환불 정책
+   * - 모임 등록 1시간 이내면 무조건 환불
+   * - 모임 시작 24시간 전 이전 환불 불가
+   * - 모임 시작 24시간 전 이후 환불 가능
+   */
+  @Delete(':groupId/leave')
+  @ApiBearerAuth('jwt')
+  @UseGuards(AtkGuard)
+  async leaveGroup(@GetUser() user: User, @Param() param: LeaveGroupParam) {
+    return this.groupService.leaveGroup(user, param);
   }
 }

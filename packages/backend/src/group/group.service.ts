@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import {
   GroupProgressStatus,
+  Join,
   JoinRole,
   Tag,
   User,
@@ -17,6 +18,8 @@ import { JoinGroupParam } from './dtos/join-group-param.dto';
 import { GROUP_WITH_INCLUDE, GroupWith } from './utils/types';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import {
+  canRefund,
+  getFirstDay,
   getLastDayNight,
   isValidGroup,
   validateGroupDates,
@@ -24,10 +27,87 @@ import {
 import { GetGroupParam } from './dtos/get-group-param.dto';
 import { GetGroupRes } from './dtos/get-group-res.dto';
 import { PrismaService } from '@/prisma/prisma.service';
+import { LeaveGroupParam } from './dtos/leave-group-param.dto';
 
 @Injectable()
 export class GroupService {
   constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * @description 모임 탈퇴
+   */
+  async leaveGroup(user: User, param: LeaveGroupParam) {
+    const { groupId } = param;
+
+    const [group, join, wallet] = await Promise.all([
+      this.prisma.group.findUnique({
+        where: { id: groupId, deletedAt: null },
+        include: {
+          join: true,
+          groupDate: true,
+        },
+      }),
+      this.prisma.join.findFirst({
+        where: { userId: user.id, groupId, deletedAt: null },
+      }),
+      this.prisma.wallet.findUnique({
+        where: { userId: user.id, deletedAt: null },
+      }),
+    ]);
+
+    if (!group) throw new NotFoundException('모임이 존재하지 않습니다.');
+    if (!join) throw new NotFoundException('참여자가 존재하지 않습니다.');
+    if (!wallet) throw new NotFoundException('지갑이 존재하지 않습니다.');
+    if (
+      !canRefund(
+        join.createdAt,
+        group.groupDate.map((date) => date.date),
+      )
+    )
+      throw new ForbiddenException('환불할 수 없는 모임입니다.');
+
+    return await this.prisma.$transaction(async (tx) => {
+      const deletedJoin = await tx.join.delete({
+        where: { id: join.id, deletedAt: null },
+        include: {
+          groupProgress: true,
+        },
+      });
+
+      const updatedWallet = await tx.wallet.update({
+        where: { userId: user.id, deletedAt: null },
+        data: {
+          money: { increment: group.price },
+          walletHistory: {
+            create: {
+              previousMoney: wallet.money,
+              currentMoney: wallet.money + group.price,
+              reason: WalletHistoryReason.REFUND,
+              joinId: group.join[0].id,
+            },
+          },
+        },
+      });
+
+      // 참여자 1명일 경우 모임 삭제
+      const deletedGroup =
+        group.join.length <= 1 &&
+        (await tx.group.delete({
+          where: { id: groupId },
+          include: {
+            groupTagMap: true,
+            proofMethod: true,
+            groupDate: true,
+          },
+        }));
+
+      return {
+        deletedJoin,
+        deletedGroup,
+        updatedWallet,
+      };
+    });
+  }
 
   /**
    * @description 모임 상세 조회

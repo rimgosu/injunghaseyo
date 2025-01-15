@@ -4,9 +4,141 @@ import {
   isValidGroup,
   getFirstDay,
   validateGroupDates,
+  canRefund,
 } from './utils';
 
 describe('Group Utils', () => {
+  describe('canRefund', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    describe('KST 기준', () => {
+      it('모임이 이미 시작된 경우 환불 불가능', () => {
+        // Given
+        jest.setSystemTime(new Date('2024-03-10T10:00:00+09:00'));
+        const joinDate = new Date('2024-03-08T00:00:00+09:00');
+        const dates = ['2024-03-10', '2024-03-11', '2024-03-12'];
+
+        // When
+        const result = canRefund(joinDate, dates, 'kst');
+
+        // Then
+        expect(result).toBe(false);
+      });
+
+      it('모임 시작 정확히 24시간 전이면 환불 가능', () => {
+        // Given
+        jest.setSystemTime(new Date('2024-03-09T00:00:00+09:00'));
+        const joinDate = new Date('2024-03-08T00:00:00+09:00');
+        const dates = ['2024-03-10', '2024-03-11', '2024-03-12'];
+
+        // When
+        const result = canRefund(joinDate, dates, 'kst');
+
+        // Then
+        expect(result).toBe(true);
+      });
+
+      it('모임 시작 24시간 이내면 환불 불가능', () => {
+        // Given
+        jest.setSystemTime(new Date('2024-03-09T23:59:59+09:00'));
+        const joinDate = new Date('2024-03-08T00:00:00+09:00');
+        const dates = ['2024-03-10', '2024-03-11', '2024-03-12'];
+
+        // When
+        const result = canRefund(joinDate, dates, 'kst');
+
+        // Then
+        expect(result).toBe(false);
+      });
+
+      it('참여 후 1시간 이내면 환불 가능', () => {
+        // Given
+        jest.setSystemTime(new Date('2024-03-10T10:30:00+09:00'));
+        const joinDate = new Date('2024-03-10T10:00:00+09:00');
+        const dates = ['2024-03-15', '2024-03-16', '2024-03-17'];
+
+        // When
+        const result = canRefund(joinDate, dates, 'kst');
+
+        // Then
+        expect(result).toBe(true);
+      });
+
+      it('참여 후 1시간 초과면 환불 불가능', () => {
+        // Given
+        jest.setSystemTime(new Date('2024-03-15T11:01:00+09:00'));
+        const joinDate = new Date('2024-03-15T10:00:00+09:00');
+        const dates = ['2024-03-15', '2024-03-16', '2024-03-17'];
+
+        // When
+        const result = canRefund(joinDate, dates, 'kst');
+
+        // Then
+        expect(result).toBe(false);
+      });
+    });
+
+    describe('UTC 기준', () => {
+      it('모임 시작 24시간 전이면 환불 가능', () => {
+        // Given
+        jest.setSystemTime(new Date('2024-03-10T00:00:00Z'));
+        const joinDate = new Date('2024-03-08T00:00:00Z');
+        const dates = ['2024-03-11', '2024-03-12', '2024-03-13'];
+
+        // When
+        const result = canRefund(joinDate, dates, 'utc');
+
+        // Then
+        expect(result).toBe(true);
+      });
+
+      it('모임 시작 24시간 이내면 환불 불가능', () => {
+        // Given
+        jest.setSystemTime(new Date('2024-03-10T00:00:00Z'));
+        const joinDate = new Date('2024-03-08T00:00:00Z');
+        const dates = ['2024-03-10', '2024-03-11', '2024-03-12'];
+
+        // When
+        const result = canRefund(joinDate, dates, 'utc');
+
+        // Then
+        expect(result).toBe(false);
+      });
+
+      it('참여 후 1시간 이내면 환불 가능', () => {
+        // Given
+        jest.setSystemTime(new Date('2024-03-15T10:30:00Z'));
+        const joinDate = new Date('2024-03-15T10:00:00Z');
+        const dates = ['2024-03-15', '2024-03-16', '2024-03-17'];
+
+        // When
+        const result = canRefund(joinDate, dates, 'utc');
+
+        // Then
+        expect(result).toBe(true);
+      });
+
+      it('참여 후 1시간 초과면 환불 불가능', () => {
+        // Given
+        jest.setSystemTime(new Date('2024-03-15T11:01:00Z'));
+        const joinDate = new Date('2024-03-15T10:00:00Z');
+        const dates = ['2024-03-15', '2024-03-16', '2024-03-17'];
+
+        // When
+        const result = canRefund(joinDate, dates, 'utc');
+
+        // Then
+        expect(result).toBe(false);
+      });
+    });
+  });
+
   describe('getLastDayNight', () => {
     it('날짜 배열에서 가장 늦은 날짜의 다음날 0시를 반환해야 함', () => {
       const dates: DateInterface[] = [
