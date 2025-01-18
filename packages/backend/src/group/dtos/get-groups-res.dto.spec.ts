@@ -151,7 +151,7 @@ describe('GetGroupsRes', () => {
         title: '테스트 그룹',
         price: 30000,
         description: '테스트 설명',
-        proofMethod: ['인증 방법'],
+        proofMethods: ['인증 방법'],
         startDate: '2024-03-20',
         endDate: '2024-03-22',
         numberOfParticipants: 2,

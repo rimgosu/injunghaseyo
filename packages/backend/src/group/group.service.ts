@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import {
   GroupProgressStatus,
-  Join,
   JoinRole,
   Tag,
   User,
@@ -19,8 +18,8 @@ import { GROUP_WITH_INCLUDE, GroupWith } from './utils/types';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import {
   canRefund,
-  getFirstDay,
   getLastDayNight,
+  getToday,
   isValidGroup,
   validateGroupDates,
 } from './utils/utils';
@@ -28,10 +27,62 @@ import { GetGroupParam } from './dtos/get-group-param.dto';
 import { GetGroupRes } from './dtos/get-group-res.dto';
 import { PrismaService } from '@/prisma/prisma.service';
 import { LeaveGroupParam } from './dtos/leave-group-param.dto';
+import { GetTodayParam } from './dtos/get-today-params.dto';
+import { GetTodayRes } from './dtos/get-today-res.dto';
+import { GetTodayQuery } from './dtos/get-today-query.dto';
 
 @Injectable()
 export class GroupService {
   constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * @description 오늘의 인증 조회
+   */
+  async getToday(
+    param: GetTodayParam,
+    user: User,
+    query: GetTodayQuery,
+  ): Promise<GetTodayRes> {
+    const { groupId } = param;
+
+    // 오늘 날짜
+    const today = query.today ? query.today : getToday();
+    const group = await this.prisma.group.findUnique({
+      where: { id: groupId, deletedAt: null },
+      include: {
+        groupDate: {
+          include: {
+            groupProgress: true,
+          },
+        },
+        proofMethod: {
+          include: {
+            groupProgress: {
+              where: {
+                groupDate: {
+                  date: today,
+                },
+                join: {
+                  userId: user.id,
+                },
+              },
+              include: {
+                proofPhoto: true,
+              },
+            },
+          },
+        },
+        join: {
+          where: { userId: user.id, deletedAt: null },
+        },
+      },
+    });
+
+    if (!group?.proofMethod[0]?.groupProgress?.length)
+      throw new NotFoundException('오늘의 인증이 없습니다.');
+
+    return new GetTodayRes(group);
+  }
 
   /**
    * @description 모임 탈퇴

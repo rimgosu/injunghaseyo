@@ -8,7 +8,24 @@ import {
   IsOptional,
   IsString,
   Matches,
+  Validate,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
+
+@ValidatorConstraint({ name: 'validateToday', async: false })
+class ValidateTodayConstraint implements ValidatorConstraintInterface {
+  validate() {
+    if (process.env.NODE_ENV !== 'dev') {
+      return false;
+    }
+    return true;
+  }
+
+  defaultMessage() {
+    return '개발 환경에서만 today 값을 변경할 수 있습니다.';
+  }
+}
 
 export class BaseGroup {
   @ApiProperty({
@@ -106,4 +123,18 @@ export class BaseGroup {
   @IsNotEmpty()
   @Transform(({ value }) => +value)
   groupId: number;
+
+  @ApiProperty({
+    description: '(개발 전용), 오늘 날짜를 원하는 날짜로 지정한다.',
+    type: String,
+    example: '2025-01-18',
+  })
+  @IsNotEmpty()
+  @IsString()
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
+    message: '날짜는 yyyy-mm-dd 형식이어야 합니다.',
+  })
+  @IsOptional()
+  @Validate(ValidateTodayConstraint)
+  today?: string;
 }

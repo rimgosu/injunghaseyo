@@ -1,5 +1,17 @@
 import { DateInterface, NINE_HOURS_IN_MS } from './types';
 
+/**
+ * @description 현재 시간을 YYYY-MM-DD 형식으로 변환
+ * @returns YYYY-MM-DD
+ */
+export const getToday = (timeZone: 'kst' | 'utc' = 'kst'): string => {
+  const now =
+    timeZone === 'kst'
+      ? new Date().getTime() + NINE_HOURS_IN_MS
+      : new Date().getTime();
+  return new Date(now).toISOString().split('T')[0];
+};
+
 export const getLastDayNight = (dates: DateInterface[]): number => {
   const timestamps = dates.map((date) => new Date(date.date).getTime());
   const maxDate = Math.max(...timestamps);

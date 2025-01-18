@@ -24,6 +24,9 @@ import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import { GetGroupParam } from './dtos/get-group-param.dto';
 import { GetGroupRes } from './dtos/get-group-res.dto';
 import { LeaveGroupParam } from './dtos/leave-group-param.dto';
+import { GetTodayParam } from './dtos/get-today-params.dto';
+import { GetTodayRes } from './dtos/get-today-res.dto';
+import { GetTodayQuery } from './dtos/get-today-query.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -110,5 +113,23 @@ export class GroupController {
   @UseGuards(AtkGuard)
   async leaveGroup(@GetUser() user: User, @Param() param: LeaveGroupParam) {
     return this.groupService.leaveGroup(user, param);
+  }
+
+  /**
+   * @description 오늘의 인증 조회
+   */
+  @Get(':groupId/today')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  @ApiResponse({
+    description: '오늘의 인증 조회',
+    type: GetTodayRes,
+  })
+  async getToday(
+    @Param() param: GetTodayParam,
+    @Query() query: GetTodayQuery,
+    @GetUser() user: User,
+  ): Promise<GetTodayRes> {
+    return this.groupService.getToday(param, user, query);
   }
 }

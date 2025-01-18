@@ -5,7 +5,80 @@ import {
   getFirstDay,
   validateGroupDates,
   canRefund,
+  getToday,
 } from './utils';
+
+describe('getToday', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  describe('KST 기준', () => {
+    it('KST 기준으로 오늘 날짜를 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T00:00:00Z')); // UTC 기준
+
+      // When
+      const result = getToday('kst');
+
+      // Then
+      expect(result).toBe('2024-03-15'); // UTC+9 적용
+    });
+
+    it('자정 이전 시간대에서도 올바른 날짜를 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-14T15:00:00Z')); // UTC 기준 (KST 03-15 00:00)
+
+      // When
+      const result = getToday('kst');
+
+      // Then
+      expect(result).toBe('2024-03-15');
+    });
+
+    it('timeZone 파라미터가 없을 경우 기본값으로 KST를 사용해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T00:00:00Z'));
+
+      // When
+      const result = getToday();
+      const resultWithKST = getToday('kst');
+
+      // Then
+      expect(result).toBe(resultWithKST);
+    });
+  });
+
+  describe('UTC 기준', () => {
+    it('UTC 기준으로 오늘 날짜를 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T00:00:00Z'));
+
+      // When
+      const result = getToday('utc');
+
+      // Then
+      expect(result).toBe('2024-03-15');
+    });
+
+    it('UTC와 KST의 날짜가 다른 경우를 처리해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-14T15:00:00Z')); // UTC 03-14 15:00 (KST 03-15 00:00)
+
+      // When
+      const utcResult = getToday('utc');
+      const kstResult = getToday('kst');
+
+      // Then
+      expect(utcResult).toBe('2024-03-14');
+      expect(kstResult).toBe('2024-03-15');
+    });
+  });
+});
 
 describe('Group Utils', () => {
   describe('canRefund', () => {

@@ -1,5 +1,4 @@
 import { User } from '@prisma/client';
-import { JoinStatus, GroupStatus } from '../utils/enums';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { GroupWith } from '../utils/types';
 import { BaseGroupRes } from './base-res.dto';
@@ -10,7 +9,7 @@ class GroupElem extends PickType(BaseGroupRes, [
   'title',
   'price',
   'description',
-  'proofMethod',
+  'proofMethods',
   'status',
   'startDate',
   'endDate',
@@ -40,7 +39,7 @@ export class GetGroupsRes {
         title: group.title,
         price: group.price,
         description: group.description,
-        proofMethod: group.proofMethod.map((method) => method.method),
+        proofMethods: group.proofMethod.map((method) => method.method),
         status,
         startDate,
         endDate,

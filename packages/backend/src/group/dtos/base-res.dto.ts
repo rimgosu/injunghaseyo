@@ -44,7 +44,7 @@ export class BaseGroupRes {
     description: '그룹 증명 방법',
     type: [String],
   })
-  proofMethod: string[];
+  proofMethods: string[];
 
   @ApiProperty({
     description: '그룹 상태',
@@ -87,4 +87,29 @@ export class BaseGroupRes {
     type: [Participant],
   })
   participants: Participant[];
+
+  @ApiProperty({
+    description: '전체 인증 일정',
+    type: [String],
+  })
+  groupDate: string[];
+
+  @ApiProperty({
+    description: '완료한 인증',
+    type: [String],
+  })
+  completedDate: string[];
+
+  @ApiProperty({
+    description: '인증 사진',
+    type: String,
+    nullable: true,
+  })
+  proofPhoto: string | null;
+
+  @ApiProperty({
+    description: '인증 방법',
+    type: String,
+  })
+  proofMethod: string;
 }
