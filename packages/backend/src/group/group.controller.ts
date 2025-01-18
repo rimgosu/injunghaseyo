@@ -5,10 +5,17 @@ import {
   Param,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
-import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiResponse,
+} from '@nestjs/swagger';
 import {
   GetOptionalUser as GetUserOptional,
   GetUser,
@@ -27,6 +34,11 @@ import { LeaveGroupParam } from './dtos/leave-group-param.dto';
 import { GetTodayParam } from './dtos/get-today-params.dto';
 import { GetTodayRes } from './dtos/get-today-res.dto';
 import { GetTodayQuery } from './dtos/get-today-query.dto';
+import {
+  UploadProofParam,
+  UploadProofQuery,
+} from './dtos/upload-proof-param.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('groups')
 export class GroupController {
@@ -131,5 +143,35 @@ export class GroupController {
     @GetUser() user: User,
   ): Promise<GetTodayRes> {
     return this.groupService.getToday(param, user, query);
+  }
+
+  /**
+   * @description 금일 인증 사진 업로드
+   *
+   * - 금일의 인증 사진 업로드
+   */
+  @Post(':groupId/upload')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  @UseInterceptors(FileInterceptor('proofPhoto'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        proofPhoto: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async uploadProofPhoto(
+    @Param() param: UploadProofParam,
+    @Query() query: UploadProofQuery,
+    @GetUser() user: User,
+    @UploadedFile() proofPhoto: Express.Multer.File,
+  ) {
+    return this.groupService.uploadProofPhoto(param, query, proofPhoto, user);
   }
 }

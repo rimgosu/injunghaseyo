@@ -137,4 +137,14 @@ export class BaseGroup {
   @IsOptional()
   @Validate(ValidateTodayConstraint)
   today?: string;
+
+  @ApiProperty({
+    description: '진행 id',
+    type: Number,
+    example: 1,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  @Transform(({ value }) => +value)
+  progressId: number;
 }

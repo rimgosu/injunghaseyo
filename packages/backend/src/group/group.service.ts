@@ -1,6 +1,7 @@
 import {
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import {
@@ -30,10 +31,109 @@ import { LeaveGroupParam } from './dtos/leave-group-param.dto';
 import { GetTodayParam } from './dtos/get-today-params.dto';
 import { GetTodayRes } from './dtos/get-today-res.dto';
 import { GetTodayQuery } from './dtos/get-today-query.dto';
+import {
+  UploadProofParam,
+  UploadProofQuery,
+} from './dtos/upload-proof-param.dto';
+import { S3Service } from '@/s3/s3.service';
 
 @Injectable()
 export class GroupService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(GroupService.name, {
+    timestamp: true,
+  });
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly s3: S3Service,
+  ) {}
+
+  /**
+   * @description 인증 사진 업로드
+   */
+  async uploadProofPhoto(
+    param: UploadProofParam,
+    query: UploadProofQuery,
+    proofPhoto: Express.Multer.File,
+    user: User,
+  ) {
+    const { groupId } = param;
+    const { progressId } = query;
+
+    // groupProgress 정상적으로 존재하는지 확인
+    const today = query.today ? query.today : getToday();
+
+    const [groupProgress, group] = await Promise.all([
+      this.prisma.groupProgress.findUnique({
+        where: {
+          id: progressId,
+          deletedAt: null,
+          groupDate: {
+            date: today,
+            deletedAt: null,
+            group: { id: groupId },
+          },
+          join: { userId: user.id, deletedAt: null, group: { id: groupId } },
+        },
+      }),
+      this.prisma.group.findUnique({
+        where: { id: groupId, deletedAt: null },
+        include: {
+          proofMethod: {
+            where: {
+              groupProgress: {
+                some: {
+                  id: progressId,
+                },
+              },
+            },
+          },
+        },
+      }),
+    ]);
+
+    if (!groupProgress) throw new NotFoundException('오늘의 인증이 없습니다.');
+
+    // s3에 사진 업로드
+    const uploadUrl = await this.s3.uploadFile(
+      proofPhoto,
+      `${this.s3.proofPhotoDir}/${user.email}:${group.title}:${group.proofMethod[0].method}:${new Date().toISOString()}`,
+    );
+
+    // 인증 사진 업데이트
+    return await this.prisma.groupProgress.update({
+      where: {
+        id: progressId,
+        deletedAt: null,
+      },
+      data: {
+        proofPhoto: {
+          upsert: {
+            create: {
+              url: uploadUrl,
+            },
+            update: {
+              url: uploadUrl,
+            },
+          },
+        },
+        status: GroupProgressStatus.COMPLETED,
+      },
+      select: {
+        proofMethod: {
+          select: {
+            method: true,
+          },
+        },
+        proofPhoto: {
+          select: {
+            url: true,
+          },
+        },
+        status: true,
+      },
+    });
+  }
 
   /**
    * @description 오늘의 인증 조회

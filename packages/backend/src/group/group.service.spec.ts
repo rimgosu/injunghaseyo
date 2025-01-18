@@ -10,6 +10,7 @@ import {
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { GroupStatus } from './utils/enums';
+import { S3Service } from '@/s3/s3.service';
 
 /**
  * @description getGroups 테스트
@@ -43,6 +44,7 @@ describe('GroupService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GroupService,
+        S3Service,
         {
           provide: PrismaService,
           useValue: {
@@ -207,6 +209,7 @@ describe('GroupService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GroupService,
+        S3Service,
         {
           provide: PrismaService,
           useValue: {
@@ -582,6 +585,7 @@ describe('GroupService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GroupService,
+        S3Service,
         {
           provide: PrismaService,
           useValue: {
