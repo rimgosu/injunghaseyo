@@ -24,6 +24,7 @@ describe('GetTodayRes', () => {
             method: '인증방법 1',
             groupProgress: [
               {
+                id: 1,
                 proofPhoto: {
                   url: 'photo1.jpg',
                 },
@@ -54,6 +55,7 @@ describe('GetTodayRes', () => {
           {
             proofMethod: '인증방법 1',
             proofPhoto: 'photo1.jpg',
+            groupProgressId: 1,
           },
         ],
         groupDate: ['2024-03-15'],
@@ -87,6 +89,7 @@ describe('GetTodayRes', () => {
             method: '인증방법 1',
             groupProgress: [
               {
+                id: 1,
                 proofPhoto: null,
               },
             ],
@@ -112,6 +115,7 @@ describe('GetTodayRes', () => {
             method: '인증방법 1',
             groupProgress: [
               {
+                id: 1,
                 proofPhoto: {
                   url: 'photo1.jpg',
                 },
@@ -122,6 +126,7 @@ describe('GetTodayRes', () => {
             method: '인증방법 2',
             groupProgress: [
               {
+                id: 2,
                 proofPhoto: {
                   url: 'photo2.jpg',
                 },
@@ -140,10 +145,12 @@ describe('GetTodayRes', () => {
       expect(result.proofs[0]).toEqual({
         proofMethod: '인증방법 1',
         proofPhoto: 'photo1.jpg',
+        groupProgressId: 1,
       });
       expect(result.proofs[1]).toEqual({
         proofMethod: '인증방법 2',
         proofPhoto: 'photo2.jpg',
+        groupProgressId: 2,
       });
     });
 
@@ -158,6 +165,7 @@ describe('GetTodayRes', () => {
             date: '2024-03-15',
             groupProgress: [
               {
+                id: 1,
                 status: GroupProgressStatus.COMPLETED,
               },
             ],
@@ -166,6 +174,7 @@ describe('GetTodayRes', () => {
             date: '2024-03-16',
             groupProgress: [
               {
+                id: 2,
                 status: GroupProgressStatus.PENDING,
               },
             ],
@@ -174,6 +183,7 @@ describe('GetTodayRes', () => {
             date: '2024-03-17',
             groupProgress: [
               {
+                id: 3,
                 status: GroupProgressStatus.COMPLETED,
               },
             ],

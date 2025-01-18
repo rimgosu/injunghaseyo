@@ -3,11 +3,20 @@ import { BaseGroupRes } from './base-res.dto';
 import { GroupWithToday } from '../utils/types';
 import { GroupProgressStatus } from '@prisma/client';
 
-class Proof extends PickType(BaseGroupRes, ['proofMethod', 'proofPhoto']) {
-  constructor(proofMethod: string, proofPhoto: string | undefined) {
+class Proof extends PickType(BaseGroupRes, [
+  'proofMethod',
+  'proofPhoto',
+  'groupProgressId',
+]) {
+  constructor(
+    proofMethod: string,
+    proofPhoto: string | undefined,
+    groupProgressId: number,
+  ) {
     super();
     this.proofMethod = proofMethod;
     this.proofPhoto = proofPhoto ?? null;
+    this.groupProgressId = groupProgressId;
   }
 }
 
@@ -28,7 +37,11 @@ export class GetTodayRes extends PickType(BaseGroupRes, [
 
     this.proofs = group.proofMethod.map((method) => {
       const proofPhoto = method.groupProgress[0]?.proofPhoto;
-      return new Proof(method.method, proofPhoto?.url);
+      return new Proof(
+        method.method,
+        proofPhoto?.url,
+        method.groupProgress[0]?.id,
+      );
     });
     this.title = group.title;
     this.description = group.description;

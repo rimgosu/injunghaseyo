@@ -112,4 +112,10 @@ export class BaseGroupRes {
     type: String,
   })
   proofMethod: string;
+
+  @ApiProperty({
+    description: '모임 진행 id',
+    type: Number,
+  })
+  groupProgressId: number;
 }
