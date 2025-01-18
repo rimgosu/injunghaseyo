@@ -34,11 +34,11 @@ export class GetTodayRes extends PickType(BaseGroupRes, [
     this.description = group.description;
     this.groupDate = group.groupDate.map((date) => date.date);
     this.completedDate = group.groupDate
-      .filter((date) => {
+      .filter((date) =>
         date.groupProgress.every(
           (progress) => progress.status === GroupProgressStatus.COMPLETED,
-        );
-      })
+        ),
+      )
       .map((date) => date.date);
   }
 }
