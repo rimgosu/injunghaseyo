@@ -174,4 +174,17 @@ export class GroupController {
   ) {
     return this.groupService.uploadProofPhoto(param, query, proofPhoto, user);
   }
+
+  /**
+   * @description 총 받을 금액 조회
+   *
+   * 어제까지의 총 받을 금액
+   *   - PROGRESS: 어제까지의 진행일 수 / 총 진행일 수
+   *   - NET: 0.8
+   *   - FEE: 0.2
+   *   - PROGRESS_TOTAL: 참여자 수 * 모임 가격 * PROGRESS * NET
+   *   - TOTAL_COMPLETED: 총 인증 완료 일 수
+   *   - MY_COMPLETED: 내 인증 완료 일 수
+   *   - MY_MONEY: PROGRESS_TOTAL * MY_COMPLETED / TOTAL_COMPLETED
+   */
 }
