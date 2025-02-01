@@ -57,6 +57,98 @@ export interface GetCharacter {
   characterInfos: CharacterInfo[];
 }
 
+export interface GetTagsRes {
+  /**
+   * 태그, ?tags=헬스&tags=건강 꼴로 날짜 배열로 받음
+   * @example ["헬스","건강"]
+   */
+  tags: string[];
+}
+
+export interface GroupElem {
+  /** 그룹 ID */
+  id: number;
+  /** 그룹 제목 */
+  title: string;
+  /** 그룹 가격 */
+  price: number;
+  /** 그룹 설명 */
+  description: string;
+  /** 그룹 증명 방법 */
+  proofMethods: string[];
+  /** 그룹 상태 */
+  status: GroupElemStatusEnum;
+  /** 그룹 시작일 */
+  startDate: string;
+  /** 그룹 종료일 */
+  endDate: string;
+  /** 참여자 수 */
+  numberOfParticipants: number;
+  /** 참여 상태 */
+  joinStatus: GroupElemJoinStatusEnum;
+  /** 태그 */
+  tags: string[];
+}
+
+export interface GetGroupsRes {
+  /** 그룹 목록 */
+  groups: GroupElem[];
+}
+
+export interface Participant {
+  /** 참여자 ID */
+  id: number;
+  /** 참여자 사진 */
+  profilePhoto: string;
+}
+
+export interface GetGroupRes {
+  /** 그룹 ID */
+  id: number;
+  /** 그룹 제목 */
+  title: string;
+  /** 그룹 가격 */
+  price: number;
+  /** 그룹 설명 */
+  description: string;
+  /** 그룹 증명 방법 */
+  proofMethods: string[];
+  /** 그룹 상태 */
+  status: GetGroupResStatusEnum;
+  /** 그룹 시작일 */
+  startDate: string;
+  /** 그룹 종료일 */
+  endDate: string;
+  /** 참여 상태 */
+  joinStatus: GetGroupResJoinStatusEnum;
+  /** 태그 */
+  tags: string[];
+  /** 참여자 목록 */
+  participants: Participant[];
+}
+
+export interface Proof {
+  /** 인증 사진 */
+  proofPhoto: string | null;
+  /** 인증 방법 */
+  proofMethod: string;
+  /** 모임 진행 id */
+  groupProgressId: number;
+}
+
+export interface GetTodayRes {
+  /** 그룹 제목 */
+  title: string;
+  /** 그룹 설명 */
+  description: string;
+  /** 전체 인증 일정 */
+  groupDate: string[];
+  /** 완료한 인증 */
+  completedDate: string[];
+  /** 인증 정보 */
+  proofs: Proof[];
+}
+
 export interface GetMoneyDto {
   /**
    * 보유한 인증 머니
@@ -73,6 +165,36 @@ export enum GetCheckSignInUserStatusEnum {
   WITHDRAWN = 'WITHDRAWN',
   OAUTH_PENDING = 'OAUTH_PENDING',
   CHARACTER_CHOOSE = 'CHARACTER_CHOOSE',
+}
+
+/** 그룹 상태 */
+export enum GroupElemStatusEnum {
+  NOT_STARTED = 'NOT_STARTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+}
+
+/** 참여 상태 */
+export enum GroupElemJoinStatusEnum {
+  RESERVED = 'RESERVED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  NOT_JOINED = 'NOT_JOINED',
+}
+
+/** 그룹 상태 */
+export enum GetGroupResStatusEnum {
+  NOT_STARTED = 'NOT_STARTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+}
+
+/** 참여 상태 */
+export enum GetGroupResJoinStatusEnum {
+  RESERVED = 'RESERVED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  NOT_JOINED = 'NOT_JOINED',
 }
 
 export interface AuthControllerVerifyEmailParams {
@@ -225,11 +347,9 @@ export interface GroupControllerCreateGroupParams {
   description?: string;
   /**
    * 인증 방법
-   * @example "헬스장 출입 전
-   * 헬스장 출입 후
-   * 인증사진 찍어서 인증"
+   * @example ["헬스장 출입 전","헬스장 출입 후","인증사진 찍어서 인증"]
    */
-  proofMethod: string;
+  proofMethods: string[];
   /**
    * 시간 (일자), ?dates=2024-12-21&dates=2024-12-22 꼴로 날짜 배열로 받음
    * @example ["2024-12-21","2024-12-22"]
@@ -255,7 +375,38 @@ export interface GroupControllerGetTagsParams {
   selectedTags?: string[];
 }
 
-export interface UserControllerGetAdminRoleParams {
+export interface GroupControllerGetTodayParams {
+  /**
+   * (개발 전용), 오늘 날짜를 원하는 날짜로 지정한다.
+   * @example "2025-01-18"
+   */
+  today: string;
+  /**
+   * 모임 ID
+   * @example 1
+   */
+  groupId: number;
+}
+
+export interface GroupControllerUploadProofPhotoParams {
+  /**
+   * (개발 전용), 오늘 날짜를 원하는 날짜로 지정한다.
+   * @example "2025-01-18"
+   */
+  today: string;
+  /**
+   * 진행 id
+   * @example 1
+   */
+  progressId: number;
+  /**
+   * 모임 ID
+   * @example 1
+   */
+  groupId: number;
+}
+
+export interface UserMgmtControllerGetAdminRoleParams {
   /**
    * 비밀번호
    * @example "tlaznd@0801"
@@ -263,7 +414,7 @@ export interface UserControllerGetAdminRoleParams {
   auth: string;
 }
 
-export interface UserControllerGainMoneyParams {
+export interface UserMgmtControllerGainMoneyParams {
   /**
    * 얻을 인증머니
    * @example 35000
@@ -813,21 +964,35 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
   };
-  group = {
+  groups = {
     /**
      * No description
      *
      * @tags Group
      * @name GroupControllerCreateGroup
-     * @request POST:/group
+     * @request POST:/groups
      * @secure
      */
     groupControllerCreateGroup: (query: GroupControllerCreateGroupParams, params: RequestParams = {}) =>
       this.request<void, any>({
-        path: `/group`,
+        path: `/groups`,
         method: 'POST',
         query: query,
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerGetGroups
+     * @request GET:/groups
+     */
+    groupControllerGetGroups: (params: RequestParams = {}) =>
+      this.request<any, GetGroupsRes>({
+        path: `/groups`,
+        method: 'GET',
         ...params,
       }),
 
@@ -836,65 +1001,155 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags Group
      * @name GroupControllerGetTags
-     * @request GET:/group/tags
+     * @request GET:/groups/tags
      * @secure
      */
     groupControllerGetTags: (query: GroupControllerGetTagsParams, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/group/tags`,
+      this.request<any, GetTagsRes>({
+        path: `/groups/tags`,
         method: 'GET',
         query: query,
         secure: true,
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerJoinGroup
+     * @request POST:/groups/{groupId}/join
+     * @secure
+     */
+    groupControllerJoinGroup: (groupId: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/groups/${groupId}/join`,
+        method: 'POST',
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerGetGroup
+     * @request GET:/groups/{groupId}
+     */
+    groupControllerGetGroup: (groupId: number, params: RequestParams = {}) =>
+      this.request<any, GetGroupRes>({
+        path: `/groups/${groupId}`,
+        method: 'GET',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerLeaveGroup
+     * @request DELETE:/groups/{groupId}/leave
+     * @secure
+     */
+    groupControllerLeaveGroup: (groupId: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/groups/${groupId}/leave`,
+        method: 'DELETE',
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerGetToday
+     * @request GET:/groups/{groupId}/today
+     * @secure
+     */
+    groupControllerGetToday: ({ groupId, ...query }: GroupControllerGetTodayParams, params: RequestParams = {}) =>
+      this.request<any, GetTodayRes>({
+        path: `/groups/${groupId}/today`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerUploadProofPhoto
+     * @request POST:/groups/{groupId}/upload
+     * @secure
+     */
+    groupControllerUploadProofPhoto: (
+      { groupId, ...query }: GroupControllerUploadProofPhotoParams,
+      data: {
+        /** @format binary */
+        proofPhoto?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/groups/${groupId}/upload`,
+        method: 'POST',
+        query: query,
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        ...params,
+      }),
   };
-  user = {
-    /**
-     * No description
-     *
-     * @tags User
-     * @name UserControllerGetAdminRole
-     * @request POST:/user/admin
-     * @secure
-     */
-    userControllerGetAdminRole: (query: UserControllerGetAdminRoleParams, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/user/admin`,
-        method: 'POST',
-        query: query,
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags User
-     * @name UserControllerGainMoney
-     * @request POST:/user/gain-money
-     * @secure
-     */
-    userControllerGainMoney: (query: UserControllerGainMoneyParams, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/user/gain-money`,
-        method: 'POST',
-        query: query,
-        secure: true,
-        ...params,
-      }),
-
+  users = {
     /**
      * No description
      *
      * @tags User
      * @name UserControllerGetMoney
-     * @request GET:/user/money
+     * @request GET:/users/money
      * @secure
      */
     userControllerGetMoney: (params: RequestParams = {}) =>
       this.request<any, GetMoneyDto>({
-        path: `/user/money`,
+        path: `/users/money`,
         method: 'GET',
+        secure: true,
+        ...params,
+      }),
+  };
+  usersMgmt = {
+    /**
+     * No description
+     *
+     * @tags UserMgmt
+     * @name UserMgmtControllerGetAdminRole
+     * @request POST:/users-mgmt/admin
+     * @secure
+     */
+    userMgmtControllerGetAdminRole: (query: UserMgmtControllerGetAdminRoleParams, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/users-mgmt/admin`,
+        method: 'POST',
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags UserMgmt
+     * @name UserMgmtControllerGainMoney
+     * @request POST:/users-mgmt/gain-money
+     * @secure
+     */
+    userMgmtControllerGainMoney: (query: UserMgmtControllerGainMoneyParams, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/users-mgmt/gain-money`,
+        method: 'POST',
+        query: query,
         secure: true,
         ...params,
       }),
