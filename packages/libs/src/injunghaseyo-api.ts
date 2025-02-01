@@ -149,6 +149,14 @@ export interface GetTodayRes {
   proofs: Proof[];
 }
 
+export interface GetTodayRewardRes {
+  /**
+   * 오늘까지의 받을 금액
+   * @example 1000
+   */
+  todayReward: number;
+}
+
 export interface GetMoneyDto {
   /**
    * 보유한 인증 머니
@@ -180,6 +188,7 @@ export enum GroupElemJoinStatusEnum {
   IN_PROGRESS = 'IN_PROGRESS',
   COMPLETED = 'COMPLETED',
   NOT_JOINED = 'NOT_JOINED',
+  NOT_JOINABLE = 'NOT_JOINABLE',
 }
 
 /** 그룹 상태 */
@@ -195,6 +204,7 @@ export enum GetGroupResJoinStatusEnum {
   IN_PROGRESS = 'IN_PROGRESS',
   COMPLETED = 'COMPLETED',
   NOT_JOINED = 'NOT_JOINED',
+  NOT_JOINABLE = 'NOT_JOINABLE',
 }
 
 export interface AuthControllerVerifyEmailParams {
@@ -1099,6 +1109,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.FormData,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerGetTodayReward
+     * @request GET:/groups/{groupId}/today-reward
+     * @secure
+     */
+    groupControllerGetTodayReward: (groupId: number, params: RequestParams = {}) =>
+      this.request<any, GetTodayRewardRes>({
+        path: `/groups/${groupId}/today-reward`,
+        method: 'GET',
+        secure: true,
         ...params,
       }),
   };

@@ -27,29 +27,38 @@ export const AuthRoutes = () => {
     if (accessToken) {
       localStorage.setItem('accessToken', accessToken);
       navigate(location.pathname, { replace: true });
+      return;
+    }
+  }, [location.search, navigate]);
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const publicPaths = ['/auth/init', '/auth/login', '/auth/signup'];
+
+    if (publicPaths.includes(currentPath)) {
+      return;
     }
 
     const checkAuthStatus = async () => {
-      const res = await checkSignIn();
+      try {
+        const res = await checkSignIn();
 
-      if (res?.userStatus === GetCheckSignInUserStatusEnum.OAUTH_PENDING) {
-        navigate('/auth/oauth-pending');
-        return;
-      } else if (
-        res?.userStatus === GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE
-      ) {
-        navigate('/auth/select-character');
-        return;
-      }
-
-      const publicPaths = ['/auth/init', '/auth/login', '/auth/signup'];
-      if (!publicPaths.includes(window.location.pathname)) {
-        navigate('/', { replace: true });
+        if (res?.userStatus === GetCheckSignInUserStatusEnum.OAUTH_PENDING) {
+          navigate('/auth/oauth-pending', { replace: true });
+        } else if (
+          res?.userStatus === GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE
+        ) {
+          navigate('/auth/select-character', { replace: true });
+        } else if (!publicPaths.includes(currentPath)) {
+          navigate('/', { replace: true });
+        }
+      } catch (error) {
+        console.error('인증 상태 확인 실패:', error);
       }
     };
 
     checkAuthStatus();
-  }, [navigate, checkSignIn, location]);
+  }, [location.pathname]);
 
   return (
     <Routes>
