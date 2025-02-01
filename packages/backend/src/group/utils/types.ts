@@ -64,3 +64,15 @@ export type UserWithPhoto = Prisma.UserGetPayload<{
     profilePhoto: true;
   };
 }>;
+
+export type GroupWithJoin = Prisma.GroupGetPayload<{
+  include: {
+    groupDate: {
+      include: {
+        groupProgress: true;
+      };
+    };
+    join: true;
+    proofMethod: true;
+  };
+}>;

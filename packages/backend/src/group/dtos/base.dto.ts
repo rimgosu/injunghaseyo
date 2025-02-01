@@ -29,6 +29,13 @@ class ValidateTodayConstraint implements ValidatorConstraintInterface {
 
 export class BaseGroup {
   @ApiProperty({
+    description: '오늘까지의 받을 금액',
+    type: Number,
+    example: 1000,
+  })
+  todayReward: number;
+
+  @ApiProperty({
     description: '모임 제목',
     type: String,
     example: '헬스장 인증 모임',

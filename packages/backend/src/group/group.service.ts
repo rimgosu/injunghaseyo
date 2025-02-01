@@ -37,6 +37,8 @@ import {
   UploadProofQuery,
 } from './dtos/upload-proof-param.dto';
 import { S3Service } from '@/s3/s3.service';
+import { GetTodayRewardRes } from './dtos/get-today-reward-res.dto';
+import { GetTodayRewardParam } from './dtos/get-today-reward-param.dto';
 
 @Injectable()
 export class GroupService {
@@ -48,6 +50,36 @@ export class GroupService {
     private readonly prisma: PrismaService,
     private readonly s3: S3Service,
   ) {}
+
+  /**
+   * @description 오늘까지 받을 금액 조회
+   */
+  async getTodayReward(
+    param: GetTodayRewardParam,
+    user: User,
+  ): Promise<GetTodayRewardRes> {
+    const { groupId } = param;
+
+    const group = await this.prisma.group.findUnique({
+      where: { id: groupId, deletedAt: null },
+      include: {
+        groupDate: {
+          include: {
+            groupProgress: true,
+          },
+        },
+        proofMethod: true,
+        join: {
+          where: { userId: user.id, deletedAt: null },
+        },
+      },
+    });
+
+    if (group?.join?.length === 0)
+      throw new NotFoundException('참여하지 않았습니다.');
+
+    return new GetTodayRewardRes(group);
+  }
 
   /**
    * @description 인증 사진 업로드

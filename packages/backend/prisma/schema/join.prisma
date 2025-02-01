@@ -13,6 +13,8 @@ model Join {
 
     walletHistory WalletHistory[]
     groupProgress GroupProgress[]
+
+    @@unique([userId, groupId])
 }
 
 enum JoinRole {

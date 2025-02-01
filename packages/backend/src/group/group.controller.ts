@@ -39,6 +39,8 @@ import {
   UploadProofQuery,
 } from './dtos/upload-proof-param.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { GetTodayRewardParam } from './dtos/get-today-reward-param.dto';
+import { GetTodayRewardRes } from './dtos/get-today-reward-res.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -187,4 +189,17 @@ export class GroupController {
    *   - MY_DAILY_REWARD: 특정 날짜에 인증 성공한 사람들끼리 DAILY_POOL 균등 분배
    *   - MY_TOTAL_REWARD: ∑(MY_DAILY_REWARD)
    */
+  @Get(':groupId/today-reward')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  @ApiResponse({
+    description: '오늘의 인증 보상 조회',
+    type: GetTodayRewardRes,
+  })
+  async getTodayReward(
+    @Param() param: GetTodayRewardParam,
+    @GetUser() user: User,
+  ): Promise<GetTodayRewardRes> {
+    return this.groupService.getTodayReward(param, user);
+  }
 }
