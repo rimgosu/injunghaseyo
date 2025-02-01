@@ -1,30 +1,14 @@
-import { JoinRole, ProfilePhoto, User } from '@prisma/client';
+import { JoinRole } from '@prisma/client';
 import { GetGroupsRes } from '../dtos/get-groups-res.dto';
 import { JoinStatus, GroupStatus } from '../utils/enums';
-import { GroupWith } from '../utils/types';
+import { GroupWith, UserWithPhoto } from '../utils/types';
+import { createMock } from '@golevelup/ts-jest';
 
 describe('GetGroupsRes', () => {
-  const mockUser: User & { profilePhoto: ProfilePhoto[] } = {
+  const mockUser = createMock<UserWithPhoto>({
     id: 1,
-    uuid: 'test-uuid',
     email: 'test@example.com',
-    nickname: 'testUser',
-    introduction: '등록된 소개말이 없습니다.',
-    refreshToken: null,
-    eventAgree: true,
-    password: 'hashedPassword',
-    salt: 'salt',
-    provider: null,
-    role: 'USER',
-    status: 'ACTIVE',
-    lastLogin: null,
-    lastPwdChanged: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    deletedAt: null,
-    loginFailCount: 0,
-    profilePhoto: [],
-  };
+  });
 
   beforeEach(() => {
     // 테스트를 위해 현재 시간을 2024-03-10으로 고정
@@ -39,7 +23,7 @@ describe('GetGroupsRes', () => {
   describe('constructor', () => {
     it('그룹 목록을 올바르게 변환해야 함', () => {
       // Given
-      const mockGroups: GroupWith[] = [
+      const mockGroups = createMock<GroupWith[]>([
         {
           id: 1,
           title: '테스트 그룹',
@@ -49,39 +33,24 @@ describe('GetGroupsRes', () => {
             {
               id: 1,
               method: '인증 방법',
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               groupId: 1,
             },
           ],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
           groupDate: [
             {
               id: 1,
               date: '2024-03-20',
               groupId: 1,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
             },
             {
               id: 2,
               date: '2024-03-21',
               groupId: 1,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
             },
             {
               id: 3,
               date: '2024-03-22',
               groupId: 1,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
             },
           ],
           groupTagMap: [
@@ -89,30 +58,18 @@ describe('GetGroupsRes', () => {
               id: 1,
               groupId: 1,
               tagId: 1,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               tag: {
                 id: 1,
                 name: '운동',
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                deletedAt: null,
               },
             },
             {
               id: 2,
               groupId: 1,
               tagId: 2,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               tag: {
                 id: 2,
                 name: '건강',
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                deletedAt: null,
               },
             },
           ],
@@ -122,9 +79,6 @@ describe('GetGroupsRes', () => {
               userId: 1,
               groupId: 1,
               joinRole: JoinRole.HOST,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               user: mockUser,
             },
             {
@@ -132,14 +86,11 @@ describe('GetGroupsRes', () => {
               userId: 2,
               groupId: 1,
               joinRole: JoinRole.ATTENDEE,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               user: { ...mockUser, id: 2 },
             },
           ],
         },
-      ];
+      ]);
 
       // When
       const result = new GetGroupsRes(mockGroups, mockUser);
@@ -235,31 +186,22 @@ describe('GetGroupsRes', () => {
     it('현재 진행중인 그룹은 IN_PROGRESS 상태여야 함', () => {
       // Given
       const today = new Date();
-      const mockCurrentGroups = [
+      const mockCurrentGroups = createMock<GroupWith[]>([
         {
           id: 1,
           title: '테스트 그룹',
           price: 30000,
           description: '테스트 설명',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
           groupDate: [
             {
               id: 1,
               groupId: 1,
               date: new Date(today.setDate(today.getDate() - 1)).toISOString(),
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
             },
             {
               id: 2,
               groupId: 1,
               date: new Date(today.setDate(today.getDate() + 2)).toISOString(),
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
             },
           ],
           groupTagMap: [
@@ -267,15 +209,9 @@ describe('GetGroupsRes', () => {
               id: 1,
               groupId: 1,
               tagId: 1,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               tag: {
                 id: 1,
                 name: '운동',
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                deletedAt: null,
               },
             },
           ],
@@ -285,9 +221,6 @@ describe('GetGroupsRes', () => {
               userId: 1,
               groupId: 1,
               joinRole: JoinRole.ATTENDEE,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               user: mockUser,
             },
           ],
@@ -295,14 +228,11 @@ describe('GetGroupsRes', () => {
             {
               id: 1,
               method: '인증 방법',
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               groupId: 1,
             },
           ],
         },
-      ];
+      ]);
 
       // When
       const result = new GetGroupsRes(mockCurrentGroups, mockUser);
@@ -315,31 +245,22 @@ describe('GetGroupsRes', () => {
     it('종료된 그룹은 COMPLETED 상태여야 함', () => {
       // Given
       const today = new Date();
-      const mockCompletedGroups = [
+      const mockCompletedGroups = createMock<GroupWith[]>([
         {
           id: 1,
           title: '테스트 그룹',
           price: 30000,
           description: '테스트 설명',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
           groupDate: [
             {
               id: 1,
               groupId: 1,
               date: new Date(today.setDate(today.getDate() - 5)).toISOString(),
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
             },
             {
               id: 2,
               groupId: 1,
               date: new Date(today.setDate(today.getDate() - 3)).toISOString(),
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
             },
           ],
           groupTagMap: [
@@ -347,15 +268,9 @@ describe('GetGroupsRes', () => {
               id: 1,
               groupId: 1,
               tagId: 1,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               tag: {
                 id: 1,
                 name: '운동',
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                deletedAt: null,
               },
             },
           ],
@@ -365,9 +280,6 @@ describe('GetGroupsRes', () => {
               userId: 1,
               groupId: 1,
               joinRole: JoinRole.ATTENDEE,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               user: mockUser,
             },
           ],
@@ -375,14 +287,11 @@ describe('GetGroupsRes', () => {
             {
               id: 1,
               method: '인증 방법',
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               groupId: 1,
             },
           ],
         },
-      ];
+      ]);
 
       // When
       const result = new GetGroupsRes(mockCompletedGroups, mockUser);
@@ -394,23 +303,17 @@ describe('GetGroupsRes', () => {
 
     it('사용자가 undefined일 때 모든 그룹의 joinStatus가 NOT_JOINED여야 함', () => {
       // Given
-      const mockGroups = [
+      const mockGroups = createMock<GroupWith[]>([
         {
           id: 1,
           title: '테스트 그룹 1',
           price: 30000,
           description: '테스트 설명 1',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
           groupDate: [
             {
               id: 1,
               date: '2024-03-20',
               groupId: 1,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
             },
           ],
           groupTagMap: [
@@ -418,15 +321,9 @@ describe('GetGroupsRes', () => {
               id: 1,
               groupId: 1,
               tagId: 1,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               tag: {
                 id: 1,
                 name: '운동',
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                deletedAt: null,
               },
             },
           ],
@@ -436,9 +333,6 @@ describe('GetGroupsRes', () => {
               userId: 1,
               groupId: 1,
               joinRole: JoinRole.HOST,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               user: mockUser,
             },
           ],
@@ -446,9 +340,6 @@ describe('GetGroupsRes', () => {
             {
               id: 1,
               method: '인증 방법',
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               groupId: 1,
             },
           ],
@@ -458,17 +349,11 @@ describe('GetGroupsRes', () => {
           title: '테스트 그룹 2',
           price: 40000,
           description: '테스트 설명 2',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
           groupDate: [
             {
               id: 2,
               date: '2024-03-21',
               groupId: 2,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
             },
           ],
           groupTagMap: [
@@ -476,15 +361,9 @@ describe('GetGroupsRes', () => {
               id: 2,
               groupId: 2,
               tagId: 2,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               tag: {
                 id: 2,
                 name: '건강',
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                deletedAt: null,
               },
             },
           ],
@@ -494,9 +373,6 @@ describe('GetGroupsRes', () => {
               userId: 2,
               groupId: 2,
               joinRole: JoinRole.ATTENDEE,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               user: { ...mockUser, id: 2 },
             },
           ],
@@ -504,14 +380,11 @@ describe('GetGroupsRes', () => {
             {
               id: 1,
               method: '인증 방법',
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               groupId: 1,
             },
           ],
         },
-      ];
+      ]);
 
       // When
       const result = new GetGroupsRes(mockGroups, undefined);

@@ -58,3 +58,9 @@ export type GroupWithProofDate = Prisma.GroupGetPayload<{
     groupDate: true;
   };
 }>;
+
+export type UserWithPhoto = Prisma.UserGetPayload<{
+  include: {
+    profilePhoto: true;
+  };
+}>;
