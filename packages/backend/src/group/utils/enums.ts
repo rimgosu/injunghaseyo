@@ -1,8 +1,12 @@
 export enum JoinStatus {
+  // 참여
   RESERVED = 'RESERVED',
   IN_PROGRESS = 'IN_PROGRESS',
   COMPLETED = 'COMPLETED',
+
+  // 미참여
   NOT_JOINED = 'NOT_JOINED',
+  NOT_JOINABLE = 'NOT_JOINABLE',
 }
 
 export enum GroupStatus {

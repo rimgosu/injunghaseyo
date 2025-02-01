@@ -3,6 +3,7 @@ import { BaseGroupRes } from './base-res.dto';
 import { GroupWith, NINE_HOURS_IN_MS, ONE_DAY_IN_MS } from '../utils/types';
 import { User } from '@prisma/client';
 import { JoinStatus, GroupStatus } from '../utils/enums';
+import { getJoinableDate } from '../utils/utils';
 
 export class GetGroupRes extends PickType(BaseGroupRes, [
   'id',
@@ -61,19 +62,16 @@ export class GetGroupRes extends PickType(BaseGroupRes, [
     const endDate = Math.max(...groupDate);
     const endDayNight = endDate + ONE_DAY_IN_MS;
 
-    let joinStatus: JoinStatus;
-    if (now < startDate) {
-      joinStatus = JoinStatus.RESERVED;
-    } else if (now <= endDayNight) {
-      joinStatus = JoinStatus.IN_PROGRESS;
-    } else {
-      joinStatus = JoinStatus.COMPLETED;
-    }
-
-    joinStatus =
-      user && group.join.some((j) => j.userId === user.id)
-        ? joinStatus
-        : JoinStatus.NOT_JOINED;
+    const joinStatus =
+      !user || !group.join.some((j) => j.userId === user.id)
+        ? getJoinableDate(group.groupDate).length === 0
+          ? JoinStatus.NOT_JOINABLE
+          : JoinStatus.NOT_JOINED
+        : now < startDate
+          ? JoinStatus.RESERVED
+          : now <= endDayNight
+            ? JoinStatus.IN_PROGRESS
+            : JoinStatus.COMPLETED;
 
     const status =
       now < startDate

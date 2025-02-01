@@ -19,6 +19,7 @@ import { GROUP_WITH_INCLUDE, GroupWith } from './utils/types';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import {
   canRefund,
+  getJoinableDate,
   getLastDayNight,
   getToday,
   isValidGroup,
@@ -298,6 +299,8 @@ export class GroupService {
 
   /**
    * @description 모임 참여
+   *
+   * - 중간에 참여할 수 있다. 중간에 참여할 경우 다음날부터 인증을 할 수 있다.
    */
   async joinGroup(user: User, param: JoinGroupParam) {
     const { groupId } = param;
@@ -325,12 +328,21 @@ export class GroupService {
       }),
     ]);
 
-    const lastDayNight = getLastDayNight(group?.groupDate || []);
+    const joinableDates = getJoinableDate(group?.groupDate || []);
+    const joinMoney =
+      joinableDates.length === (group?.groupDate?.length || 0)
+        ? group?.price
+        : Math.floor(
+            (group?.price * joinableDates.length) /
+              (group?.groupDate?.length || 0),
+          ); // 중간에 참여할 경우 인증 머니 계산
 
-    if (!group || !isValidGroup(lastDayNight))
-      throw new NotFoundException('모임이 존재하지 않습니다.');
+    if (joinableDates.length === 0)
+      throw new ForbiddenException('참여할 수 있는 날짜가 없습니다.');
 
-    if (wallet?.money < group.price)
+    if (!group) throw new NotFoundException('모임이 존재하지 않습니다.');
+
+    if (wallet?.money < joinMoney)
       throw new ForbiddenException('잔액이 부족합니다.');
 
     if (join) throw new ForbiddenException('이미 참여한 모임입니다.');
@@ -347,27 +359,25 @@ export class GroupService {
         },
       });
 
-      const groupProgressData = group.groupDate.flatMap((date) =>
-        group.proofMethod.map((method) => ({
-          groupDateId: date.id,
-          joinId: join.id,
-          proofMethodId: method.id,
-          status: GroupProgressStatus.PENDING,
-        })),
-      );
-
       await tx.groupProgress.createMany({
-        data: groupProgressData,
+        data: joinableDates.flatMap((date) =>
+          group.proofMethod.map((method) => ({
+            groupDateId: date.id,
+            joinId: join.id,
+            proofMethodId: method.id,
+            status: GroupProgressStatus.PENDING,
+          })),
+        ),
       });
 
       const updatedWallet = await tx.wallet.update({
         where: { userId: user.id, deletedAt: null },
         data: {
-          money: { decrement: group.price },
+          money: { decrement: joinMoney },
           walletHistory: {
             create: {
               previousMoney: wallet.money,
-              currentMoney: wallet.money - group.price,
+              currentMoney: wallet.money - joinMoney,
               reason: WalletHistoryReason.JOIN,
               joinId: join.id,
             },

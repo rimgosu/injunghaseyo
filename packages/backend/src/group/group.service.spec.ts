@@ -3,14 +3,18 @@ import { GroupService } from './group.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   GroupProgressStatus,
+  Join,
   JoinRole,
   User,
+  Wallet,
   WalletHistoryReason,
 } from '@prisma/client';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { GroupStatus } from './utils/enums';
 import { S3Service } from '@/s3/s3.service';
+import { createMock } from '@golevelup/ts-jest';
+import { GroupWithProofDate } from './utils/types';
 
 /**
  * @description getGroups 테스트
@@ -398,7 +402,9 @@ describe('GroupService', () => {
       // When & Then
       await expect(
         service.joinGroup(mockUser, mockJoinGroupParam),
-      ).rejects.toThrow(new NotFoundException('모임이 존재하지 않습니다.'));
+      ).rejects.toThrow(
+        new NotFoundException('참여할 수 있는 날짜가 없습니다.'),
+      );
     });
 
     it('잔액이 부족할 경우 에러 발생', async () => {
@@ -551,7 +557,194 @@ describe('GroupService', () => {
       // When & Then
       await expect(
         service.joinGroup(mockUser, mockJoinGroupParam),
-      ).rejects.toThrow(new NotFoundException('모임이 존재하지 않습니다.'));
+      ).rejects.toThrow(
+        new ForbiddenException('참여할 수 있는 날짜가 없습니다.'),
+      );
+    });
+  });
+
+  describe('joinGroup - 중간 참여 테스트', () => {
+    const mockGroupId = 1;
+    const mockJoinGroupParam = { groupId: mockGroupId };
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2024-03-15T15:00:00Z'));
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('중간 참여시 남은 날짜만큼의 인증 머니를 차감해야 함', async () => {
+      // Given
+      const mockGroup = createMock<GroupWithProofDate>({
+        id: mockGroupId,
+        title: '테스트 모임',
+        price: 30000, // 총 인증 머니
+        description: '테스트 모임입니다',
+        proofMethod: [
+          {
+            id: 1,
+            method: '인증 방법1',
+            groupId: mockGroupId,
+          },
+          {
+            id: 2,
+            method: '인증 방법2',
+            groupId: mockGroupId,
+          },
+        ],
+        groupDate: [
+          {
+            id: 1,
+            date: '2024-03-14', // 지난 날짜
+            groupId: mockGroupId,
+          },
+          {
+            id: 2,
+            date: '2024-03-15', // 오늘
+            groupId: mockGroupId,
+          },
+          {
+            id: 3,
+            date: '2024-03-16', // 미래
+            groupId: mockGroupId,
+          },
+          {
+            id: 4,
+            date: '2024-03-17', // 미래
+            groupId: mockGroupId,
+          },
+        ],
+      });
+
+      const mockWallet = createMock<Wallet>({
+        id: 1,
+        userId: mockUser.id,
+        money: 50000,
+      });
+
+      const mockJoin = createMock<Join>({
+        id: 1,
+        userId: mockUser.id,
+        groupId: mockGroupId,
+        joinRole: JoinRole.ATTENDEE,
+      });
+
+      // 전체 4일 중 1일 참여 가능 (오늘 포함 미래 날짜) -> 7,500원 차감
+      const expectedJoinMoney = Math.floor((mockGroup.price * 1) / 4);
+      const mockUpdatedWallet = {
+        ...mockWallet,
+        money: mockWallet.money - expectedJoinMoney,
+      };
+
+      jest
+        .spyOn(prismaService.group, 'findUnique')
+        .mockResolvedValue(mockGroup);
+      jest
+        .spyOn(prismaService.wallet, 'findUnique')
+        .mockResolvedValue(mockWallet);
+      jest.spyOn(prismaService.join, 'findFirst').mockResolvedValue(null);
+      jest.spyOn(prismaService.join, 'create').mockResolvedValue(mockJoin);
+      jest
+        .spyOn(prismaService.wallet, 'update')
+        .mockResolvedValue(mockUpdatedWallet);
+      jest
+        .spyOn(prismaService.groupProgress, 'createMany')
+        .mockResolvedValue({ count: 6 });
+
+      // When
+      const result = await service.joinGroup(mockUser, mockJoinGroupParam);
+
+      // Then
+      expect(result).toEqual({
+        group: mockGroup,
+        wallet: mockUpdatedWallet,
+      });
+
+      // 지갑 업데이트 검증
+      expect(prismaService.wallet.update).toHaveBeenCalledWith({
+        where: { userId: mockUser.id, deletedAt: null },
+        data: {
+          money: { decrement: expectedJoinMoney },
+          walletHistory: {
+            create: {
+              previousMoney: mockWallet.money,
+              currentMoney: mockWallet.money - expectedJoinMoney,
+              reason: WalletHistoryReason.JOIN,
+              joinId: mockJoin.id,
+            },
+          },
+        },
+      });
+
+      // GroupProgress 생성 검증 - 참여 가능한 날짜(3일)와 인증 방법(2개)에 대해서만 생성
+      const expectedGroupProgressData = mockGroup.groupDate
+        .filter((date) => date.date >= '2024-03-17')
+        .flatMap((date) =>
+          mockGroup.proofMethod.map((method) => ({
+            groupDateId: date.id,
+            joinId: mockJoin.id,
+            proofMethodId: method.id,
+            status: GroupProgressStatus.PENDING,
+          })),
+        );
+
+      expect(prismaService.groupProgress.createMany).toHaveBeenCalledWith({
+        data: expectedGroupProgressData,
+      });
+      expect(expectedGroupProgressData).toHaveLength(2); // 1일 * 2개 인증방법 = 2개
+    });
+
+    it('오늘 이후 참여 가능한 날짜가 없는 경우 에러 발생', async () => {
+      // Given
+      const mockGroup = createMock<GroupWithProofDate>({
+        id: mockGroupId,
+        title: '테스트 모임',
+        price: 30000,
+        description: '테스트 모임입니다',
+        proofMethod: [
+          {
+            id: 1,
+            method: '인증 방법1',
+            groupId: mockGroupId,
+          },
+        ],
+        groupDate: [
+          {
+            id: 1,
+            date: '2024-03-13',
+            groupId: mockGroupId,
+          },
+          {
+            id: 2,
+            date: '2024-03-14',
+            groupId: mockGroupId,
+          },
+        ],
+      });
+
+      const mockWallet = createMock<Wallet>({
+        id: 1,
+        userId: mockUser.id,
+        money: 50000,
+      });
+
+      jest
+        .spyOn(prismaService.group, 'findUnique')
+        .mockResolvedValue(mockGroup);
+      jest
+        .spyOn(prismaService.wallet, 'findUnique')
+        .mockResolvedValue(mockWallet);
+      jest.spyOn(prismaService.join, 'findFirst').mockResolvedValue(null);
+
+      // When & Then
+      await expect(
+        service.joinGroup(mockUser, mockJoinGroupParam),
+      ).rejects.toThrow(
+        new ForbiddenException('참여할 수 있는 날짜가 없습니다.'),
+      );
     });
   });
 });

@@ -51,3 +51,10 @@ export const GROUP_WITH_TODAY = Prisma.validator<Prisma.GroupDefaultArgs>()({
 });
 
 export type GroupWithToday = Prisma.GroupGetPayload<typeof GROUP_WITH_TODAY>;
+
+export type GroupWithProofDate = Prisma.GroupGetPayload<{
+  include: {
+    proofMethod: true;
+    groupDate: true;
+  };
+}>;

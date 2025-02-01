@@ -70,6 +70,9 @@ export class GroupController {
 
   /**
    * @description 모임 참여
+   *
+   * - 모임 진행 중간에 참여 시 남은일 수 만큼의 가격이 책정된다.
+   * - 중간에 참여할 경우 다음 날부터 인증을 할 수 있다.
    */
   @Post(':groupId/join')
   @ApiBearerAuth('jwt')
@@ -178,13 +181,10 @@ export class GroupController {
   /**
    * @description 총 받을 금액 조회
    *
-   * 어제까지의 총 받을 금액
-   *   - PROGRESS: 어제까지의 진행일 수 / 총 진행일 수
-   *   - NET: 0.8
-   *   - FEE: 0.2
-   *   - PROGRESS_TOTAL: 참여자 수 * 모임 가격 * PROGRESS * NET
-   *   - TOTAL_COMPLETED: 총 인증 완료 일 수
-   *   - MY_COMPLETED: 내 인증 완료 일 수
-   *   - MY_MONEY: PROGRESS_TOTAL * MY_COMPLETED / TOTAL_COMPLETED
+   * 일일 단위로 정산하는 방식
+   *   - DAILY_PRICE: 모임 가격 / 총 진행일 수 (예: 30,000원/30일 = 1,000원/일)
+   *   - DAILY_POOL: 해당 일자의 전체 참여자들이 낸 금액 * NET(0.8)
+   *   - MY_DAILY_REWARD: 특정 날짜에 인증 성공한 사람들끼리 DAILY_POOL 균등 분배
+   *   - MY_TOTAL_REWARD: ∑(MY_DAILY_REWARD)
    */
 }
