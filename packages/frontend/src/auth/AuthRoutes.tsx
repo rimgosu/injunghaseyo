@@ -39,6 +39,11 @@ export const AuthRoutes = () => {
       return;
     }
 
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      return;
+    }
+
     const checkAuthStatus = async () => {
       try {
         const res = await checkSignIn();
@@ -58,7 +63,7 @@ export const AuthRoutes = () => {
     };
 
     checkAuthStatus();
-  }, [location.pathname]);
+  }, []);
 
   return (
     <Routes>
