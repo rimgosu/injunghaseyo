@@ -55,7 +55,7 @@ export const AuthRoutes = () => {
         ) {
           navigate('/auth/select-character', { replace: true });
         } else if (!publicPaths.includes(currentPath)) {
-          navigate('/', { replace: true });
+          navigate('/group', { replace: true });
         }
       } catch (error) {
         console.error('인증 상태 확인 실패:', error);
@@ -68,18 +68,15 @@ export const AuthRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/auth/init" replace />} />
-      <Route path="/auth" element={<Navigate to="/auth/init" replace />} />
-      <Route path="/auth">
-        <Route path="init" element={<InitPage />} />
-        <Route path="login" element={<LoginPage />} />
-        <Route path="signup" element={<SignUpPage />} />
-        <Route
-          path="search-password"
-          element={<AuthLayout>비밀번호 찾기</AuthLayout>}
-        />
-        <Route path="oauth-pending" element={<OauthPendingPage />} />
-        <Route path="select-character" element={<CharacterSelectPage />} />
-      </Route>
+      <Route path="init" element={<InitPage />} />
+      <Route path="login" element={<LoginPage />} />
+      <Route path="signup" element={<SignUpPage />} />
+      <Route
+        path="search-password"
+        element={<AuthLayout>비밀번호 찾기</AuthLayout>}
+      />
+      <Route path="oauth-pending" element={<OauthPendingPage />} />
+      <Route path="select-character" element={<CharacterSelectPage />} />
     </Routes>
   );
 };
