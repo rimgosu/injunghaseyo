@@ -7,6 +7,7 @@ describe('verifyPassword', () => {
       'Password123$',
       'Complex123&',
       'AbCd123!@#',
+      'injung123!@#',
     ];
 
     validPasswords.forEach((password) => {

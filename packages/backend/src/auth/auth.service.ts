@@ -49,12 +49,14 @@ export class AuthService {
 
     const isPasswordValid = verifyPassword(password);
 
+    console.log(isPasswordValid);
+
     if (!isPasswordValid)
       throw new BadRequestException(
         '비밀번호는 특수문자, 영문, 숫자를 포함한 8자리 이상의 글자여야합니다.',
       );
 
-    return { message: '비밀번호 형식 오류' };
+    return { message: '올바른 비밀번호' };
   }
 
   async getCharacters(): Promise<GetCharacter[]> {
