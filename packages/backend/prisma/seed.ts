@@ -47,129 +47,116 @@ async function createCharacters() {
     data: {
       name: '노랑이',
       description: '귀여운 노랑이입니다.',
+      characterInfo: {
+        createMany: {
+          data: [
+            {
+              level: 1,
+              expNeed: 0,
+              photoUrl: yelloLv1,
+            },
+            {
+              level: 2,
+              expNeed: 100,
+              photoUrl: yelloLv2,
+            },
+            {
+              level: 3,
+              expNeed: 225,
+              photoUrl: yelloLv3,
+            },
+            {
+              level: 4,
+              expNeed: 375,
+              photoUrl: yelloLv4,
+            },
+            {
+              level: 5,
+              expNeed: 575,
+              photoUrl: yelloLv5,
+            },
+          ],
+        },
+      },
     },
-  });
-
-  const yelloInfo = await prisma.characterInfo.createMany({
-    data: [
-      {
-        level: 1,
-        expNeed: 0,
-        photoUrl: yelloLv1,
-        characterId: yello.id,
-      },
-      {
-        level: 2,
-        expNeed: 100,
-        photoUrl: yelloLv2,
-        characterId: yello.id,
-      },
-      {
-        level: 3,
-        expNeed: 225,
-        photoUrl: yelloLv3,
-        characterId: yello.id,
-      },
-      {
-        level: 4,
-        expNeed: 375,
-        photoUrl: yelloLv4,
-        characterId: yello.id,
-      },
-      {
-        level: 5,
-        expNeed: 575,
-        photoUrl: yelloLv5,
-        characterId: yello.id,
-      },
-    ],
   });
 
   const green = await prisma.character.create({
     data: {
       name: '초록이',
       description: '귀여운 초록이입니다.',
+      characterInfo: {
+        createMany: {
+          data: [
+            {
+              level: 1,
+              expNeed: 0,
+              photoUrl: greenLv1,
+            },
+            {
+              level: 2,
+              expNeed: 100,
+              photoUrl: greenLv2,
+            },
+            {
+              level: 3,
+              expNeed: 225,
+              photoUrl: greenLv3,
+            },
+            {
+              level: 4,
+              expNeed: 375,
+              photoUrl: greenLv4,
+            },
+            {
+              level: 5,
+              expNeed: 575,
+              photoUrl: greenLv5,
+            },
+          ],
+        },
+      },
     },
-  });
-
-  const greenInfo = await prisma.characterInfo.createMany({
-    data: [
-      {
-        level: 1,
-        expNeed: 0,
-        photoUrl: greenLv1,
-        characterId: green.id,
-      },
-      {
-        level: 2,
-        expNeed: 100,
-        photoUrl: greenLv2,
-        characterId: green.id,
-      },
-      {
-        level: 3,
-        expNeed: 225,
-        photoUrl: greenLv3,
-        characterId: green.id,
-      },
-      {
-        level: 4,
-        expNeed: 375,
-        photoUrl: greenLv4,
-        characterId: green.id,
-      },
-      {
-        level: 5,
-        expNeed: 575,
-        photoUrl: greenLv5,
-        characterId: green.id,
-      },
-    ],
   });
 
   const blue = await prisma.character.create({
     data: {
       name: '파랑이',
       description: '귀여운 파랑이입니다.',
+      characterInfo: {
+        createMany: {
+          data: [
+            {
+              level: 1,
+              expNeed: 0,
+              photoUrl: blueLv1,
+            },
+            {
+              level: 2,
+              expNeed: 100,
+              photoUrl: blueLv2,
+            },
+            {
+              level: 3,
+              expNeed: 225,
+              photoUrl: blueLv3,
+            },
+            {
+              level: 4,
+              expNeed: 375,
+              photoUrl: blueLv4,
+            },
+            {
+              level: 5,
+              expNeed: 575,
+              photoUrl: blueLv5,
+            },
+          ],
+        },
+      },
     },
-  });
-
-  const blueInfo = await prisma.characterInfo.createMany({
-    data: [
-      {
-        level: 1,
-        expNeed: 0,
-        photoUrl: blueLv1,
-        characterId: blue.id,
-      },
-      {
-        level: 2,
-        expNeed: 100,
-        photoUrl: blueLv2,
-        characterId: blue.id,
-      },
-      {
-        level: 3,
-        expNeed: 225,
-        photoUrl: blueLv3,
-        characterId: blue.id,
-      },
-      {
-        level: 4,
-        expNeed: 375,
-        photoUrl: blueLv4,
-        characterId: blue.id,
-      },
-      {
-        level: 5,
-        expNeed: 575,
-        photoUrl: blueLv5,
-        characterId: blue.id,
-      },
-    ],
   });
 
   console.log('Seed data created:');
   console.log('Character:', yello, green, blue);
-  console.log('CharacterInfo:', yelloInfo, greenInfo, blueInfo);
 }
