@@ -17,37 +17,112 @@ import {
   yelloLv5,
 } from './utils/svgs';
 import { tags } from './utils/tags';
+import { Logger } from '@nestjs/common';
 
 const prisma = new PrismaClient();
+const logger = new Logger('PrismaSeed', { timestamp: true });
 
 async function main() {
   try {
     await createCharacters();
   } catch (error) {
-    console.error('Character creation failed:', error);
+    if (error.code === 'P2002') {
+      logger.debug('Character already exists');
+    } else {
+      logger.error('Character creation failed:', error);
+    }
   }
 
   try {
     await createTags();
   } catch (error) {
-    console.error('Tag creation failed:', error);
+    if (error.code === 'P2002') {
+      logger.debug('Tag already exists');
+    } else {
+      logger.error('Tag creation failed:', error);
+    }
   }
 
   try {
     await createAdminUser();
   } catch (error) {
-    console.error('Admin user creation failed:', error);
+    if (error.code === 'P2002') {
+      logger.debug('Admin user already exists');
+    } else {
+      logger.error('Admin user creation failed:', error);
+    }
+  }
+
+  try {
+    await createUsers();
+  } catch (error) {
+    if (error.code === 'P2002') {
+      logger.debug('User already exists');
+    } else {
+      logger.error('User creation failed:', error);
+    }
   }
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    logger.error(e);
     process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+async function createUsers() {
+  const users = await Promise.all([
+    prisma.user.create({
+      data: {
+        email: 'test1@injunghaseyo.com',
+        eventAgree: true,
+        nickname: '테스트1',
+        password:
+          '9370442d8ac86a42b323217ee422e9e9f556111888e41141dc6a159cde687dd7e06472f2a5e43dde5cd490abe271792e3942d5c22fafc67b036d603b52735abc', // password: 'injung123!@#'
+        salt: '8e5dc47e8a22a1bc2c86b92b488160eb',
+        role: Role.USER,
+        status: UserStatus.ACTIVE,
+        profilePhoto: {
+          create: {
+            url: 'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/profile-photo/basic-profile.svg',
+          },
+        },
+        wallet: {
+          create: {
+            money: 1000000,
+          },
+        },
+      },
+    }),
+    prisma.user.create({
+      data: {
+        email: 'test2@injunghaseyo.com',
+        eventAgree: true,
+        nickname: '테스트2',
+        password:
+          '9370442d8ac86a42b323217ee422e9e9f556111888e41141dc6a159cde687dd7e06472f2a5e43dde5cd490abe271792e3942d5c22fafc67b036d603b52735abc', // password: 'injung123!@#'
+        salt: '8e5dc47e8a22a1bc2c86b92b488160eb',
+        role: Role.USER,
+        status: UserStatus.ACTIVE,
+        profilePhoto: {
+          create: {
+            url: 'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/profile-photo/basic-profile.svg',
+          },
+        },
+        wallet: {
+          create: {
+            money: 1000000,
+          },
+        },
+      },
+    }),
+  ]);
+
+  logger.debug(`${users.length} users created`);
+}
 
 async function createAdminUser() {
   const admin = await prisma.user.create({
@@ -55,9 +130,8 @@ async function createAdminUser() {
       email: 'admin@injunghaseyo.com',
       eventAgree: true,
       nickname: '관리자',
-      // password: 'injung123!@#'
       password:
-        '9370442d8ac86a42b323217ee422e9e9f556111888e41141dc6a159cde687dd7e06472f2a5e43dde5cd490abe271792e3942d5c22fafc67b036d603b52735abc',
+        '9370442d8ac86a42b323217ee422e9e9f556111888e41141dc6a159cde687dd7e06472f2a5e43dde5cd490abe271792e3942d5c22fafc67b036d603b52735abc', // password: 'injung123!@#'
       salt: '8e5dc47e8a22a1bc2c86b92b488160eb',
       role: Role.ADMIN,
       status: UserStatus.ACTIVE,
@@ -70,11 +144,11 @@ async function createAdminUser() {
         create: {
           money: 1000000,
         },
-      },
+      }, // TODO: my character 추가
     },
   });
 
-  console.log(`admin user created: ${admin.id}`);
+  logger.debug(`admin user created: ${admin.id}`);
 }
 
 async function createTags() {
@@ -82,7 +156,7 @@ async function createTags() {
     data: tags.map((tag) => ({ name: tag })),
   });
 
-  console.log(`tag generated: ${createdTags.count}`);
+  logger.debug(`tag generated: ${createdTags.count}`);
 }
 
 async function createCharacters() {
@@ -200,6 +274,6 @@ async function createCharacters() {
     },
   });
 
-  console.log('Seed data created:');
-  console.log('Character:', yello, green, blue);
+  logger.debug('Seed data created:');
+  logger.debug('Character:', yello, green, blue);
 }
