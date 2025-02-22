@@ -14,7 +14,7 @@
 
 ### .npmrc
 
-- libs 라이브러리 업데이트를 위한 세팅
+- private ghcr 패키지 업데이트를 위한 세팅
 
 ```text
 ./packages/libs/.npmrc
@@ -46,7 +46,7 @@ docker compose -f docker-compose.db.yaml up -d --build
 yarn prisma:setting
 ```
 
-### sdk update
+### sdk update (for frontend)
 
 - 백엔드 DTO 추가 및 변경 시 sdk를 업데이트 한다.
 
