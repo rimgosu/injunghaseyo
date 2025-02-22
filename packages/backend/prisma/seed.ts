@@ -18,6 +18,13 @@ import {
 } from './utils/svgs';
 import { tags } from './utils/tags';
 import { Logger } from '@nestjs/common';
+import {
+  blueName,
+  greenName,
+  inProgressGroupId,
+  yelloName,
+} from './utils/types';
+import { GroupDateUtil } from './utils/group-date.util';
 
 const prisma = new PrismaClient();
 const logger = new Logger('PrismaSeed', { timestamp: true });
@@ -64,14 +71,69 @@ async function main() {
   }
 }
 
-main()
-  .catch((e) => {
-    logger.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
+/**
+ * @description 그룹 생성
+ *
+ * 1. 현재 진행 중인 그룹
+ * 2. 종료된 그룹
+ * 3. 아직 진행 중이지 않은 그룹 2개
+ */
+async function createGroups() {
+  const groupDateUtil = new GroupDateUtil();
+
+  // 1. 현재 진행 중인 그룹
+
+  const inProgressGroup = await prisma.group.upsert({
+    where: {
+      id: inProgressGroupId,
+    },
+    update: {},
+    create: {
+      id: inProgressGroupId,
+      price: 30000,
+      title: '현재 진행 그룹',
+      description: '현재 진행 중인 그룹입니다.',
+      groupTagMap: {
+        create: {
+          tag: {
+            connect: {
+              name: tags[0],
+            },
+          },
+        },
+      },
+      proofMethod: {
+        createMany: {
+          data: ['아침 촬영', '저녁 촬영'].map((method) => ({
+            method,
+          })),
+        },
+      },
+      groupDate: {
+        createMany: {
+          data: groupDateUtil.inProgressYmds.map((date) => ({ date })),
+        },
+      },
+    },
+    include: {
+      groupDate: true,
+    },
   });
+
+  // groupDate seed 시점에 따라 업데이트
+  const groupDate = await inProgressGroup.groupDate.map(async (d, index) => {
+    return await prisma.groupDate.update({
+      where: {
+        id: d.id,
+      },
+      data: {
+        date: groupDateUtil.inProgressYmds[index],
+      },
+    });
+  });
+
+  // 2. 종료된 그룹
+}
 
 async function createUsers() {
   const users = await Promise.all([
@@ -95,8 +157,18 @@ async function createUsers() {
             money: 1000000,
           },
         },
+        myCharacter: {
+          create: {
+            character: {
+              connect: {
+                name: yelloName,
+              },
+            },
+          },
+        },
       },
     }),
+
     prisma.user.create({
       data: {
         email: 'test2@injunghaseyo.com',
@@ -115,6 +187,15 @@ async function createUsers() {
         wallet: {
           create: {
             money: 1000000,
+          },
+        },
+        myCharacter: {
+          create: {
+            character: {
+              connect: {
+                name: greenName,
+              },
+            },
           },
         },
       },
@@ -144,7 +225,16 @@ async function createAdminUser() {
         create: {
           money: 1000000,
         },
-      }, // TODO: my character 추가
+      },
+      myCharacter: {
+        create: {
+          character: {
+            connect: {
+              name: blueName,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -162,7 +252,7 @@ async function createTags() {
 async function createCharacters() {
   const yello = await prisma.character.create({
     data: {
-      name: '노랑이',
+      name: yelloName,
       description: '귀여운 노랑이입니다.',
       characterInfo: {
         createMany: {
@@ -200,7 +290,7 @@ async function createCharacters() {
 
   const green = await prisma.character.create({
     data: {
-      name: '초록이',
+      name: greenName,
       description: '귀여운 초록이입니다.',
       characterInfo: {
         createMany: {
@@ -238,7 +328,7 @@ async function createCharacters() {
 
   const blue = await prisma.character.create({
     data: {
-      name: '파랑이',
+      name: blueName,
       description: '귀여운 파랑이입니다.',
       characterInfo: {
         createMany: {
@@ -277,3 +367,12 @@ async function createCharacters() {
   logger.debug('Seed data created:');
   logger.debug('Character:', yello, green, blue);
 }
+
+main()
+  .catch((e) => {
+    logger.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
