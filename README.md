@@ -54,7 +54,7 @@ yarn prisma:setting
 yarn gen:sdk
 ```
 
-## 2. runs
+## 2. run
 
 ```bash
 yarn dev
