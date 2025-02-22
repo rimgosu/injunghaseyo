@@ -1,6 +1,6 @@
 - 매일 인증하고 돈 벌기
 
-## settings
+## 1. settings
 
 ### envs
 
@@ -54,12 +54,12 @@ yarn prisma:setting
 yarn gen:sdk
 ```
 
-### runs
+## 2. runs
 
 ```bash
 yarn dev
 ```
 
-## refs - 외부 공개용
+## 3. refs - 외부 공개용
 
 <https://excalidraw.com/#room=34381f295846e1bd7b81,--VWceRNTk4H76ekFOwe0w>
