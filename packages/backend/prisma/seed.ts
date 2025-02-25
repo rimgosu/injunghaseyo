@@ -18,57 +18,34 @@ import {
 } from './utils/svgs';
 import { tags } from './utils/tags';
 import { Logger } from '@nestjs/common';
-import {
-  blueName,
-  greenName,
-  inProgressGroupId,
-  yelloName,
-} from './utils/types';
+import { blueName, greenName, yelloName } from './utils/types';
 import { GroupDateUtil } from './utils/group-date.util';
+import { GroupSeedData } from './utils/group-seed.data';
 
 const prisma = new PrismaClient();
 const logger = new Logger('PrismaSeed', { timestamp: true });
 
+const handleSeedOperation = async (
+  operation: () => Promise<void>,
+  entityName: string,
+) => {
+  try {
+    await operation();
+  } catch (error) {
+    if (error.code === 'P2002') {
+      logger.debug(`${entityName} already exists`);
+    } else {
+      logger.error(`${entityName} creation failed:`, error);
+    }
+  }
+};
+
 async function main() {
-  try {
-    await createCharacters();
-  } catch (error) {
-    if (error.code === 'P2002') {
-      logger.debug('Character already exists');
-    } else {
-      logger.error('Character creation failed:', error);
-    }
-  }
-
-  try {
-    await createTags();
-  } catch (error) {
-    if (error.code === 'P2002') {
-      logger.debug('Tag already exists');
-    } else {
-      logger.error('Tag creation failed:', error);
-    }
-  }
-
-  try {
-    await createAdminUser();
-  } catch (error) {
-    if (error.code === 'P2002') {
-      logger.debug('Admin user already exists');
-    } else {
-      logger.error('Admin user creation failed:', error);
-    }
-  }
-
-  try {
-    await createUsers();
-  } catch (error) {
-    if (error.code === 'P2002') {
-      logger.debug('User already exists');
-    } else {
-      logger.error('User creation failed:', error);
-    }
-  }
+  await handleSeedOperation(createCharacters, 'Character');
+  await handleSeedOperation(createTags, 'Tag');
+  await handleSeedOperation(createAdminUser, 'Admin user');
+  await handleSeedOperation(createUsers, 'User');
+  await handleSeedOperation(createGroups, 'Group');
 }
 
 /**
@@ -82,57 +59,60 @@ async function createGroups() {
   const groupDateUtil = new GroupDateUtil();
 
   // 1. 현재 진행 중인 그룹
-
-  const inProgressGroup = await prisma.group.upsert({
-    where: {
-      id: inProgressGroupId,
-    },
-    update: {},
-    create: {
-      id: inProgressGroupId,
-      price: 30000,
-      title: '현재 진행 그룹',
-      description: '현재 진행 중인 그룹입니다.',
-      groupTagMap: {
-        create: {
-          tag: {
-            connect: {
-              name: tags[0],
-            },
-          },
-        },
-      },
-      proofMethod: {
-        createMany: {
-          data: ['아침 촬영', '저녁 촬영'].map((method) => ({
-            method,
-          })),
-        },
-      },
-      groupDate: {
-        createMany: {
-          data: groupDateUtil.inProgressYmds.map((date) => ({ date })),
-        },
-      },
-    },
-    include: {
-      groupDate: true,
-    },
-  });
-
-  // groupDate seed 시점에 따라 업데이트
-  const groupDate = await inProgressGroup.groupDate.map(async (d, index) => {
-    return await prisma.groupDate.update({
-      where: {
-        id: d.id,
-      },
-      data: {
-        date: groupDateUtil.inProgressYmds[index],
-      },
-    });
-  });
+  const { group: inProgressGroup, groupDate: inProgressGroupDate } =
+    await new GroupSeedData(
+      99999,
+      30000,
+      '현재 진행 그룹',
+      '현재 진행 중인 그룹입니다.',
+      tags[0],
+      ['아침 촬영', '저녁 촬영'],
+      groupDateUtil.inProgressYmds,
+    ).createGroupSeedData(prisma);
 
   // 2. 종료된 그룹
+  const { group: completedGroup, groupDate: completedGroupDate } =
+    await new GroupSeedData(
+      99998,
+      50000,
+      '종료된 그룹',
+      '종료된 그룹입니다.',
+      tags[1],
+      ['아침 촬영', '저녁 촬영'],
+      groupDateUtil.finishedYmds,
+    ).createGroupSeedData(prisma);
+
+  // 3. 아직 진행 중이지 않은 그룹 2개
+  const { group: notStartedGroup1, groupDate: notStartedGroupDate1 } =
+    await new GroupSeedData(
+      99997,
+      10000,
+      '아직 진행 중이지 않은 그룹1',
+      '아직 진행 중이지 않은 그룹1입니다.',
+      tags[2],
+      ['아침 촬영', '저녁 촬영'],
+      groupDateUtil.notStartedYmds,
+    ).createGroupSeedData(prisma);
+
+  const { group: notStartedGroup2, groupDate: notStartedGroupDate2 } =
+    await new GroupSeedData(
+      99996,
+      100,
+      '아직 진행 중이지 않은 그룹2',
+      '아직 진행 중이지 않은 그룹2입니다.',
+      tags[3],
+      ['아침에 버튼 누르기'],
+      groupDateUtil.notStartedYmds,
+    ).createGroupSeedData(prisma);
+
+  logger.debug(`${inProgressGroup.id} inProgressGroup created`);
+  logger.debug(`${inProgressGroupDate.length} inProgressGroupDate created`);
+  logger.debug(`${completedGroup.id} completedGroup created`);
+  logger.debug(`${completedGroupDate.length} completedGroupDate created`);
+  logger.debug(`${notStartedGroup1.id} notStartedGroup1 created`);
+  logger.debug(`${notStartedGroupDate1.length} notStartedGroupDate1 created`);
+  logger.debug(`${notStartedGroup2.id} notStartedGroup2 created`);
+  logger.debug(`${notStartedGroupDate2.length} notStartedGroupDate2 created`);
 }
 
 async function createUsers() {
