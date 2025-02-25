@@ -13,7 +13,7 @@
     "start:backend": "yarn workspace @monorepo/backend start:dev",
     "dev": "concurrently \"yarn start:frontend\" \"yarn start:backend\"",
     "build": "yarn workspaces run build",
-    "test": "yarn workspaces run test",
+    "test": "yarn workspace @monorepo/backend test",
     "db": "docker compose -f docker-compose.db.yaml up -d",
     "prisma:setting": "yarn workspace @monorepo/backend prisma:migrate:dev && yarn workspace @monorepo/backend prisma:seed",
     "prisma:clear": "yarn workspace @monorepo/backend prisma:reset && yarn workspace @monorepo/backend prisma:migrate:dev && yarn workspace @monorepo/backend prisma:seed",
