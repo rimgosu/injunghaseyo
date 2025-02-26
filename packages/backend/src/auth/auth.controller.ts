@@ -277,7 +277,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: '전체 character 조회 성공',
-    type: GetCharacter,
+    type: [GetCharacter],
   })
   async getCharacters(): Promise<GetCharacter[]> {
     return await this.authService.getCharacters();

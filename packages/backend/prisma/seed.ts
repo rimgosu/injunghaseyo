@@ -46,6 +46,7 @@ async function main() {
   await handleSeedOperation(createAdminUser, 'Admin user');
   await handleSeedOperation(createUsers, 'User');
   await handleSeedOperation(createGroups, 'Group');
+  // @todo: join 데이터 생성
 }
 
 /**

@@ -949,7 +949,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     authControllerGetCharacters: (params: RequestParams = {}) =>
-      this.request<GetCharacter, any>({
+      this.request<GetCharacter[], any>({
         path: `/auth/characters`,
         method: 'GET',
         secure: true,
