@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AuthLayout } from '../AuthLayout';
+import { AuthLayout } from '../../common/Layout';
 import { Input } from '../../common/Input';
 import { AgreementSection } from '../components/Agreement';
 import { GreenButton } from '../components/GreenButton';

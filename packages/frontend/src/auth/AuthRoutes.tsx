@@ -5,7 +5,7 @@ import {
   useNavigate,
   useLocation,
 } from 'react-router-dom';
-import { AuthLayout } from './AuthLayout';
+import { AuthLayout } from '../common/Layout';
 import { InitPage } from './pages/InitPage';
 import { SignUpPage } from './pages/SignUpPage';
 import { LoginPage } from './pages/LoginPage';

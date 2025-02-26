@@ -1,4 +1,4 @@
-import { AuthLayout } from '../AuthLayout';
+import { AuthLayout } from '../../common/Layout';
 import React, { useState } from 'react';
 import { LoginFormData } from '../types';
 import { Input } from '../../common/Input';

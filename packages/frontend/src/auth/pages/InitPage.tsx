@@ -1,4 +1,4 @@
-import { AuthLayout } from '../AuthLayout';
+import { AuthLayout } from '../../common/Layout';
 import React from 'react';
 import { OtherPage } from '../components/OtherPage';
 import { SocialLoginHome } from '../components/SocialLoginHome';

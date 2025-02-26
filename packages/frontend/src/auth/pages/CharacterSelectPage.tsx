@@ -1,4 +1,4 @@
-import { AuthLayout } from '../AuthLayout';
+import { AuthLayout } from '../../common/Layout';
 import React, { useEffect, useState } from 'react';
 import {
   AuthControllerCharacterSelectParams,
