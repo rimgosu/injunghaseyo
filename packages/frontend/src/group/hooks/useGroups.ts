@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import { Api } from '@rimgosu/libs';
 import { GetGroupsRes } from '@rimgosu/libs';
+import { ApiSingleton } from '../../common/apiSingleton';
 
 export const useGroups = () => {
   const [groupsData, setGroupsData] = useState<GetGroupsRes | null>(null);
@@ -10,11 +10,10 @@ export const useGroups = () => {
   const fetchGroups = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await new Api({
-        baseUrl: 'http://localhost:3001',
-      }).groups.groupControllerGetGroups({
-        format: 'json',
-      });
+      const response =
+        await ApiSingleton.getInstance().groups.groupControllerGetGroups({
+          format: 'json',
+        });
 
       setGroupsData(response.data);
       setError(null);
