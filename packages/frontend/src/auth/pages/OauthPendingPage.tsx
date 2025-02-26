@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AuthLayout } from '../../common/Layout';
+import { BaseLayout } from '../../common/BaseLayout';
 import { Input } from '../../common/Input';
 import { AgreementSection } from '../components/Agreement';
 import { GreenButton } from '../components/GreenButton';
@@ -87,7 +87,7 @@ export const OauthPendingPage = () => {
   };
 
   return (
-    <AuthLayout>
+    <BaseLayout>
       <Input
         label="닉네임"
         type="text"
@@ -105,6 +105,6 @@ export const OauthPendingPage = () => {
       />
 
       <GreenButton text="계속하기" onClick={handleContinue} />
-    </AuthLayout>
+    </BaseLayout>
   );
 };

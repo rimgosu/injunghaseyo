@@ -5,7 +5,7 @@ import {
   useNavigate,
   useLocation,
 } from 'react-router-dom';
-import { AuthLayout } from '../common/Layout';
+import { BaseLayout } from '../common/BaseLayout';
 import { InitPage } from './pages/InitPage';
 import { SignUpPage } from './pages/SignUpPage';
 import { LoginPage } from './pages/LoginPage';
@@ -73,7 +73,7 @@ export const AuthRoutes = () => {
       <Route path="signup" element={<SignUpPage />} />
       <Route
         path="search-password"
-        element={<AuthLayout>비밀번호 찾기</AuthLayout>}
+        element={<BaseLayout>비밀번호 찾기</BaseLayout>}
       />
       <Route path="oauth-pending" element={<OauthPendingPage />} />
       <Route path="select-character" element={<CharacterSelectPage />} />

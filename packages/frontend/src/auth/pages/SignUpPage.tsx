@@ -1,4 +1,4 @@
-import { AuthLayout } from '../../common/Layout';
+import { BaseLayout } from '../../common/BaseLayout';
 import React, { useEffect, useState } from 'react';
 import {
   EmailVerificationState,
@@ -228,7 +228,7 @@ export const SignUpPage = () => {
   };
 
   return (
-    <AuthLayout>
+    <BaseLayout>
       <Input
         label="이메일"
         type="email"
@@ -327,6 +327,6 @@ export const SignUpPage = () => {
         onClick={handleSignUp}
         disabled={!emailVerification.isVerified}
       />
-    </AuthLayout>
+    </BaseLayout>
   );
 };

@@ -1,4 +1,4 @@
-import { AuthLayout } from '../../common/Layout';
+import { BaseLayout } from '../../common/BaseLayout';
 import React, { useEffect, useState } from 'react';
 import {
   AuthControllerCharacterSelectParams,
@@ -33,7 +33,7 @@ export const CharacterSelectPage = () => {
   }, [getCharacter]); // getCharacter 의존성 제거
 
   if (isLoading) {
-    return <AuthLayout>로딩중...</AuthLayout>;
+    return <BaseLayout>로딩중...</BaseLayout>;
   }
 
   const handleSelectCharacter = async (
@@ -51,7 +51,7 @@ export const CharacterSelectPage = () => {
   };
 
   return (
-    <AuthLayout>
+    <BaseLayout>
       <div className="flex flex-col items-center mb-6">
         <div className="grid grid-cols-3 gap-4">
           {characters.map((character) => (
@@ -81,6 +81,6 @@ export const CharacterSelectPage = () => {
           disabled={selectedCharacter === null}
         />
       </div>
-    </AuthLayout>
+    </BaseLayout>
   );
 };

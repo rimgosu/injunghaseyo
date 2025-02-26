@@ -1,11 +1,11 @@
-import { AuthLayout } from '../../common/Layout';
+import { BaseLayout } from '../../common/BaseLayout';
 import React from 'react';
 import { OtherPage } from '../components/OtherPage';
 import { SocialLoginHome } from '../components/SocialLoginHome';
 import { Link } from 'react-router-dom';
 
 export const InitPage = () => (
-  <AuthLayout>
+  <BaseLayout>
     <div className="text-center py-12 mb-10">
       <h1 className="text-3xl p-12">인증하세요</h1>
     </div>
@@ -25,5 +25,5 @@ export const InitPage = () => (
     <div className="my-2">
       <OtherPage />
     </div>
-  </AuthLayout>
+  </BaseLayout>
 );

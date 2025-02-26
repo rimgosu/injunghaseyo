@@ -1,4 +1,4 @@
-import { AuthLayout } from '../../common/Layout';
+import { BaseLayout } from '../../common/BaseLayout';
 import React, { useState } from 'react';
 import { LoginFormData } from '../types';
 import { Input } from '../../common/Input';
@@ -40,7 +40,7 @@ export const LoginPage = () => {
   };
 
   return (
-    <AuthLayout>
+    <BaseLayout>
       <Input
         label="이메일"
         type="email"
@@ -72,6 +72,6 @@ export const LoginPage = () => {
       </div>
 
       <OtherPage />
-    </AuthLayout>
+    </BaseLayout>
   );
 };
