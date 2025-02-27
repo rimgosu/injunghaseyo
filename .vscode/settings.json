@@ -12,4 +12,5 @@
     },
     "jest.jestCommandLine": "yarn workspace @monorepo/backend test",
     "css.validate": false,
+    "todohighlight.isCaseSensitive": false
 }

@@ -1,4 +1,4 @@
-import { PrismaClient, Role, UserStatus } from '@prisma/client';
+import { JoinRole, PrismaClient, Role, UserStatus } from '@prisma/client';
 import {
   blueLv1,
   blueLv2,
@@ -21,6 +21,7 @@ import { Logger } from '@nestjs/common';
 import { blueName, greenName, yelloName } from './utils/types';
 import { GroupDateUtil } from './utils/group-date.util';
 import { GroupSeedData } from './utils/group-seed.data';
+import { UserSeedData } from './utils/user-seed.data';
 
 const prisma = new PrismaClient();
 const logger = new Logger('PrismaSeed', { timestamp: true });
@@ -46,7 +47,6 @@ async function main() {
   await handleSeedOperation(createAdminUser, 'Admin user');
   await handleSeedOperation(createUsers, 'User');
   await handleSeedOperation(createGroups, 'Group');
-  // @todo: join 데이터 생성
 }
 
 /**
@@ -69,7 +69,10 @@ async function createGroups() {
       tags[0],
       ['아침 촬영', '저녁 촬영'],
       groupDateUtil.inProgressYmds,
-    ).createGroupSeedData(prisma);
+    ).createGroupSeedData(prisma, [
+      UserSeedData.users.admin,
+      UserSeedData.users.user1,
+    ]);
 
   // 2. 종료된 그룹
   const { group: completedGroup, groupDate: completedGroupDate } =
@@ -81,7 +84,11 @@ async function createGroups() {
       tags[1],
       ['아침 촬영', '저녁 촬영'],
       groupDateUtil.finishedYmds,
-    ).createGroupSeedData(prisma);
+    ).createGroupSeedData(prisma, [
+      UserSeedData.users.admin,
+      UserSeedData.users.user1,
+      UserSeedData.users.user2,
+    ]);
 
   // 3. 아직 진행 중이지 않은 그룹 2개
   const { group: notStartedGroup1, groupDate: notStartedGroupDate1 } =
@@ -93,7 +100,7 @@ async function createGroups() {
       tags[2],
       ['아침 촬영', '저녁 촬영'],
       groupDateUtil.notStartedYmds,
-    ).createGroupSeedData(prisma);
+    ).createGroupSeedData(prisma, [UserSeedData.users.admin]);
 
   const { group: notStartedGroup2, groupDate: notStartedGroupDate2 } =
     await new GroupSeedData(
@@ -104,7 +111,11 @@ async function createGroups() {
       tags[3],
       ['아침에 버튼 누르기'],
       groupDateUtil.notStartedYmds,
-    ).createGroupSeedData(prisma);
+    ).createGroupSeedData(prisma, [
+      UserSeedData.users.admin,
+      UserSeedData.users.user1,
+      UserSeedData.users.user2,
+    ]);
 
   logger.debug(`${inProgressGroup.id} inProgressGroup created`);
   logger.debug(`${inProgressGroupDate.length} inProgressGroupDate created`);
@@ -117,71 +128,79 @@ async function createGroups() {
 }
 
 async function createUsers() {
-  const users = await Promise.all([
-    prisma.user.create({
-      data: {
-        email: 'test1@injunghaseyo.com',
-        eventAgree: true,
-        nickname: '테스트1',
-        password:
-          '9370442d8ac86a42b323217ee422e9e9f556111888e41141dc6a159cde687dd7e06472f2a5e43dde5cd490abe271792e3942d5c22fafc67b036d603b52735abc', // password: 'injung123!@#'
-        salt: '8e5dc47e8a22a1bc2c86b92b488160eb',
-        role: Role.USER,
-        status: UserStatus.ACTIVE,
-        profilePhoto: {
-          create: {
-            url: 'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/profile-photo/basic-profile.svg',
+  const users = (
+    await Promise.all([
+      prisma.user.create({
+        data: {
+          email: 'test1@injunghaseyo.com',
+          eventAgree: true,
+          nickname: '테스트1',
+          password:
+            '9370442d8ac86a42b323217ee422e9e9f556111888e41141dc6a159cde687dd7e06472f2a5e43dde5cd490abe271792e3942d5c22fafc67b036d603b52735abc', // password: 'injung123!@#'
+          salt: '8e5dc47e8a22a1bc2c86b92b488160eb',
+          role: Role.USER,
+          status: UserStatus.ACTIVE,
+          profilePhoto: {
+            create: {
+              url: 'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/profile-photo/basic-profile.svg',
+            },
           },
-        },
-        wallet: {
-          create: {
-            money: 1000000,
+          wallet: {
+            create: {
+              money: 1000000,
+            },
           },
-        },
-        myCharacter: {
-          create: {
-            character: {
-              connect: {
-                name: yelloName,
+          myCharacter: {
+            create: {
+              character: {
+                connect: {
+                  name: yelloName,
+                },
               },
             },
           },
         },
-      },
-    }),
+      }),
 
-    prisma.user.create({
-      data: {
-        email: 'test2@injunghaseyo.com',
-        eventAgree: true,
-        nickname: '테스트2',
-        password:
-          '9370442d8ac86a42b323217ee422e9e9f556111888e41141dc6a159cde687dd7e06472f2a5e43dde5cd490abe271792e3942d5c22fafc67b036d603b52735abc', // password: 'injung123!@#'
-        salt: '8e5dc47e8a22a1bc2c86b92b488160eb',
-        role: Role.USER,
-        status: UserStatus.ACTIVE,
-        profilePhoto: {
-          create: {
-            url: 'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/profile-photo/basic-profile.svg',
+      prisma.user.create({
+        data: {
+          email: 'test2@injunghaseyo.com',
+          eventAgree: true,
+          nickname: '테스트2',
+          password:
+            '9370442d8ac86a42b323217ee422e9e9f556111888e41141dc6a159cde687dd7e06472f2a5e43dde5cd490abe271792e3942d5c22fafc67b036d603b52735abc', // password: 'injung123!@#'
+          salt: '8e5dc47e8a22a1bc2c86b92b488160eb',
+          role: Role.USER,
+          status: UserStatus.ACTIVE,
+          profilePhoto: {
+            create: {
+              url: 'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/profile-photo/basic-profile.svg',
+            },
           },
-        },
-        wallet: {
-          create: {
-            money: 1000000,
+          wallet: {
+            create: {
+              money: 1000000,
+            },
           },
-        },
-        myCharacter: {
-          create: {
-            character: {
-              connect: {
-                name: greenName,
+          myCharacter: {
+            create: {
+              character: {
+                connect: {
+                  name: greenName,
+                },
               },
             },
           },
         },
-      },
-    }),
-  ]);
+      }),
+    ])
+  ).map((user) => ({
+    ...user,
+    joinRole: JoinRole.ATTENDEE,
+  }));
+
+  UserSeedData.users.user1 = users[0];
+  UserSeedData.users.user2 = users[1];
 
   logger.debug(`${users.length} users created`);
 }
@@ -218,6 +237,11 @@ async function createAdminUser() {
       },
     },
   });
+
+  UserSeedData.users.admin = {
+    ...admin,
+    joinRole: JoinRole.ATTENDEE,
+  };
 
   logger.debug(`admin user created: ${admin.id}`);
 }

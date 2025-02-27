@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { UserWithJoinRole } from './types';
 
 export class GroupSeedData {
   constructor(
@@ -14,7 +15,7 @@ export class GroupSeedData {
   /**
    * @description 그룹 및 그룹 날짜 데이터 생성
    */
-  async createGroupSeedData(prisma: PrismaClient) {
+  async createGroupSeedData(prisma: PrismaClient, users: UserWithJoinRole[]) {
     return await prisma.$transaction(async (tx) => {
       const group = await tx.group.upsert({
         where: {
@@ -26,6 +27,16 @@ export class GroupSeedData {
           price: this.price,
           title: this.title,
           description: this.description,
+          join: {
+            createMany: {
+              data: users.map((u) => {
+                return {
+                  userId: u.id,
+                  joinRole: u.joinRole,
+                };
+              }),
+            },
+          },
           groupTagMap: {
             create: {
               tag: {
