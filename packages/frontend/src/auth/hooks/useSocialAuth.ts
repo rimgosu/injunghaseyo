@@ -1,11 +1,7 @@
 import axios from 'axios';
 import { useCallback } from 'react';
-import { LocalStorageKeys } from '../types';
-import { AuthControllerActivateOauthParams } from '@rimgosu/libs';
 
 export const useSocialAuth = () => {
-  const accessToken: LocalStorageKeys = 'accessToken';
-
   const googleLogin = useCallback(async () => {
     try {
       window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`;
