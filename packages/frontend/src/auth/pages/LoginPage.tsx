@@ -1,7 +1,7 @@
 import { BaseLayout } from '../../common/BaseLayout';
 import React, { useState } from 'react';
 import { LoginFormData } from '../types';
-import { Input } from '../../common/Input';
+import { Input } from '../../common/components/Input';
 import { GreenButton } from '../components/GreenButton';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';

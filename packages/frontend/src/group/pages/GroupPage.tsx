@@ -1,14 +1,11 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { BaseLayout } from '../../common/BaseLayout';
 import { SearchBar } from '../components/SearchBar';
 import { GroupCard } from '../components/GroupCard';
 import { useGroups } from '../hooks/useGroups';
 
 export const GroupPage = () => {
-  const navigate = useNavigate();
   const { groupsData, isLoading, error, fetchGroups } = useGroups();
-  console.log('groupsData:', groupsData);
 
   useEffect(() => {
     fetchGroups();
@@ -23,7 +20,7 @@ export const GroupPage = () => {
   }
 
   return (
-    <BaseLayout>
+    <BaseLayout showNavigation={true} showFloatingButton={true}>
       <div className="flex flex-col gap-4 w-full p-4">
         <SearchBar />
         <div className="flex flex-col gap-4">
@@ -31,12 +28,6 @@ export const GroupPage = () => {
             <GroupCard key={group.id} group={group} />
           ))}
         </div>
-        <button
-          onClick={() => navigate('/groups/create')}
-          className="fixed bottom-4 right-4 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-2xl shadow-lg"
-        >
-          +
-        </button>
       </div>
     </BaseLayout>
   );

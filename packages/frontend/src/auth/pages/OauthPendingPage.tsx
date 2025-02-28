@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BaseLayout } from '../../common/BaseLayout';
-import { Input } from '../../common/Input';
+import { Input } from '../../common/components/Input';
 import { AgreementSection } from '../components/Agreement';
 import { GreenButton } from '../components/GreenButton';
 import { ValidationMessage } from '../components/ValidationMessage';

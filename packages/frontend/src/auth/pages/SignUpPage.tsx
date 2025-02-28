@@ -7,7 +7,7 @@ import {
 } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { AgreementSection } from '../components/Agreement';
-import { Input } from '../../common/Input';
+import { Input } from '../../common/components/Input';
 import { useAuth } from '../hooks/useAuth';
 import { ValidationMessage } from '../components/ValidationMessage';
 import { GreenButton } from '../components/GreenButton';
@@ -86,7 +86,7 @@ export const SignUpPage = () => {
     if (name === 'password') {
       value &&
         verifyPassword({ password: value })
-          .then((result) => {
+          .then(() => {
             setVerification((prev) => ({
               ...prev,
               validPassword: '',
@@ -123,7 +123,7 @@ export const SignUpPage = () => {
     if (name === 'nickname') {
       value &&
         verifyNickname({ nickname: value })
-          .then((result) => {
+          .then(() => {
             setVerification((prev) => ({
               ...prev,
               validNickname: '',

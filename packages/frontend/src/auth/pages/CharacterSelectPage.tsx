@@ -6,8 +6,10 @@ import {
 } from '@rimgosu/libs';
 import { useCharacter } from '../hooks/useCharacter';
 import { GreenButton } from '../components/GreenButton';
+import { useNavigate } from 'react-router-dom';
 
 export const CharacterSelectPage = () => {
+  const navigate = useNavigate();
   const { getCharacter, selectCharacter } = useCharacter();
 
   const [characters, setCharacters] = useState<GetCharacter[]>([]);
@@ -47,6 +49,7 @@ export const CharacterSelectPage = () => {
   const handleSubmit = async () => {
     if (selectedCharacter) {
       await selectCharacter({ characterId: selectedCharacter });
+      navigate('/group');
     }
   };
 
