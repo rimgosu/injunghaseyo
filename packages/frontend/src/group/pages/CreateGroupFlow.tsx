@@ -1,41 +1,31 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGroups } from '../hooks/useGroups';
-import { GroupControllerCreateGroupParams } from '@rimgosu/libs';
 import { BaseLayout } from '../../common/BaseLayout';
 import { CreateGroupStep1 } from './steps/create-group/Step1';
+import {
+  CreateGroupStore,
+  useCreateGroupStore,
+} from '../stores/useCreateGroupStore';
 
-type StepType = '모임생성' | '인증방법' | '시간정하기' | '인증방법' | '태그';
+const stepMap: Record<CreateGroupStore['step'], CreateGroupStore['step']> = {
+  모임생성: '인증방법',
+  인증방법: '시간정하기',
+  시간정하기: '모임상세',
+  모임상세: '태그',
+  태그: '태그',
+} as const;
 
 export const CreateGroupFlow = () => {
-  const [currentStep, setCurrentStep] = useState<StepType>('모임생성');
-  const [formData, setFormData] = useState<GroupControllerCreateGroupParams>({
-    title: '',
-    price: 0,
-    description: '',
-    proofMethods: [],
-    dates: [],
-    tags: [],
-  });
-
   const navigate = useNavigate();
-
   const { createGroup } = useGroups();
+  const { step, formData } = useCreateGroupStore();
 
   const handleNext = () => {
-    switch (currentStep) {
-      case '모임생성':
-        setCurrentStep('인증방법');
-        break;
-      case '인증방법':
-        setCurrentStep('시간정하기');
-        break;
-    }
+    useCreateGroupStore.getState().setStep(stepMap[step]);
   };
 
   const handleSubmit = async () => {
     try {
-      // API 호출
       await createGroup(formData);
       navigate('/group');
     } catch (error) {
@@ -45,13 +35,13 @@ export const CreateGroupFlow = () => {
 
   return (
     <BaseLayout>
-      {currentStep === '모임생성' && <CreateGroupStep1 />}
+      {step === '모임생성' && <CreateGroupStep1 />}
 
       <button
-        onClick={currentStep === '태그' ? handleSubmit : handleNext}
+        onClick={step === '태그' ? handleSubmit : handleNext}
         className="w-full py-3 bg-green-500 text-white rounded-xl mt-4"
       >
-        {currentStep === '태그' ? '생성하기' : '다음'}
+        {step === '태그' ? '생성하기' : '다음'}
       </button>
     </BaseLayout>
   );
