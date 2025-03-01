@@ -1,6 +1,5 @@
 import React from 'react';
 import { BottomNavigationBar } from './components/BottomNavigationBar';
-import { useNavigate } from 'react-router-dom';
 import { CreateButton } from './components/CreateButton';
 
 interface BaseLayoutProps {

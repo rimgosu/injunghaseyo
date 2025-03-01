@@ -1,11 +1,12 @@
 import { useCallback, useState } from 'react';
-import { GetGroupsRes } from '@rimgosu/libs';
+import { GetGroupsRes, GroupControllerCreateGroupParams } from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
 
 export const useGroups = () => {
   const [groupsData, setGroupsData] = useState<GetGroupsRes | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const accessToken = localStorage.getItem('accessToken');
 
   const fetchGroups = useCallback(async () => {
     try {
@@ -28,10 +29,30 @@ export const useGroups = () => {
     }
   }, []);
 
+  const createGroup = async (params: GroupControllerCreateGroupParams) => {
+    try {
+      await ApiSingleton.getInstance().groups.groupControllerCreateGroup(
+        params,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : '그룹을 생성하는데 실패했습니다.',
+      );
+    }
+  };
+
   return {
     groupsData,
     isLoading,
     error,
     fetchGroups,
+    createGroup,
   };
 };
