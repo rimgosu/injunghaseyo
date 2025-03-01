@@ -130,8 +130,10 @@ async function createGroups() {
 async function createUsers() {
   const users = (
     await Promise.all([
-      prisma.user.create({
-        data: {
+      prisma.user.upsert({
+        where: { email: 'test1@injunghaseyo.com' },
+        update: {},
+        create: {
           email: 'test1@injunghaseyo.com',
           eventAgree: true,
           nickname: '테스트1',
@@ -162,8 +164,10 @@ async function createUsers() {
         },
       }),
 
-      prisma.user.create({
-        data: {
+      prisma.user.upsert({
+        where: { email: 'test2@injunghaseyo.com' },
+        update: {},
+        create: {
           email: 'test2@injunghaseyo.com',
           eventAgree: true,
           nickname: '테스트2',
@@ -206,8 +210,10 @@ async function createUsers() {
 }
 
 async function createAdminUser() {
-  const admin = await prisma.user.create({
-    data: {
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@injunghaseyo.com' },
+    update: {},
+    create: {
       email: 'admin@injunghaseyo.com',
       eventAgree: true,
       nickname: '관리자',
