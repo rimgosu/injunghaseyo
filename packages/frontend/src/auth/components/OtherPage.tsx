@@ -1,14 +1,7 @@
-import { FC } from 'react';
-import { connect } from 'react-redux';
-import { setView } from '../../store/auth/authSlice';
-import { AuthView } from '../../store/auth/types';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-interface OtherPageProps {
-  setView: (view: AuthView) => void;
-}
-
-const OtherPageComponent: FC<OtherPageProps> = () => {
+export const OtherPage = () => {
   return (
     <div className="">
       <div className="flex justify-end text-gray-500 py-1">
@@ -21,5 +14,3 @@ const OtherPageComponent: FC<OtherPageProps> = () => {
     </div>
   );
 };
-
-export const OtherPage = connect(null, { setView })(OtherPageComponent);

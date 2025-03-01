@@ -21,6 +21,7 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "src/group/pages/steps/create-group/.tsx"
   ]
 }

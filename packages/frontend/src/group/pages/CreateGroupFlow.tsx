@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGroups } from './hooks/useGroups';
+import { useGroups } from '../hooks/useGroups';
 import { GroupControllerCreateGroupParams } from '@rimgosu/libs';
-import { BaseLayout } from '../common/BaseLayout';
+import { BaseLayout } from '../../common/BaseLayout';
+import { CreateGroupStep1 } from './steps/create-group/Step1';
 
 type StepType = '모임생성' | '인증방법' | '시간정하기' | '인증방법' | '태그';
 
@@ -44,7 +45,7 @@ export const CreateGroupFlow = () => {
 
   return (
     <BaseLayout>
-      {currentStep === '모임생성' && <div>step1</div>}
+      {currentStep === '모임생성' && <CreateGroupStep1 />}
 
       <button
         onClick={currentStep === '태그' ? handleSubmit : handleNext}
