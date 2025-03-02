@@ -1,4 +1,4 @@
-import { JoinRole } from '@prisma/client';
+import { JoinRole, ProofType } from '@prisma/client';
 import { GetGroupsRes } from '../dtos/get-groups-res.dto';
 import { JoinStatus, GroupStatus } from '../utils/enums';
 import { GroupWith, UserWithPhoto } from '../utils/types';
@@ -32,7 +32,10 @@ describe('GetGroupsRes', () => {
           proofMethod: [
             {
               id: 1,
-              method: '인증 방법',
+              contents: '인증 방법',
+              type: ProofType.CHECK_LOCATION,
+              fromMin: 0,
+              toMin: 2400,
               groupId: 1,
             },
           ],
@@ -99,10 +102,17 @@ describe('GetGroupsRes', () => {
       expect(result.groups).toHaveLength(1);
       expect(result.groups[0]).toEqual({
         id: 1,
-        title: '테스트 그룹',
         price: 30000,
         description: '테스트 설명',
-        proofMethods: ['인증 방법'],
+        title: '테스트 그룹',
+        proofMethods: [
+          {
+            contents: '인증 방법',
+            type: ProofType.CHECK_LOCATION,
+            fromMin: 0,
+            toMin: 2400,
+          },
+        ],
         startDate: '2024-03-20',
         endDate: '2024-03-22',
         numberOfParticipants: 2,
@@ -115,7 +125,7 @@ describe('GetGroupsRes', () => {
     it('유저가 참여하지 않은 그룹은 NOT_JOINED 상태여야 함', () => {
       // Given
       const otherUser = { ...mockUser, id: 999 };
-      const mockGroups: GroupWith[] = [
+      const mockGroups: GroupWith[] = createMock<GroupWith[]>([
         {
           id: 1,
           title: '테스트 그룹',
@@ -124,24 +134,18 @@ describe('GetGroupsRes', () => {
           proofMethod: [
             {
               id: 1,
-              method: '인증 방법',
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
+              contents: '인증 방법',
+              type: ProofType.CHECK_LOCATION,
+              fromMin: 0,
+              toMin: 2400,
               groupId: 1,
             },
           ],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
           groupDate: [
             {
               id: 1,
               groupId: 1,
               date: '2024-03-20',
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
             },
           ],
           groupTagMap: [
@@ -149,15 +153,9 @@ describe('GetGroupsRes', () => {
               id: 1,
               groupId: 1,
               tagId: 1,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               tag: {
                 id: 1,
                 name: '운동',
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                deletedAt: null,
               },
             },
           ],
@@ -167,14 +165,11 @@ describe('GetGroupsRes', () => {
               userId: 1,
               groupId: 1,
               joinRole: JoinRole.ATTENDEE,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deletedAt: null,
               user: mockUser,
             },
           ],
         },
-      ];
+      ]);
 
       // When
       const result = new GetGroupsRes(mockGroups, otherUser);
@@ -227,7 +222,10 @@ describe('GetGroupsRes', () => {
           proofMethod: [
             {
               id: 1,
-              method: '인증 방법',
+              contents: '인증 방법',
+              type: ProofType.CHECK_LOCATION,
+              fromMin: 0,
+              toMin: 2400,
               groupId: 1,
             },
           ],
@@ -286,7 +284,10 @@ describe('GetGroupsRes', () => {
           proofMethod: [
             {
               id: 1,
-              method: '인증 방법',
+              contents: '인증 방법',
+              type: ProofType.CHECK_LOCATION,
+              fromMin: 0,
+              toMin: 2400,
               groupId: 1,
             },
           ],
@@ -339,7 +340,10 @@ describe('GetGroupsRes', () => {
           proofMethod: [
             {
               id: 1,
-              method: '인증 방법',
+              contents: '인증 방법',
+              type: ProofType.CHECK_LOCATION,
+              fromMin: 0,
+              toMin: 2400,
               groupId: 1,
             },
           ],
@@ -379,7 +383,10 @@ describe('GetGroupsRes', () => {
           proofMethod: [
             {
               id: 1,
-              method: '인증 방법',
+              contents: '인증 방법',
+              type: ProofType.CHECK_LOCATION,
+              fromMin: 0,
+              toMin: 2400,
               groupId: 1,
             },
           ],

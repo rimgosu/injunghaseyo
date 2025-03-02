@@ -1,4 +1,4 @@
-import { GroupProgressStatus } from '@prisma/client';
+import { GroupProgressStatus, ProofType } from '@prisma/client';
 import { GetTodayRes } from './get-today-res.dto';
 import { GroupWithToday } from '../utils/types';
 import { createMock } from '@golevelup/ts-jest';
@@ -21,7 +21,10 @@ describe('GetTodayRes', () => {
         description: '테스트 설명',
         proofMethod: [
           {
-            method: '인증방법 1',
+            contents: '인증방법 1',
+            type: ProofType.CHECK_LOCATION,
+            fromMin: 0,
+            toMin: 2400,
             groupProgress: [
               {
                 id: 1,
@@ -53,7 +56,12 @@ describe('GetTodayRes', () => {
         description: '테스트 설명',
         proofs: [
           {
-            proofMethod: '인증방법 1',
+            proofMethod: {
+              contents: '인증방법 1',
+              type: ProofType.CHECK_LOCATION,
+              fromMin: 0,
+              toMin: 2400,
+            },
             proofPhoto: 'photo1.jpg',
             groupProgressId: 1,
           },
@@ -86,7 +94,10 @@ describe('GetTodayRes', () => {
         description: '테스트 설명',
         proofMethod: [
           {
-            method: '인증방법 1',
+            contents: '인증방법 1',
+            type: ProofType.CHECK_LOCATION,
+            fromMin: 0,
+            toMin: 2400,
             groupProgress: [
               {
                 id: 1,
@@ -112,7 +123,10 @@ describe('GetTodayRes', () => {
         description: '테스트 설명',
         proofMethod: [
           {
-            method: '인증방법 1',
+            contents: '인증방법 1',
+            type: ProofType.CHECK_LOCATION,
+            fromMin: 0,
+            toMin: 2400,
             groupProgress: [
               {
                 id: 1,
@@ -123,7 +137,10 @@ describe('GetTodayRes', () => {
             ],
           },
           {
-            method: '인증방법 2',
+            contents: '인증방법 2',
+            type: ProofType.CHECK_LOCATION,
+            fromMin: 0,
+            toMin: 2400,
             groupProgress: [
               {
                 id: 2,
@@ -143,12 +160,22 @@ describe('GetTodayRes', () => {
       // Then
       expect(result.proofs).toHaveLength(2);
       expect(result.proofs[0]).toEqual({
-        proofMethod: '인증방법 1',
+        proofMethod: {
+          contents: '인증방법 1',
+          type: ProofType.CHECK_LOCATION,
+          fromMin: 0,
+          toMin: 2400,
+        },
         proofPhoto: 'photo1.jpg',
         groupProgressId: 1,
       });
       expect(result.proofs[1]).toEqual({
-        proofMethod: '인증방법 2',
+        proofMethod: {
+          contents: '인증방법 2',
+          type: ProofType.CHECK_LOCATION,
+          fromMin: 0,
+          toMin: 2400,
+        },
         proofPhoto: 'photo2.jpg',
         groupProgressId: 2,
       });

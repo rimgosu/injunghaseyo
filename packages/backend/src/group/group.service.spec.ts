@@ -5,7 +5,10 @@ import {
   GroupProgressStatus,
   Join,
   JoinRole,
+  ProofType,
+  Role,
   User,
+  UserStatus,
   Wallet,
   WalletHistoryReason,
 } from '@prisma/client';
@@ -14,7 +17,16 @@ import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { GroupStatus } from './utils/enums';
 import { S3Service } from '@/s3/s3.service';
 import { createMock } from '@golevelup/ts-jest';
-import { GroupWithProofDate } from './utils/types';
+import { GroupWith, GroupWithProofDate } from './utils/types';
+
+const mockUser: User = createMock<User>({
+  id: 1,
+  uuid: 'test-uuid',
+  email: 'test@example.com',
+  nickname: 'testUser',
+  role: Role.USER,
+  status: UserStatus.ACTIVE,
+});
 
 /**
  * @description getGroups 테스트
@@ -22,27 +34,6 @@ import { GroupWithProofDate } from './utils/types';
 describe('GroupService', () => {
   let service: GroupService;
   let prismaService: PrismaService;
-
-  const mockUser: User = {
-    id: 1,
-    uuid: 'test-uuid',
-    email: 'test@example.com',
-    nickname: 'testUser',
-    introduction: '등록된 소개말이 없습니다.',
-    refreshToken: null,
-    eventAgree: true,
-    password: 'hashedPassword',
-    salt: 'salt',
-    provider: null,
-    role: 'USER',
-    status: 'ACTIVE',
-    lastLogin: null,
-    lastPwdChanged: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    deletedAt: null,
-    loginFailCount: 0,
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -77,15 +68,12 @@ describe('GroupService', () => {
 
     it('유효한 날짜의 그룹만 반환해야 함', async () => {
       // Given
-      const mockGroups = [
+      const mockGroups = createMock<GroupWith[]>([
         {
           id: 1,
           title: '미래 모임',
           price: 30000,
           description: '미래에 진행될 모임',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
           groupDate: [
             { date: '2024-03-15' },
             { date: '2024-03-16' },
@@ -100,19 +88,16 @@ describe('GroupService', () => {
           title: '과거 모임',
           price: 20000,
           description: '이미 종료된 모임',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
           groupDate: [
             { date: '2024-03-01' },
             { date: '2024-03-02' },
             { date: '2024-03-03' },
           ],
           groupTagMap: [],
-          proofMethod: [],
           join: [],
+          proofMethod: [],
         },
-      ];
+      ]);
 
       jest.spyOn(prismaService.group, 'findMany').mockResolvedValue(mockGroups);
 
@@ -140,34 +125,22 @@ describe('GroupService', () => {
 
     it('모든 그룹의 날짜가 과거인 경우 빈 결과를 반환해야 함', async () => {
       // Given
-      const mockGroups = [
+      const mockGroups = createMock<GroupWith[]>([
         {
           id: 1,
           title: '과거 모임 1',
           price: 30000,
           description: '이미 종료된 모임 1',
-          proofMethod: '인증 방법',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
           groupDate: [{ date: '2024-03-01' }, { date: '2024-03-02' }],
-          groupTagMap: [],
-          join: [],
         },
         {
           id: 2,
           title: '과거 모임 2',
           price: 20000,
           description: '이미 종료된 모임 2',
-          proofMethod: '인증 방법',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
           groupDate: [{ date: '2024-03-05' }, { date: '2024-03-06' }],
-          groupTagMap: [],
-          join: [],
         },
-      ];
+      ]);
 
       jest.spyOn(prismaService.group, 'findMany').mockResolvedValue(mockGroups);
 
@@ -187,27 +160,6 @@ describe('GroupService', () => {
 describe('GroupService', () => {
   let service: GroupService;
   let prismaService: PrismaService;
-
-  const mockUser: User = {
-    id: 1,
-    uuid: 'test-uuid',
-    email: 'test@example.com',
-    nickname: 'testUser',
-    introduction: '등록된 소개말이 없습니다.',
-    refreshToken: null,
-    eventAgree: true,
-    password: 'hashedPassword',
-    salt: 'salt',
-    provider: null,
-    role: 'USER',
-    status: 'ACTIVE',
-    lastLogin: null,
-    lastPwdChanged: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    deletedAt: null,
-    loginFailCount: 0,
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -586,12 +538,18 @@ describe('GroupService', () => {
         proofMethod: [
           {
             id: 1,
-            method: '인증 방법1',
+            contents: '인증 방법1',
+            type: ProofType.CHECK_LOCATION,
+            fromMin: 0,
+            toMin: 2400,
             groupId: mockGroupId,
           },
           {
             id: 2,
-            method: '인증 방법2',
+            contents: '인증 방법2',
+            type: ProofType.CHECK_LOCATION,
+            fromMin: 0,
+            toMin: 2400,
             groupId: mockGroupId,
           },
         ],
@@ -707,7 +665,10 @@ describe('GroupService', () => {
         proofMethod: [
           {
             id: 1,
-            method: '인증 방법1',
+            contents: '인증 방법1',
+            type: ProofType.CHECK_LOCATION,
+            fromMin: 0,
+            toMin: 2400,
             groupId: mockGroupId,
           },
         ],
