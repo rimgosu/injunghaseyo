@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GroupStatus, JoinStatus } from '../utils/enums';
+import { ProofMethodElem } from '../utils/types';
 
 class Participant {
   @ApiProperty({
@@ -42,9 +43,9 @@ export class BaseGroupRes {
 
   @ApiProperty({
     description: '그룹 증명 방법',
-    type: [String],
+    type: [ProofMethodElem],
   })
-  proofMethods: string[];
+  proofMethods: ProofMethodElem[];
 
   @ApiProperty({
     description: '그룹 상태',
@@ -109,9 +110,9 @@ export class BaseGroupRes {
 
   @ApiProperty({
     description: '인증 방법',
-    type: String,
+    type: ProofMethodElem,
   })
-  proofMethod: string;
+  proofMethod: ProofMethodElem;
 
   @ApiProperty({
     description: '모임 진행 id',

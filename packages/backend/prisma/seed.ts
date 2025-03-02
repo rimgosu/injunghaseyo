@@ -1,4 +1,10 @@
-import { JoinRole, PrismaClient, Role, UserStatus } from '@prisma/client';
+import {
+  JoinRole,
+  PrismaClient,
+  ProofType,
+  Role,
+  UserStatus,
+} from '@prisma/client';
 import {
   blueLv1,
   blueLv2,
@@ -67,7 +73,20 @@ async function createGroups() {
       '현재 진행 그룹',
       '현재 진행 중인 그룹입니다.',
       tags[0],
-      ['아침 촬영', '저녁 촬영'],
+      [
+        {
+          contents: '아침 촬영',
+          type: ProofType.UPLOAD_PHOTO,
+          fromMin: 60 * 6,
+          toMin: 60 * 10,
+        },
+        {
+          contents: '저녁 촬영',
+          type: ProofType.UPLOAD_PHOTO,
+          fromMin: 60 * 18,
+          toMin: 60 * 22,
+        },
+      ],
       groupDateUtil.inProgressYmds,
     ).createGroupSeedData(prisma, [
       UserSeedData.users.admin,
@@ -82,7 +101,20 @@ async function createGroups() {
       '종료된 그룹',
       '종료된 그룹입니다.',
       tags[1],
-      ['아침 촬영', '저녁 촬영'],
+      [
+        {
+          contents: '아침 촬영',
+          type: ProofType.UPLOAD_PHOTO,
+          fromMin: 60 * 6,
+          toMin: 60 * 10,
+        },
+        {
+          contents: '저녁 촬영',
+          type: ProofType.UPLOAD_PHOTO,
+          fromMin: 60 * 18,
+          toMin: 60 * 22,
+        },
+      ],
       groupDateUtil.finishedYmds,
     ).createGroupSeedData(prisma, [
       UserSeedData.users.admin,
@@ -98,7 +130,20 @@ async function createGroups() {
       '아직 진행 중이지 않은 그룹1',
       '아직 진행 중이지 않은 그룹1입니다.',
       tags[2],
-      ['아침 촬영', '저녁 촬영'],
+      [
+        {
+          contents: '헬스장 입장하기',
+          type: ProofType.CHECK_LOCATION,
+          fromMin: 0,
+          toMin: 2400,
+        },
+        {
+          contents: '헬스장 퇴근하기',
+          type: ProofType.UPLOAD_PHOTO,
+          fromMin: 0,
+          toMin: 2400,
+        },
+      ],
       groupDateUtil.notStartedYmds,
     ).createGroupSeedData(prisma, [UserSeedData.users.admin]);
 
@@ -106,10 +151,17 @@ async function createGroups() {
     await new GroupSeedData(
       99996,
       100,
-      '아직 진행 중이지 않은 그룹2',
+      '아직 진행 중이지 않은 그룹2 - 아침에 버튼 누르기',
       '아직 진행 중이지 않은 그룹2입니다.',
       tags[3],
-      ['아침에 버튼 누르기'],
+      [
+        {
+          contents: '새벽 여섯시 - 일곱시 버튼 누르기',
+          type: ProofType.CLICK_BUTTON,
+          fromMin: 60 * 6,
+          toMin: 60 * 7,
+        },
+      ],
       groupDateUtil.notStartedYmds,
     ).createGroupSeedData(prisma, [
       UserSeedData.users.admin,

@@ -1,4 +1,44 @@
-import { Prisma } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
+import { Prisma, ProofMethod, ProofType } from '@prisma/client';
+import { IsString, IsNotEmpty, IsEnum, IsNumber } from 'class-validator';
+
+export class ProofMethodElem implements Partial<ProofMethod> {
+  @ApiProperty({
+    description: '인증 방법 내용',
+    type: String,
+    example: '헬스장 출입 전',
+  })
+  @IsString()
+  @IsNotEmpty()
+  contents: string;
+
+  @ApiProperty({
+    description: '인증 방법 타입',
+    enum: ProofType,
+    example: ProofType.CHECK_LOCATION,
+  })
+  @IsEnum(ProofType)
+  @IsNotEmpty()
+  type: ProofType;
+
+  @ApiProperty({
+    description: '인증 시작 시간',
+    type: Number,
+    example: 0,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  fromMin: number;
+
+  @ApiProperty({
+    description: '인증 종료 시간',
+    type: Number,
+    example: 2400,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  toMin: number;
+}
 
 export const GROUP_WITH_INCLUDE = Prisma.validator<Prisma.GroupDefaultArgs>()({
   include: {

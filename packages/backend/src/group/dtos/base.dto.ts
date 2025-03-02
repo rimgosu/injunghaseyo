@@ -12,6 +12,8 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+import { ProofType } from '@prisma/client';
+import { ProofMethodElem } from '../utils/types';
 
 @ValidatorConstraint({ name: 'validateToday', async: false })
 class ValidateTodayConstraint implements ValidatorConstraintInterface {
@@ -65,13 +67,31 @@ export class BaseGroup {
 
   @ApiProperty({
     description: '인증 방법',
-    type: [String],
-    example: ['헬스장 출입 전', '헬스장 출입 후', '인증사진 찍어서 인증'],
+    type: [ProofMethodElem],
+    example: [
+      {
+        contents: '헬스장 출입 전',
+        type: ProofType.CHECK_LOCATION,
+        fromMin: 0,
+        toMin: 2400,
+      },
+      {
+        contents: '헬스장 출입 후',
+        type: ProofType.UPLOAD_PHOTO,
+        fromMin: 0,
+        toMin: 2400,
+      },
+      {
+        contents: '기상 후 버튼 클릭',
+        type: ProofType.CLICK_BUTTON,
+        fromMin: 60 * 6,
+        toMin: 60 * 7,
+      },
+    ],
   })
   @IsArray()
   @ArrayMinSize(1)
-  @IsString({ each: true })
-  proofMethods: string[];
+  proofMethods: ProofMethodElem[];
 
   @ApiProperty({
     description:

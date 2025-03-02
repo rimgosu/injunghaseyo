@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -41,6 +42,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GetTodayRewardParam } from './dtos/get-today-reward-param.dto';
 import { GetTodayRewardRes } from './dtos/get-today-reward-res.dto';
+import { CreateGroupBody } from './dtos/create-group-body.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -52,8 +54,12 @@ export class GroupController {
   @Post()
   @ApiBearerAuth('jwt')
   @UseGuards(AtkGuard)
-  async createGroup(@GetUser() user: User, @Query() params: CreateGroupParams) {
-    return this.groupService.createGroup(user, params);
+  async createGroup(
+    @GetUser() user: User,
+    @Query() params: CreateGroupParams,
+    @Body() body: CreateGroupBody,
+  ) {
+    return this.groupService.createGroup(user, params, body);
   }
 
   /**

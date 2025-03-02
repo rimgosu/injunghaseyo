@@ -1,6 +1,6 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { BaseGroupRes } from './base-res.dto';
-import { GroupWithToday } from '../utils/types';
+import { GroupWithToday, ProofMethodElem } from '../utils/types';
 import { GroupProgressStatus } from '@prisma/client';
 
 class Proof extends PickType(BaseGroupRes, [
@@ -9,7 +9,7 @@ class Proof extends PickType(BaseGroupRes, [
   'groupProgressId',
 ]) {
   constructor(
-    proofMethod: string,
+    proofMethod: ProofMethodElem,
     proofPhoto: string | undefined,
     groupProgressId: number,
   ) {
@@ -38,7 +38,12 @@ export class GetTodayRes extends PickType(BaseGroupRes, [
     this.proofs = group.proofMethod.map((method) => {
       const proofPhoto = method.groupProgress[0]?.proofPhoto;
       return new Proof(
-        method.method,
+        {
+          contents: method.contents,
+          type: method.type,
+          fromMin: method.fromMin,
+          toMin: method.toMin,
+        },
         proofPhoto?.url,
         method.groupProgress[0]?.id,
       );

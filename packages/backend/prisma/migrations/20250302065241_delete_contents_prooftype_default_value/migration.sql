@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "ProofMethod" ALTER COLUMN "contents" DROP DEFAULT,
+ALTER COLUMN "type" DROP DEFAULT;

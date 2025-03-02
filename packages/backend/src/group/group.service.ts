@@ -39,6 +39,7 @@ import {
 import { S3Service } from '@/s3/s3.service';
 import { GetTodayRewardRes } from './dtos/get-today-reward-res.dto';
 import { GetTodayRewardParam } from './dtos/get-today-reward-param.dto';
+import { CreateGroupBody } from './dtos/create-group-body.dto';
 
 @Injectable()
 export class GroupService {
@@ -108,6 +109,9 @@ export class GroupService {
           },
           join: { userId: user.id, deletedAt: null, group: { id: groupId } },
         },
+        include: {
+          proofMethod: true,
+        },
       }),
       this.prisma.group.findUnique({
         where: { id: groupId, deletedAt: null },
@@ -130,7 +134,7 @@ export class GroupService {
     // s3에 사진 업로드
     const uploadUrl = await this.s3.uploadFile(
       proofPhoto,
-      `${this.s3.proofPhotoDir}/${user.email}:${group.title}:${group.proofMethod[0].method}:${new Date().toISOString()}`,
+      `${this.s3.proofPhotoDir}/${user.email}:${group.title}:${groupProgress.proofMethod.id}:${groupProgress.proofMethod.contents}:${new Date().toISOString()}`,
     );
 
     // 인증 사진 업데이트
@@ -155,7 +159,10 @@ export class GroupService {
       select: {
         proofMethod: {
           select: {
-            method: true,
+            contents: true,
+            type: true,
+            fromMin: true,
+            toMin: true,
           },
         },
         proofPhoto: {
@@ -444,8 +451,13 @@ export class GroupService {
    * - 태그, 참여, 모임 생성
    * - 인증 머니 차감, 인증 머니 사용 기록 생성
    */
-  async createGroup(user: User, params: CreateGroupParams) {
-    const { dates, price, proofMethods, tags, title, description } = params;
+  async createGroup(
+    user: User,
+    params: CreateGroupParams,
+    body: CreateGroupBody,
+  ) {
+    const { dates, price, tags, title, description } = params;
+    const { proofMethods } = body;
 
     if (!validateGroupDates(dates))
       throw new ForbiddenException('최소 3일 전에 모임을 생성해야 합니다.');
@@ -468,7 +480,7 @@ export class GroupService {
           proofMethod: {
             createMany: {
               data: proofMethods.map((method) => {
-                return { method };
+                return method;
               }),
             },
           },
@@ -501,7 +513,10 @@ export class GroupService {
           proofMethod: {
             select: {
               id: true,
-              method: true,
+              contents: true,
+              type: true,
+              fromMin: true,
+              toMin: true,
             },
           },
           groupTagMap: {

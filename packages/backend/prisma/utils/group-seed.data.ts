@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { UserWithJoinRole } from './types';
+import { ProofMethodSeedInput, UserWithJoinRole } from './types';
 
 export class GroupSeedData {
   constructor(
@@ -8,7 +8,7 @@ export class GroupSeedData {
     private readonly title: string,
     private readonly description: string,
     private readonly tag: string,
-    private readonly proofMethods: string[],
+    private readonly proofMethods: ProofMethodSeedInput[],
     private readonly dates: string[],
   ) {}
 
@@ -49,7 +49,7 @@ export class GroupSeedData {
           proofMethod: {
             createMany: {
               data: this.proofMethods.map((method) => ({
-                method,
+                ...method,
               })),
             },
           },

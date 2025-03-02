@@ -1,7 +1,10 @@
 model ProofMethod {
-    id      Int    @id @default(autoincrement())
-    groupId Int
-    method  String
+    id       Int       @id @default(autoincrement())
+    groupId  Int
+    contents String
+    type     ProofType
+    fromMin  Int       @default(0) /// 인증 시작 시간 (분 단위)
+    toMin    Int       @default(2400) /// 인증 종료 시간 (분 단위)
 
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
@@ -10,4 +13,10 @@ model ProofMethod {
     group Group @relation(fields: [groupId], references: [id])
 
     groupProgress GroupProgress[]
+}
+
+enum ProofType {
+    UPLOAD_PHOTO
+    CLICK_BUTTON
+    CHECK_LOCATION
 }
