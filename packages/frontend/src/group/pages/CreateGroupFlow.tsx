@@ -44,7 +44,7 @@ export const CreateGroupFlow = () => {
       {mode !== 'add' && (
         <button
           onClick={step === '태그' ? handleSubmit : handleNext}
-          className="w-full py-3 bg-green-500 text-white rounded-xl mt-4"
+          className="w-full py-3 bg-green-400 text-white rounded-xl mt-4"
         >
           {step === '태그' ? '생성하기' : '다음'}
         </button>

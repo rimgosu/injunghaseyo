@@ -73,13 +73,13 @@ export const CreateGroupStep2AddProofMethod = () => {
         </div>
 
         <button
-          className="border p-4"
+          className="border p-4 border-green-400 rounded-lg text-green-500"
           onClick={() => {
             addProofMethod(proofMethod);
             setMode('view');
           }}
         >
-          추가
+          추가하기
         </button>
       </div>
     </LocalizationProvider>
