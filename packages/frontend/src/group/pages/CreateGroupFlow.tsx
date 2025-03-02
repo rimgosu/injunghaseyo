@@ -6,6 +6,8 @@ import {
   CreateGroupStore,
   useCreateGroupStore,
 } from '../stores/useCreateGroupStore';
+import { CreateGroupStep2 } from './steps/create-group/Step2';
+import { useProofMethodStore } from '../stores/useProofMethodStore';
 
 const stepMap: Record<CreateGroupStore['step'], CreateGroupStore['step']> = {
   모임생성: '인증방법',
@@ -19,6 +21,7 @@ export const CreateGroupFlow = () => {
   const navigate = useNavigate();
   const { createGroup } = useGroups();
   const { step, formData } = useCreateGroupStore();
+  const { createProofMethodMode: mode } = useProofMethodStore();
 
   const handleNext = () => {
     useCreateGroupStore.getState().setStep(stepMap[step]);
@@ -26,7 +29,8 @@ export const CreateGroupFlow = () => {
 
   const handleSubmit = async () => {
     try {
-      await createGroup(formData);
+      const { proofMethods, ...restFormData } = formData;
+      await createGroup(restFormData, { proofMethods });
       navigate('/group');
     } catch (error) {
       console.error('그룹 생성 실패:', error);
@@ -36,13 +40,15 @@ export const CreateGroupFlow = () => {
   return (
     <BaseLayout>
       {step === '모임생성' && <CreateGroupStep1 />}
-
-      <button
-        onClick={step === '태그' ? handleSubmit : handleNext}
-        className="w-full py-3 bg-green-500 text-white rounded-xl mt-4"
-      >
-        {step === '태그' ? '생성하기' : '다음'}
-      </button>
+      {step === '인증방법' && <CreateGroupStep2 />}
+      {mode !== 'add' && (
+        <button
+          onClick={step === '태그' ? handleSubmit : handleNext}
+          className="w-full py-3 bg-green-500 text-white rounded-xl mt-4"
+        >
+          {step === '태그' ? '생성하기' : '다음'}
+        </button>
+      )}
     </BaseLayout>
   );
 };

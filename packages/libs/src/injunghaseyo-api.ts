@@ -57,6 +57,37 @@ export interface GetCharacter {
   characterInfos: CharacterInfo[];
 }
 
+export interface ProofMethodElem {
+  /**
+   * 인증 방법 내용
+   * @example "헬스장 출입 전"
+   */
+  contents: string;
+  /**
+   * 인증 방법 타입
+   * @example "CHECK_LOCATION"
+   */
+  type: ProofMethodElemTypeEnum;
+  /**
+   * 인증 시작 시간
+   * @example 0
+   */
+  fromMin: number;
+  /**
+   * 인증 종료 시간
+   * @example 2400
+   */
+  toMin: number;
+}
+
+export interface CreateGroupBody {
+  /**
+   * 인증 방법
+   * @example [{"contents":"헬스장 출입 전","type":"CHECK_LOCATION","fromMin":0,"toMin":2400},{"contents":"헬스장 출입 후","type":"UPLOAD_PHOTO","fromMin":0,"toMin":2400},{"contents":"기상 후 버튼 클릭","type":"CLICK_BUTTON","fromMin":360,"toMin":420}]
+   */
+  proofMethods: ProofMethodElem[];
+}
+
 export interface GetTagsRes {
   /**
    * 태그, ?tags=헬스&tags=건강 꼴로 날짜 배열로 받음
@@ -75,7 +106,7 @@ export interface GroupElem {
   /** 그룹 설명 */
   description: string;
   /** 그룹 증명 방법 */
-  proofMethods: string[];
+  proofMethods: ProofMethodElem[];
   /** 그룹 상태 */
   status: GroupElemStatusEnum;
   /** 그룹 시작일 */
@@ -112,7 +143,7 @@ export interface GetGroupRes {
   /** 그룹 설명 */
   description: string;
   /** 그룹 증명 방법 */
-  proofMethods: string[];
+  proofMethods: ProofMethodElem[];
   /** 그룹 상태 */
   status: GetGroupResStatusEnum;
   /** 그룹 시작일 */
@@ -131,7 +162,7 @@ export interface Proof {
   /** 인증 사진 */
   proofPhoto: string | null;
   /** 인증 방법 */
-  proofMethod: string;
+  proofMethod: ProofMethodElem;
   /** 모임 진행 id */
   groupProgressId: number;
 }
@@ -173,6 +204,16 @@ export enum GetCheckSignInUserStatusEnum {
   WITHDRAWN = 'WITHDRAWN',
   OAUTH_PENDING = 'OAUTH_PENDING',
   CHARACTER_CHOOSE = 'CHARACTER_CHOOSE',
+}
+
+/**
+ * 인증 방법 타입
+ * @example "CHECK_LOCATION"
+ */
+export enum ProofMethodElemTypeEnum {
+  UPLOAD_PHOTO = 'UPLOAD_PHOTO',
+  CLICK_BUTTON = 'CLICK_BUTTON',
+  CHECK_LOCATION = 'CHECK_LOCATION',
 }
 
 /** 그룹 상태 */
@@ -355,11 +396,6 @@ export interface GroupControllerCreateGroupParams {
    * @example "헬스장 가고 인증하는 모임입니다."
    */
   description?: string;
-  /**
-   * 인증 방법
-   * @example ["헬스장 출입 전","헬스장 출입 후","인증사진 찍어서 인증"]
-   */
-  proofMethods: string[];
   /**
    * 시간 (일자), ?dates=2024-12-21&dates=2024-12-22 꼴로 날짜 배열로 받음
    * @example ["2024-12-21","2024-12-22"]
@@ -983,12 +1019,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/groups
      * @secure
      */
-    groupControllerCreateGroup: (query: GroupControllerCreateGroupParams, params: RequestParams = {}) =>
+    groupControllerCreateGroup: (
+      query: GroupControllerCreateGroupParams,
+      data: CreateGroupBody,
+      params: RequestParams = {},
+    ) =>
       this.request<void, any>({
         path: `/groups`,
         method: 'POST',
         query: query,
+        body: data,
         secure: true,
+        type: ContentType.Json,
         ...params,
       }),
 

@@ -1,5 +1,9 @@
 import { useCallback, useState } from 'react';
-import { GetGroupsRes, GroupControllerCreateGroupParams } from '@rimgosu/libs';
+import {
+  CreateGroupBody,
+  GetGroupsRes,
+  GroupControllerCreateGroupParams,
+} from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
 
 export const useGroups = () => {
@@ -29,10 +33,14 @@ export const useGroups = () => {
     }
   }, []);
 
-  const createGroup = async (params: GroupControllerCreateGroupParams) => {
+  const createGroup = async (
+    params: GroupControllerCreateGroupParams,
+    body: CreateGroupBody,
+  ) => {
     try {
       await ApiSingleton.getInstance().groups.groupControllerCreateGroup(
         params,
+        body,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

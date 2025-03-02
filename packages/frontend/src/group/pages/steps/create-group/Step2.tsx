@@ -1,31 +1,39 @@
-import { Input } from '../../../../common/components/Input';
 import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
+import { useProofMethodStore } from '../../../stores/useProofMethodStore';
+import { CreateGroupStep2AddProofMethod } from './Step2AddMode';
 
 export const CreateGroupStep2 = () => {
   const { formData, updateFormData } = useCreateGroupStore();
+  const {
+    proofMethods,
+    createProofMethodMode,
+    removeProofMethod,
+    setCreateProofMethodMode,
+  } = useProofMethodStore();
 
   return (
     <div className="flex flex-col gap-4">
-      <Input
-        label="인증 방법"
-        type="text"
-        value={formData.proofMethods.join(', ')} // todo: 인증 방법 기획 수정
-        name="인증 방법"
-        onChange={(e) => {
-          updateFormData({ proofMethods: [e.target.value] });
-        }}
-        required
-      />
-      <Input
-        label="모임 가격"
-        type="number"
-        value={formData.price}
-        name="모임 가격"
-        onChange={(e) => {
-          updateFormData({ price: Number(e.target.value) });
-        }}
-        required
-      />
+      {createProofMethodMode === 'view' &&
+        proofMethods.map((proofMethod) => (
+          <div key={proofMethod.contents}>
+            <div>{proofMethod.contents}</div>
+            <div>{proofMethod.type}</div>
+            <div>{proofMethod.fromMin}</div>
+            <div>{proofMethod.toMin}</div>
+            <button onClick={() => removeProofMethod(proofMethod)}>
+              삭제하기
+            </button>
+          </div>
+        ))}
+      {createProofMethodMode === 'view' && (
+        <button
+          className="border p-4"
+          onClick={() => setCreateProofMethodMode('add')}
+        >
+          추가하기
+        </button>
+      )}
+      {createProofMethodMode === 'add' && <CreateGroupStep2AddProofMethod />}
     </div>
   );
 };
