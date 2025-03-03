@@ -6,24 +6,34 @@ import { useEffect } from 'react';
 import { useUsers } from '../../../../user/hooks/useUsers';
 
 export const CreateGroupStep1 = () => {
-  const { formData, updateFormData, setError } = useCreateGroupStore();
+  const { formData, updateFormData, setError, setIsValid } =
+    useCreateGroupStore();
   const { validateCreateGroupElement } = useGroups();
   const { moneyData, fetchMoney } = useUsers();
+
+  const validateForm = async () => {
+    const titleError = await validateCreateGroupElement({
+      validateValue: formData.title,
+      validateType: ValidateCreateGroupElementBodyValidateTypeEnum.TITLE,
+    });
+
+    const priceError = await validateCreateGroupElement({
+      validateValue: formData.price,
+      validateType: ValidateCreateGroupElementBodyValidateTypeEnum.PRICE,
+    });
+
+    const error = titleError || priceError;
+    setError(error);
+    setIsValid(!error && formData.title !== '');
+  };
 
   useEffect(() => {
     fetchMoney();
   }, [fetchMoney]);
 
   useEffect(() => {
-    const validate = async () => {
-      const error = await validateCreateGroupElement({
-        validateValue: formData.price,
-        validateType: ValidateCreateGroupElementBodyValidateTypeEnum.PRICE,
-      });
-      setError(error);
-    };
-    validate();
-  }, [formData.price]);
+    validateForm();
+  }, [formData.title, formData.price]);
 
   return (
     <div className="flex flex-col gap-6">

@@ -1,16 +1,18 @@
 import { BaseLayout } from '../../common/BaseLayout';
 import React, { useState } from 'react';
-import { LoginFormData } from '../types';
 import { Input } from '../../common/components/Input';
 import { GreenButton } from '../components/GreenButton';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { GetCheckSignInUserStatusEnum } from '@rimgosu/libs';
+import {
+  AuthControllerSignInParams,
+  GetCheckSignInUserStatusEnum,
+} from '@rimgosu/libs';
 import { SocialLogin } from '../components/SocialLogin';
 import { OtherPage } from '../components/OtherPage';
 
 export const LoginPage = () => {
-  const [formData, setFormData] = useState<LoginFormData>({
+  const [formData, setFormData] = useState<AuthControllerSignInParams>({
     email: '',
     password: '',
   });

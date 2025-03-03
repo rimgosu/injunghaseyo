@@ -41,7 +41,7 @@ const stepTitleMap: Record<CreateGroupStore['step'], string> = {
 export const CreateGroupFlow = () => {
   const navigate = useNavigate();
   const { createGroup } = useGroups();
-  const { step, formData, error } = useCreateGroupStore();
+  const { step, formData, error, isValid } = useCreateGroupStore();
   const { createProofMethodMode: mode } = useProofMethodStore();
 
   const handleNext = () => {
@@ -74,6 +74,7 @@ export const CreateGroupFlow = () => {
           onNext={step === '태그' ? handleSubmit : handleNext}
           mode={mode}
           nextButtonText={step === '태그' ? '생성하기' : '다음'}
+          disabled={step === '모임생성' && !isValid}
         />
       }
       title={stepTitleMap[step]}

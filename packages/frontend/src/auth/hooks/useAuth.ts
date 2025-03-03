@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
-import { LocalStorageKeys, LoginFormData, SignUpFormData } from '../types';
+import { LocalStorageKeys, SignUpFormData } from '../types';
 import {
   AuthControllerActivateOauthParams,
+  AuthControllerSignInParams,
   AuthControllerVerifyCodeParams,
   AuthControllerVerifyEmailParams,
   AuthControllerVerifyNicknameParams,
@@ -92,7 +93,7 @@ export const useAuth = () => {
   };
 
   const login = async (
-    formData: LoginFormData,
+    formData: AuthControllerSignInParams,
   ): Promise<SignInRes | undefined> => {
     try {
       const response =
