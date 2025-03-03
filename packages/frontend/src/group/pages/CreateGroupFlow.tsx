@@ -29,6 +29,14 @@ const reverseStepMap: Record<
   모임생성: '모임생성',
 } as const;
 
+const stepTitleMap: Record<CreateGroupStore['step'], string> = {
+  모임생성: '모임 생성',
+  인증방법: '인증 방법 선택',
+  시간정하기: '시간 정하기',
+  모임상세: '모임 상세',
+  태그: '태그',
+} as const;
+
 export const CreateGroupFlow = () => {
   const navigate = useNavigate();
   const { createGroup } = useGroups();
@@ -67,6 +75,7 @@ export const CreateGroupFlow = () => {
           nextButtonText={step === '태그' ? '생성하기' : '다음'}
         />
       }
+      title={stepTitleMap[step]}
     >
       {step === '모임생성' && <CreateGroupStep1 />}
       {step === '인증방법' && <CreateGroupStep2 />}

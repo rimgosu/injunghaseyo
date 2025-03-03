@@ -20,10 +20,14 @@ export const GroupPage = () => {
   }
 
   return (
-    <BaseLayout showNavigation={true} showFloatingButton={true}>
-      <div className="flex flex-col gap-4 w-full p-4">
+    <BaseLayout
+      showNavigation={true}
+      showFloatingButton={true}
+      title="모임 목록"
+    >
+      <div className="flex flex-col gap-4 w-full">
         <SearchBar />
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {groupsData?.groups.map((group) => (
             <GroupCard key={group.id} group={group} />
           ))}

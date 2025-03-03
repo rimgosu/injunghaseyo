@@ -4,7 +4,7 @@ export const SearchBar = () => {
       <input
         type="text"
         placeholder="검색..."
-        className="w-full p-2 border rounded-lg pr-10"
+        className="w-full p-4 border rounded-lg pr-10"
       />
       <div className="absolute right-3 top-1/2 -translate-y-1/2">
         <svg
