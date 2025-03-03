@@ -11,6 +11,7 @@ export const CreateGroupStep1 = () => {
         type="text"
         value={formData.title}
         name="모임 제목"
+        placeholder="모임 제목을 입력하세요"
         onChange={(e) => {
           updateFormData({ title: e.target.value });
         }}
@@ -25,6 +26,7 @@ export const CreateGroupStep1 = () => {
           updateFormData({ price: Number(e.target.value) });
         }}
         required
+        suffix="원"
       />
     </div>
   );

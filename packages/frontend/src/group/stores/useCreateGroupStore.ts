@@ -15,7 +15,7 @@ export const useCreateGroupStore = create<CreateGroupStore>((set) => ({
   step: '모임생성',
   formData: {
     title: '',
-    price: 0,
+    price: 30000,
     description: '',
     proofMethods: [],
     dates: [],

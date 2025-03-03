@@ -40,7 +40,11 @@ export const CreateGroupFlow = () => {
   };
 
   const handleBack = () => {
-    useCreateGroupStore.getState().setStep(reverseStepMap[step]);
+    if (step === '모임생성') {
+      navigate('/group');
+    } else {
+      useCreateGroupStore.getState().setStep(reverseStepMap[step]);
+    }
   };
 
   const handleSubmit = async () => {
