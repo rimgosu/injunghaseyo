@@ -1,6 +1,3 @@
-import { BottomNavigationBar } from './components/BottomNavigationBar';
-import { CreateButton } from './components/CreateButton';
-
 interface BaseLayoutProps {
   children: React.ReactNode;
   bottomElement?: React.ReactNode;

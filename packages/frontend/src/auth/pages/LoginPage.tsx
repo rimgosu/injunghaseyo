@@ -35,7 +35,7 @@ export const LoginPage = () => {
         return;
       }
 
-      navigate('/');
+      navigate('/group');
     }
   };
 
