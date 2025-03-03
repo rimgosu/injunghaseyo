@@ -14,6 +14,7 @@ export const LoginPage = () => {
     email: '',
     password: '',
   });
+  const [loginError, setLoginError] = useState<string>('');
 
   const { login, checkSignIn } = useAuth();
   const navigate = useNavigate();
@@ -23,7 +24,9 @@ export const LoginPage = () => {
   };
 
   const handleLogin = async () => {
-    const result = await login(formData);
+    const result = await login(formData).catch((error) => {
+      setLoginError(error.message);
+    });
     if (result) {
       localStorage.setItem('accessToken', result.accessToken);
       const checkSignInRes = await checkSignIn();
@@ -66,6 +69,8 @@ export const LoginPage = () => {
         onClick={handleLogin}
         disabled={!formData.email || !formData.password}
       />
+
+      {loginError && <div className="text-red-500">{loginError}</div>}
 
       <div className="mt-4 flex justify-end">
         <SocialLogin />
