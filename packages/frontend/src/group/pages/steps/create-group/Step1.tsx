@@ -3,10 +3,16 @@ import { Input } from '../../../../common/components/Input';
 import { useGroups } from '../../../hooks/useGroups';
 import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
 import { useEffect } from 'react';
+import { useUsers } from '../../../../user/hooks/useUsers';
 
 export const CreateGroupStep1 = () => {
   const { formData, updateFormData, setError } = useCreateGroupStore();
   const { validateCreateGroupElement } = useGroups();
+  const { moneyData, fetchMoney } = useUsers();
+
+  useEffect(() => {
+    fetchMoney();
+  }, [fetchMoney]);
 
   useEffect(() => {
     const validate = async () => {
@@ -49,6 +55,12 @@ export const CreateGroupStep1 = () => {
         required
         suffix="원"
       />
+      <div className="text-md text-gray-600">
+        <p>현재 보유 금액: {moneyData?.toLocaleString()}원</p>
+        <p>
+          모임 생성 후 잔액: {(moneyData - formData.price).toLocaleString()}원
+        </p>
+      </div>
     </div>
   );
 };
