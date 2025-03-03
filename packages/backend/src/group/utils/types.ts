@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Prisma, ProofMethod, ProofType } from '@prisma/client';
-import { IsString, IsNotEmpty, IsEnum, IsNumber } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEnum,
+  IsNumber,
+  Min,
+  Max,
+  MinLength,
+} from 'class-validator';
 
 export class ProofMethodElem implements Partial<ProofMethod> {
   @ApiProperty({
@@ -10,6 +18,7 @@ export class ProofMethodElem implements Partial<ProofMethod> {
   })
   @IsString()
   @IsNotEmpty()
+  @MinLength(3, { message: '인증 방법 내용은 최소 3글자 이상이어야 합니다' })
   contents: string;
 
   @ApiProperty({
@@ -27,6 +36,8 @@ export class ProofMethodElem implements Partial<ProofMethod> {
     example: 0,
   })
   @IsNumber()
+  @Min(0)
+  @Max(2400)
   @IsNotEmpty()
   fromMin: number;
 
@@ -36,6 +47,8 @@ export class ProofMethodElem implements Partial<ProofMethod> {
     example: 2400,
   })
   @IsNumber()
+  @Min(0)
+  @Max(2400)
   @IsNotEmpty()
   toMin: number;
 }

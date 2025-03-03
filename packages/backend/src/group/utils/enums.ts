@@ -14,3 +14,12 @@ export enum GroupStatus {
   IN_PROGRESS = 'IN_PROGRESS',
   COMPLETED = 'COMPLETED',
 }
+
+export enum CreateGroupElement {
+  TITLE = 'TITLE',
+  PRICE = 'PRICE',
+  DESCRIPTION = 'DESCRIPTION',
+  PROOF_METHOD = 'PROOF_METHOD',
+  DATES = 'DATES',
+  TAGS = 'TAGS',
+}

@@ -3,6 +3,7 @@ import { Transform } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -14,6 +15,7 @@ import {
 } from 'class-validator';
 import { ProofType } from '@prisma/client';
 import { ProofMethodElem } from '../utils/types';
+import { CreateGroupElement } from '../utils/enums';
 
 @ValidatorConstraint({ name: 'validateToday', async: false })
 class ValidateTodayConstraint implements ValidatorConstraintInterface {
@@ -31,10 +33,24 @@ class ValidateTodayConstraint implements ValidatorConstraintInterface {
 
 export class BaseGroup {
   @ApiProperty({
+    description: '검증할 요소 값',
+  })
+  @IsNotEmpty()
+  validateValue: any;
+
+  @ApiProperty({
+    description: '검증할 요소 타입',
+    enum: CreateGroupElement,
+  })
+  @IsEnum(CreateGroupElement)
+  validateType: CreateGroupElement;
+
+  @ApiProperty({
     description: '오늘까지의 받을 금액',
     type: Number,
     example: 1000,
   })
+  @IsNumber()
   todayReward: number;
 
   @ApiProperty({

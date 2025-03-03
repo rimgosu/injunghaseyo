@@ -40,6 +40,8 @@ import { S3Service } from '@/s3/s3.service';
 import { GetTodayRewardRes } from './dtos/get-today-reward-res.dto';
 import { GetTodayRewardParam } from './dtos/get-today-reward-param.dto';
 import { CreateGroupBody } from './dtos/create-group-body.dto';
+import { ValidateCreateGroupElementBody } from './dtos/validate-create-group-elem-query.dto';
+import { GroupElementValidationStrategyFactory } from './utils/group-create-validate.strategy';
 
 @Injectable()
 export class GroupService {
@@ -51,6 +53,31 @@ export class GroupService {
     private readonly prisma: PrismaService,
     private readonly s3: S3Service,
   ) {}
+
+  /**
+   * @description 그룹 생성 요소 검증
+   */
+  async validateCreateGroupElement(
+    body: ValidateCreateGroupElementBody,
+    user: User,
+  ) {
+    const { validateType, validateValue } = body;
+    const wallet = await this.prisma.wallet.findUnique({
+      where: {
+        userId: user.id,
+        deletedAt: null,
+      },
+    });
+    await GroupElementValidationStrategyFactory.getInstance()
+      .getStrategy(validateType)
+      .validate(validateValue, wallet);
+
+    return {
+      message: '올바른 요소입니다.',
+      validateType,
+      validateValue,
+    };
+  }
 
   /**
    * @description 오늘까지 받을 금액 조회

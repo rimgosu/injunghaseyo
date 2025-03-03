@@ -15,6 +15,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
 import {
@@ -43,6 +44,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { GetTodayRewardParam } from './dtos/get-today-reward-param.dto';
 import { GetTodayRewardRes } from './dtos/get-today-reward-res.dto';
 import { CreateGroupBody } from './dtos/create-group-body.dto';
+import { ValidateCreateGroupElementBody } from './dtos/validate-create-group-elem-query.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -60,6 +62,26 @@ export class GroupController {
     @Body() body: CreateGroupBody,
   ) {
     return this.groupService.createGroup(user, params, body);
+  }
+
+  /**
+   * @description 그룹 생성 요소 검증
+   */
+  @Post('validate-element')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  @ApiOperation({
+    summary: '그룹 생성 요소 검증',
+  })
+  @ApiBody({
+    type: 'object',
+    examples: ValidateCreateGroupElementBody.examples,
+  })
+  async validateCreateGroupElement(
+    @Body() body: ValidateCreateGroupElementBody,
+    @GetUser() user: User,
+  ) {
+    return await this.groupService.validateCreateGroupElement(body, user);
   }
 
   /**
