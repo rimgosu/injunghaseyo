@@ -3,6 +3,8 @@ import { BaseLayout } from '../../common/BaseLayout';
 import { SearchBar } from '../components/SearchBar';
 import { GroupCard } from '../components/GroupCard';
 import { useGroups } from '../hooks/useGroups';
+import { CreateButton } from '../../common/components/CreateButton';
+import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
 
 export const GroupPage = () => {
   const { groupsData, isLoading, error, fetchGroups } = useGroups();
@@ -21,8 +23,12 @@ export const GroupPage = () => {
 
   return (
     <BaseLayout
-      showNavigation={true}
-      showFloatingButton={true}
+      bottomElement={
+        <div className="flex justify-center items-center">
+          <CreateButton />
+          <BottomNavigationBar />
+        </div>
+      }
       title="모임 목록"
     >
       <div className="flex flex-col gap-4 w-full">

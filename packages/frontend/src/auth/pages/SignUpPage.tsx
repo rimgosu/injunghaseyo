@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { AgreementSection } from '../components/Agreement';
 import { Input } from '../../common/components/Input';
 import { useAuth } from '../hooks/useAuth';
-import { ValidationMessage } from '../components/ValidationMessage';
+import { ValidationMessage } from '../../common/components/ValidationMessage';
 import { GreenButton } from '../components/GreenButton';
 
 export const SignUpPage = () => {

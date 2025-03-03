@@ -3,6 +3,7 @@ import {
   CreateGroupBody,
   GetGroupsRes,
   GroupControllerCreateGroupParams,
+  ValidateCreateGroupElementBody,
 } from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
 
@@ -11,6 +12,23 @@ export const useGroups = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const accessToken = localStorage.getItem('accessToken');
+
+  const validateCreateGroupElement = async (
+    body: ValidateCreateGroupElementBody,
+  ) => {
+    const res = await ApiSingleton.getInstance()
+      .groups.groupControllerValidateCreateGroupElement(body, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .catch(async (res) => {
+        const err = (await res.json()) as Error;
+        return err.message;
+      });
+
+    return typeof res === 'string' ? res : null;
+  };
 
   const fetchGroups = useCallback(async () => {
     try {
@@ -62,5 +80,6 @@ export const useGroups = () => {
     error,
     fetchGroups,
     createGroup,
+    validateCreateGroupElement,
   };
 };

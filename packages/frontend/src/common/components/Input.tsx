@@ -30,12 +30,12 @@ export class Input extends Component<InputProps> {
         <div className="relative">
           <input
             type={type}
-            value={value}
+            value={value === 0 ? '' : value}
             onChange={onChange}
             name={name}
             placeholder={placeholder}
             required={required}
-            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
           {suffix && (
             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">

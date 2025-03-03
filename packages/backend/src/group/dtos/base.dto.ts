@@ -30,13 +30,13 @@ class ValidateTodayConstraint implements ValidatorConstraintInterface {
     return '개발 환경에서만 today 값을 변경할 수 있습니다.';
   }
 }
-
 export class BaseGroup {
   @ApiProperty({
     description: '검증할 요소 값',
+    oneOf: [{ type: 'string' }, { type: 'number' }, { type: 'object' }],
   })
   @IsNotEmpty()
-  validateValue: any;
+  validateValue: unknown;
 
   @ApiProperty({
     description: '검증할 요소 타입',

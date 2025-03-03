@@ -3,7 +3,7 @@ import { BaseLayout } from '../../common/BaseLayout';
 import { Input } from '../../common/components/Input';
 import { AgreementSection } from '../components/Agreement';
 import { GreenButton } from '../components/GreenButton';
-import { ValidationMessage } from '../components/ValidationMessage';
+import { ValidationMessage } from '../../common/components/ValidationMessage';
 import { useAuth } from '../hooks/useAuth';
 import { AuthControllerActivateOauthParams } from '@rimgosu/libs';
 import { useNavigate } from 'react-router-dom';

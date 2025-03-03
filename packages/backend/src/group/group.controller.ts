@@ -74,7 +74,7 @@ export class GroupController {
     summary: '그룹 생성 요소 검증',
   })
   @ApiBody({
-    type: 'object',
+    type: ValidateCreateGroupElementBody,
     examples: ValidateCreateGroupElementBody.examples,
   })
   async validateCreateGroupElement(

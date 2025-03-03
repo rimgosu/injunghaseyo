@@ -49,8 +49,6 @@ export class AuthService {
 
     const isPasswordValid = verifyPassword(password);
 
-    console.log(isPasswordValid);
-
     if (!isPasswordValid)
       throw new BadRequestException(
         '비밀번호는 특수문자, 영문, 숫자를 포함한 8자리 이상의 글자여야합니다.',

@@ -88,6 +88,13 @@ export interface CreateGroupBody {
   proofMethods: ProofMethodElem[];
 }
 
+export interface ValidateCreateGroupElementBody {
+  /** 검증할 요소 값 */
+  validateValue: string | number | object;
+  /** 검증할 요소 타입 */
+  validateType: ValidateCreateGroupElementBodyValidateTypeEnum;
+}
+
 export interface GetTagsRes {
   /**
    * 태그, ?tags=헬스&tags=건강 꼴로 날짜 배열로 받음
@@ -214,6 +221,16 @@ export enum ProofMethodElemTypeEnum {
   UPLOAD_PHOTO = 'UPLOAD_PHOTO',
   CLICK_BUTTON = 'CLICK_BUTTON',
   CHECK_LOCATION = 'CHECK_LOCATION',
+}
+
+/** 검증할 요소 타입 */
+export enum ValidateCreateGroupElementBodyValidateTypeEnum {
+  TITLE = 'TITLE',
+  PRICE = 'PRICE',
+  DESCRIPTION = 'DESCRIPTION',
+  PROOF_METHOD = 'PROOF_METHOD',
+  DATES = 'DATES',
+  TAGS = 'TAGS',
 }
 
 /** 그룹 상태 */
@@ -1045,6 +1062,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<any, GetGroupsRes>({
         path: `/groups`,
         method: 'GET',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerValidateCreateGroupElement
+     * @summary 그룹 생성 요소 검증
+     * @request POST:/groups/validate-element
+     * @secure
+     */
+    groupControllerValidateCreateGroupElement: (data: ValidateCreateGroupElementBody, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/groups/validate-element`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
 

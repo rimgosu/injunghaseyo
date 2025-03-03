@@ -40,7 +40,7 @@ const stepTitleMap: Record<CreateGroupStore['step'], string> = {
 export const CreateGroupFlow = () => {
   const navigate = useNavigate();
   const { createGroup } = useGroups();
-  const { step, formData } = useCreateGroupStore();
+  const { step, formData, error } = useCreateGroupStore();
   const { createProofMethodMode: mode } = useProofMethodStore();
 
   const handleNext = () => {
@@ -67,7 +67,7 @@ export const CreateGroupFlow = () => {
 
   return (
     <BaseLayout
-      navigationButtons={
+      bottomElement={
         <NavigationButtons
           onBack={handleBack}
           onNext={step === '태그' ? handleSubmit : handleNext}
@@ -79,6 +79,7 @@ export const CreateGroupFlow = () => {
     >
       {step === '모임생성' && <CreateGroupStep1 />}
       {step === '인증방법' && <CreateGroupStep2 />}
+      {error && <div className="text-red-500">{error}</div>}
     </BaseLayout>
   );
 };
