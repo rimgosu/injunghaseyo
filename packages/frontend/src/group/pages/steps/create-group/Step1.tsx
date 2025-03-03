@@ -5,7 +5,7 @@ export const CreateGroupStep1 = () => {
   const { formData, updateFormData } = useCreateGroupStore();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <Input
         label="모임 제목"
         type="text"

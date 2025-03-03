@@ -8,6 +8,7 @@ import {
 } from '../stores/useCreateGroupStore';
 import { CreateGroupStep2 } from './steps/create-group/Step2';
 import { useProofMethodStore } from '../stores/useProofMethodStore';
+import { NavigationButtons } from '../../common/components/NavigationButtons';
 
 const stepMap: Record<CreateGroupStore['step'], CreateGroupStore['step']> = {
   모임생성: '인증방법',
@@ -15,6 +16,17 @@ const stepMap: Record<CreateGroupStore['step'], CreateGroupStore['step']> = {
   시간정하기: '모임상세',
   모임상세: '태그',
   태그: '태그',
+} as const;
+
+const reverseStepMap: Record<
+  CreateGroupStore['step'],
+  CreateGroupStore['step']
+> = {
+  인증방법: '모임생성',
+  시간정하기: '인증방법',
+  모임상세: '시간정하기',
+  태그: '모임상세',
+  모임생성: '모임생성',
 } as const;
 
 export const CreateGroupFlow = () => {
@@ -25,6 +37,10 @@ export const CreateGroupFlow = () => {
 
   const handleNext = () => {
     useCreateGroupStore.getState().setStep(stepMap[step]);
+  };
+
+  const handleBack = () => {
+    useCreateGroupStore.getState().setStep(reverseStepMap[step]);
   };
 
   const handleSubmit = async () => {
@@ -38,17 +54,18 @@ export const CreateGroupFlow = () => {
   };
 
   return (
-    <BaseLayout>
+    <BaseLayout
+      navigationButtons={
+        <NavigationButtons
+          onBack={handleBack}
+          onNext={step === '태그' ? handleSubmit : handleNext}
+          mode={mode}
+          nextButtonText={step === '태그' ? '생성하기' : '다음'}
+        />
+      }
+    >
       {step === '모임생성' && <CreateGroupStep1 />}
       {step === '인증방법' && <CreateGroupStep2 />}
-      {mode !== 'add' && (
-        <button
-          onClick={step === '태그' ? handleSubmit : handleNext}
-          className="w-full py-3 bg-green-400 text-white rounded-xl mt-4"
-        >
-          {step === '태그' ? '생성하기' : '다음'}
-        </button>
-      )}
     </BaseLayout>
   );
 };

@@ -1,4 +1,3 @@
-import React from 'react';
 import { BottomNavigationBar } from './components/BottomNavigationBar';
 import { CreateButton } from './components/CreateButton';
 
@@ -6,12 +5,14 @@ interface BaseLayoutProps {
   children: React.ReactNode;
   showNavigation?: boolean;
   showFloatingButton?: boolean;
+  navigationButtons?: React.ReactNode; // 추가된 prop
 }
 
 export const BaseLayout = ({
   children,
   showNavigation = false,
   showFloatingButton = false,
+  navigationButtons, // 추가된 prop
 }: BaseLayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
@@ -21,6 +22,9 @@ export const BaseLayout = ({
             {children}
           </div>
         </div>
+        {navigationButtons && (
+          <div className="p-14 mb-10">{navigationButtons}</div>
+        )}
         {showFloatingButton && <CreateButton />}
         {showNavigation && <BottomNavigationBar />}
       </div>
