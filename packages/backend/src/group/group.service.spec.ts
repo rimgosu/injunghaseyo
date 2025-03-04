@@ -2,9 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { GroupService } from './group.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
+  Group,
+  GroupDate,
   GroupProgressStatus,
   Join,
   JoinRole,
+  ProofMethod,
   ProofType,
   Role,
   User,
@@ -209,83 +212,50 @@ describe('GroupService', () => {
 
     it('모임 참여 성공', async () => {
       // Given
-      const mockGroup = {
+      const mockGroup = createMock<
+        Group & {
+          proofMethod: ProofMethod[];
+          groupDate: GroupDate[];
+        }
+      >({
         id: mockGroupId,
         title: '테스트 모임',
         price: 30000,
         description: '테스트 모임입니다',
-        proofMethod: [
-          {
-            id: 1,
-            method: '인증 방법1',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
-            groupId: mockGroupId,
-          },
-          {
-            id: 2,
-            method: '인증 방법2',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
-            groupId: mockGroupId,
-          },
-        ],
+        proofMethod: [],
         groupDate: [
           {
-            id: 1,
             date: '2024-03-15',
             groupId: mockGroupId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
           },
           {
-            id: 2,
             date: '2024-03-16',
             groupId: mockGroupId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
           },
           {
-            id: 3,
             date: '2024-03-17',
             groupId: mockGroupId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
           },
         ],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
-      const mockWallet = {
+      const mockWallet = createMock<Wallet>({
         id: 1,
         userId: mockUser.id,
         money: 50000,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
-      const mockJoin = {
+      const mockJoin = createMock<Join>({
         id: 1,
         userId: mockUser.id,
         groupId: mockGroupId,
         joinRole: JoinRole.ATTENDEE,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
-      const mockUpdatedWallet = {
+      const mockUpdatedWallet = createMock<Wallet>({
         ...mockWallet,
         money: mockWallet.money - mockGroup.price,
-      };
+      });
 
       jest
         .spyOn(prismaService.group, 'findUnique')
@@ -361,36 +331,31 @@ describe('GroupService', () => {
 
     it('잔액이 부족할 경우 에러 발생', async () => {
       // Given
-      const mockGroup = {
+      const mockGroup = createMock<
+        Group & {
+          proofMethod: ProofMethod[];
+          groupDate: GroupDate[];
+        }
+      >({
         id: mockGroupId,
         title: '테스트 모임',
         price: 30000,
         description: '테스트 설명',
-        proofMethod: '인증 방법',
-        status: GroupStatus.NOT_STARTED,
+        proofMethod: [],
         groupDate: [
           {
             id: 1,
             groupId: mockGroupId,
             date: '2024-03-20',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
           },
         ],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
-      const mockWallet = {
+      const mockWallet = createMock<Wallet>({
         id: 1,
         userId: mockUser.id,
         money: 20000,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
       jest
         .spyOn(prismaService.group, 'findUnique')
@@ -408,46 +373,38 @@ describe('GroupService', () => {
 
     it('이미 참여한 모임일 경우 에러 발생', async () => {
       // Given
-      const mockGroup = {
+      const mockGroup = createMock<
+        Group & {
+          proofMethod: ProofMethod[];
+          groupDate: GroupDate[];
+        }
+      >({
         id: mockGroupId,
         title: '테스트 모임',
         price: 30000,
         description: '테스트 설명',
-        proofMethod: '인증 방법',
-        status: GroupStatus.NOT_STARTED,
+        proofMethod: [],
         groupDate: [
           {
             id: 1,
             groupId: mockGroupId,
             date: '2024-03-20',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
           },
         ],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
-      const mockWallet = {
+      const mockWallet = createMock<Wallet>({
         id: 1,
         userId: mockUser.id,
         money: 50000,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
-      const existingJoin = {
+      const existingJoin = createMock<Join>({
         id: 1,
         userId: mockUser.id,
         groupId: mockGroupId,
         joinRole: JoinRole.ATTENDEE,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
       jest
         .spyOn(prismaService.group, 'findUnique')
@@ -467,36 +424,31 @@ describe('GroupService', () => {
 
     it('만료된 모임일 경우 에러 발생', async () => {
       // Given
-      const mockGroup = {
+      const mockGroup = createMock<
+        Group & {
+          proofMethod: ProofMethod[];
+          groupDate: GroupDate[];
+        }
+      >({
         id: mockGroupId,
         title: '테스트 모임',
         price: 30000,
         description: '테스트 설명',
-        proofMethod: '인증 방법',
-        status: GroupStatus.NOT_STARTED,
+        proofMethod: [],
         groupDate: [
           {
             id: 1,
             groupId: mockGroupId,
             date: '2024-03-01',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
           },
         ],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
-      const mockWallet = {
+      const mockWallet = createMock<Wallet>({
         id: 1,
         userId: mockUser.id,
         money: 50000,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
       jest
         .spyOn(prismaService.group, 'findUnique')
@@ -710,30 +662,12 @@ describe('GroupService', () => {
   });
 });
 
+/**
+ * @description group progress 테스트
+ */
 describe('GroupService', () => {
   let service: GroupService;
   let prismaService: PrismaService;
-
-  const mockUser: User = {
-    id: 1,
-    uuid: 'test-uuid',
-    email: 'test@example.com',
-    nickname: 'testUser',
-    introduction: '등록된 소개말이 없습니다.',
-    refreshToken: null,
-    eventAgree: true,
-    password: 'hashedPassword',
-    salt: 'salt',
-    provider: null,
-    role: 'USER',
-    status: 'ACTIVE',
-    lastLogin: null,
-    lastPwdChanged: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    deletedAt: null,
-    loginFailCount: 0,
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -782,7 +716,12 @@ describe('GroupService', () => {
 
     it('groupDate 수 * proofMethod 수만큼 GroupProgress가 생성되어야 함', async () => {
       // Given
-      const mockGroup = {
+      const mockGroup = createMock<
+        Group & {
+          proofMethod: ProofMethod[];
+          groupDate: GroupDate[];
+        }
+      >({
         id: mockGroupId,
         title: '테스트 모임',
         price: 30000,
@@ -790,19 +729,19 @@ describe('GroupService', () => {
         proofMethod: [
           {
             id: 1,
-            method: '인증 방법1',
+            contents: '인증 방법1',
+            type: ProofType.CHECK_LOCATION,
+            fromMin: 0,
+            toMin: 2400,
             groupId: mockGroupId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
           },
           {
             id: 2,
-            method: '인증 방법2',
+            contents: '인증 방법2',
+            type: ProofType.CHECK_LOCATION,
+            fromMin: 0,
+            toMin: 2400,
             groupId: mockGroupId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
           },
         ],
         groupDate: [
@@ -810,50 +749,32 @@ describe('GroupService', () => {
             id: 1,
             date: '2024-03-15',
             groupId: mockGroupId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
           },
           {
             id: 2,
             date: '2024-03-16',
             groupId: mockGroupId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
           },
           {
             id: 3,
             date: '2024-03-17',
             groupId: mockGroupId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
           },
         ],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
-      const mockWallet = {
+      const mockWallet = createMock<Wallet>({
         id: 1,
         userId: mockUser.id,
         money: 50000,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
-      const mockJoin = {
+      const mockJoin = createMock<Join>({
         id: 1,
         userId: mockUser.id,
         groupId: mockGroupId,
         joinRole: JoinRole.ATTENDEE,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
+      });
 
       jest
         .spyOn(prismaService.group, 'findUnique')

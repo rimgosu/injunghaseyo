@@ -10,32 +10,23 @@ import { EmailService } from '@/email/email.service';
 import { JwtService } from '@nestjs/jwt';
 import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
 import { UnauthorizedException } from '@nestjs/common';
+import { createMock } from '@golevelup/ts-jest';
 
 describe('AuthService', () => {
   let service: AuthService;
   let prismaService: PrismaService;
   let cacheManager: Cache;
 
-  const mockUser: User = {
+  const mockUser = createMock<User>({
     id: 1,
     uuid: 'test-uuid',
     email: 'test@example.com',
     nickname: 'testUser',
-    introduction: '등록된 소개말이 없습니다.',
-    refreshToken: null,
-    eventAgree: true,
-    password: 'hashedPassword',
-    salt: 'salt',
-    provider: null as Provider | null,
-    role: 'USER' as Role,
-    status: 'ACTIVE' as UserStatus,
-    lastLogin: null,
-    lastPwdChanged: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    deletedAt: null,
+    status: UserStatus.ACTIVE,
+    provider: null,
+    role: Role.USER,
     loginFailCount: 0,
-  };
+  });
 
   const mockGeneratedJwt = {
     accessToken: 'mockAccessToken',
