@@ -1059,9 +1059,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/groups
      */
     groupControllerGetGroups: (params: RequestParams = {}) =>
-      this.request<any, GetGroupsRes>({
+      this.request<GetGroupsRes, any>({
         path: `/groups`,
         method: 'GET',
+        format: 'json',
         ...params,
       }),
 
@@ -1093,11 +1094,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     groupControllerGetTags: (query: GroupControllerGetTagsParams, params: RequestParams = {}) =>
-      this.request<any, GetTagsRes>({
+      this.request<GetTagsRes, any>({
         path: `/groups/tags`,
         method: 'GET',
         query: query,
         secure: true,
+        format: 'json',
         ...params,
       }),
 
@@ -1125,9 +1127,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/groups/{groupId}
      */
     groupControllerGetGroup: (groupId: number, params: RequestParams = {}) =>
-      this.request<any, GetGroupRes>({
+      this.request<GetGroupRes, any>({
         path: `/groups/${groupId}`,
         method: 'GET',
+        format: 'json',
         ...params,
       }),
 
@@ -1156,11 +1159,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     groupControllerGetToday: ({ groupId, ...query }: GroupControllerGetTodayParams, params: RequestParams = {}) =>
-      this.request<any, GetTodayRes>({
+      this.request<GetTodayRes, any>({
         path: `/groups/${groupId}/today`,
         method: 'GET',
         query: query,
         secure: true,
+        format: 'json',
         ...params,
       }),
 
@@ -1199,10 +1203,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     groupControllerGetTodayReward: (groupId: number, params: RequestParams = {}) =>
-      this.request<any, GetTodayRewardRes>({
+      this.request<GetTodayRewardRes, any>({
         path: `/groups/${groupId}/today-reward`,
         method: 'GET',
         secure: true,
+        format: 'json',
         ...params,
       }),
   };
@@ -1216,10 +1221,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     userControllerGetMoney: (params: RequestParams = {}) =>
-      this.request<any, GetMoneyDto>({
+      this.request<GetMoneyDto, any>({
         path: `/users/money`,
         method: 'GET',
         secure: true,
+        format: 'json',
         ...params,
       }),
   };

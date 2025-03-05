@@ -91,6 +91,7 @@ export class GroupController {
   @ApiBearerAuth('jwt')
   @UseGuards(AtkGuard)
   @ApiResponse({
+    status: 200,
     description: '태그 검색 - 자동완성',
     type: GetTagsRes,
   })
@@ -117,6 +118,7 @@ export class GroupController {
   @Get()
   @UseGuards(AtkOptionalGuard)
   @ApiResponse({
+    status: 200,
     description: '모임 전체 조회',
     type: GetGroupsRes,
   })
@@ -132,6 +134,7 @@ export class GroupController {
   @Get(':groupId')
   @UseGuards(AtkOptionalGuard)
   @ApiResponse({
+    status: 200,
     description: '모임 상세 조회',
     type: GetGroupRes,
   })
@@ -167,6 +170,7 @@ export class GroupController {
   @UseGuards(AtkGuard)
   @ApiBearerAuth('jwt')
   @ApiResponse({
+    status: 200,
     description: '오늘의 인증 조회',
     type: GetTodayRes,
   })
@@ -221,6 +225,7 @@ export class GroupController {
   @UseGuards(AtkGuard)
   @ApiBearerAuth('jwt')
   @ApiResponse({
+    status: 200,
     description: '오늘의 인증 보상 조회',
     type: GetTodayRewardRes,
   })

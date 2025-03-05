@@ -17,6 +17,7 @@ export class UserController {
   @UseGuards(AtkGuard)
   @ApiBearerAuth('jwt')
   @ApiResponse({
+    status: 200,
     type: GetMoneyDto,
     description: '보유한 인증 머니',
   })
