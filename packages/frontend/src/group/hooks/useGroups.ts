@@ -9,7 +9,6 @@ import { ApiSingleton } from '../../common/apiSingleton';
 
 export const useGroups = () => {
   const [groupsData, setGroupsData] = useState<GetGroupsRes | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const accessToken = localStorage.getItem('accessToken');
 
@@ -32,7 +31,6 @@ export const useGroups = () => {
 
   const fetchGroups = useCallback(async () => {
     try {
-      setIsLoading(true);
       const response =
         await ApiSingleton.getInstance().groups.groupControllerGetGroups({
           format: 'json',
@@ -46,8 +44,6 @@ export const useGroups = () => {
           ? err
           : new Error('그룹을 불러오는데 실패했습니다.'),
       );
-    } finally {
-      setIsLoading(false);
     }
   }, []);
 
@@ -76,7 +72,6 @@ export const useGroups = () => {
 
   return {
     groupsData,
-    isLoading,
     error,
     fetchGroups,
     createGroup,

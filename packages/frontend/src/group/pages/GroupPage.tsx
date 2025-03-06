@@ -8,7 +8,7 @@ import { BottomNavigationBar } from '../../common/components/BottomNavigationBar
 import { useAuth } from '../../auth/hooks/useAuth';
 
 export const GroupPage = () => {
-  const { groupsData, isLoading, error, fetchGroups } = useGroups();
+  const { groupsData, error, fetchGroups } = useGroups();
   const { checkSignIn } = useAuth();
   const [isSignedIn, setIsSignedIn] = useState(false);
 
@@ -25,10 +25,6 @@ export const GroupPage = () => {
     };
     checkSignInStatus();
   }, [checkSignIn]);
-
-  if (isLoading) {
-    return <div>로딩 중...</div>;
-  }
 
   if (error) {
     return <div>에러가 발생했습니다: {error.message}</div>;

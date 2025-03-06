@@ -495,6 +495,7 @@ export class GroupService {
       where: { userId: user.id, deletedAt: null },
     });
 
+    if (!wallet) throw new NotFoundException('지갑이 존재하지 않습니다.');
     if (wallet?.money < price)
       throw new ForbiddenException('잔액이 부족합니다.');
 
