@@ -1,6 +1,5 @@
 import {
   CreateGroupBody,
-  GetGroupRes,
   GroupControllerCreateGroupParams,
   ValidateCreateGroupElementBody,
 } from '@rimgosu/libs';
