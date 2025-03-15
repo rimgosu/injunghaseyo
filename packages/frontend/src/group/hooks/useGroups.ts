@@ -9,7 +9,7 @@ import { ApiErrorType } from '../../common/types';
 export const useGroups = () => {
   const validateCreateGroupElement = async (
     body: ValidateCreateGroupElementBody,
-  ): Promise<void | ApiErrorType> => {
+  ) => {
     return await ApiSingleton.getInstance()
       .groups.groupControllerValidateCreateGroupElement(body)
       .then((res) => res.data)
@@ -20,9 +20,7 @@ export const useGroups = () => {
 
   const fetchGroups = async () => {
     return await ApiSingleton.getInstance()
-      .groups.groupControllerGetGroups({
-        format: 'json',
-      })
+      .groups.groupControllerGetGroups()
       .then((res) => res.data)
       .catch(async (error: Response) => {
         return (await error.json()) as ApiErrorType;

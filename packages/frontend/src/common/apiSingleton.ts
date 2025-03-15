@@ -16,6 +16,7 @@ export class ApiSingleton {
                 Authorization: `Bearer ${accessToken}`,
               }
             : undefined,
+          format: 'json',
         },
       };
       ApiSingleton.instance = new Api(ApiSingleton.config);
