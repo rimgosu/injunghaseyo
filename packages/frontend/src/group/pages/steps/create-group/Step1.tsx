@@ -2,14 +2,15 @@ import { ValidateCreateGroupElementBodyValidateTypeEnum } from '@rimgosu/libs';
 import { Input } from '../../../../common/components/Input';
 import { useGroups } from '../../../hooks/useGroups';
 import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useUsers } from '../../../../user/hooks/useUsers';
 
 export const CreateGroupStep1 = () => {
   const { formData, updateFormData, setError, setIsValid } =
     useCreateGroupStore();
   const { validateCreateGroupElement } = useGroups();
-  const { moneyData, fetchMoney } = useUsers();
+  const { fetchMoney } = useUsers();
+  const [moneyData, setMoneyData] = useState<number>(0);
 
   const validateForm = async () => {
     const titleError = await validateCreateGroupElement({
@@ -28,7 +29,14 @@ export const CreateGroupStep1 = () => {
   };
 
   useEffect(() => {
-    fetchMoney();
+    const fetchMoneyData = async () => {
+      const res = await fetchMoney();
+      if (!('error' in res)) {
+        setMoneyData(res.money);
+        setError(null);
+      }
+    };
+    fetchMoneyData();
   }, [fetchMoney]);
 
   useEffect(() => {
