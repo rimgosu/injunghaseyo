@@ -37,6 +37,7 @@ import { GetTodayParam } from './dtos/get-today-params.dto';
 import { GetTodayRes } from './dtos/get-today-res.dto';
 import { GetTodayQuery } from './dtos/get-today-query.dto';
 import {
+  UploadProofLocationQuery,
   UploadProofParam,
   UploadProofQuery,
 } from './dtos/upload-proof-param.dto';
@@ -187,7 +188,7 @@ export class GroupController {
    *
    * - 금일의 인증 사진 업로드
    */
-  @Post(':groupId/upload')
+  @Post(':groupId/proof/photo')
   @UseGuards(AtkGuard)
   @ApiBearerAuth('jwt')
   @UseInterceptors(FileInterceptor('proofPhoto'))
@@ -210,6 +211,34 @@ export class GroupController {
     @UploadedFile() proofPhoto: Express.Multer.File,
   ) {
     return this.groupService.uploadProofPhoto(param, query, proofPhoto, user);
+  }
+
+  /**
+   * @description 인증 버튼 클릭
+   */
+  @Post(':groupId/proof/button')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async uploadProofButton(
+    @Param() param: UploadProofParam,
+    @Query() query: UploadProofQuery,
+    @GetUser() user: User,
+  ) {
+    return this.groupService.uploadProofButton(param, query, user);
+  }
+
+  /**
+   * @description 현재 위치 확인
+   */
+  @Post(':groupId/proof/location')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async uploadProofLocation(
+    @Param() param: UploadProofParam,
+    @Query() query: UploadProofLocationQuery,
+    @GetUser() user: User,
+  ) {
+    return this.groupService.uploadProofLocation(param, query, user);
   }
 
   /**

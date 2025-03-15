@@ -17,7 +17,13 @@ import { CreateGroupParams } from './dtos/create-group-params.dto';
 import { GetTagsParams } from './dtos/get-tags-param.dto';
 import { GetTagsRes } from './dtos/get-tags-res.dto';
 import { JoinGroupParam } from './dtos/join-group-param.dto';
-import { GROUP_WITH_INCLUDE, GroupWith, GroupWithToday } from './utils/types';
+import {
+  GROUP_WITH_INCLUDE,
+  GroupProgressWithMethod,
+  GroupWith,
+  GroupWithProgress,
+  GroupWithToday,
+} from './utils/types';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import {
   canRefund,
@@ -36,6 +42,7 @@ import { GetTodayParam } from './dtos/get-today-params.dto';
 import { GetTodayRes } from './dtos/get-today-res.dto';
 import { GetTodayQuery } from './dtos/get-today-query.dto';
 import {
+  UploadProofLocationQuery,
   UploadProofParam,
   UploadProofQuery,
 } from './dtos/upload-proof-param.dto';
@@ -56,6 +63,85 @@ export class GroupService {
     private readonly prisma: PrismaService,
     private readonly s3: S3Service,
   ) {}
+
+  /**
+   * @description 현재 위치 확인
+   */
+  async uploadProofLocation(
+    param: UploadProofParam,
+    query: UploadProofLocationQuery,
+    user: User,
+  ) {
+    const { groupId } = param;
+    const { progressId, today, latitude, longitude } = query;
+
+    const { groupProgress, group } = await this.getProofGroupAndProgress(
+      groupId,
+      progressId,
+      today,
+      user,
+    );
+
+    await this.validateProof(group, groupProgress, ProofType.CHECK_LOCATION);
+
+    return await this.prisma.groupProgress.update({
+      where: { id: progressId, deletedAt: null },
+      data: {
+        proof: {
+          upsert: {
+            create: {
+              locationProof: {
+                create: { latitude, longitude },
+              },
+            },
+            update: {
+              locationProof: {
+                upsert: {
+                  create: { latitude, longitude },
+                  update: { latitude, longitude },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  /**
+   * @description 인증 버튼 클릭
+   */
+  async uploadProofButton(
+    param: UploadProofParam,
+    query: UploadProofQuery,
+    user: User,
+  ) {
+    const { groupId } = param;
+    const { progressId, today } = query;
+
+    const { groupProgress, group } = await this.getProofGroupAndProgress(
+      groupId,
+      progressId,
+      today,
+      user,
+    );
+
+    await this.validateProof(group, groupProgress, ProofType.CLICK_BUTTON);
+
+    return await this.prisma.groupProgress.update({
+      where: { id: progressId, deletedAt: null },
+      data: {
+        status: GroupProgressStatus.COMPLETED,
+        proof: {
+          create: {
+            buttonClickProof: {
+              create: {},
+            },
+          },
+        },
+      },
+    });
+  }
 
   /**
    * @description 그룹 생성 요소 검증
@@ -124,54 +210,14 @@ export class GroupService {
     const { groupId } = param;
     const { progressId } = query;
 
-    // groupProgress 정상적으로 존재하는지 확인
-    const today = query.today ? query.today : getToday();
+    const { groupProgress, group } = await this.getProofGroupAndProgress(
+      groupId,
+      progressId,
+      query.today,
+      user,
+    );
 
-    const [groupProgress, group] = await Promise.all([
-      this.prisma.groupProgress.findUnique({
-        where: {
-          id: progressId,
-          deletedAt: null,
-          groupDate: {
-            date: today,
-            deletedAt: null,
-            group: { id: groupId },
-          },
-          join: { userId: user.id, deletedAt: null, group: { id: groupId } },
-        },
-        include: {
-          proofMethod: true,
-        },
-      }),
-      this.prisma.group.findUnique({
-        where: { id: groupId, deletedAt: null },
-        include: {
-          proofMethod: {
-            where: {
-              groupProgress: {
-                some: {
-                  id: progressId,
-                },
-              },
-            },
-          },
-        },
-      }),
-    ]);
-
-    if (!groupProgress) throw new NotFoundException('오늘의 인증이 없습니다.');
-
-    if (group.proofMethod[0].type !== ProofType.UPLOAD_PHOTO)
-      throw new BadRequestException('사진으로 인증하는 인증 방법이 아닙니다.');
-
-    if (
-      !isBetweenMinutes(
-        groupProgress.proofMethod.fromMin,
-        groupProgress.proofMethod.toMin,
-        'kst',
-      )
-    )
-      throw new ForbiddenException('인증 시간이 아닙니다.');
+    await this.validateProof(group, groupProgress, ProofType.UPLOAD_PHOTO);
 
     // s3에 사진 업로드
     const uploadUrl = await this.s3.uploadFile(
@@ -232,6 +278,87 @@ export class GroupService {
         status: true,
       },
     });
+  }
+
+  /**
+   * @description group, groupProgress 조회
+   */
+  private async getProofGroupAndProgress(
+    groupId: number,
+    progressId: number,
+    todayQuery: string | undefined,
+    user: User,
+  ): Promise<{
+    groupProgress: GroupProgressWithMethod;
+    group: GroupWithProgress;
+  }> {
+    // groupProgress 정상적으로 존재하는지 확인
+    const today = todayQuery ? todayQuery : getToday();
+
+    const [groupProgress, group] = await Promise.all([
+      this.prisma.groupProgress.findUnique({
+        where: {
+          id: progressId,
+          deletedAt: null,
+          groupDate: {
+            date: today,
+            deletedAt: null,
+            group: { id: groupId },
+          },
+          join: { userId: user.id, deletedAt: null, group: { id: groupId } },
+        },
+        include: {
+          proofMethod: true,
+        },
+      }),
+      this.prisma.group.findUnique({
+        where: { id: groupId, deletedAt: null },
+        include: {
+          proofMethod: {
+            where: {
+              groupProgress: {
+                some: {
+                  id: progressId,
+                },
+              },
+            },
+          },
+        },
+      }),
+    ]);
+
+    return { groupProgress, group };
+  }
+
+  /**
+   * @description 올바른 인증인지 조회
+   */
+  private async validateProof(
+    group: GroupWithProgress,
+    groupProgress: GroupProgressWithMethod,
+    proofType: ProofType,
+  ): Promise<void> {
+    if (!groupProgress) throw new NotFoundException('오늘의 인증이 없습니다.');
+
+    if (group.proofMethod[0].type !== proofType)
+      throw new BadRequestException(
+        `${proofType} 방법으로 인증하는 인증 방법이 아닙니다.`,
+      );
+
+    if (
+      group.proofMethod[0].type === ProofType.CLICK_BUTTON &&
+      groupProgress.status === GroupProgressStatus.COMPLETED
+    )
+      throw new BadRequestException('이미 인증을 완료하였습니다.');
+
+    if (
+      !isBetweenMinutes(
+        groupProgress.proofMethod.fromMin,
+        groupProgress.proofMethod.toMin,
+        'kst',
+      )
+    )
+      throw new ForbiddenException('인증 시간이 아닙니다.');
   }
 
   /**

@@ -135,3 +135,24 @@ export type GroupWithJoin = Prisma.GroupGetPayload<{
     proofMethod: true;
   };
 }>;
+
+export const GROUP_WITH_PROGRESS = Prisma.validator<Prisma.GroupDefaultArgs>()({
+  include: {
+    proofMethod: true,
+  },
+});
+
+export type GroupWithProgress = Prisma.GroupGetPayload<
+  typeof GROUP_WITH_PROGRESS
+>;
+
+export const GROUP_PROGRESS_WITH_METHOD =
+  Prisma.validator<Prisma.GroupProgressDefaultArgs>()({
+    include: {
+      proofMethod: true,
+    },
+  });
+
+export type GroupProgressWithMethod = Prisma.GroupProgressGetPayload<
+  typeof GROUP_PROGRESS_WITH_METHOD
+>;
