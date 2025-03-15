@@ -1,78 +1,48 @@
-import { useCallback, useState } from 'react';
 import {
   CreateGroupBody,
-  GetGroupsRes,
+  GetGroupRes,
   GroupControllerCreateGroupParams,
   ValidateCreateGroupElementBody,
 } from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
+import { ApiErrorType } from '../../common/types';
 
 export const useGroups = () => {
-  const [groupsData, setGroupsData] = useState<GetGroupsRes | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const accessToken = localStorage.getItem('accessToken');
-
   const validateCreateGroupElement = async (
     body: ValidateCreateGroupElementBody,
-  ) => {
-    const res = await ApiSingleton.getInstance()
-      .groups.groupControllerValidateCreateGroupElement(body, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .catch(async (res) => {
-        const err = (await res.json()) as Error;
-        return err.message;
+  ): Promise<void | ApiErrorType> => {
+    return await ApiSingleton.getInstance()
+      .groups.groupControllerValidateCreateGroupElement(body)
+      .then((res) => res.data)
+      .catch(async (error: Response) => {
+        return (await error.json()) as ApiErrorType;
       });
-
-    return typeof res === 'string' ? res : null;
   };
 
-  const fetchGroups = useCallback(async () => {
-    try {
-      const response =
-        await ApiSingleton.getInstance().groups.groupControllerGetGroups({
-          format: 'json',
-        });
-
-      setGroupsData(response.data);
-      setError(null);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err
-          : new Error('그룹을 불러오는데 실패했습니다.'),
-      );
-    }
-  }, []);
+  const fetchGroups = async () => {
+    return await ApiSingleton.getInstance()
+      .groups.groupControllerGetGroups({
+        format: 'json',
+      })
+      .then((res) => res.data)
+      .catch(async (error: Response) => {
+        return (await error.json()) as ApiErrorType;
+      });
+  };
 
   const createGroup = async (
     params: GroupControllerCreateGroupParams,
     body: CreateGroupBody,
   ) => {
-    try {
-      await ApiSingleton.getInstance().groups.groupControllerCreateGroup(
-        params,
-        body,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-    } catch (error) {
-      throw new Error(
-        error instanceof Error
-          ? error.message
-          : '그룹을 생성하는데 실패했습니다.',
-      );
-    }
+    return await ApiSingleton.getInstance()
+      .groups.groupControllerCreateGroup(params, body)
+      .then((res) => res.data)
+      .catch(async (error: Response) => {
+        return (await error.json()) as ApiErrorType;
+      });
   };
 
   return {
-    groupsData,
-    error,
     fetchGroups,
     createGroup,
     validateCreateGroupElement,

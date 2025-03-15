@@ -23,7 +23,7 @@ export const CreateGroupStep1 = () => {
     });
 
     const error = titleError || priceError;
-    setError(error);
+    setError(error?.message || null);
     setIsValid(!error && formData.title !== '');
   };
 
@@ -49,7 +49,7 @@ export const CreateGroupStep1 = () => {
             validateValue: e.target.value,
             validateType: ValidateCreateGroupElementBodyValidateTypeEnum.TITLE,
           });
-          setError(error);
+          setError(error?.message || null);
         }}
         required
       />
@@ -61,6 +61,11 @@ export const CreateGroupStep1 = () => {
         onChange={async (e) => {
           const value = e.target.value === '' ? 0 : Number(e.target.value);
           updateFormData({ price: value });
+          const error = await validateCreateGroupElement({
+            validateValue: value,
+            validateType: ValidateCreateGroupElementBodyValidateTypeEnum.PRICE,
+          });
+          setError(error?.message || null);
         }}
         required
         suffix="원"
