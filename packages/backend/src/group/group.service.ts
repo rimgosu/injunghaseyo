@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   Logger,
@@ -7,6 +8,7 @@ import {
 import {
   GroupProgressStatus,
   JoinRole,
+  ProofType,
   Tag,
   User,
   WalletHistoryReason,
@@ -158,6 +160,9 @@ export class GroupService {
     ]);
 
     if (!groupProgress) throw new NotFoundException('오늘의 인증이 없습니다.');
+
+    if (group.proofMethod[0].type !== ProofType.UPLOAD_PHOTO)
+      throw new BadRequestException('사진으로 인증하는 인증 방법이 아닙니다.');
 
     if (
       !isBetweenMinutes(
