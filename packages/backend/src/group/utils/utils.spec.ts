@@ -8,8 +8,171 @@ import {
   canRefund,
   getToday,
   getJoinableDate,
+  getCurrentMinute,
+  isBetweenMinutes,
 } from './utils';
 import { GroupDate } from '@prisma/client';
+
+describe('isBetweenMinutes', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  describe('일반적인 시간대 (자정을 걸치지 않는 경우)', () => {
+    it('시간이 범위 안에 있을 때 true를 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T06:30:00Z')); // KST 15:30
+
+      // When
+      const result = isBetweenMinutes(900, 960, 'kst'); // 15:00 - 16:00
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it('시간이 범위 밖에 있을 때 false를 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T05:30:00Z')); // KST 14:30
+
+      // When
+      const result = isBetweenMinutes(900, 960, 'kst'); // 15:00 - 16:00
+
+      // Then
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('자정을 걸치는 시간대', () => {
+    it('자정 이전 시간대가 범위 안에 있을 때 true를 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T13:30:00Z')); // KST 22:30
+
+      // When
+      const result = isBetweenMinutes(1260, 180, 'kst'); // 21:00 - 03:00
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it('자정 이후 시간대가 범위 안에 있을 때 true를 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T16:30:00Z')); // KST 01:30
+
+      // When
+      const result = isBetweenMinutes(1260, 180, 'kst'); // 21:00 - 03:00
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it('범위 밖의 시간일 때 false를 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T10:30:00Z')); // KST 19:30
+
+      // When
+      const result = isBetweenMinutes(1260, 180, 'kst'); // 21:00 - 03:00
+
+      // Then
+      expect(result).toBe(false);
+    });
+  });
+});
+
+describe('getCurrentMinute', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  describe('KST 기준', () => {
+    it('15:00 KST일 때 900을 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T06:00:00Z')); // UTC 6:00 = KST 15:00
+
+      // When
+      const result = getCurrentMinute('kst');
+
+      // Then
+      expect(result).toBe(900); // 15 * 60 = 900
+    });
+
+    it('23:59 KST일 때 1439를 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T14:59:00Z')); // UTC 14:59 = KST 23:59
+
+      // When
+      const result = getCurrentMinute('kst');
+
+      // Then
+      expect(result).toBe(1439); // 23 * 60 + 59 = 1439
+    });
+
+    it('00:00 KST일 때 0을 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T15:00:00Z')); // UTC 15:00 = KST 00:00
+
+      // When
+      const result = getCurrentMinute('kst');
+
+      // Then
+      expect(result).toBe(0);
+    });
+
+    it('타임존 파라미터가 없을 경우 기본값으로 KST를 사용해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T06:00:00Z')); // UTC 6:00 = KST 15:00
+
+      // When
+      const result = getCurrentMinute();
+      const resultWithKST = getCurrentMinute('kst');
+
+      // Then
+      expect(result).toBe(resultWithKST);
+    });
+  });
+
+  describe('UTC 기준', () => {
+    it('15:00 UTC일 때 900을 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T15:00:00Z'));
+
+      // When
+      const result = getCurrentMinute('utc');
+
+      // Then
+      expect(result).toBe(900);
+    });
+
+    it('23:59 UTC일 때 1439를 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T23:59:00Z'));
+
+      // When
+      const result = getCurrentMinute('utc');
+
+      // Then
+      expect(result).toBe(1439);
+    });
+
+    it('00:00 UTC일 때 0을 반환해야 함', () => {
+      // Given
+      jest.setSystemTime(new Date('2024-03-15T00:00:00Z'));
+
+      // When
+      const result = getCurrentMinute('utc');
+
+      // Then
+      expect(result).toBe(0);
+    });
+  });
+});
 
 describe('getJoinableDate', () => {
   beforeEach(() => {

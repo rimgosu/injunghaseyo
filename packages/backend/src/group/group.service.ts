@@ -22,6 +22,7 @@ import {
   getJoinableDate,
   getLastDayNight,
   getToday,
+  isBetweenMinutes,
   isValidGroup,
   validateGroupDates,
 } from './utils/utils';
@@ -157,6 +158,15 @@ export class GroupService {
     ]);
 
     if (!groupProgress) throw new NotFoundException('오늘의 인증이 없습니다.');
+
+    if (
+      !isBetweenMinutes(
+        groupProgress.proofMethod.fromMin,
+        groupProgress.proofMethod.toMin,
+        'kst',
+      )
+    )
+      throw new ForbiddenException('인증 시간이 아닙니다.');
 
     // s3에 사진 업로드
     const uploadUrl = await this.s3.uploadFile(
