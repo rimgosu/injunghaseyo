@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { GroupProgressStatus, PrismaClient } from '@prisma/client';
 import { ProofMethodSeedInput, UserWithJoinRole } from './types';
 
 export class GroupSeedData {
@@ -76,6 +76,37 @@ export class GroupSeedData {
             },
           });
         }),
+      );
+
+      // groupProgress bulk create
+      const [joins, proofMethods] = await Promise.all([
+        tx.join.findMany({
+          where: {
+            groupId: group.id,
+          },
+        }),
+        tx.proofMethod.findMany({
+          where: {
+            groupId: group.id,
+          },
+        }),
+      ]);
+
+      await Promise.all(
+        joins.flatMap((join) =>
+          groupDate.flatMap((date) =>
+            proofMethods.map((method) =>
+              tx.groupProgress.create({
+                data: {
+                  joinId: join.id,
+                  groupDateId: date.id,
+                  proofMethodId: method.id,
+                  status: GroupProgressStatus.PENDING,
+                },
+              }),
+            ),
+          ),
+        ),
       );
 
       return {

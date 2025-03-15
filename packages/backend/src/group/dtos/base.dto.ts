@@ -171,6 +171,7 @@ export class BaseGroup {
     description: '(개발 전용), 오늘 날짜를 원하는 날짜로 지정한다.',
     type: String,
     example: '2025-01-18',
+    required: false,
   })
   @IsNotEmpty()
   @IsString()

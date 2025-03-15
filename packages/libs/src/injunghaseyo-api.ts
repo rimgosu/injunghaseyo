@@ -443,7 +443,7 @@ export interface GroupControllerGetTodayParams {
    * (개발 전용), 오늘 날짜를 원하는 날짜로 지정한다.
    * @example "2025-01-18"
    */
-  today: string;
+  today?: string;
   /**
    * 모임 ID
    * @example 1
@@ -456,7 +456,7 @@ export interface GroupControllerUploadProofPhotoParams {
    * (개발 전용), 오늘 날짜를 원하는 날짜로 지정한다.
    * @example "2025-01-18"
    */
-  today: string;
+  today?: string;
   /**
    * 진행 id
    * @example 1
