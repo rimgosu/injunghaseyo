@@ -1,9 +1,4 @@
-import {
-  ApiProperty,
-  getSchemaPath,
-  IntersectionType,
-  PickType,
-} from '@nestjs/swagger';
+import { ApiProperty, getSchemaPath, PickType } from '@nestjs/swagger';
 import { BaseGroupRes } from './base-res.dto';
 import { GroupWithToday, ProofMethodElem } from '../utils/types';
 import {

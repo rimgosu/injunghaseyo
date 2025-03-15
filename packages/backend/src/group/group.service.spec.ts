@@ -17,7 +17,6 @@ import {
 } from '@prisma/client';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
-import { GroupStatus } from './utils/enums';
 import { S3Service } from '@/s3/s3.service';
 import { createMock } from '@golevelup/ts-jest';
 import { GroupWith, GroupWithProofDate } from './utils/types';

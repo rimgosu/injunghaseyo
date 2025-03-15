@@ -28,8 +28,11 @@ describe('GetTodayRes', () => {
             groupProgress: [
               {
                 id: 1,
-                proofPhoto: {
-                  url: 'photo1.jpg',
+                proof: {
+                  photoProof: {
+                    id: 1,
+                    url: 'photo1.jpg',
+                  },
                 },
               },
             ],
@@ -62,7 +65,10 @@ describe('GetTodayRes', () => {
               fromMin: 0,
               toMin: 2400,
             },
-            proofPhoto: 'photo1.jpg',
+            proofElem: {
+              id: 1,
+              url: 'photo1.jpg',
+            },
             groupProgressId: 1,
           },
         ],
@@ -98,12 +104,7 @@ describe('GetTodayRes', () => {
             type: ProofType.CHECK_LOCATION,
             fromMin: 0,
             toMin: 2400,
-            groupProgress: [
-              {
-                id: 1,
-                proofPhoto: null,
-              },
-            ],
+            groupProgress: [],
           },
         ],
         groupDate: [],
@@ -113,7 +114,7 @@ describe('GetTodayRes', () => {
       const result = new GetTodayRes(mockGroup);
 
       // Then
-      expect(result.proofs[0].proofPhoto).toBeNull();
+      expect(result.proofs[0].proofElem).toBeNull();
     });
 
     it('여러 인증 방법이 있을 때 모두 올바르게 변환되어야 함', () => {
@@ -130,8 +131,11 @@ describe('GetTodayRes', () => {
             groupProgress: [
               {
                 id: 1,
-                proofPhoto: {
-                  url: 'photo1.jpg',
+                proof: {
+                  photoProof: {
+                    id: 1,
+                    url: 'photo1.jpg',
+                  },
                 },
               },
             ],
@@ -144,8 +148,11 @@ describe('GetTodayRes', () => {
             groupProgress: [
               {
                 id: 2,
-                proofPhoto: {
-                  url: 'photo2.jpg',
+                proof: {
+                  photoProof: {
+                    id: 2,
+                    url: 'photo2.jpg',
+                  },
                 },
               },
             ],
@@ -166,7 +173,10 @@ describe('GetTodayRes', () => {
           fromMin: 0,
           toMin: 2400,
         },
-        proofPhoto: 'photo1.jpg',
+        proofElem: {
+          id: 1,
+          url: 'photo1.jpg',
+        },
         groupProgressId: 1,
       });
       expect(result.proofs[1]).toEqual({
@@ -176,7 +186,10 @@ describe('GetTodayRes', () => {
           fromMin: 0,
           toMin: 2400,
         },
-        proofPhoto: 'photo2.jpg',
+        proofElem: {
+          id: 2,
+          url: 'photo2.jpg',
+        },
         groupProgressId: 2,
       });
     });
