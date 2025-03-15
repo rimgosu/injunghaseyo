@@ -5,18 +5,19 @@ model Proof {
     view            Int           @default(0)
     groupProgress   GroupProgress @relation(fields: [groupProgressId], references: [id])
 
-    createdAt        DateTime           @default(now())
-    updatedAt        DateTime           @updatedAt
-    deletedAt        DateTime?
-    photoComment     PhotoComment[]
-    PhotoProof       PhotoProof[]
-    ButtonClickProof ButtonClickProof[]
-    LocationProof    LocationProof[]
+    photoProof       PhotoProof?
+    buttonClickProof ButtonClickProof?
+    locationProof    LocationProof?
+
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+    deletedAt    DateTime?
+    photoComment PhotoComment[]
 }
 
 model PhotoProof {
     id      Int    @id @default(autoincrement())
-    proofId Int
+    proofId Int    @unique
     url     String /// s3 photo url
     proof   Proof  @relation(fields: [proofId], references: [id])
 
@@ -27,7 +28,7 @@ model PhotoProof {
 
 model ButtonClickProof {
     id      Int   @id @default(autoincrement())
-    proofId Int
+    proofId Int   @unique
     proof   Proof @relation(fields: [proofId], references: [id])
 
     createdAt DateTime  @default(now())
@@ -37,7 +38,7 @@ model ButtonClickProof {
 
 model LocationProof {
     id        Int   @id @default(autoincrement())
-    proofId   Int
+    proofId   Int   @unique
     latitude  Float
     longitude Float
     proof     Proof @relation(fields: [proofId], references: [id])
