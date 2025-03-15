@@ -166,12 +166,12 @@ export interface GetGroupRes {
 }
 
 export interface Proof {
-  /** 인증 사진 */
-  proofPhoto: string | null;
   /** 인증 방법 */
   proofMethod: ProofMethodElem;
   /** 모임 진행 id */
   groupProgressId: number;
+  /** 인증 정보 */
+  proofElem: null;
 }
 
 export interface GetTodayRes {

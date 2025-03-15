@@ -15,7 +15,7 @@ import { CreateGroupParams } from './dtos/create-group-params.dto';
 import { GetTagsParams } from './dtos/get-tags-param.dto';
 import { GetTagsRes } from './dtos/get-tags-res.dto';
 import { JoinGroupParam } from './dtos/join-group-param.dto';
-import { GROUP_WITH_INCLUDE, GroupWith } from './utils/types';
+import { GROUP_WITH_INCLUDE, GroupWith, GroupWithToday } from './utils/types';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import {
   canRefund,
@@ -171,13 +171,26 @@ export class GroupService {
         deletedAt: null,
       },
       data: {
-        proofPhoto: {
+        proof: {
           upsert: {
             create: {
-              url: uploadUrl,
+              photoProof: {
+                create: {
+                  url: uploadUrl,
+                },
+              },
             },
             update: {
-              url: uploadUrl,
+              photoProof: {
+                upsert: {
+                  create: {
+                    url: uploadUrl,
+                  },
+                  update: {
+                    url: uploadUrl,
+                  },
+                },
+              },
             },
           },
         },
@@ -192,9 +205,13 @@ export class GroupService {
             toMin: true,
           },
         },
-        proofPhoto: {
+        proof: {
           select: {
-            url: true,
+            photoProof: {
+              select: {
+                url: true,
+              },
+            },
           },
         },
         status: true,
@@ -214,7 +231,7 @@ export class GroupService {
 
     // 오늘 날짜
     const today = query.today ? query.today : getToday();
-    const group = await this.prisma.group.findUnique({
+    const group: GroupWithToday = await this.prisma.group.findUnique({
       where: { id: groupId, deletedAt: null },
       include: {
         groupDate: {
@@ -234,7 +251,13 @@ export class GroupService {
                 },
               },
               include: {
-                proofPhoto: true,
+                proof: {
+                  include: {
+                    photoProof: true,
+                    buttonClickProof: true,
+                    locationProof: true,
+                  },
+                },
               },
             },
           },

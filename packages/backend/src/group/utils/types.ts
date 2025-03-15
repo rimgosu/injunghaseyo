@@ -94,7 +94,13 @@ export const GROUP_WITH_TODAY = Prisma.validator<Prisma.GroupDefaultArgs>()({
       include: {
         groupProgress: {
           include: {
-            proofPhoto: true,
+            proof: {
+              include: {
+                photoProof: true,
+                buttonClickProof: true,
+                locationProof: true,
+              },
+            },
           },
         },
       },
