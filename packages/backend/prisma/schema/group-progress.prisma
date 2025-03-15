@@ -10,7 +10,7 @@ model GroupProgress {
     createdAt     DateTime            @default(now())
     updatedAt     DateTime            @updatedAt
     deletedAt     DateTime?
-    proofPhoto    ProofPhoto?
+    proof         Proof?
 }
 
 enum GroupProgressStatus {
