@@ -26,22 +26,18 @@ export const LoginPage = () => {
   };
 
   const handleLogin = async () => {
-    const result = await login(formData).catch((error) => {
-      setLoginError(error.message);
-    });
-    if (result) {
-      localStorage.setItem('accessToken', result.accessToken);
-      const checkSignInRes = await checkSignIn();
-      if (
-        checkSignInRes?.userStatus ===
-        GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE
-      ) {
-        navigate('/auth/select-character');
-        return;
-      }
-
-      navigate('/group');
+    const res = await login(formData);
+    res.data && localStorage.setItem('accessToken', res.data.accessToken);
+    res.error && setLoginError(res.error.message);
+    const checkSignInRes = await checkSignIn();
+    if (
+      checkSignInRes?.data?.userStatus ===
+      GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE
+    ) {
+      navigate('/auth/select-character');
     }
+
+    navigate('/group');
   };
 
   return (

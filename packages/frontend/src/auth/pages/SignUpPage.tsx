@@ -154,21 +154,16 @@ export const SignUpPage = () => {
   };
 
   const handleEmailVerification = async () => {
-    try {
-      const result = await sendVerificationEmail({ email: formData.email });
-      setEmailVerification((prev) => ({
-        ...prev,
-        show: true,
-        code: '',
-        isVerified: false,
-        timer: 180,
-      }));
-      alert(result?.message);
-    } catch (error) {
-      alert(
-        error instanceof Error ? error.message : '이메일 발송에 실패했습니다.',
-      );
-    }
+    const res = await sendVerificationEmail({ email: formData.email });
+    setEmailVerification((prev) => ({
+      ...prev,
+      show: true,
+      code: '',
+      isVerified: false,
+      timer: 180,
+    }));
+    res.data && alert('이메일 인증 메일을 발송했습니다.');
+    res.error && alert(res.error.message);
   };
 
   const handleVerifyEmailCode = async () => {
@@ -177,7 +172,7 @@ export const SignUpPage = () => {
       code: emailVerification.code,
     });
 
-    if (result?.success) {
+    if (result?.data) {
       setVerification((prev) => ({
         ...prev,
         validCode: '',
@@ -216,15 +211,9 @@ export const SignUpPage = () => {
   const handleSignUp = async () => {
     if (!validateSignUpData()) return;
 
-    try {
-      const result = await signUp(formData);
-      alert(result?.message);
-      navigate('/auth/login');
-    } catch (error) {
-      alert(
-        error instanceof Error ? error.message : '회원가입에 실패했습니다.',
-      );
-    }
+    const res = await signUp(formData);
+    res.data && navigate('/auth/login');
+    res.error && alert(res.error.message);
   };
 
   return (

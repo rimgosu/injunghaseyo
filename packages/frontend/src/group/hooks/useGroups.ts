@@ -6,6 +6,7 @@ import {
 } from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
 import { ApiErrorType, ApiResponse } from '../../common/types';
+import { useCallback } from 'react';
 
 export const useGroups = () => {
   const validateCreateGroupElement = async (
@@ -19,14 +20,16 @@ export const useGroups = () => {
       });
   };
 
-  const fetchGroups = async (): Promise<ApiResponse<GetGroupsRes>> => {
+  const fetchGroups = useCallback(async (): Promise<
+    ApiResponse<GetGroupsRes>
+  > => {
     return await ApiSingleton.getInstance()
       .groups.groupControllerGetGroups()
       .then((res) => ({ data: res.data }))
       .catch(async (error: Response) => {
         return { error: (await error.json()) as ApiErrorType };
       });
-  };
+  }, []);
 
   const createGroup = async (
     params: GroupControllerCreateGroupParams,

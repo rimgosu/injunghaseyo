@@ -37,12 +37,9 @@ export const OauthPendingPage = () => {
         return;
       }
 
-      const result = await verifyNickname({ nickname });
-      if (!result) {
-        setValidNickname('');
-      } else {
-        setValidNickname(result.message);
-      }
+      const res = await verifyNickname({ nickname });
+      res.data && setValidNickname('');
+      res.error && setValidNickname(res.error.message);
     } catch (error) {
       if (error instanceof Error) {
         setValidNickname(error.message);
