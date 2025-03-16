@@ -13,17 +13,17 @@ export const CreateGroupStep1 = () => {
   const [moneyData, setMoneyData] = useState<number>(0);
 
   const validateForm = async () => {
-    const titleError = await validateCreateGroupElement({
+    const validateTitle = await validateCreateGroupElement({
       validateValue: formData.title,
       validateType: ValidateCreateGroupElementBodyValidateTypeEnum.TITLE,
     });
 
-    const priceError = await validateCreateGroupElement({
+    const validatePrice = await validateCreateGroupElement({
       validateValue: formData.price,
       validateType: ValidateCreateGroupElementBodyValidateTypeEnum.PRICE,
     });
 
-    const error = titleError || priceError;
+    const error = validateTitle.error || validatePrice.error;
     setError(error?.message || null);
     setIsValid(!error && formData.title !== '');
   };
@@ -53,11 +53,11 @@ export const CreateGroupStep1 = () => {
         placeholder="모임 제목을 입력하세요"
         onChange={async (e) => {
           updateFormData({ title: e.target.value });
-          const error = await validateCreateGroupElement({
+          const validateTitle = await validateCreateGroupElement({
             validateValue: e.target.value,
             validateType: ValidateCreateGroupElementBodyValidateTypeEnum.TITLE,
           });
-          setError(error?.message || null);
+          setError(validateTitle.error?.message || null);
         }}
         required
       />
@@ -69,11 +69,11 @@ export const CreateGroupStep1 = () => {
         onChange={async (e) => {
           const value = e.target.value === '' ? 0 : Number(e.target.value);
           updateFormData({ price: value });
-          const error = await validateCreateGroupElement({
+          const validatePrice = await validateCreateGroupElement({
             validateValue: value,
             validateType: ValidateCreateGroupElementBodyValidateTypeEnum.PRICE,
           });
-          setError(error?.message || null);
+          setError(validatePrice.error?.message || null);
         }}
         required
         suffix="원"

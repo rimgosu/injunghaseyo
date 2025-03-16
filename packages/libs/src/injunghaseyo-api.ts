@@ -469,6 +469,52 @@ export interface GroupControllerUploadProofPhotoParams {
   groupId: number;
 }
 
+export interface GroupControllerUploadProofButtonParams {
+  /**
+   * (개발 전용), 오늘 날짜를 원하는 날짜로 지정한다.
+   * @example "2025-01-18"
+   */
+  today?: string;
+  /**
+   * 진행 id
+   * @example 1
+   */
+  progressId: number;
+  /**
+   * 모임 ID
+   * @example 1
+   */
+  groupId: number;
+}
+
+export interface GroupControllerUploadProofLocationParams {
+  /**
+   * (개발 전용), 오늘 날짜를 원하는 날짜로 지정한다.
+   * @example "2025-01-18"
+   */
+  today?: string;
+  /**
+   * 진행 id
+   * @example 1
+   */
+  progressId: number;
+  /**
+   * 위도
+   * @example 37.4943
+   */
+  latitude: number;
+  /**
+   * 경도
+   * @example 126.8611
+   */
+  longitude: number;
+  /**
+   * 모임 ID
+   * @example 1
+   */
+  groupId: number;
+}
+
 export interface UserMgmtControllerGetAdminRoleParams {
   /**
    * 비밀번호
@@ -1173,7 +1219,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags Group
      * @name GroupControllerUploadProofPhoto
-     * @request POST:/groups/{groupId}/upload
+     * @request POST:/groups/{groupId}/proof/photo
      * @secure
      */
     groupControllerUploadProofPhoto: (
@@ -1185,12 +1231,52 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<void, any>({
-        path: `/groups/${groupId}/upload`,
+        path: `/groups/${groupId}/proof/photo`,
         method: 'POST',
         query: query,
         body: data,
         secure: true,
         type: ContentType.FormData,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerUploadProofButton
+     * @request POST:/groups/{groupId}/proof/button
+     * @secure
+     */
+    groupControllerUploadProofButton: (
+      { groupId, ...query }: GroupControllerUploadProofButtonParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/groups/${groupId}/proof/button`,
+        method: 'POST',
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerUploadProofLocation
+     * @request POST:/groups/{groupId}/proof/location
+     * @secure
+     */
+    groupControllerUploadProofLocation: (
+      { groupId, ...query }: GroupControllerUploadProofLocationParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/groups/${groupId}/proof/location`,
+        method: 'POST',
+        query: query,
+        secure: true,
         ...params,
       }),
 

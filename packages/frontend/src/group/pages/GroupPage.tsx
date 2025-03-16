@@ -17,9 +17,7 @@ export const GroupPage = () => {
   useEffect(() => {
     const fetchGroupsData = async () => {
       const res = await fetchGroups();
-      if (!('error' in res)) {
-        setGroupsData(res);
-      }
+      res.data && setGroupsData(res.data);
     };
     fetchGroupsData();
   }, [fetchGroups]);
