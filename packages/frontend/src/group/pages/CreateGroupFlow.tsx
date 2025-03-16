@@ -42,18 +42,23 @@ export const CreateGroupFlow = () => {
   const navigate = useNavigate();
   const { createGroup } = useGroups();
   const { step, formData, error, isValid } = useCreateGroupStore();
-  const { createProofMethodMode: mode } = useProofMethodStore();
+  const { createProofMethodMode: mode, setCreateProofMethodMode } =
+    useProofMethodStore();
 
   const handleNext = () => {
     useCreateGroupStore.getState().setStep(stepMap[step]);
   };
 
   const handleBack = () => {
+    if (mode === 'add') {
+      setCreateProofMethodMode('view');
+      return;
+    }
     if (step === '모임생성') {
       navigate('/group');
-    } else {
-      useCreateGroupStore.getState().setStep(reverseStepMap[step]);
+      return;
     }
+    useCreateGroupStore.getState().setStep(reverseStepMap[step]);
   };
 
   const handleSubmit = async () => {

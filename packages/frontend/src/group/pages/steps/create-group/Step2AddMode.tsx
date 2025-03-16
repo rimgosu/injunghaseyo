@@ -7,6 +7,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { TimeIgnoreCheckbox } from '../../../components/TimeIgnoreCheckbox';
 
 export const CreateGroupStep2AddProofMethod = () => {
   const { addProofMethod, setCreateProofMethodMode: setMode } =
@@ -17,6 +18,7 @@ export const CreateGroupStep2AddProofMethod = () => {
     fromMin: 0,
     toMin: 2400,
   });
+  const [isTimeIgnored, setIsTimeIgnored] = useState(false);
 
   const convertDayjsToMinutes = (time: dayjs.Dayjs | null) => {
     if (!time) return 0;
@@ -47,7 +49,21 @@ export const CreateGroupStep2AddProofMethod = () => {
           onChange={(type) => setProofMethod({ ...proofMethod, type })}
         />
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 my-4">
+          <TimeIgnoreCheckbox
+            isTimeIgnored={isTimeIgnored}
+            onChange={(checked) => {
+              setIsTimeIgnored(checked);
+              if (checked) {
+                setProofMethod({
+                  ...proofMethod,
+                  fromMin: 0,
+                  toMin: 2400,
+                });
+              }
+            }}
+          />
+
           <TimePicker
             label="인증 시간 (from)"
             value={convertMinutesToDayjs(proofMethod.fromMin)}
@@ -57,6 +73,7 @@ export const CreateGroupStep2AddProofMethod = () => {
                 fromMin: convertDayjsToMinutes(newValue),
               })
             }
+            disabled={isTimeIgnored}
             ampm={false}
           />
           <TimePicker
@@ -68,6 +85,7 @@ export const CreateGroupStep2AddProofMethod = () => {
                 toMin: convertDayjsToMinutes(newValue),
               })
             }
+            disabled={isTimeIgnored}
             ampm={false}
           />
         </div>
