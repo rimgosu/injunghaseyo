@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "ProofMethod" ALTER COLUMN "toMin" SET DEFAULT 1440;

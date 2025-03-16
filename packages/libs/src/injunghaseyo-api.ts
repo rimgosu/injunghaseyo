@@ -83,7 +83,7 @@ export interface ProofMethodElem {
 export interface CreateGroupBody {
   /**
    * 인증 방법
-   * @example [{"contents":"헬스장 출입 전","type":"CHECK_LOCATION","fromMin":0,"toMin":2400},{"contents":"헬스장 출입 후","type":"UPLOAD_PHOTO","fromMin":0,"toMin":2400},{"contents":"기상 후 버튼 클릭","type":"CLICK_BUTTON","fromMin":360,"toMin":420}]
+   * @example [{"contents":"헬스장 출입 전","type":"CHECK_LOCATION","fromMin":0,"toMin":1440},{"contents":"헬스장 출입 후","type":"UPLOAD_PHOTO","fromMin":0,"toMin":1440},{"contents":"기상 후 버튼 클릭","type":"CLICK_BUTTON","fromMin":360,"toMin":420}]
    */
   proofMethods: ProofMethodElem[];
 }

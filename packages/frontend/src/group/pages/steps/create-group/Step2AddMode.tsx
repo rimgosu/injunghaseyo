@@ -16,7 +16,7 @@ export const CreateGroupStep2AddProofMethod = () => {
     contents: '',
     type: ProofMethodElemTypeEnum.UPLOAD_PHOTO,
     fromMin: 0,
-    toMin: 2400,
+    toMin: 1440,
   });
   const [isTimeIgnored, setIsTimeIgnored] = useState(false);
 
@@ -58,7 +58,7 @@ export const CreateGroupStep2AddProofMethod = () => {
                 setProofMethod({
                   ...proofMethod,
                   fromMin: 0,
-                  toMin: 2400,
+                  toMin: 1440,
                 });
               }
             }}

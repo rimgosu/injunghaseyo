@@ -24,7 +24,7 @@ describe('GetTodayRes', () => {
             contents: '인증방법 1',
             type: ProofType.CHECK_LOCATION,
             fromMin: 0,
-            toMin: 2400,
+            toMin: 1440,
             groupProgress: [
               {
                 id: 1,
@@ -63,7 +63,7 @@ describe('GetTodayRes', () => {
               contents: '인증방법 1',
               type: ProofType.CHECK_LOCATION,
               fromMin: 0,
-              toMin: 2400,
+              toMin: 1440,
             },
             proofElem: {
               id: 1,
@@ -103,7 +103,7 @@ describe('GetTodayRes', () => {
             contents: '인증방법 1',
             type: ProofType.CHECK_LOCATION,
             fromMin: 0,
-            toMin: 2400,
+            toMin: 1440,
             groupProgress: [],
           },
         ],
@@ -127,7 +127,7 @@ describe('GetTodayRes', () => {
             contents: '인증방법 1',
             type: ProofType.CHECK_LOCATION,
             fromMin: 0,
-            toMin: 2400,
+            toMin: 1440,
             groupProgress: [
               {
                 id: 1,
@@ -144,7 +144,7 @@ describe('GetTodayRes', () => {
             contents: '인증방법 2',
             type: ProofType.CHECK_LOCATION,
             fromMin: 0,
-            toMin: 2400,
+            toMin: 1440,
             groupProgress: [
               {
                 id: 2,
@@ -171,7 +171,7 @@ describe('GetTodayRes', () => {
           contents: '인증방법 1',
           type: ProofType.CHECK_LOCATION,
           fromMin: 0,
-          toMin: 2400,
+          toMin: 1440,
         },
         proofElem: {
           id: 1,
@@ -184,7 +184,7 @@ describe('GetTodayRes', () => {
           contents: '인증방법 2',
           type: ProofType.CHECK_LOCATION,
           fromMin: 0,
-          toMin: 2400,
+          toMin: 1440,
         },
         proofElem: {
           id: 2,

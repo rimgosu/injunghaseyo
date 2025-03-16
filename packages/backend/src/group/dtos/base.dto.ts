@@ -89,13 +89,13 @@ export class BaseGroup {
         contents: '헬스장 출입 전',
         type: ProofType.CHECK_LOCATION,
         fromMin: 0,
-        toMin: 2400,
+        toMin: 1440,
       },
       {
         contents: '헬스장 출입 후',
         type: ProofType.UPLOAD_PHOTO,
         fromMin: 0,
-        toMin: 2400,
+        toMin: 1440,
       },
       {
         contents: '기상 후 버튼 클릭',
