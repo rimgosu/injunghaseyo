@@ -31,10 +31,8 @@ export const CreateGroupStep1 = () => {
   useEffect(() => {
     const fetchMoneyData = async () => {
       const res = await fetchMoney();
-      if (!('error' in res)) {
-        setMoneyData(res.money);
-        setError(null);
-      }
+      res.data && setMoneyData(res.data.money);
+      res.error && setError(res.error.message);
     };
     fetchMoneyData();
   }, [fetchMoney]);

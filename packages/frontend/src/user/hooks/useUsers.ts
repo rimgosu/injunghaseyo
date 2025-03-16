@@ -1,13 +1,14 @@
+import { GetMoneyDto } from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
-import { ApiErrorType } from '../../common/types';
+import { ApiErrorType, ApiResponse } from '../../common/types';
 
 export const useUsers = () => {
-  const fetchMoney = async () => {
+  const fetchMoney = async (): Promise<ApiResponse<GetMoneyDto>> => {
     return await ApiSingleton.getInstance()
       .users.userControllerGetMoney()
-      .then((res) => res.data)
+      .then((res) => ({ data: res.data }))
       .catch(async (error: Response) => {
-        return (await error.json()) as ApiErrorType;
+        return { error: (await error.json()) as ApiErrorType };
       });
   };
 
