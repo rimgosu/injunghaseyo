@@ -2,33 +2,39 @@ import { ValidateCreateGroupElementBodyValidateTypeEnum } from '@rimgosu/libs';
 import { Input } from '../../../../common/components/Input';
 import { useGroups } from '../../../hooks/useGroups';
 import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useUsers } from '../../../../user/hooks/useUsers';
 
 export const CreateGroupStep1 = () => {
   const { formData, updateFormData, setError, setIsValid } =
     useCreateGroupStore();
   const { validateCreateGroupElement } = useGroups();
-  const { moneyData, fetchMoney } = useUsers();
+  const { fetchMoney } = useUsers();
+  const [moneyData, setMoneyData] = useState<number>(0);
 
   const validateForm = async () => {
-    const titleError = await validateCreateGroupElement({
+    const validateTitle = await validateCreateGroupElement({
       validateValue: formData.title,
       validateType: ValidateCreateGroupElementBodyValidateTypeEnum.TITLE,
     });
 
-    const priceError = await validateCreateGroupElement({
+    const validatePrice = await validateCreateGroupElement({
       validateValue: formData.price,
       validateType: ValidateCreateGroupElementBodyValidateTypeEnum.PRICE,
     });
 
-    const error = titleError || priceError;
-    setError(error);
+    const error = validateTitle.error || validatePrice.error;
+    setError(error?.message || null);
     setIsValid(!error && formData.title !== '');
   };
 
   useEffect(() => {
-    fetchMoney();
+    const fetchMoneyData = async () => {
+      const res = await fetchMoney();
+      res.data && setMoneyData(res.data.money);
+      res.error && setError(res.error.message);
+    };
+    fetchMoneyData();
   }, [fetchMoney]);
 
   useEffect(() => {
@@ -45,11 +51,11 @@ export const CreateGroupStep1 = () => {
         placeholder="모임 제목을 입력하세요"
         onChange={async (e) => {
           updateFormData({ title: e.target.value });
-          const error = await validateCreateGroupElement({
+          const validateTitle = await validateCreateGroupElement({
             validateValue: e.target.value,
             validateType: ValidateCreateGroupElementBodyValidateTypeEnum.TITLE,
           });
-          setError(error);
+          setError(validateTitle.error?.message || null);
         }}
         required
       />
@@ -61,6 +67,11 @@ export const CreateGroupStep1 = () => {
         onChange={async (e) => {
           const value = e.target.value === '' ? 0 : Number(e.target.value);
           updateFormData({ price: value });
+          const validatePrice = await validateCreateGroupElement({
+            validateValue: value,
+            validateType: ValidateCreateGroupElementBodyValidateTypeEnum.PRICE,
+          });
+          setError(validatePrice.error?.message || null);
         }}
         required
         suffix="원"

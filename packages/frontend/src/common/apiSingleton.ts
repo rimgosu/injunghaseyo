@@ -5,9 +5,19 @@ export class ApiSingleton {
   private static config: ApiConfig | null = null;
 
   public static getInstance(config?: ApiConfig): Api<unknown> {
+    const accessToken = localStorage.getItem('accessToken');
+
     if (!ApiSingleton.instance || config !== ApiSingleton.config) {
       ApiSingleton.config = config || {
         baseUrl: process.env.REACT_APP_API_URL || 'http://localhost:3001',
+        baseApiParams: {
+          headers: accessToken
+            ? {
+                Authorization: `Bearer ${accessToken}`,
+              }
+            : undefined,
+          format: 'json',
+        },
       };
       ApiSingleton.instance = new Api(ApiSingleton.config);
     }

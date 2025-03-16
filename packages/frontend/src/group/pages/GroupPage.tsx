@@ -6,14 +6,20 @@ import { useGroups } from '../hooks/useGroups';
 import { CreateButton } from '../../common/components/CreateButton';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
 import { useAuth } from '../../auth/hooks/useAuth';
+import { GetGroupsRes } from '@rimgosu/libs';
 
 export const GroupPage = () => {
-  const { groupsData, error, fetchGroups } = useGroups();
+  const { fetchGroups } = useGroups();
   const { checkSignIn } = useAuth();
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [groupsData, setGroupsData] = useState<GetGroupsRes | null>(null);
 
   useEffect(() => {
-    fetchGroups();
+    const fetchGroupsData = async () => {
+      const res = await fetchGroups();
+      res.data && setGroupsData(res.data);
+    };
+    fetchGroupsData();
   }, [fetchGroups]);
 
   useEffect(() => {
@@ -25,10 +31,6 @@ export const GroupPage = () => {
     };
     checkSignInStatus();
   }, [checkSignIn]);
-
-  if (error) {
-    return <div>에러가 발생했습니다: {error.message}</div>;
-  }
 
   return (
     <BaseLayout

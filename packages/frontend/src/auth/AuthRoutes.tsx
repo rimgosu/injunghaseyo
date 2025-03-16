@@ -45,21 +45,14 @@ export const AuthRoutes = () => {
     }
 
     const checkAuthStatus = async () => {
-      try {
-        const res = await checkSignIn();
+      const res = await checkSignIn();
 
-        if (res?.userStatus === GetCheckSignInUserStatusEnum.OAUTH_PENDING) {
-          navigate('/auth/oauth-pending', { replace: true });
-        } else if (
-          res?.userStatus === GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE
-        ) {
-          navigate('/auth/select-character', { replace: true });
-        } else if (!publicPaths.includes(currentPath)) {
-          navigate('/group', { replace: true });
-        }
-      } catch (error) {
-        console.error('인증 상태 확인 실패:', error);
-      }
+      res?.data?.userStatus === GetCheckSignInUserStatusEnum.OAUTH_PENDING &&
+        navigate('/auth/oauth-pending', { replace: true });
+      res?.data?.userStatus === GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE &&
+        navigate('/auth/select-character', { replace: true });
+      res?.data?.userStatus === GetCheckSignInUserStatusEnum.ACTIVE &&
+        navigate('/group', { replace: true });
     };
 
     checkAuthStatus();
