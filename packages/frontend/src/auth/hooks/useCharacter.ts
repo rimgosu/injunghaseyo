@@ -4,42 +4,29 @@ import {
   GetCharacter,
 } from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
-import { LocalStorageKeys } from '../types';
+import { ApiErrorType, ApiResponse } from '../../common/types';
 
 export const useCharacter = () => {
-  const accessToken: LocalStorageKeys = 'accessToken';
-
-  const getCharacter = useCallback(async (): Promise<GetCharacter[]> => {
-    try {
-      const response =
-        await ApiSingleton.getInstance().auth.authControllerGetCharacters({
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem(accessToken)}`,
-          },
-        });
-      return response.data;
-    } catch (error) {
-      return [];
-    }
+  const getCharacter = useCallback(async (): Promise<
+    ApiResponse<GetCharacter[]>
+  > => {
+    return await ApiSingleton.getInstance()
+      .auth.authControllerGetCharacters()
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
   }, []);
 
   const selectCharacter = async (
     params: AuthControllerCharacterSelectParams,
-  ) => {
-    try {
-      const response =
-        await ApiSingleton.getInstance().auth.authControllerCharacterSelect(
-          params,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem(accessToken)}`,
-            },
-          },
-        );
-      return response.data;
-    } catch (error) {
-      console.error('캐릭터 선택 실패:', error);
-    }
+  ): Promise<ApiResponse<void>> => {
+    return await ApiSingleton.getInstance()
+      .auth.authControllerCharacterSelect(params)
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
   };
 
   return {

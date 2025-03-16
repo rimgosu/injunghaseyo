@@ -13,37 +13,23 @@ export const CharacterSelectPage = () => {
   const { getCharacter, selectCharacter } = useCharacter();
 
   const [characters, setCharacters] = useState<GetCharacter[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedCharacter, setSelectedCharacter] = useState<number | null>(
     null,
   );
 
   useEffect(() => {
     const loadCharacters = async () => {
-      try {
-        const result = await getCharacter();
-        setCharacters(result);
-        console.log(result);
-      } catch (error) {
-        console.error('캐릭터 로딩 실패:', error);
-      } finally {
-        setIsLoading(false);
-      }
+      const result = await getCharacter();
+      result.data && setCharacters(result.data);
     };
-
     loadCharacters();
-  }, [getCharacter]); // getCharacter 의존성 제거
-
-  if (isLoading) {
-    return <BaseLayout>로딩중...</BaseLayout>;
-  }
+  }, [getCharacter]);
 
   const handleSelectCharacter = async (
     param: AuthControllerCharacterSelectParams,
   ) => {
     const { characterId } = param;
     setSelectedCharacter(characterId);
-    console.log(selectedCharacter);
   };
 
   const handleSubmit = async () => {
