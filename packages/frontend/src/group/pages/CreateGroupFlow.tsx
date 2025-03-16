@@ -10,6 +10,7 @@ import { CreateGroupStep2 } from './steps/create-group/Step2';
 import { useProofMethodStore } from '../stores/useProofMethodStore';
 import { NavigationButtons } from '../../common/components/NavigationButtons';
 import { ValidationMessage } from '../../common/components/ValidationMessage';
+import { CreateGroupStep3 } from './steps/create-group/Step3';
 
 const stepMap: Record<CreateGroupStore['step'], CreateGroupStore['step']> = {
   모임생성: '인증방법',
@@ -86,6 +87,7 @@ export const CreateGroupFlow = () => {
     >
       {step === '모임생성' && <CreateGroupStep1 />}
       {step === '인증방법' && <CreateGroupStep2 />}
+      {step === '시간정하기' && <CreateGroupStep3 />}
       {error && <ValidationMessage message={error} />}
     </BaseLayout>
   );
