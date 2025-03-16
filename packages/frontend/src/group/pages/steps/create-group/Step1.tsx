@@ -13,18 +13,23 @@ export const CreateGroupStep1 = () => {
   const [moneyData, setMoneyData] = useState<number>(0);
 
   const validateForm = async () => {
-    const validateTitle = await validateCreateGroupElement({
-      validateValue: formData.title,
-      validateType: ValidateCreateGroupElementBodyValidateTypeEnum.TITLE,
-    });
+    const [validateTitle, validatePrice] = await Promise.all([
+      validateCreateGroupElement({
+        validateValue: formData.title,
+        validateType: ValidateCreateGroupElementBodyValidateTypeEnum.TITLE,
+      }),
+      validateCreateGroupElement({
+        validateValue: formData.price,
+        validateType: ValidateCreateGroupElementBodyValidateTypeEnum.PRICE,
+      }),
+    ]);
 
-    const validatePrice = await validateCreateGroupElement({
-      validateValue: formData.price,
-      validateType: ValidateCreateGroupElementBodyValidateTypeEnum.PRICE,
-    });
-
-    const error = validateTitle.error || validatePrice.error;
-    setError(error?.message || null);
+    const titleErrorMessage =
+      formData.title !== '' && validateTitle.error?.message;
+    const priceErrorMessage =
+      formData.price !== 0 && validatePrice.error?.message;
+    const error = titleErrorMessage || priceErrorMessage;
+    setError(error || null);
     setIsValid(!error && formData.title !== '');
   };
 
