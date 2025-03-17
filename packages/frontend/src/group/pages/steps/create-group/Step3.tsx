@@ -2,22 +2,22 @@ import { useState } from 'react';
 import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
 import dayjs from 'dayjs';
 
+// 날짜가 선택 가능한지 확인하는 함수 추가
+const isDateSelectable = (date: string) => {
+  const now = dayjs().add(9, 'hour'); // KST 기준
+  const threeDaysLater = now.add(3, 'day').startOf('day');
+  const targetDate = dayjs(date);
+  return (
+    targetDate.isAfter(threeDaysLater) ||
+    targetDate.isSame(threeDaysLater, 'day')
+  );
+};
+
 export const CreateGroupStep3 = () => {
   const { formData, updateFormData } = useCreateGroupStore();
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [lastSelectedDate, setLastSelectedDate] = useState<string | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
-
-  // 날짜가 선택 가능한지 확인하는 함수 추가
-  const isDateSelectable = (date: string) => {
-    const now = dayjs().add(9, 'hour'); // KST 기준
-    const threeDaysLater = now.add(3, 'day').startOf('day');
-    const targetDate = dayjs(date);
-    return (
-      targetDate.isAfter(threeDaysLater) ||
-      targetDate.isSame(threeDaysLater, 'day')
-    );
-  };
 
   // 달력에 표시할 날짜들 생성
   const getDaysInMonth = () => {
@@ -123,13 +123,6 @@ export const CreateGroupStep3 = () => {
     updateFormData({ dates: newDates });
   };
 
-  const days = ['일', '월', '화', '수', '목', '금', '토'];
-
-  const handleReset = () => {
-    updateFormData({ dates: [] });
-    setLastSelectedDate(null);
-  };
-
   // 최소/최대 날짜 계산
   const getDateRange = () => {
     if (formData.dates.length === 0) return null;
@@ -141,6 +134,13 @@ export const CreateGroupStep3 = () => {
         'YYYY년 MM월 DD일',
       ),
     };
+  };
+
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+
+  const handleReset = () => {
+    updateFormData({ dates: [] });
+    setLastSelectedDate(null);
   };
 
   const dateRange = getDateRange();
