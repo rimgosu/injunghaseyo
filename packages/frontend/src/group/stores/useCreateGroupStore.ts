@@ -5,14 +5,16 @@ import {
 } from '@rimgosu/libs';
 
 export type CreateGroupStore = {
-  step: '모임생성' | '인증방법' | '시간정하기' | '모임상세' | '태그';
+  step: '모임생성' | '인증방법' | '시간정하기' | '태그';
   formData: GroupControllerCreateGroupParams & CreateGroupBody;
   error: string | null;
   isValid: boolean;
   setError: (error: string | null) => void;
   setIsValid: (isValid: boolean) => void;
   setStep: (step: CreateGroupStore['step']) => void;
-  updateFormData: (data: Partial<GroupControllerCreateGroupParams>) => void;
+  updateFormData: (
+    data: Partial<GroupControllerCreateGroupParams & CreateGroupBody>,
+  ) => void;
 };
 
 export const useCreateGroupStore = create<CreateGroupStore>((set) => ({
@@ -20,7 +22,6 @@ export const useCreateGroupStore = create<CreateGroupStore>((set) => ({
   formData: {
     title: '',
     price: 30000,
-    description: '',
     proofMethods: [],
     dates: [],
     tags: [],

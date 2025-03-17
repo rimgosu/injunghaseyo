@@ -1,7 +1,9 @@
 import {
   CreateGroupBody,
   GetGroupsRes,
+  GetTagsRes,
   GroupControllerCreateGroupParams,
+  GroupControllerGetTagsParams,
   ValidateCreateGroupElementBody,
 } from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
@@ -9,6 +11,17 @@ import { ApiErrorType, ApiResponse } from '../../common/types';
 import { useCallback } from 'react';
 
 export const useGroups = () => {
+  const getTags = async (
+    query: GroupControllerGetTagsParams,
+  ): Promise<ApiResponse<GetTagsRes>> => {
+    return await ApiSingleton.getInstance()
+      .groups.groupControllerGetTags(query)
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
   const validateCreateGroupElement = async (
     body: ValidateCreateGroupElementBody,
   ): Promise<ApiResponse<void>> => {
@@ -47,5 +60,6 @@ export const useGroups = () => {
     fetchGroups,
     createGroup,
     validateCreateGroupElement,
+    getTags,
   };
 };

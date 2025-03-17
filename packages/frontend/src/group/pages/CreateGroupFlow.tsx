@@ -11,12 +11,12 @@ import { useProofMethodStore } from '../stores/useProofMethodStore';
 import { NavigationButtons } from '../../common/components/NavigationButtons';
 import { ValidationMessage } from '../../common/components/ValidationMessage';
 import { CreateGroupStep3 } from './steps/create-group/Step3';
+import { CreateGroupStep4 } from './steps/create-group/Step4';
 
 const stepMap: Record<CreateGroupStore['step'], CreateGroupStore['step']> = {
   모임생성: '인증방법',
   인증방법: '시간정하기',
-  시간정하기: '모임상세',
-  모임상세: '태그',
+  시간정하기: '태그',
   태그: '태그',
 } as const;
 
@@ -26,8 +26,7 @@ const reverseStepMap: Record<
 > = {
   인증방법: '모임생성',
   시간정하기: '인증방법',
-  모임상세: '시간정하기',
-  태그: '모임상세',
+  태그: '시간정하기',
   모임생성: '모임생성',
 } as const;
 
@@ -35,7 +34,6 @@ const stepTitleMap: Record<CreateGroupStore['step'], string> = {
   모임생성: '모임 생성',
   인증방법: '인증 방법 선택',
   시간정하기: '시간 정하기',
-  모임상세: '모임 상세',
   태그: '태그',
 } as const;
 
@@ -88,6 +86,7 @@ export const CreateGroupFlow = () => {
       {step === '모임생성' && <CreateGroupStep1 />}
       {step === '인증방법' && <CreateGroupStep2 />}
       {step === '시간정하기' && <CreateGroupStep3 />}
+      {step === '태그' && <CreateGroupStep4 />}
       {error && <ValidationMessage message={error} />}
     </BaseLayout>
   );
