@@ -34,35 +34,68 @@ export const CreateGroupStep4 = () => {
     });
   };
 
+  const handleAddTag = () => {
+    if (searchQuery.trim()) {
+      handleTagSelect(searchQuery.trim());
+      setSearchQuery(''); // 입력 후 검색어 초기화
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddTag();
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-8">
       {/* 선택된 태그 표시 영역 */}
       <div className="flex flex-wrap gap-2">
         {formData.tags.map((tag) => (
           <div
             key={tag}
-            className="flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full"
+            className="flex items-center gap-1 px-6 py-2 bg-green-100 text-green-700 rounded-full"
           >
             <span>{tag}</span>
             <button
               onClick={() => handleTagRemove(tag)}
               className="text-green-700 hover:text-green-900"
             >
-              ×
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
             </button>
           </div>
         ))}
       </div>
 
       {/* 태그 검색 입력창 */}
-      <Input
-        label="태그 검색"
-        type="text"
-        value={searchQuery}
-        name="tagSearch"
-        onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="태그를 검색하세요"
-      />
+      <div className="relative">
+        <Input
+          label="태그 검색"
+          type="text"
+          value={searchQuery}
+          name="tagSearch"
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder="태그를 추가하세요"
+          addButton={{
+            onClick: handleAddTag,
+          }}
+        />
+      </div>
 
       {/* 검색된 태그 목록 */}
       <div className="flex flex-wrap gap-2">
@@ -70,7 +103,7 @@ export const CreateGroupStep4 = () => {
           <button
             key={tag}
             onClick={() => handleTagSelect(tag)}
-            className="px-3 py-1 border border-gray-300 rounded-full hover:bg-gray-100"
+            className="px-6 py-2 border border-gray-300 rounded-full hover:bg-gray-100"
           >
             {tag}
           </button>
