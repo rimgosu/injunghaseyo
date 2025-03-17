@@ -78,7 +78,7 @@ export const CreateGroupFlow = () => {
           onNext={step === '태그' ? handleSubmit : handleNext}
           mode={mode}
           nextButtonText={step === '태그' ? '생성하기' : '다음'}
-          disabled={step === '모임생성' && !isValid}
+          disabled={!isValid}
         />
       }
       title={stepTitleMap[step]}

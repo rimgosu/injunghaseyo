@@ -60,7 +60,7 @@ export class ProofMethodValidationStrategy
 
       if (errors.length > 0) {
         throw new BadRequestException(
-          `유효하지 않은 증빙 방법 형식: ${errors.map((err) => Object.values(err.constraints)).join(', ')}`,
+          `${errors.map((err) => Object.values(err.constraints)).join(', ')}`,
         );
       }
 
