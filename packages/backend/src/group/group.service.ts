@@ -648,7 +648,7 @@ export class GroupService {
     params: CreateGroupParams,
     body: CreateGroupBody,
   ) {
-    const { dates, price, tags, title, description } = params;
+    const { dates, price, tags, title } = params;
     const { proofMethods } = body;
 
     if (!validateGroupDates(dates))
@@ -669,7 +669,6 @@ export class GroupService {
         data: {
           title,
           price,
-          description,
           proofMethod: {
             createMany: {
               data: proofMethods.map((method) => {

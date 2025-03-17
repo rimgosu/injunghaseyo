@@ -6,5 +6,4 @@ export class CreateGroupParams extends PickType(BaseGroup, [
   'price',
   'dates',
   'tags',
-  'description',
 ]) {}
