@@ -13,7 +13,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { TimeIgnoreCheckbox } from '../../../components/TimeIgnoreCheckbox';
 import { useGroups } from '../../../hooks/useGroups';
-import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
 import { ValidationMessage } from '../../../../common/components/ValidationMessage';
 
 const convertDayjsToMinutes = (time: dayjs.Dayjs | null) => {
