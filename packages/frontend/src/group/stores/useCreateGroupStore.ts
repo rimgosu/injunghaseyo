@@ -15,6 +15,7 @@ export type CreateGroupStore = {
   updateFormData: (
     data: Partial<GroupControllerCreateGroupParams & CreateGroupBody>,
   ) => void;
+  clearFormData: () => void;
 };
 
 export const useCreateGroupStore = create<CreateGroupStore>((set) => ({
@@ -35,4 +36,17 @@ export const useCreateGroupStore = create<CreateGroupStore>((set) => ({
     set((state) => ({
       formData: { ...state.formData, ...data },
     })),
+  clearFormData: () =>
+    set({
+      step: '모임생성',
+      error: null,
+      isValid: false,
+      formData: {
+        title: '',
+        price: 30000,
+        proofMethods: [],
+        dates: [],
+        tags: [],
+      },
+    }),
 }));

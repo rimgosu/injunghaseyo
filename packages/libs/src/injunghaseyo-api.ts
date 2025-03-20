@@ -409,11 +409,6 @@ export interface GroupControllerCreateGroupParams {
    */
   price: number;
   /**
-   * 모임 상세
-   * @example "헬스장 가고 인증하는 모임입니다."
-   */
-  description?: string;
-  /**
    * 시간 (일자), ?dates=2024-12-21&dates=2024-12-22 꼴로 날짜 배열로 받음
    * @example ["2024-12-21","2024-12-22"]
    */

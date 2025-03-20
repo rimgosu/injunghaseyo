@@ -40,8 +40,9 @@ const stepTitleMap: Record<CreateGroupStore['step'], string> = {
 export const CreateGroupFlow = () => {
   const navigate = useNavigate();
   const { createGroup } = useGroups();
-  const { step, formData, error, isValid } = useCreateGroupStore();
-  const { createProofMethodMode: mode, setCreateProofMethodMode } =
+  const { step, formData, error, isValid, clearFormData } =
+    useCreateGroupStore();
+  const { createProofMethodMode, setCreateProofMethodMode, clearProofMethods } =
     useProofMethodStore();
 
   const handleNext = () => {
@@ -49,7 +50,7 @@ export const CreateGroupFlow = () => {
   };
 
   const handleBack = () => {
-    if (mode === 'add') {
+    if (createProofMethodMode === 'add') {
       setCreateProofMethodMode('view');
       return;
     }
@@ -64,6 +65,8 @@ export const CreateGroupFlow = () => {
     try {
       const { proofMethods, ...restFormData } = formData;
       await createGroup(restFormData, { proofMethods });
+      clearFormData();
+      clearProofMethods();
       navigate('/group');
     } catch (error) {
       console.error('그룹 생성 실패:', error);
@@ -76,7 +79,7 @@ export const CreateGroupFlow = () => {
         <NavigationButtons
           onBack={handleBack}
           onNext={step === '태그' ? handleSubmit : handleNext}
-          mode={mode}
+          mode={createProofMethodMode}
           nextButtonText={step === '태그' ? '생성하기' : '다음'}
           disabled={!isValid}
         />

@@ -11,6 +11,7 @@ export type ProofMethodStore = {
   setCreateProofMethodMode: (
     mode: ProofMethodStore['createProofMethodMode'],
   ) => void;
+  clearProofMethods: () => void;
 };
 
 export const useProofMethodStore = create<ProofMethodStore>((set) => ({
@@ -39,4 +40,8 @@ export const useProofMethodStore = create<ProofMethodStore>((set) => ({
         .updateFormData({ proofMethods: newProofMethods });
       return { proofMethods: newProofMethods };
     }),
+  clearProofMethods: () => {
+    set({ proofMethods: [] });
+    useCreateGroupStore.getState().updateFormData({ proofMethods: [] });
+  },
 }));
