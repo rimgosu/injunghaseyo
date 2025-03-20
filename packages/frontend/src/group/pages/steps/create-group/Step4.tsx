@@ -2,12 +2,23 @@ import { useState, useEffect } from 'react';
 import { useGroups } from '../../../hooks/useGroups';
 import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
 import { Input } from '../../../../common/components/Input';
+import { useUsers } from '../../../../user/hooks/useUsers';
 
 export const CreateGroupStep4 = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [moneyData, setMoneyData] = useState<number>(0);
   const { getTags } = useGroups();
   const { formData, updateFormData } = useCreateGroupStore();
+  const { fetchMoney } = useUsers();
+
+  useEffect(() => {
+    const fetchMoneyData = async () => {
+      const res = await fetchMoney();
+      res.data && setMoneyData(res.data.money);
+    };
+    fetchMoneyData();
+  }, [fetchMoney]);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -108,6 +119,14 @@ export const CreateGroupStep4 = () => {
             {tag}
           </button>
         ))}
+      </div>
+
+      {/* 잔액 정보 표시 */}
+      <div className="text-md text-gray-600">
+        <p>현재 보유 금액: {moneyData?.toLocaleString()}원</p>
+        <p>
+          모임 생성 후 잔액: {(moneyData - formData.price).toLocaleString()}원
+        </p>
       </div>
     </div>
   );

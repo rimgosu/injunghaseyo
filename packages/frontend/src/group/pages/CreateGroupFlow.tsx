@@ -62,15 +62,22 @@ export const CreateGroupFlow = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      const { proofMethods, ...restFormData } = formData;
-      await createGroup(restFormData, { proofMethods });
+    const { proofMethods, ...restFormData } = formData;
+    const res = await createGroup(restFormData, { proofMethods });
+    if (res.error) {
+      alert(res.error.message);
+    } else {
       clearFormData();
       clearProofMethods();
       navigate('/group');
-    } catch (error) {
-      console.error('그룹 생성 실패:', error);
     }
+  };
+
+  const getNextButtonText = (): string => {
+    if (step === '태그' && formData.tags.length === 0)
+      return '건너뛰고 생성하기';
+    if (step === '태그') return '생성하기';
+    return '다음';
   };
 
   return (
@@ -80,7 +87,7 @@ export const CreateGroupFlow = () => {
           onBack={handleBack}
           onNext={step === '태그' ? handleSubmit : handleNext}
           mode={createProofMethodMode}
-          nextButtonText={step === '태그' ? '생성하기' : '다음'}
+          nextButtonText={getNextButtonText()}
           disabled={!isValid}
         />
       }

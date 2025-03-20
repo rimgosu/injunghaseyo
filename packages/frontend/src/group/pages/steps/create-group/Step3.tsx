@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
 import dayjs from 'dayjs';
+import { useGroups } from '../../../hooks/useGroups';
+import { ValidateCreateGroupElementBodyValidateTypeEnum } from '@rimgosu/libs';
 
 // 날짜가 선택 가능한지 확인하는 함수 추가
 const isDateSelectable = (date: string) => {
@@ -14,10 +16,30 @@ const isDateSelectable = (date: string) => {
 };
 
 export const CreateGroupStep3 = () => {
-  const { formData, updateFormData } = useCreateGroupStore();
+  const { formData, updateFormData, setError, setIsValid } =
+    useCreateGroupStore();
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [lastSelectedDate, setLastSelectedDate] = useState<string | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
+  const { validateCreateGroupElement } = useGroups();
+
+  useEffect(() => {
+    const validate = async () => {
+      const res = await validateCreateGroupElement({
+        validateValue: formData.dates,
+        validateType: ValidateCreateGroupElementBodyValidateTypeEnum.DATES,
+      });
+
+      if (res.error) {
+        setError(res.error.message);
+        setIsValid(false);
+      } else {
+        setError(null);
+        setIsValid(true);
+      }
+    };
+    validate();
+  }, [formData.dates]);
 
   // 달력에 표시할 날짜들 생성
   const getDaysInMonth = () => {
@@ -163,19 +185,21 @@ export const CreateGroupStep3 = () => {
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
               onClick={() => setShowTooltip(!showTooltip)}
-              className="text-gray-500 hover:text-gray-700"
+              className="rounded-full p-1.5 transition-colors duration-200 hover:bg-gray-100"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
               </svg>
             </button>
             {showTooltip && (
