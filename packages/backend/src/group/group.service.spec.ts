@@ -104,7 +104,10 @@ describe('GroupService', () => {
       jest.spyOn(prismaService.group, 'findMany').mockResolvedValue(mockGroups);
 
       // When
-      const result = await service.getGroups(mockUser);
+      const result = await service.getGroups(mockUser, {
+        take: 10,
+        cursor: 1,
+      });
 
       // Then
       expect(result).toBeInstanceOf(GetGroupsRes);
@@ -118,7 +121,10 @@ describe('GroupService', () => {
       jest.spyOn(prismaService.group, 'findMany').mockResolvedValue([]);
 
       // When
-      const result = await service.getGroups(mockUser);
+      const result = await service.getGroups(mockUser, {
+        take: 10,
+        cursor: 1,
+      });
 
       // Then
       expect(result).toBeInstanceOf(GetGroupsRes);
@@ -147,7 +153,10 @@ describe('GroupService', () => {
       jest.spyOn(prismaService.group, 'findMany').mockResolvedValue(mockGroups);
 
       // When
-      const result = await service.getGroups(mockUser);
+      const result = await service.getGroups(mockUser, {
+        take: 10,
+        cursor: 1,
+      });
 
       // Then
       expect(result).toBeInstanceOf(GetGroupsRes);
