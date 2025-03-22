@@ -3,6 +3,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import { GroupWith } from '../utils/types';
 import { BaseGroupRes } from './base-res.dto';
 import { GetGroupRes } from './get-group-res.dto';
+import { BaseCursorPaginationResDto } from '@/common/base-cursor-pagination-res.dto';
 
 class GroupElem extends PickType(BaseGroupRes, [
   'id',
@@ -18,15 +19,20 @@ class GroupElem extends PickType(BaseGroupRes, [
   'tags',
 ]) {}
 
-export class GetGroupsRes {
+export class GetGroupsRes extends BaseCursorPaginationResDto<GroupElem> {
   @ApiProperty({
     description: '그룹 목록',
     type: [GroupElem],
   })
-  groups: GroupElem[];
+  items: GroupElem[];
 
-  constructor(groups: GroupWith[], user: User | undefined) {
-    this.groups = groups.map((group) => {
+  constructor(
+    groups: GroupWith[],
+    user: User | undefined,
+    hasNextPage: boolean,
+    nextCursor?: number,
+  ) {
+    const items = groups.map((group) => {
       const tags = group.groupTagMap.map((tagMap) => tagMap.tag.name);
       const numberOfParticipants = group.join.length;
       const { startDate, endDate, joinStatus, status } = GetGroupRes.getDetails(
@@ -53,5 +59,7 @@ export class GetGroupsRes {
         tags,
       };
     });
+
+    super(items, hasNextPage, nextCursor);
   }
 }

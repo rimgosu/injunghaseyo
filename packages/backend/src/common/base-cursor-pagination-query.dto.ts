@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsNumber, IsOptional } from 'class-validator';
 
-export class BaseCursorPaginationDto {
+export class BaseCursorPaginationQueryDto {
   @ApiProperty({
     required: false,
     description: '페이지 당 아이템 수',

@@ -96,11 +96,11 @@ describe('GetGroupsRes', () => {
       ]);
 
       // When
-      const result = new GetGroupsRes(mockGroups, mockUser);
+      const result = new GetGroupsRes(mockGroups, mockUser, true, 2);
 
       // Then
-      expect(result.groups).toHaveLength(1);
-      expect(result.groups[0]).toEqual({
+      expect(result.items).toHaveLength(1);
+      expect(result.items[0]).toEqual({
         id: 1,
         price: 30000,
         description: '테스트 설명',
@@ -172,10 +172,10 @@ describe('GetGroupsRes', () => {
       ]);
 
       // When
-      const result = new GetGroupsRes(mockGroups, otherUser);
+      const result = new GetGroupsRes(mockGroups, otherUser, true, 2);
 
       // Then
-      expect(result.groups[0].joinStatus).toBe(JoinStatus.NOT_JOINED);
+      expect(result.items[0].joinStatus).toBe(JoinStatus.NOT_JOINED);
     });
 
     it('현재 진행중인 그룹은 IN_PROGRESS 상태여야 함', () => {
@@ -233,11 +233,11 @@ describe('GetGroupsRes', () => {
       ]);
 
       // When
-      const result = new GetGroupsRes(mockCurrentGroups, mockUser);
+      const result = new GetGroupsRes(mockCurrentGroups, mockUser, true, 2);
 
       // Then
-      expect(result.groups[0].status).toBe(GroupStatus.IN_PROGRESS);
-      expect(result.groups[0].joinStatus).toBe(JoinStatus.IN_PROGRESS);
+      expect(result.items[0].status).toBe(GroupStatus.IN_PROGRESS);
+      expect(result.items[0].joinStatus).toBe(JoinStatus.IN_PROGRESS);
     });
 
     it('종료된 그룹은 COMPLETED 상태여야 함', () => {
@@ -295,11 +295,11 @@ describe('GetGroupsRes', () => {
       ]);
 
       // When
-      const result = new GetGroupsRes(mockCompletedGroups, mockUser);
+      const result = new GetGroupsRes(mockCompletedGroups, mockUser, true, 2);
 
       // Then
-      expect(result.groups[0].status).toBe(GroupStatus.COMPLETED);
-      expect(result.groups[0].joinStatus).toBe(JoinStatus.COMPLETED);
+      expect(result.items[0].status).toBe(GroupStatus.COMPLETED);
+      expect(result.items[0].joinStatus).toBe(JoinStatus.COMPLETED);
     });
 
     it('사용자가 undefined일 때 모든 그룹의 joinStatus가 NOT_JOINED여야 함', () => {
@@ -394,11 +394,11 @@ describe('GetGroupsRes', () => {
       ]);
 
       // When
-      const result = new GetGroupsRes(mockGroups, undefined);
+      const result = new GetGroupsRes(mockGroups, undefined, true, 2);
 
       // Then
-      expect(result.groups).toHaveLength(2);
-      result.groups.forEach((group) => {
+      expect(result.items).toHaveLength(2);
+      result.items.forEach((group) => {
         expect(group.joinStatus).toBe(JoinStatus.NOT_JOINED);
       });
     });

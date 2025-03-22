@@ -52,7 +52,7 @@ import { GetTodayRewardParam } from './dtos/get-today-reward-param.dto';
 import { CreateGroupBody } from './dtos/create-group-body.dto';
 import { ValidateCreateGroupElementBody } from './dtos/validate-create-group-elem-query.dto';
 import { GroupElementValidationStrategyFactory } from './utils/group-create-validate.strategy';
-import { BaseCursorPaginationDto } from '@/common/base-cursor-pagination.dto';
+import { BaseCursorPaginationQueryDto } from '@/common/base-cursor-pagination-query.dto';
 
 @Injectable()
 export class GroupService {
@@ -517,13 +517,14 @@ export class GroupService {
    */
   async getGroups(
     user: User | undefined,
-    query: BaseCursorPaginationDto,
+    query: BaseCursorPaginationQueryDto,
   ): Promise<GetGroupsRes> {
     const { take, cursor } = query;
 
+    // take + 1개의 아이템을 조회합니다
     const groups: GroupWith[] = await this.prisma.group.findMany({
       where: { deletedAt: null },
-      take,
+      take: take + 1, // 1개 더 조회
       skip: cursor ? 1 : 0,
       cursor: cursor ? { id: cursor } : undefined,
       orderBy: { id: 'desc' },
@@ -535,7 +536,12 @@ export class GroupService {
       return isValidGroup(lastDayNight);
     });
 
-    return new GetGroupsRes(validGroups, user);
+    // 커서 페이지네이션
+    const hasNextPage = validGroups.length > take;
+    const items = hasNextPage ? validGroups.slice(0, -1) : validGroups;
+    const nextCursor = hasNextPage ? items[items.length - 1].id : undefined;
+
+    return new GetGroupsRes(items, user, hasNextPage, nextCursor);
   }
 
   /**

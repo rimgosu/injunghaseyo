@@ -46,7 +46,7 @@ import { GetTodayRewardParam } from './dtos/get-today-reward-param.dto';
 import { GetTodayRewardRes } from './dtos/get-today-reward-res.dto';
 import { CreateGroupBody } from './dtos/create-group-body.dto';
 import { ValidateCreateGroupElementBody } from './dtos/validate-create-group-elem-query.dto';
-import { BaseCursorPaginationDto } from '@/common/base-cursor-pagination.dto';
+import { BaseCursorPaginationQueryDto } from '@/common/base-cursor-pagination-query.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -126,7 +126,7 @@ export class GroupController {
   })
   async getGroups(
     @GetUserOptional() user: User | undefined,
-    @Query() query: BaseCursorPaginationDto,
+    @Query() query: BaseCursorPaginationQueryDto,
   ): Promise<GetGroupsRes> {
     return this.groupService.getGroups(user, query);
   }

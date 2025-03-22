@@ -111,9 +111,9 @@ describe('GroupService', () => {
 
       // Then
       expect(result).toBeInstanceOf(GetGroupsRes);
-      expect(result.groups).toHaveLength(1);
-      expect(result.groups[0].id).toBe(1);
-      expect(result.groups[0].title).toBe('미래 모임');
+      expect(result.items).toHaveLength(1);
+      expect(result.items[0].id).toBe(1);
+      expect(result.items[0].title).toBe('미래 모임');
     });
 
     it('빈 그룹 배열이 주어졌을 때 빈 결과를 반환해야 함', async () => {
@@ -128,7 +128,7 @@ describe('GroupService', () => {
 
       // Then
       expect(result).toBeInstanceOf(GetGroupsRes);
-      expect(result.groups).toHaveLength(0);
+      expect(result.items).toHaveLength(0);
     });
 
     it('모든 그룹의 날짜가 과거인 경우 빈 결과를 반환해야 함', async () => {
@@ -160,7 +160,7 @@ describe('GroupService', () => {
 
       // Then
       expect(result).toBeInstanceOf(GetGroupsRes);
-      expect(result.groups).toHaveLength(0);
+      expect(result.items).toHaveLength(0);
     });
   });
 });
