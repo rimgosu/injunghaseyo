@@ -42,7 +42,7 @@ export const GroupPage = () => {
       }
       title="모임 목록"
     >
-      <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col gap-4 w-full pb-24">
         <SearchBar />
         <div className="flex flex-col gap-6">
           {groupsData?.groups.map((group) => (
