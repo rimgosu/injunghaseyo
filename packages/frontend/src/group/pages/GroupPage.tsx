@@ -7,6 +7,7 @@ import { CreateButton } from '../../common/components/CreateButton';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { GetGroupsRes } from '@rimgosu/libs';
+import { throttle } from 'lodash';
 
 export const GroupPage = () => {
   const { fetchGroups } = useGroups();
@@ -15,40 +16,38 @@ export const GroupPage = () => {
   const [groupsData, setGroupsData] = useState<GetGroupsRes | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [cursor, setCursor] = useState<number | undefined>(undefined);
 
-  const fetchGroupsData = async (cursor?: number) => {
+  const fetchGroupsData = async () => {
     setIsLoading(true);
-    const res = await fetchGroups({ take: 5, cursor, q: searchQuery });
+    const res = await fetchGroups({ take: 10, cursor, q: searchQuery });
     if (res.data) {
+      setCursor(res.data.nextCursor);
       setGroupsData((prev) =>
-        searchQuery
-          ? res.data
-          : prev
-            ? {
-                items: Array.from(
-                  new Map(
-                    [...prev.items, ...res.data.items].map((item) => [
-                      item.id,
-                      item,
-                    ]),
-                  ).values(),
-                ),
-                hasNextPage: res.data.hasNextPage,
-                nextCursor: res.data.nextCursor,
-              }
-            : res.data,
+        prev
+          ? {
+              items: Array.from(
+                new Map(
+                  [...prev.items, ...res.data.items].map((item) => [
+                    item.id,
+                    item,
+                  ]),
+                ).values(),
+              ),
+              hasNextPage: res.data.hasNextPage,
+              nextCursor: res.data.nextCursor,
+            }
+          : res.data,
       );
     }
     setIsLoading(false);
   };
 
-  const handleSearch = useCallback((query: string) => {
-    console.log('query:', query);
-
+  const handleSearch = (query: string) => {
     setSearchQuery(query);
     setGroupsData(null);
-    fetchGroupsData(undefined);
-  }, []);
+    setCursor(undefined);
+  };
 
   const handleScroll = useCallback(() => {
     if (isLoading || !groupsData?.hasNextPage) return;
@@ -58,29 +57,25 @@ export const GroupPage = () => {
     const clientHeight = document.documentElement.clientHeight;
 
     if (scrollHeight - scrollTop <= clientHeight + 100) {
-      fetchGroupsData(groupsData.nextCursor);
+      fetchGroupsData();
     }
-  }, [isLoading, groupsData?.hasNextPage, groupsData?.nextCursor]);
+  }, [isLoading, groupsData?.hasNextPage]);
 
-  const checkInitialScroll = () => {
-    const scrollHeight = document.documentElement.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight;
-
-    // 초기 로딩 후 컨텐츠가 화면을 채우지 못하는 경우 추가 데이터 로드
-    if (scrollHeight <= clientHeight && groupsData?.hasNextPage && !isLoading) {
-      fetchGroupsData(groupsData.nextCursor);
-    }
-  };
+  const throttledHandleScroll = useCallback(throttle(handleScroll, 300), [
+    handleScroll,
+  ]);
 
   useEffect(() => {
     fetchGroupsData();
-  }, []);
+  }, [searchQuery]);
 
   useEffect(() => {
-    checkInitialScroll();
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll, groupsData, isLoading]);
+    window.addEventListener('scroll', throttledHandleScroll);
+    return () => {
+      window.removeEventListener('scroll', throttledHandleScroll);
+      throttledHandleScroll.cancel();
+    };
+  }, [throttledHandleScroll]);
 
   useEffect(() => {
     const checkSignInStatus = async () => {

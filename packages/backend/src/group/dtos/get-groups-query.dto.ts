@@ -18,34 +18,38 @@ export class GetGroupsQueryDto extends BaseCursorPaginationQueryDto {
   get groupWhereInput(): Prisma.GroupWhereInput {
     return {
       deletedAt: null,
-      ...(this.q &&
-        typeof this.q === 'number' && {
-          price: {
-            gte: this.q - this.q * 0.1,
-            lte: this.q + this.q * 0.1,
+      ...(this.q && {
+        OR: [
+          ...(typeof this.q === 'number'
+            ? [
+                {
+                  price: {
+                    gte: this.q - this.q * 0.1,
+                    lte: this.q + this.q * 0.1,
+                  },
+                },
+              ]
+            : []),
+          { title: { contains: String(this.q), mode: 'insensitive' } },
+          { description: { contains: String(this.q), mode: 'insensitive' } },
+          {
+            proofMethod: {
+              some: {
+                contents: { contains: String(this.q), mode: 'insensitive' },
+              },
+            },
           },
-        }),
-      ...(this.q &&
-        typeof this.q === 'string' && {
-          OR: [
-            { title: { contains: this.q, mode: 'insensitive' } },
-            { description: { contains: this.q, mode: 'insensitive' } },
-            {
-              proofMethod: {
-                some: {
-                  contents: { contains: this.q, mode: 'insensitive' },
+          {
+            groupTagMap: {
+              some: {
+                tag: {
+                  name: { contains: String(this.q), mode: 'insensitive' },
                 },
               },
             },
-            {
-              groupTagMap: {
-                some: {
-                  tag: { name: { contains: this.q, mode: 'insensitive' } },
-                },
-              },
-            },
-          ],
-        }),
+          },
+        ],
+      }),
     };
   }
 }

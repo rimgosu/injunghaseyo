@@ -1,10 +1,24 @@
+import React, { useState } from 'react';
+
 interface SearchBarProps {
   onSearch: (query: string) => void;
 }
 
 export const SearchBar = ({ onSearch }: SearchBarProps) => {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleSubmit = () => {
+    onSearch(inputValue);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearch(e.target.value);
+    setInputValue(e.target.value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
   };
 
   return (
@@ -14,8 +28,13 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
         placeholder="검색..."
         className="w-full p-4 border rounded-lg pr-10"
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        value={inputValue}
       />
-      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+      <button
+        onClick={handleSubmit}
+        className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+      >
         <svg
           className="w-5 h-5 text-gray-400"
           fill="none"
@@ -29,7 +48,7 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
           />
         </svg>
-      </div>
+      </button>
     </div>
   );
 };
