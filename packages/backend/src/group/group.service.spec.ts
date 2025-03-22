@@ -20,6 +20,7 @@ import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { S3Service } from '@/s3/s3.service';
 import { createMock } from '@golevelup/ts-jest';
 import { GroupWith, GroupWithProofDate } from './utils/types';
+import { GetGroupsQueryDto } from './dtos/get-groups-query.dto';
 
 const mockUser: User = createMock<User>({
   id: 1,
@@ -28,6 +29,10 @@ const mockUser: User = createMock<User>({
   nickname: 'testUser',
   role: Role.USER,
   status: UserStatus.ACTIVE,
+});
+
+const mockGetGroupsQuery: GetGroupsQueryDto = createMock<GetGroupsQueryDto>({
+  take: 10,
 });
 
 /**
@@ -104,10 +109,7 @@ describe('GroupService', () => {
       jest.spyOn(prismaService.group, 'findMany').mockResolvedValue(mockGroups);
 
       // When
-      const result = await service.getGroups(mockUser, {
-        take: 10,
-        cursor: 1,
-      });
+      const result = await service.getGroups(mockUser, mockGetGroupsQuery);
 
       // Then
       expect(result).toBeInstanceOf(GetGroupsRes);
@@ -121,10 +123,7 @@ describe('GroupService', () => {
       jest.spyOn(prismaService.group, 'findMany').mockResolvedValue([]);
 
       // When
-      const result = await service.getGroups(mockUser, {
-        take: 10,
-        cursor: 1,
-      });
+      const result = await service.getGroups(mockUser, mockGetGroupsQuery);
 
       // Then
       expect(result).toBeInstanceOf(GetGroupsRes);
@@ -153,10 +152,7 @@ describe('GroupService', () => {
       jest.spyOn(prismaService.group, 'findMany').mockResolvedValue(mockGroups);
 
       // When
-      const result = await service.getGroups(mockUser, {
-        take: 10,
-        cursor: 1,
-      });
+      const result = await service.getGroups(mockUser, mockGetGroupsQuery);
 
       // Then
       expect(result).toBeInstanceOf(GetGroupsRes);

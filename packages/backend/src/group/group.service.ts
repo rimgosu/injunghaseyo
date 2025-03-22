@@ -52,7 +52,7 @@ import { GetTodayRewardParam } from './dtos/get-today-reward-param.dto';
 import { CreateGroupBody } from './dtos/create-group-body.dto';
 import { ValidateCreateGroupElementBody } from './dtos/validate-create-group-elem-query.dto';
 import { GroupElementValidationStrategyFactory } from './utils/group-create-validate.strategy';
-import { BaseCursorPaginationQueryDto } from '@/common/base-cursor-pagination-query.dto';
+import { GetGroupsQueryDto } from './dtos/get-groups-query.dto';
 
 @Injectable()
 export class GroupService {
@@ -517,12 +517,12 @@ export class GroupService {
    */
   async getGroups(
     user: User | undefined,
-    query: BaseCursorPaginationQueryDto,
+    query: GetGroupsQueryDto,
   ): Promise<GetGroupsRes> {
     const { take, cursor } = query;
 
     const groups: GroupWith[] = await this.prisma.group.findMany({
-      where: { deletedAt: null },
+      where: query.groupWhereInput,
       take: take ? take + 1 : undefined,
       skip: cursor ? 1 : 0,
       cursor: cursor ? { id: cursor } : undefined,

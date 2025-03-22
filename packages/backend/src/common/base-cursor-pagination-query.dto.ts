@@ -12,7 +12,7 @@ export class BaseCursorPaginationQueryDto {
   @IsOptional()
   @IsNumber()
   @Transform(({ value }) => +value)
-  take?: number;
+  take?: number | undefined;
 
   @ApiProperty({
     required: false,
@@ -22,5 +22,5 @@ export class BaseCursorPaginationQueryDto {
   @IsOptional()
   @IsNumber()
   @Transform(({ value }) => +value)
-  cursor?: number;
+  cursor?: number | undefined;
 }

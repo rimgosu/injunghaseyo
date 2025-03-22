@@ -10,6 +10,8 @@ import {
   MinLength,
 } from 'class-validator';
 
+export type StringOrNumber = string | number;
+
 export class ProofMethodElem implements Partial<ProofMethod> {
   @ApiProperty({
     description: '인증 방법 내용',
