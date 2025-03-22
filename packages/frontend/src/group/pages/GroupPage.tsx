@@ -94,8 +94,13 @@ export const GroupPage = () => {
       <div className="flex flex-col gap-4 w-full pb-24">
         <SearchBar />
         <div className="flex flex-col gap-6">
-          {groupsData?.items.map((group) => (
-            <GroupCard key={group.id} group={group} />
+          {groupsData?.items.map((group, index) => (
+            <div
+              key={group.id}
+              className={index === groupsData.items.length - 1 ? 'mb-24' : ''}
+            >
+              <GroupCard group={group} />
+            </div>
           ))}
           {isLoading && <div className="text-center">로딩 중...</div>}
         </div>
