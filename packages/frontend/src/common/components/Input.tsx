@@ -7,6 +7,7 @@ interface InputProps {
   name: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   placeholder?: string;
   required?: boolean;
   suffix?: string | React.ReactNode;
@@ -24,6 +25,7 @@ export class Input extends Component<InputProps> {
       value,
       onChange,
       onKeyPress,
+      onKeyDown,
       name,
       placeholder,
       required,
@@ -40,6 +42,7 @@ export class Input extends Component<InputProps> {
             value={value === 0 ? '' : value}
             onChange={onChange}
             onKeyPress={onKeyPress}
+            onKeyDown={onKeyDown}
             name={name}
             placeholder={placeholder}
             required={required}

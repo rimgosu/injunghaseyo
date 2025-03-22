@@ -27,8 +27,11 @@ export const LoginPage = () => {
 
   const handleLogin = async () => {
     const res = await login(formData);
+    if (res.error) {
+      setLoginError(res.error.message);
+      return;
+    }
     res.data && localStorage.setItem('accessToken', res.data.accessToken);
-    res.error && setLoginError(res.error.message);
     const checkSignInRes = await checkSignIn();
     if (
       checkSignInRes?.data?.userStatus ===
@@ -38,6 +41,12 @@ export const LoginPage = () => {
     }
 
     navigate('/group');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && formData.email && formData.password) {
+      handleLogin();
+    }
   };
 
   return (
@@ -50,6 +59,7 @@ export const LoginPage = () => {
         name="email"
         placeholder="이메일 입력"
         required
+        onKeyDown={handleKeyDown}
       />
 
       <Input
@@ -60,6 +70,7 @@ export const LoginPage = () => {
         name="password"
         placeholder="패스워드 입력"
         required
+        onKeyDown={handleKeyDown}
       />
 
       <GreenButton
