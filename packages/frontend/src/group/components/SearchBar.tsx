@@ -1,10 +1,19 @@
-export const SearchBar = () => {
+interface SearchBarProps {
+  onSearch: (query: string) => void;
+}
+
+export const SearchBar = ({ onSearch }: SearchBarProps) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onSearch(e.target.value);
+  };
+
   return (
     <div className="relative">
       <input
         type="text"
         placeholder="검색..."
         className="w-full p-4 border rounded-lg pr-10"
+        onChange={handleChange}
       />
       <div className="absolute right-3 top-1/2 -translate-y-1/2">
         <svg

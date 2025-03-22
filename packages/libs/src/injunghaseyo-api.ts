@@ -432,6 +432,8 @@ export interface GroupControllerGetGroupsParams {
   take?: number;
   /** 첫 아이템의 id */
   cursor?: number;
+  /** 검색 쿼리 */
+  q?: string;
 }
 
 export interface GroupControllerGetTagsParams {

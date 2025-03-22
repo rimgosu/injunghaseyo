@@ -14,30 +14,41 @@ export const GroupPage = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [groupsData, setGroupsData] = useState<GetGroupsRes | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchGroupsData = async (cursor?: number) => {
     setIsLoading(true);
-    const res = await fetchGroups({ take: 5, cursor });
+    const res = await fetchGroups({ take: 5, cursor, q: searchQuery });
     if (res.data) {
       setGroupsData((prev) =>
-        prev
-          ? {
-              items: Array.from(
-                new Map(
-                  [...prev.items, ...res.data.items].map((item) => [
-                    item.id,
-                    item,
-                  ]),
-                ).values(),
-              ),
-              hasNextPage: res.data.hasNextPage,
-              nextCursor: res.data.nextCursor,
-            }
-          : res.data,
+        searchQuery
+          ? res.data
+          : prev
+            ? {
+                items: Array.from(
+                  new Map(
+                    [...prev.items, ...res.data.items].map((item) => [
+                      item.id,
+                      item,
+                    ]),
+                  ).values(),
+                ),
+                hasNextPage: res.data.hasNextPage,
+                nextCursor: res.data.nextCursor,
+              }
+            : res.data,
       );
     }
     setIsLoading(false);
   };
+
+  const handleSearch = useCallback((query: string) => {
+    console.log('query:', query);
+
+    setSearchQuery(query);
+    setGroupsData(null);
+    fetchGroupsData(undefined);
+  }, []);
 
   const handleScroll = useCallback(() => {
     if (isLoading || !groupsData?.hasNextPage) return;
@@ -91,8 +102,8 @@ export const GroupPage = () => {
       }
       title="모임 목록"
     >
+      <SearchBar onSearch={handleSearch} />
       <div className="flex flex-col gap-4 w-full pb-24">
-        <SearchBar />
         <div className="flex flex-col gap-6">
           {groupsData?.items.map((group, index) => (
             <div

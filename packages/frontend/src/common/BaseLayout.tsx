@@ -2,7 +2,7 @@ interface BaseLayoutProps {
   children: React.ReactNode;
   bottomNavBar?: React.ReactNode;
   bottomButton?: React.ReactNode;
-  title?: string; // 추가된 prop
+  title?: string;
 }
 
 export const BaseLayout = ({
