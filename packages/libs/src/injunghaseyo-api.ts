@@ -420,6 +420,16 @@ export interface GroupControllerCreateGroupParams {
   tags: string[];
 }
 
+export interface GroupControllerGetGroupsParams {
+  /**
+   * 페이지 당 아이템 수
+   * @default 20
+   */
+  take?: number;
+  /** 마지막 아이템의 id */
+  cursor?: number;
+}
+
 export interface GroupControllerGetTagsParams {
   /**
    * 태그 검색
@@ -1099,10 +1109,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GroupControllerGetGroups
      * @request GET:/groups
      */
-    groupControllerGetGroups: (params: RequestParams = {}) =>
+    groupControllerGetGroups: (query: GroupControllerGetGroupsParams, params: RequestParams = {}) =>
       this.request<GetGroupsRes, any>({
         path: `/groups`,
         method: 'GET',
+        query: query,
         format: 'json',
         ...params,
       }),

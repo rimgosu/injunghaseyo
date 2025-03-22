@@ -782,7 +782,9 @@ export class GroupService {
     });
   }
 
-  private async createTags(tags: string[]): Promise<Tag[]> {
+  private async createTags(tags?: string[]): Promise<Tag[]> {
+    if (!tags) return [];
+
     const existingTags = await this.prisma.tag.findMany({
       where: {
         name: {

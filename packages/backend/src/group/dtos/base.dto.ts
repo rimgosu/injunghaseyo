@@ -129,12 +129,13 @@ export class BaseGroup {
     description: '태그, ?tags=헬스&tags=건강 꼴로 날짜 배열로 받음',
     type: [String],
     example: ['헬스', '건강'],
+    required: false,
   })
+  @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
   @IsString({ each: true })
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
-  tags: string[];
+  tags?: string[];
 
   @ApiProperty({
     description: '태그 검색',

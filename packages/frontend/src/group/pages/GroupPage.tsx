@@ -16,7 +16,7 @@ export const GroupPage = () => {
 
   useEffect(() => {
     const fetchGroupsData = async () => {
-      const res = await fetchGroups();
+      const res = await fetchGroups({});
       res.data && setGroupsData(res.data);
     };
     fetchGroupsData();

@@ -7,7 +7,7 @@ import { ValidateCreateGroupElementBodyValidateTypeEnum } from '@rimgosu/libs';
 // 날짜가 선택 가능한지 확인하는 함수 추가
 const isDateSelectable = (date: string) => {
   const now = dayjs().add(9, 'hour'); // KST 기준
-  const threeDaysLater = now.add(3, 'day').startOf('day');
+  const threeDaysLater = now.add(4, 'day').startOf('day');
   const targetDate = dayjs(date);
   return (
     targetDate.isAfter(threeDaysLater) ||

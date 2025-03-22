@@ -3,6 +3,7 @@ import {
   GetGroupsRes,
   GetTagsRes,
   GroupControllerCreateGroupParams,
+  GroupControllerGetGroupsParams,
   GroupControllerGetTagsParams,
   ValidateCreateGroupElementBody,
 } from '@rimgosu/libs';
@@ -33,16 +34,19 @@ export const useGroups = () => {
       });
   };
 
-  const fetchGroups = useCallback(async (): Promise<
-    ApiResponse<GetGroupsRes>
-  > => {
-    return await ApiSingleton.getInstance()
-      .groups.groupControllerGetGroups()
-      .then((res) => ({ data: res.data }))
-      .catch(async (error: Response) => {
-        return { error: (await error.json()) as ApiErrorType };
-      });
-  }, []);
+  const fetchGroups = useCallback(
+    async (
+      query: GroupControllerGetGroupsParams,
+    ): Promise<ApiResponse<GetGroupsRes>> => {
+      return await ApiSingleton.getInstance()
+        .groups.groupControllerGetGroups(query)
+        .then((res) => ({ data: res.data }))
+        .catch(async (error: Response) => {
+          return { error: (await error.json()) as ApiErrorType };
+        });
+    },
+    [],
+  );
 
   const createGroup = async (
     params: GroupControllerCreateGroupParams,
