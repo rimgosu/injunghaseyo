@@ -521,27 +521,26 @@ export class GroupService {
   ): Promise<GetGroupsRes> {
     const { take, cursor } = query;
 
-    // take + 1개의 아이템을 조회합니다
     const groups: GroupWith[] = await this.prisma.group.findMany({
       where: { deletedAt: null },
-      take: take + 1, // 1개 더 조회
+      take: take ? take + 1 : undefined,
       skip: cursor ? 1 : 0,
       cursor: cursor ? { id: cursor } : undefined,
       orderBy: { id: 'desc' },
       ...GROUP_WITH_INCLUDE,
     });
 
-    const validGroups = groups.filter((gr) => {
+    // 커서 페이지네이션
+    const hasNextPage = groups.length > take;
+    const items = hasNextPage ? groups.slice(0, -1) : groups;
+    const nextCursor = hasNextPage ? groups[groups.length - 1].id : undefined;
+
+    const validGroups = items.filter((gr) => {
       const lastDayNight = getLastDayNight(gr.groupDate);
       return isValidGroup(lastDayNight);
     });
 
-    // 커서 페이지네이션
-    const hasNextPage = validGroups.length > take;
-    const items = hasNextPage ? validGroups.slice(0, -1) : validGroups;
-    const nextCursor = hasNextPage ? items[items.length - 1].id : undefined;
-
-    return new GetGroupsRes(items, user, hasNextPage, nextCursor);
+    return new GetGroupsRes(validGroups, user, hasNextPage, nextCursor);
   }
 
   /**

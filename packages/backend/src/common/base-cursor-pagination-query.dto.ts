@@ -16,7 +16,7 @@ export class BaseCursorPaginationQueryDto {
 
   @ApiProperty({
     required: false,
-    description: '마지막 아이템의 id',
+    description: '첫 아이템의 id',
     type: Number,
   })
   @IsOptional()

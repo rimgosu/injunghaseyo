@@ -20,6 +20,7 @@
     "autoprefixer": "^10.4.20",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
+    "lodash": "^4.17.21",
     "postcss": "^8.4.49",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -59,5 +60,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/rimgosu/injunghaseyo.git"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.16"
   }
 }

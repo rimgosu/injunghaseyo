@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { BaseLayout } from '../../common/BaseLayout';
 import { SearchBar } from '../components/SearchBar';
 import { GroupCard } from '../components/GroupCard';
@@ -13,14 +13,63 @@ export const GroupPage = () => {
   const { checkSignIn } = useAuth();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [groupsData, setGroupsData] = useState<GetGroupsRes | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchGroupsData = async (cursor?: number) => {
+    setIsLoading(true);
+    const res = await fetchGroups({ take: 5, cursor });
+    if (res.data) {
+      setGroupsData((prev) =>
+        prev
+          ? {
+              items: Array.from(
+                new Map(
+                  [...prev.items, ...res.data.items].map((item) => [
+                    item.id,
+                    item,
+                  ]),
+                ).values(),
+              ),
+              hasNextPage: res.data.hasNextPage,
+              nextCursor: res.data.nextCursor,
+            }
+          : res.data,
+      );
+    }
+    setIsLoading(false);
+  };
+
+  const handleScroll = useCallback(() => {
+    if (isLoading || !groupsData?.hasNextPage) return;
+
+    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = document.documentElement.scrollTop;
+    const clientHeight = document.documentElement.clientHeight;
+
+    if (scrollHeight - scrollTop <= clientHeight + 100) {
+      fetchGroupsData(groupsData.nextCursor);
+    }
+  }, [isLoading, groupsData?.hasNextPage, groupsData?.nextCursor]);
+
+  const checkInitialScroll = () => {
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+
+    // 초기 로딩 후 컨텐츠가 화면을 채우지 못하는 경우 추가 데이터 로드
+    if (scrollHeight <= clientHeight && groupsData?.hasNextPage && !isLoading) {
+      fetchGroupsData(groupsData.nextCursor);
+    }
+  };
 
   useEffect(() => {
-    const fetchGroupsData = async () => {
-      const res = await fetchGroups({});
-      res.data && setGroupsData(res.data);
-    };
     fetchGroupsData();
-  }, [fetchGroups]);
+  }, []);
+
+  useEffect(() => {
+    checkInitialScroll();
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll, groupsData, isLoading]);
 
   useEffect(() => {
     const checkSignInStatus = async () => {
@@ -34,7 +83,7 @@ export const GroupPage = () => {
 
   return (
     <BaseLayout
-      bottomElement={
+      bottomNavBar={
         <div className="flex justify-center items-center">
           <CreateButton path={isSignedIn ? '/group/create' : '/auth/login'} />
           <BottomNavigationBar />
@@ -45,9 +94,10 @@ export const GroupPage = () => {
       <div className="flex flex-col gap-4 w-full pb-24">
         <SearchBar />
         <div className="flex flex-col gap-6">
-          {groupsData?.groups.map((group) => (
+          {groupsData?.items.map((group) => (
             <GroupCard key={group.id} group={group} />
           ))}
+          {isLoading && <div className="text-center">로딩 중...</div>}
         </div>
       </div>
     </BaseLayout>

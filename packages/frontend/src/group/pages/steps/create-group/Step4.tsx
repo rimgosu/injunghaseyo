@@ -6,7 +6,7 @@ import { useUsers } from '../../../../user/hooks/useUsers';
 
 export const CreateGroupStep4 = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [availableTags, setAvailableTags] = useState<string[] | null>(null);
   const [moneyData, setMoneyData] = useState<number>(0);
   const { getTags } = useGroups();
   const { formData, updateFormData } = useCreateGroupStore();
@@ -27,21 +27,21 @@ export const CreateGroupStep4 = () => {
         selectedTags: formData.tags,
       });
       if (response.data) {
-        setAvailableTags(response.data.tags);
+        setAvailableTags(response.data.tags ?? []);
       }
     };
     fetchTags();
   }, [searchQuery, formData.tags]);
 
   const handleTagSelect = (tag: string) => {
-    if (!formData.tags.includes(tag)) {
-      updateFormData({ tags: [...formData.tags, tag] });
+    if (!formData.tags?.includes(tag)) {
+      updateFormData({ tags: [...(formData.tags ?? []), tag] });
     }
   };
 
   const handleTagRemove = (tagToRemove: string) => {
     updateFormData({
-      tags: formData.tags.filter((tag) => tag !== tagToRemove),
+      tags: formData.tags?.filter((tag) => tag !== tagToRemove),
     });
   };
 
@@ -63,7 +63,7 @@ export const CreateGroupStep4 = () => {
     <div className="flex flex-col gap-8">
       {/* 선택된 태그 표시 영역 */}
       <div className="flex flex-wrap gap-2">
-        {formData.tags.map((tag) => (
+        {formData.tags?.map((tag) => (
           <div
             key={tag}
             className="flex items-center gap-1 px-6 py-2 bg-green-100 text-green-700 rounded-full"
@@ -110,7 +110,7 @@ export const CreateGroupStep4 = () => {
 
       {/* 검색된 태그 목록 */}
       <div className="flex flex-wrap gap-2">
-        {availableTags.map((tag) => (
+        {availableTags?.map((tag) => (
           <button
             key={tag}
             onClick={() => handleTagSelect(tag)}

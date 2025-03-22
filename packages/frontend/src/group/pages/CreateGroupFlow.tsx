@@ -74,7 +74,7 @@ export const CreateGroupFlow = () => {
   };
 
   const getNextButtonText = (): string => {
-    if (step === '태그' && formData.tags.length === 0)
+    if (step === '태그' && (formData.tags?.length === 0 || !formData.tags))
       return '건너뛰고 생성하기';
     if (step === '태그') return '생성하기';
     return '다음';
@@ -82,7 +82,7 @@ export const CreateGroupFlow = () => {
 
   return (
     <BaseLayout
-      bottomElement={
+      bottomButton={
         <NavigationButtons
           onBack={handleBack}
           onNext={step === '태그' ? handleSubmit : handleNext}

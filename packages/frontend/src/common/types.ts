@@ -4,7 +4,6 @@ export interface ApiErrorType {
   error: string;
 }
 
-export interface ApiResponse<T> {
-  data?: T;
-  error?: ApiErrorType;
-}
+export type ApiResponse<T> =
+  | { data: T; error?: never }
+  | { data?: never; error: ApiErrorType };

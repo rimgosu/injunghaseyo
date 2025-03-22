@@ -100,7 +100,7 @@ export interface GetTagsRes {
    * 태그, ?tags=헬스&tags=건강 꼴로 날짜 배열로 받음
    * @example ["헬스","건강"]
    */
-  tags: string[];
+  tags?: string[];
 }
 
 export interface GroupElem {
@@ -130,7 +130,11 @@ export interface GroupElem {
 
 export interface GetGroupsRes {
   /** 그룹 목록 */
-  groups: GroupElem[];
+  items: GroupElem[];
+  /** 다음 페이지 존재 여부 */
+  hasNextPage: boolean;
+  /** 다음 페이지 조회를 위한 커서 값 (다음 페이지가 없는 경우 null) */
+  nextCursor?: number;
 }
 
 export interface Participant {
@@ -417,7 +421,7 @@ export interface GroupControllerCreateGroupParams {
    * 태그, ?tags=헬스&tags=건강 꼴로 날짜 배열로 받음
    * @example ["헬스","건강"]
    */
-  tags: string[];
+  tags?: string[];
 }
 
 export interface GroupControllerGetGroupsParams {
@@ -426,7 +430,7 @@ export interface GroupControllerGetGroupsParams {
    * @default 20
    */
   take?: number;
-  /** 마지막 아이템의 id */
+  /** 첫 아이템의 id */
   cursor?: number;
 }
 
