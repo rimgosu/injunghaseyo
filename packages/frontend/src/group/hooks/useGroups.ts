@@ -1,5 +1,6 @@
 import {
   CreateGroupBody,
+  GetGroupRes,
   GetGroupsRes,
   GetTagsRes,
   GroupControllerCreateGroupParams,
@@ -60,10 +61,22 @@ export const useGroups = () => {
       });
   };
 
+  const getGroup = async (
+    groupId: number,
+  ): Promise<ApiResponse<GetGroupRes>> => {
+    return await ApiSingleton.getInstance()
+      .groups.groupControllerGetGroup(groupId)
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
   return {
     fetchGroups,
     createGroup,
     validateCreateGroupElement,
     getTags,
+    getGroup,
   };
 };

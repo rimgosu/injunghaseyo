@@ -8,6 +8,7 @@ import { BottomNavigationBar } from '../../common/components/BottomNavigationBar
 import { useAuth } from '../../auth/hooks/useAuth';
 import { GetGroupsRes } from '@rimgosu/libs';
 import { throttle } from 'lodash';
+import { useNavigate } from 'react-router-dom';
 
 export const GroupPage = () => {
   const { fetchGroups } = useGroups();
@@ -17,6 +18,7 @@ export const GroupPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [cursor, setCursor] = useState<number | undefined>(undefined);
+  const navigate = useNavigate();
 
   const fetchGroupsData = async () => {
     setIsLoading(true);
@@ -87,6 +89,10 @@ export const GroupPage = () => {
     checkSignInStatus();
   }, [checkSignIn]);
 
+  const handleGroupClick = (groupId: number) => {
+    navigate(`/group/${groupId}`);
+  };
+
   return (
     <BaseLayout
       bottomNavBar={
@@ -105,7 +111,10 @@ export const GroupPage = () => {
               key={group.id}
               className={index === groupsData.items.length - 1 ? 'mb-24' : ''}
             >
-              <GroupCard group={group} />
+              <GroupCard
+                group={group}
+                onClick={() => handleGroupClick(group.id)}
+              />
             </div>
           ))}
           {isLoading && <div className="text-center">로딩 중...</div>}
