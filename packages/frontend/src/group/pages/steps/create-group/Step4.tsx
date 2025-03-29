@@ -3,6 +3,7 @@ import { useGroups } from '../../../hooks/useGroups';
 import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
 import { Input } from '../../../../common/components/Input';
 import { useUsers } from '../../../../user/hooks/useUsers';
+import { Tag } from '../../../components/Tag';
 
 export const CreateGroupStep4 = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -111,13 +112,7 @@ export const CreateGroupStep4 = () => {
       {/* 검색된 태그 목록 */}
       <div className="flex flex-wrap gap-2">
         {availableTags?.map((tag) => (
-          <button
-            key={tag}
-            onClick={() => handleTagSelect(tag)}
-            className="px-6 py-2 border border-gray-300 rounded-full hover:bg-gray-100"
-          >
-            {tag}
-          </button>
+          <Tag tag={tag} onClick={() => handleTagSelect(tag)} />
         ))}
       </div>
 
