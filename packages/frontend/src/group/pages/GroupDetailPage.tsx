@@ -5,6 +5,7 @@ import { useGroups } from '../hooks/useGroups';
 import { GetGroupRes, GetGroupResJoinStatusEnum } from '@rimgosu/libs';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
 import { useAuth } from '../../auth/hooks/useAuth';
+import { ProofMethodCard } from '../components/ProofMethodCard';
 
 export const GroupDetailPage = () => {
   const { groupId } = useParams<{ groupId: string }>();
@@ -82,11 +83,24 @@ export const GroupDetailPage = () => {
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-bold">{groupData.title}</h2>
           <button onClick={() => navigate(-1)} className="text-gray-500">
-            <span>X</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
           </button>
         </div>
 
-        <p className="text-gray-600 mb-4">{groupData.description}</p>
+        <p className="text-gray-600">{groupData.description}</p>
 
         <div className="mb-4">
           <p>가격: {groupData.price.toLocaleString()}원</p>
@@ -111,16 +125,11 @@ export const GroupDetailPage = () => {
 
         <div className="mb-4">
           <h3 className="font-bold mb-2">인증 방법</h3>
-          <ul className="list-disc pl-5">
-            {groupData.proofMethods.map((method, index) => (
-              <li key={index}>
-                {method.type}: {method.contents}
-                {method.fromMin !== undefined &&
-                  method.toMin !== undefined &&
-                  ` (${method.fromMin}분 ~ ${method.toMin}분)`}
-              </li>
+          <div className="space-y-2">
+            {groupData.proofMethods.map((method) => (
+              <ProofMethodCard key={method.contents} proofMethod={method} />
             ))}
-          </ul>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">

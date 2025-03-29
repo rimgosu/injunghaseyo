@@ -18,7 +18,18 @@ const isDateSelectable = (date: string) => {
 export const CreateGroupStep3 = () => {
   const { formData, updateFormData, setError, setIsValid } =
     useCreateGroupStore();
-  const [currentMonth, setCurrentMonth] = useState(dayjs());
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    const now = dayjs().add(9, 'hour'); // KST 기준
+    const threeDaysLater = now.add(4, 'day').startOf('day');
+    const currentMonthEnd = now.endOf('month');
+
+    // 현재 달에 선택 가능한 날짜가 있는지 확인
+    const hasSelectableDatesInCurrentMonth =
+      threeDaysLater.isBefore(currentMonthEnd);
+
+    // 선택 가능한 날짜가 없으면 다음 달을 반환
+    return hasSelectableDatesInCurrentMonth ? now : now.add(1, 'month');
+  });
   const [lastSelectedDate, setLastSelectedDate] = useState<string | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const { validateCreateGroupElement } = useGroups();

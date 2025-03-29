@@ -4,7 +4,7 @@ import { formatMinutesToTime } from '../utils/utils';
 
 interface ProofMethodCardProps {
   proofMethod: ProofMethodElem;
-  onDelete: (proofMethod: ProofMethodElem) => void;
+  onDelete?: (proofMethod: ProofMethodElem) => void;
 }
 
 export const ProofMethodCard = ({
@@ -16,12 +16,14 @@ export const ProofMethodCard = ({
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
           <h3 className="font-semibold text-lg">{proofMethod.contents}</h3>
-          <button
-            onClick={() => onDelete(proofMethod)}
-            className="text-red-500 hover:text-red-700 px-2 py-1 rounded-md text-sm"
-          >
-            삭제하기
-          </button>
+          {onDelete && (
+            <button
+              onClick={() => onDelete(proofMethod)}
+              className="text-red-500 hover:text-red-700 px-2 py-1 rounded-md text-sm"
+            >
+              삭제하기
+            </button>
+          )}
         </div>
         <div className="text-gray-600 text-sm">
           <div className="flex justify-between items-center py-1">
