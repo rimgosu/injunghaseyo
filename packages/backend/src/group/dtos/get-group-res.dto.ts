@@ -1,9 +1,9 @@
 import { PickType } from '@nestjs/swagger';
 import { BaseGroupRes } from './base-res.dto';
-import { GroupWith, NINE_HOURS_IN_MS, ONE_DAY_IN_MS } from '../utils/types';
+import { GroupWith } from '../utils/types';
 import { User } from '@prisma/client';
 import { JoinStatus, GroupStatus } from '../utils/enums';
-import { getJoinableDate } from '../utils/utils';
+import { GroupDateHelper } from '../utils/group-date.helper';
 
 export class GetGroupRes extends PickType(BaseGroupRes, [
   'id',
@@ -59,37 +59,14 @@ export class GetGroupRes extends PickType(BaseGroupRes, [
     joinStatus: JoinStatus;
     status: GroupStatus;
   } {
-    const now = new Date().getTime() + NINE_HOURS_IN_MS;
-    const groupDate: number[] = group.groupDate.map((date) =>
-      new Date(date.date).getTime(),
-    );
-    const startDate = Math.min(...groupDate);
-    const endDate = Math.max(...groupDate);
-    const endDayNight = endDate + ONE_DAY_IN_MS;
-
-    const joinStatus =
-      !user || !group.join.some((j) => j.userId === user.id)
-        ? getJoinableDate(group.groupDate).length === 0
-          ? JoinStatus.NOT_JOINABLE
-          : JoinStatus.NOT_JOINED
-        : now < startDate
-          ? JoinStatus.RESERVED
-          : now <= endDayNight
-            ? JoinStatus.IN_PROGRESS
-            : JoinStatus.COMPLETED;
-
-    const status =
-      now < startDate
-        ? GroupStatus.NOT_STARTED
-        : now <= endDayNight
-          ? GroupStatus.IN_PROGRESS
-          : GroupStatus.COMPLETED;
-
+    const groupDateHelper = new GroupDateHelper(group.groupDate);
     return {
-      startDate: new Date(startDate).toISOString().split('T')[0],
-      endDate: new Date(endDate).toISOString().split('T')[0],
-      joinStatus,
-      status,
+      startDate: new Date(groupDateHelper.startDate)
+        .toISOString()
+        .split('T')[0],
+      endDate: new Date(groupDateHelper.endDate).toISOString().split('T')[0],
+      joinStatus: groupDateHelper.getJoinStatus(user, group),
+      status: groupDateHelper.getGroupStatus(),
     };
   }
 }

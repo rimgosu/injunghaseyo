@@ -1,4 +1,3 @@
-import { GroupDate } from '@prisma/client';
 import { DateInterface, NINE_HOURS_IN_MS } from './types';
 
 /**
@@ -36,23 +35,6 @@ export const getCurrentMinute = (timeZone: 'kst' | 'utc' = 'kst'): number => {
   const minutes = date.getUTCMinutes();
 
   return hours * 60 + minutes;
-};
-
-/**
- * @description 참여 가능일 계산
- *
- * - 중간에 참여할 경우 참여 가능일은 다음날부터 해당한다.
- */
-export const getJoinableDate = (groupDate: GroupDate[]): GroupDate[] => {
-  const nextDay00Timestamp = new Date(
-    new Date(new Date().getTime() + NINE_HOURS_IN_MS + 1000 * 60 * 60 * 24)
-      .toISOString()
-      .split('T')[0],
-  ).getTime();
-
-  return groupDate.filter(
-    (date) => new Date(date.date).getTime() >= nextDay00Timestamp,
-  );
 };
 
 /**

@@ -27,7 +27,6 @@ import {
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import {
   canRefund,
-  getJoinableDate,
   getLastDayNight,
   getToday,
   isBetweenMinutes,
@@ -53,6 +52,7 @@ import { CreateGroupBody } from './dtos/create-group-body.dto';
 import { ValidateCreateGroupElementBody } from './dtos/validate-create-group-elem-query.dto';
 import { GroupElementValidationStrategyFactory } from './utils/group-create-validate.strategy';
 import { GetGroupsQueryDto } from './dtos/get-groups-query.dto';
+import { GroupDateHelper } from './utils/group-date.helper';
 
 @Injectable()
 export class GroupService {
@@ -574,7 +574,9 @@ export class GroupService {
       }),
     ]);
 
-    const joinableDates = getJoinableDate(group?.groupDate || []);
+    const groupDateHelper = new GroupDateHelper(group?.groupDate || []);
+    const joinableDates = groupDateHelper.getJoinableDate();
+
     const joinMoney =
       joinableDates.length === (group?.groupDate?.length || 0)
         ? group?.price
