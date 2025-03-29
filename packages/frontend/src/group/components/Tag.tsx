@@ -8,7 +8,10 @@ export const Tag = ({ tag, onClick }: TagProps) => {
     <button
       key={tag}
       onClick={onClick ?? undefined}
-      className="px-6 py-2 border border-gray-300 rounded-full hover:bg-gray-100"
+      disabled={!onClick}
+      className={`px-6 py-2 border border-gray-300 rounded-full hover:bg-gray-100 ${
+        !onClick && 'cursor-default'
+      }`}
     >
       {tag}
     </button>

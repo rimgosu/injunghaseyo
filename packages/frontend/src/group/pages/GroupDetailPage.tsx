@@ -145,7 +145,6 @@ export const GroupDetailPage = () => {
             ))}
           </div>
         </div>
-
         <div className="mt-6">
           <p className="text-center text-green-600 font-bold mb-2">
             시작까지
