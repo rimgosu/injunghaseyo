@@ -97,7 +97,9 @@ export const useAuth = () => {
       .auth.authControllerCheckSignIn()
       .then((res) => ({ data: res.data }))
       .catch(async (error: Response) => {
-        return { error: (await error.json()) as ApiErrorType };
+        return {
+          error: (await error.json()) as ApiErrorType,
+        };
       });
   }, []);
 

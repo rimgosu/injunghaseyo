@@ -33,8 +33,11 @@ export const GroupDetailPage = () => {
   useEffect(() => {
     const checkSignInStatus = async () => {
       const res = await checkSignIn();
-      if (res) {
+
+      if (!res.error) {
         setIsSignedIn(true);
+      } else {
+        setIsSignedIn(false);
       }
     };
     checkSignInStatus();

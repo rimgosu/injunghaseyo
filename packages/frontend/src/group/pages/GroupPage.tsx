@@ -82,9 +82,9 @@ export const GroupPage = () => {
   useEffect(() => {
     const checkSignInStatus = async () => {
       const res = await checkSignIn();
-      if (res) {
-        setIsSignedIn(true);
-      }
+
+      res.data && setIsSignedIn(true);
+      res.error && setIsSignedIn(false);
     };
     checkSignInStatus();
   }, [checkSignIn]);

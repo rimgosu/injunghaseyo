@@ -1,7 +1,7 @@
 export interface ApiErrorType {
   message: string;
   statusCode: number;
-  error: string;
+  error?: string;
 }
 
 export type ApiResponse<T> =
