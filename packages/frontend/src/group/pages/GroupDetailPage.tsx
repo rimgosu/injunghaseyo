@@ -6,6 +6,7 @@ import { GetGroupRes, GetGroupResJoinStatusEnum } from '@rimgosu/libs';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { ProofMethodCard } from '../components/ProofMethodCard';
+import { Tag } from '../components/Tag';
 
 export const GroupDetailPage = () => {
   const { groupId } = useParams<{ groupId: string }>();
@@ -113,13 +114,8 @@ export const GroupDetailPage = () => {
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {groupData.tags.map((tag, index) => (
-            <span
-              key={index}
-              className="bg-gray-200 px-2 py-1 rounded-full text-sm"
-            >
-              {tag}
-            </span>
+          {groupData.tags.map((tag) => (
+            <Tag tag={tag} />
           ))}
         </div>
 
