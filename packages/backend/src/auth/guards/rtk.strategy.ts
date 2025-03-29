@@ -40,7 +40,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'rtk') {
     });
   }
 
-  async validate(req, paylaod: JwtPaylaod): Promise<User> {
+  async validate(req: any, paylaod: JwtPaylaod): Promise<User> {
     const rtk = req?.cookies?._SESSION;
 
     const user = await this.prisma.user.findUnique({

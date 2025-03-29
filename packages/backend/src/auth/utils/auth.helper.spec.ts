@@ -3,13 +3,22 @@ import { BadRequestException } from '@nestjs/common';
 import { AuthHelper } from './auth.helper';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 describe('AuthHelper', () => {
   let authHelper: AuthHelper;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [AuthHelper, ConfigService, JwtService],
+      providers: [
+        AuthHelper,
+        ConfigService,
+        JwtService,
+        {
+          provide: CACHE_MANAGER,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     authHelper = moduleRef.get<AuthHelper>(AuthHelper);

@@ -2,23 +2,37 @@ import {
   Injectable,
   BadRequestException,
   UnauthorizedException,
+  Inject,
 } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { ExtractedJwt, GeneratedJwt, JwtPaylaod } from './types';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { CacheKeyConstants } from '@/common/cache-key';
 
 @Injectable()
 export class AuthHelper {
   constructor(
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   private readonly SALT_LENGTH = 16;
   private readonly ITERATIONS = 100000;
   private readonly KEY_LENGTH = 64;
   private readonly DIGEST = 'sha512';
+
+  /**
+   * @description 토큰 블랙리스트 확인
+   */
+  async isTokenBlacklisted(atk: string): Promise<boolean> {
+    return await this.cacheManager.get<boolean>(
+      CacheKeyConstants.BLACKLIST_ATK(atk),
+    );
+  }
 
   /**
    * @description 강력한 임시 비밀번호를 생성한다. (10자리)

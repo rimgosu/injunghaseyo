@@ -89,7 +89,6 @@ export class AuthController {
 
   /**
    * @description 로그인
-   * @todo e2e test
    *
    * - access token: response로 준다.
    * - refresh token: 쿠키에 '_SESSION' 이름으로 주입한다.
@@ -113,6 +112,26 @@ export class AuthController {
     });
 
     return new SignInRes(email, accessToken);
+  }
+
+  /**
+   * @description 로그아웃
+   *
+   * - access token: blacklist 추가
+   * - refresh token: 쿠키 회수
+   */
+  @Post('sign-out')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async signOut(
+    @GetUser() user: User,
+    @Res({ passthrough: true }) res: Response,
+    @Request() req: any,
+  ) {
+    const accessToken: string = req.headers.authorization.split(' ')[1];
+    await this.authService.signOut(user, accessToken);
+    res.clearCookie('_SESSION');
+    return { message: '로그아웃 성공' };
   }
 
   /**

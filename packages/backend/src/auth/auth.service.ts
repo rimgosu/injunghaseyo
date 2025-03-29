@@ -29,6 +29,7 @@ import { GetCharacter } from './dtos/get-character.dto';
 import { VerifyPasswordParams } from './dtos/verify-password.dto';
 import { verifyPassword } from './utils/auth.util';
 import { GetCheckSignIn } from './dtos/get-check-sign-in.dto';
+import { CacheKeyConstants } from '@/common/cache-key';
 
 @Injectable()
 export class AuthService {
@@ -39,6 +40,22 @@ export class AuthService {
     private readonly authHelper: AuthHelper,
     private readonly configService: ConfigService,
   ) {}
+
+  async signOut(user: User, accessToken: string): Promise<void> {
+    await Promise.all([
+      this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          refreshToken: null,
+        },
+      }),
+      this.cacheManager.set(
+        CacheKeyConstants.BLACKLIST_ATK(accessToken),
+        true,
+        1000 * 60 * 60 * 24 * 1, // 1d
+      ),
+    ]);
+  }
 
   async checkSignIn(user: User): Promise<GetCheckSignIn> {
     return new GetCheckSignIn(user);
@@ -252,7 +269,7 @@ export class AuthService {
     const tempPassword = this.authHelper.generateStrongPassword();
 
     await this.cacheManager.set(
-      `temp:password:${email}`,
+      CacheKeyConstants.TEMP_PASSWORD_EMAIL(email),
       tempPassword,
       1000 * 60 * 5,
     );
@@ -363,7 +380,9 @@ export class AuthService {
    */
   private async isTempPassword(params: SignInParams): Promise<boolean> {
     const { email, password } = params;
-    const tempPassword = await this.cacheManager.get(`temp:password:${email}`);
+    const tempPassword = await this.cacheManager.get(
+      CacheKeyConstants.TEMP_PASSWORD_EMAIL(email),
+    );
 
     if (!tempPassword) return false;
 
@@ -382,7 +401,7 @@ export class AuthService {
           lastPwdChanged: new Date(),
         },
       }),
-      this.cacheManager.del(`temp:password:${email}`),
+      this.cacheManager.del(CacheKeyConstants.TEMP_PASSWORD_EMAIL(email)),
     ]);
 
     return true;
@@ -398,7 +417,9 @@ export class AuthService {
     if (userByEmail) throw new ConflictException('이메일 중복');
     if (userByNickname) throw new ConflictException('닉네임 중복');
 
-    const verified = await this.cacheManager.get(`verified:${email}`);
+    const verified = await this.cacheManager.get(
+      CacheKeyConstants.VERIFIED_EMAIL(email),
+    );
     if (!verified) throw new NotAcceptableException('인증코드 확인 필요');
 
     const { hashedPassword, salt } =
@@ -436,12 +457,18 @@ export class AuthService {
   async verifyCode(params: VerifyCodeParams) {
     const { email, code } = params;
 
-    const cachedCode = await this.cacheManager.get(`code:${email}`);
+    const cachedCode = await this.cacheManager.get(
+      CacheKeyConstants.CODE(email),
+    );
 
     if (cachedCode !== code)
       throw new UnauthorizedException('잘못된 인증 코드');
 
-    await this.cacheManager.set(`verified:${email}`, 1, 60 * 30 * 1000); // 30분 이내로 가입 마치면 된다.
+    await this.cacheManager.set(
+      CacheKeyConstants.VERIFIED_EMAIL(email),
+      1,
+      60 * 30 * 1000,
+    ); // 30분 이내로 가입 마치면 된다.
 
     return { message: `${email}: verified` };
   }
@@ -457,7 +484,11 @@ export class AuthService {
 
     const authCode = this.authHelper.generateVerificationCode();
 
-    await this.cacheManager.set(`code:${email}`, authCode);
+    await this.cacheManager.set(
+      CacheKeyConstants.CODE(email),
+      authCode,
+      60 * 30 * 1000,
+    );
 
     this.emailService.sendVerificationEmail(email, authCode, 'email-verify', 3);
 
