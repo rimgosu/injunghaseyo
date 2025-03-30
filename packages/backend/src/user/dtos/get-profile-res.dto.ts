@@ -4,7 +4,7 @@ import { GroupProgressStatus } from '@prisma/client';
 import { GroupDateHelper } from '@/group/utils/group-date.helper';
 import { GroupStatus } from '@/group/utils/enums';
 
-class GroupElem {
+class ProfileGroupElem {
   @ApiProperty({
     description: '그룹 이름',
     example: '팔굽혀펴기 인증 모임',
@@ -59,32 +59,32 @@ export class GetProfileResDto {
 
   @ApiProperty({
     description: '진행중인 인증',
-    type: [GroupElem],
+    type: [ProfileGroupElem],
   })
-  currentGroup: GroupElem[];
+  currentGroup: ProfileGroupElem[];
 
   @ApiProperty({
     description: '예약한 인증',
-    type: [GroupElem],
+    type: [ProfileGroupElem],
   })
-  reservedGroup: GroupElem[];
+  reservedGroup: ProfileGroupElem[];
 
   @ApiProperty({
     description: '완료한 인증',
-    type: [GroupElem],
+    type: [ProfileGroupElem],
   })
-  completedGroup: GroupElem[];
+  completedGroup: ProfileGroupElem[];
 
   private filterGroupsByStatus(
     userData: UserWithJoin,
     status: GroupStatus,
-  ): GroupElem[] {
+  ): ProfileGroupElem[] {
     return userData.join
       .filter((join) => {
         const groupDateHelper = new GroupDateHelper(join.group.groupDate);
         return groupDateHelper.getGroupStatus() === status;
       })
-      .map((join) => new GroupElem(join.group));
+      .map((join) => new ProfileGroupElem(join.group));
   }
 
   constructor(userData: UserWithJoin) {

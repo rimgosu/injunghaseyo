@@ -28,9 +28,9 @@ export const BottomNavigationBar = () => {
           <span className="text-sm">모임보기</span>
         </button>
         <button
-          onClick={() => navigate('/profile')}
+          onClick={() => navigate('/user/profile')}
           className={`flex flex-col items-center w-1/3 ${
-            isActive('/profile') ? 'text-green-500' : 'text-gray-500'
+            isActive('/user/profile') ? 'text-green-500' : 'text-gray-500'
           }`}
         >
           <span className="text-sm">내 정보</span>

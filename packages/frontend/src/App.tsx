@@ -3,6 +3,7 @@ import './App.css';
 import './styles/globals.css';
 import { AuthRoutes } from './auth/AuthRoutes';
 import { GroupRoutes } from './group/GroupRoutes';
+import { UserRoutes } from './user/UserRoutes';
 
 function App() {
   return (
@@ -10,7 +11,8 @@ function App() {
       <Routes>
         <Route path="/auth/*" element={<AuthRoutes />} />
         <Route path="/group/*" element={<GroupRoutes />} />
-        <Route path="/" element={<Navigate to="/auth/init" replace />} />
+        <Route path="/user/*" element={<UserRoutes />} />
+        <Route path="/" element={<Navigate to="/group" replace />} />
       </Routes>
     </BrowserRouter>
   );

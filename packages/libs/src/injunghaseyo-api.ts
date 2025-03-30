@@ -199,6 +199,43 @@ export interface GetTodayRewardRes {
   todayReward: number;
 }
 
+export interface ProfileGroupElem {
+  /**
+   * 그룹 이름
+   * @example "팔굽혀펴기 인증 모임"
+   */
+  name: string;
+  /**
+   * 그룹 진행 일 차
+   * @example 10
+   */
+  proofDays: number;
+}
+
+export interface GetProfileResDto {
+  /**
+   * 인증머니
+   * @example 100000
+   */
+  money: number;
+  /**
+   * 총 인증한 일 수
+   * @example 10
+   */
+  totalProofDays: number;
+  /**
+   * 프로필 사진
+   * @example ["https://example.com/photo1.jpg","https://example.com/photo2.jpg"]
+   */
+  profilePhotos: string[];
+  /** 진행중인 인증 */
+  currentGroup: ProfileGroupElem[];
+  /** 예약한 인증 */
+  reservedGroup: ProfileGroupElem[];
+  /** 완료한 인증 */
+  completedGroup: ProfileGroupElem[];
+}
+
 export interface GetMoneyDto {
   /**
    * 보유한 인증 머니
@@ -870,6 +907,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Auth
+     * @name AuthControllerSignOut
+     * @request POST:/auth/sign-out
+     * @secure
+     */
+    authControllerSignOut: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/auth/sign-out`,
+        method: 'POST',
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Auth
      * @name AuthControllerCheckSignIn
      * @request GET:/auth/check-sign-in
      * @secure
@@ -1310,6 +1363,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
   };
   users = {
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserControllerGetProfile
+     * @request GET:/users/profile
+     * @secure
+     */
+    userControllerGetProfile: (params: RequestParams = {}) =>
+      this.request<GetProfileResDto, any>({
+        path: `/users/profile`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
+
     /**
      * No description
      *
