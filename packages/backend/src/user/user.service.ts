@@ -4,10 +4,31 @@ import { User } from '@prisma/client';
 import { GetMoneyDto } from './dtos/get-money.dto';
 import { GetProfileResDto } from './dtos/get-profile-res.dto';
 import { USER_WITH_JOIN } from './utils/types';
+import { S3Service } from '@/s3/s3.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly s3: S3Service,
+  ) {}
+
+  /**
+   * @description 유저 프로필 사진을 업로드 합니다.
+   */
+  async addProfilePhoto(user: User, profilePhoto: Express.Multer.File) {
+    const uploadUrl = await this.s3.uploadFile(
+      profilePhoto,
+      `${this.s3.profilePhotoDir}:${user.email}:${new Date().toISOString()}`,
+    );
+
+    await this.prisma.profilePhoto.create({
+      data: {
+        url: uploadUrl,
+        userId: user.id,
+      },
+    });
+  }
 
   /**
    * @description 유저 프로필을 조회합니다.

@@ -23,8 +23,24 @@ export const useUsers = () => {
       });
   };
 
+  const uploadProfilePhoto = async (
+    profilePhoto: File,
+  ): Promise<ApiResponse<void>> => {
+    return await ApiSingleton.getInstance()
+      .users.userControllerAddProfilePhoto({
+        profilePhoto,
+      })
+      .then((res) => ({
+        data: res.data,
+      }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
   return {
     fetchMoney,
     fetchProfile,
+    uploadProfilePhoto,
   };
 };

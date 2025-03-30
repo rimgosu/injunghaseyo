@@ -1394,6 +1394,30 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags User
+     * @name UserControllerAddProfilePhoto
+     * @request POST:/users/profile-photo
+     * @secure
+     */
+    userControllerAddProfilePhoto: (
+      data: {
+        /** @format binary */
+        profilePhoto?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/users/profile-photo`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
      * @name UserControllerGetMoney
      * @request GET:/users/money
      * @secure

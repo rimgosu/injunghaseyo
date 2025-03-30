@@ -1,11 +1,24 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AtkGuard } from '@/auth/guards/atk.guard';
-import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { GetUser } from '@/common/get-user.decorator';
 import { User } from '@prisma/client';
 import { GetMoneyDto } from './dtos/get-money.dto';
 import { GetProfileResDto } from './dtos/get-profile-res.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
@@ -30,6 +43,32 @@ export class UserController {
   })
   async getProfile(@GetUser() user: User): Promise<GetProfileResDto> {
     return this.userService.getProfile(user);
+  }
+
+  /**
+   * @description 유저 프로필 사진을 추가합니다.
+   */
+  @Post('profile-photo')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  @UseInterceptors(FileInterceptor('profilePhoto'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        profilePhoto: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async addProfilePhoto(
+    @GetUser() user: User,
+    @UploadedFile() profilePhoto: Express.Multer.File,
+  ): Promise<void> {
+    return this.userService.addProfilePhoto(user, profilePhoto);
   }
 
   /**

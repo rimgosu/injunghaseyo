@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { BaseLayout } from '../../common/BaseLayout';
 import { useUsers } from '../hooks/useUsers';
 import { GetProfileResDto } from '@rimgosu/libs';
@@ -7,8 +7,9 @@ import { ProfileGroupCard } from '../components/ProfileGroupCard';
 import { CameraIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 
 export const ProfilePage = () => {
-  const { fetchProfile } = useUsers();
+  const { fetchProfile, uploadProfilePhoto } = useUsers();
   const [profileData, setProfileData] = useState<GetProfileResDto | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -19,6 +20,26 @@ export const ProfilePage = () => {
     };
     fetchProfileData();
   }, []);
+
+  const handlePhotoUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const res = await uploadProfilePhoto(file);
+    if (res.data) {
+      const profileRes = await fetchProfile();
+      if (profileRes.data) {
+        setProfileData(profileRes.data);
+        window.location.reload();
+      }
+    }
+  };
+
+  const handleCameraClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <BaseLayout
@@ -37,11 +58,25 @@ export const ProfilePage = () => {
         <div className="flex items-center flex-col gap-4">
           <div className="w-36 h-36 rounded-full relative border border-gray-300">
             <img
-              src={profileData?.profilePhotos[0]}
+              src={
+                profileData?.profilePhotos?.[
+                  profileData.profilePhotos.length - 1
+                ]
+              }
               alt="프로필"
               className="w-full h-full object-cover rounded-full"
             />
-            <div className="absolute bottom-0 right-0 p-1 border border-gray-400 bg-white rounded-full shadow-md cursor-pointer">
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={handlePhotoUpload}
+            />
+            <div
+              className="absolute bottom-0 right-0 p-1 border border-gray-400 bg-white rounded-full shadow-md cursor-pointer"
+              onClick={handleCameraClick}
+            >
               <CameraIcon className="w-8 h-8" />
             </div>
           </div>
