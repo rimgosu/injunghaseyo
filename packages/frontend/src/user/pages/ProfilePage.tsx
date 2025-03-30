@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BaseLayout } from '../../common/BaseLayout';
 import { useUsers } from '../hooks/useUsers';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
@@ -7,6 +8,7 @@ import { CameraIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 import { useProfileStore } from '../stores/useProfileStore';
 
 export const ProfilePage = () => {
+  const navigate = useNavigate();
   const { fetchProfile, uploadProfilePhoto } = useUsers();
   const { profileData, setProfileData } = useProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,8 +40,13 @@ export const ProfilePage = () => {
     }
   };
 
-  const handleCameraClick = () => {
+  const handleCameraClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     fileInputRef.current?.click();
+  };
+
+  const handleProfilePhotoClick = () => {
+    navigate('/user/profile/photo');
   };
 
   return (
@@ -57,7 +64,10 @@ export const ProfilePage = () => {
       <div className="flex flex-col p-4 gap-4">
         {/* 상단 프로필 섹션 */}
         <div className="flex items-center flex-col gap-4">
-          <div className="w-36 h-36 rounded-full relative border border-gray-300">
+          <div
+            className="w-36 h-36 rounded-full relative border border-gray-300 cursor-pointer"
+            onClick={handleProfilePhotoClick}
+          >
             <img
               src={profileData?.profilePhotos?.[0]?.url}
               alt="프로필"

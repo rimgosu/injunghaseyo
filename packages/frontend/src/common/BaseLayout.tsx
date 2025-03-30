@@ -4,6 +4,7 @@ interface BaseLayoutProps {
   bottomButton?: React.ReactNode;
   title?: string;
   rightElement?: React.ReactNode;
+  leftElement?: React.ReactNode;
 }
 
 export const BaseLayout = ({
@@ -12,11 +13,15 @@ export const BaseLayout = ({
   bottomButton,
   title,
   rightElement,
+  leftElement,
 }: BaseLayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="min-h-screen w-full max-w-xl bg-white flex flex-col relative">
         {title && <div className="p-6 text-2xl font-semibold">{title}</div>}
+        {leftElement && (
+          <div className="absolute top-0 left-0 p-6">{leftElement}</div>
+        )}
         {rightElement && (
           <div className="absolute top-0 right-0 p-6">{rightElement}</div>
         )}
