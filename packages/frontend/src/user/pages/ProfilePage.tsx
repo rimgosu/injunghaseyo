@@ -1,14 +1,14 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { BaseLayout } from '../../common/BaseLayout';
 import { useUsers } from '../hooks/useUsers';
-import { GetProfileResDto } from '@rimgosu/libs';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
 import { ProfileGroupCard } from '../components/ProfileGroupCard';
 import { CameraIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { useProfileStore } from '../stores/useProfileStore';
 
 export const ProfilePage = () => {
   const { fetchProfile, uploadProfilePhoto } = useUsers();
-  const [profileData, setProfileData] = useState<GetProfileResDto | null>(null);
+  const { profileData, setProfileData } = useProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
