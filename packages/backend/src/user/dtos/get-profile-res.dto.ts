@@ -41,6 +41,20 @@ export class GetProfileResDto {
   money: number;
 
   @ApiProperty({
+    description: '자기소개',
+    example: '등록된 소개말이 없습니다.',
+    type: String,
+  })
+  introduction: string;
+
+  @ApiProperty({
+    description: '닉네임',
+    example: '홍길동',
+    type: String,
+  })
+  nickname: string;
+
+  @ApiProperty({
     description: '총 인증한 일 수',
     example: 10,
     type: Number,
@@ -89,6 +103,8 @@ export class GetProfileResDto {
 
   constructor(userData: UserWithJoin) {
     this.money = userData.wallet.money;
+    this.introduction = userData.introduction;
+    this.nickname = userData.nickname;
     this.profilePhotos = userData.profilePhoto.map((photo) => photo.url);
 
     this.currentGroup = this.filterGroupsByStatus(

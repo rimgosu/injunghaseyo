@@ -219,6 +219,16 @@ export interface GetProfileResDto {
    */
   money: number;
   /**
+   * 자기소개
+   * @example "등록된 소개말이 없습니다."
+   */
+  introduction: string;
+  /**
+   * 닉네임
+   * @example "홍길동"
+   */
+  nickname: string;
+  /**
    * 총 인증한 일 수
    * @example 10
    */

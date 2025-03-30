@@ -4,7 +4,11 @@ import { useUsers } from '../hooks/useUsers';
 import { GetProfileResDto } from '@rimgosu/libs';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
 import { ProfileGroupCard } from '../components/ProfileGroupCard';
-import { Cog6ToothIcon, PencilIcon } from '@heroicons/react/24/outline';
+import {
+  CameraIcon,
+  Cog6ToothIcon,
+  PencilIcon,
+} from '@heroicons/react/24/outline';
 
 export const ProfilePage = () => {
   const { fetchProfile } = useUsers();
@@ -22,7 +26,6 @@ export const ProfilePage = () => {
 
   return (
     <BaseLayout
-      title="내 정보"
       rightElement={
         <Cog6ToothIcon className="w-6 h-6 text-gray-600 cursor-pointer" />
       }
@@ -32,26 +35,29 @@ export const ProfilePage = () => {
         </div>
       }
     >
+      <div className="text-md my-4">인증머니: {profileData?.money}원</div>
       <div className="flex flex-col p-4 gap-4">
         {/* 상단 프로필 섹션 */}
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-4">
-            <div className="text-sm ">인증머니: {profileData?.money}원</div>
-            <div className="text-xl flex flex-col gap-2 justify-center items-center">
-              <div>총 인증한 일수</div>
-              <div className="text-3xl">{profileData?.totalProofDays}일</div>
-            </div>
-          </div>
-          <div className="w-24 h-24 rounded-full relative border border-gray-300">
+        <div className="flex items-center flex-col gap-4">
+          <div className="w-36 h-36 rounded-full relative border border-gray-300">
             <img
               src={profileData?.profilePhotos[0]}
               alt="프로필"
               className="w-full h-full object-cover"
             />
             <div className="absolute bottom-0 right-0 p-1 border border-gray-400 bg-white rounded-full shadow-md cursor-pointer">
-              <PencilIcon className="w-4 h-4" />
+              <CameraIcon className="w-8 h-8" />
             </div>
           </div>
+          <div className="text-2xl font-bold">{profileData?.nickname}</div>
+          <div className="text-sm text-gray-500">
+            {profileData?.introduction}
+          </div>
+        </div>
+
+        <div className="text-xl flex flex-col gap-2 ">
+          <div>총 인증한 일수</div>
+          <div className="text-3xl">{profileData?.totalProofDays}일</div>
         </div>
 
         {/* 진행 중인 인증 */}
