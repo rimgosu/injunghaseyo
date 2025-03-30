@@ -28,11 +28,12 @@ export const ProfilePage = () => {
     if (!file) return;
 
     const res = await uploadProfilePhoto(file);
-    if (res.data) {
+
+    if (!res.error) {
       const profileRes = await fetchProfile();
       if (profileRes.data) {
         setProfileData(profileRes.data);
-        window.location.reload();
+        window.location.href = window.location.href;
       }
     }
   };
@@ -73,7 +74,7 @@ export const ProfilePage = () => {
               className="absolute bottom-0 right-0 p-1 border border-gray-400 bg-white rounded-full shadow-md cursor-pointer"
               onClick={handleCameraClick}
             >
-              <CameraIcon className="w-8 h-8" />
+              <CameraIcon className="w-7 h-7" />
             </div>
           </div>
           <div className="text-2xl font-bold">{profileData?.nickname}</div>
