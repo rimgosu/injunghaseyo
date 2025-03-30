@@ -38,9 +38,20 @@ export const useUsers = () => {
       });
   };
 
+  const deleteProfilePhoto = async (
+    profilePhotoId: number,
+  ): Promise<ApiResponse<void>> => {
+    return await ApiSingleton.getInstance()
+      .users.userControllerDeleteProfilePhoto(profilePhotoId)
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
   return {
     fetchMoney,
     fetchProfile,
     uploadProfilePhoto,
+    deleteProfilePhoto,
   };
 };

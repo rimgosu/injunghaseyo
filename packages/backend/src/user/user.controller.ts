@@ -81,10 +81,10 @@ export class UserController {
   @UseGuards(AtkGuard)
   @ApiBearerAuth('jwt')
   async deleteProfilePhoto(
-    @GetUser() user: User,
     @Param() param: DeleteProfilePhotoParam,
+    @GetUser() user: User,
   ) {
-    return this.userService.deleteProfilePhoto(user, param);
+    return this.userService.deleteProfilePhoto(param, user);
   }
 
   /**

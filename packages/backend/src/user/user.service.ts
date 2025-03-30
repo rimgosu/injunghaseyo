@@ -1,5 +1,9 @@
 import { PrismaService } from '@/prisma/prisma.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from '@prisma/client';
 import { GetMoneyDto } from './dtos/get-money.dto';
 import { GetProfileResDto } from './dtos/get-profile-res.dto';
@@ -19,11 +23,34 @@ export class UserService {
    *
    * - 데이터베이스에서만 삭제하고, s3에서는 삭제하지 않습니다.
    */
-  async deleteProfilePhoto(user: User, param: DeleteProfilePhotoParam) {
+  async deleteProfilePhoto(param: DeleteProfilePhotoParam, user: User) {
+    const [profilePhoto, userProfilePhotos] = await Promise.all([
+      this.prisma.profilePhoto.findUnique({
+        where: {
+          id: param.profilePhotoId,
+          deletedAt: null,
+        },
+      }),
+      this.prisma.profilePhoto.findMany({
+        where: {
+          deletedAt: null,
+          userId: user.id,
+        },
+      }),
+    ]);
+
+    if (userProfilePhotos.length === 1)
+      throw new BadRequestException(
+        '최소 1개 이상의 프로필 사진이 존재해야 합니다.',
+      );
+
+    if (!profilePhoto)
+      throw new NotFoundException('프로필 사진을 찾을 수 없습니다.');
+
     return await this.prisma.profilePhoto.delete({
       where: {
         id: param.profilePhotoId,
-        userId: user.id,
+        deletedAt: null,
       },
     });
   }

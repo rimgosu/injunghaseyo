@@ -5,6 +5,7 @@ interface BaseLayoutProps {
   title?: string;
   rightElement?: React.ReactNode;
   leftElement?: React.ReactNode;
+  padding?: string;
 }
 
 export const BaseLayout = ({
@@ -14,6 +15,7 @@ export const BaseLayout = ({
   title,
   rightElement,
   leftElement,
+  padding = 'p-8',
 }: BaseLayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
@@ -26,7 +28,7 @@ export const BaseLayout = ({
           <div className="absolute top-0 right-0 p-6">{rightElement}</div>
         )}
         <div className="flex-1 flex items-center justify-center overflow-y-auto">
-          <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
+          <div className={`flex flex-col gap-4 w-full ${padding}`}>
             {children}
           </div>
         </div>
