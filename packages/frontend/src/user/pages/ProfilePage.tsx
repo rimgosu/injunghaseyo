@@ -64,14 +64,12 @@ export const ProfilePage = () => {
       <div className="flex flex-col p-4 gap-4">
         {/* 상단 프로필 섹션 */}
         <div className="flex items-center flex-col gap-4">
-          <div
-            className="w-36 h-36 rounded-full relative border border-gray-300 cursor-pointer"
-            onClick={handleProfilePhotoClick}
-          >
+          <div className="w-36 h-36 rounded-full relative border border-gray-300 cursor-pointer">
             <img
               src={profileData?.profilePhotos?.[0]?.url}
               alt="프로필"
               className="w-full h-full object-cover rounded-full"
+              onClick={handleProfilePhotoClick}
             />
             <input
               type="file"
