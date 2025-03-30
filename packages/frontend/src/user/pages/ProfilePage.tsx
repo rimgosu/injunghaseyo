@@ -22,7 +22,7 @@ export const ProfilePage = () => {
 
   return (
     <BaseLayout
-      title="인증하세요"
+      title="내 정보"
       rightElement={
         <Cog6ToothIcon className="w-6 h-6 text-gray-600 cursor-pointer" />
       }
@@ -42,7 +42,7 @@ export const ProfilePage = () => {
               <div className="text-3xl">{profileData?.totalProofDays}일</div>
             </div>
           </div>
-          <div className="w-20 h-20 rounded-full relative">
+          <div className="w-24 h-24 rounded-full relative border border-gray-300">
             <img
               src={profileData?.profilePhotos[0]}
               alt="프로필"
