@@ -1,6 +1,8 @@
 import {
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   UploadedFile,
   UseGuards,
@@ -19,6 +21,7 @@ import { User } from '@prisma/client';
 import { GetMoneyDto } from './dtos/get-money.dto';
 import { GetProfileResDto } from './dtos/get-profile-res.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { DeleteProfilePhotoParam } from './dtos/delete-profile-photo-param.dto';
 
 @Controller('users')
 export class UserController {
@@ -69,6 +72,19 @@ export class UserController {
     @UploadedFile() profilePhoto: Express.Multer.File,
   ): Promise<void> {
     return this.userService.addProfilePhoto(user, profilePhoto);
+  }
+
+  /**
+   * @description 유저 프로필 사진을 삭제합니다.
+   */
+  @Delete('profile-photo/:profilePhotoId')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async deleteProfilePhoto(
+    @GetUser() user: User,
+    @Param() param: DeleteProfilePhotoParam,
+  ) {
+    return this.userService.deleteProfilePhoto(user, param);
   }
 
   /**

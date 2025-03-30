@@ -199,6 +199,19 @@ export interface GetTodayRewardRes {
   todayReward: number;
 }
 
+export interface ProfilePhotoElem {
+  /**
+   * 프로필 사진 id
+   * @example 1
+   */
+  id: number;
+  /**
+   * 프로필 사진 url
+   * @example "https://example.com/photo1.jpg"
+   */
+  url: string;
+}
+
 export interface ProfileGroupElem {
   /**
    * 그룹 이름
@@ -234,10 +247,10 @@ export interface GetProfileResDto {
    */
   totalProofDays: number;
   /**
-   * 프로필 사진
-   * @example ["https://example.com/photo1.jpg","https://example.com/photo2.jpg"]
+   * 프로필 사진, 최신일 기준으로 내림차순 정렬
+   * @example [{"id":1,"url":"https://example.com/photo1.jpg"},{"id":2,"url":"https://example.com/photo2.jpg"}]
    */
-  profilePhotos: string[];
+  profilePhotos: ProfilePhotoElem[];
   /** 진행중인 인증 */
   currentGroup: ProfileGroupElem[];
   /** 예약한 인증 */
@@ -1411,6 +1424,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.FormData,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserControllerDeleteProfilePhoto
+     * @request DELETE:/users/profile-photo/{profilePhotoId}
+     * @secure
+     */
+    userControllerDeleteProfilePhoto: (profilePhotoId: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/users/profile-photo/${profilePhotoId}`,
+        method: 'DELETE',
+        secure: true,
         ...params,
       }),
 

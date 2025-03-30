@@ -58,11 +58,7 @@ export const ProfilePage = () => {
         <div className="flex items-center flex-col gap-4">
           <div className="w-36 h-36 rounded-full relative border border-gray-300">
             <img
-              src={
-                profileData?.profilePhotos?.[
-                  profileData.profilePhotos.length - 1
-                ]
-              }
+              src={profileData?.profilePhotos?.[0]?.url}
               alt="프로필"
               className="w-full h-full object-cover rounded-full"
             />

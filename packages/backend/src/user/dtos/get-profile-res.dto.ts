@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GroupWithProgress, UserWithJoin } from '../utils/types';
-import { GroupProgressStatus } from '@prisma/client';
+import { GroupProgressStatus, ProfilePhoto } from '@prisma/client';
 import { GroupDateHelper } from '@/group/utils/group-date.helper';
 import { GroupStatus } from '@/group/utils/enums';
 
@@ -29,6 +29,27 @@ class ProfileGroupElem {
 
     this.name = group.title;
     this.proofDays = proofDays;
+  }
+}
+
+class ProfilePhotoElem {
+  @ApiProperty({
+    description: '프로필 사진 id',
+    example: 1,
+    type: Number,
+  })
+  id: number;
+
+  @ApiProperty({
+    description: '프로필 사진 url',
+    example: 'https://example.com/photo1.jpg',
+    type: String,
+  })
+  url: string;
+
+  constructor(profilePhoto: ProfilePhoto) {
+    this.id = profilePhoto.id;
+    this.url = profilePhoto.url;
   }
 }
 
@@ -62,14 +83,20 @@ export class GetProfileResDto {
   totalProofDays: number;
 
   @ApiProperty({
-    description: '프로필 사진',
-    type: [String],
+    description: '프로필 사진, 최신일 기준으로 내림차순 정렬',
+    type: [ProfilePhotoElem],
     example: [
-      'https://example.com/photo1.jpg',
-      'https://example.com/photo2.jpg',
+      {
+        id: 1,
+        url: 'https://example.com/photo1.jpg',
+      },
+      {
+        id: 2,
+        url: 'https://example.com/photo2.jpg',
+      },
     ],
   })
-  profilePhotos: string[];
+  profilePhotos: ProfilePhotoElem[];
 
   @ApiProperty({
     description: '진행중인 인증',
@@ -105,7 +132,9 @@ export class GetProfileResDto {
     this.money = userData.wallet.money;
     this.introduction = userData.introduction;
     this.nickname = userData.nickname;
-    this.profilePhotos = userData.profilePhoto.map((photo) => photo.url);
+    this.profilePhotos = userData.profilePhoto
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .map((photo) => new ProfilePhotoElem(photo));
 
     this.currentGroup = this.filterGroupsByStatus(
       userData,

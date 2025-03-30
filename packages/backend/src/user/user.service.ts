@@ -5,6 +5,7 @@ import { GetMoneyDto } from './dtos/get-money.dto';
 import { GetProfileResDto } from './dtos/get-profile-res.dto';
 import { USER_WITH_JOIN } from './utils/types';
 import { S3Service } from '@/s3/s3.service';
+import { DeleteProfilePhotoParam } from './dtos/delete-profile-photo-param.dto';
 
 @Injectable()
 export class UserService {
@@ -12,6 +13,20 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly s3: S3Service,
   ) {}
+
+  /**
+   * @description 유저 프로필 사진을 삭제합니다.
+   *
+   * - 데이터베이스에서만 삭제하고, s3에서는 삭제하지 않습니다.
+   */
+  async deleteProfilePhoto(user: User, param: DeleteProfilePhotoParam) {
+    return await this.prisma.profilePhoto.delete({
+      where: {
+        id: param.profilePhotoId,
+        userId: user.id,
+      },
+    });
+  }
 
   /**
    * @description 유저 프로필 사진을 업로드 합니다.
