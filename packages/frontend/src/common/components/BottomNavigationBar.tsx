@@ -1,12 +1,32 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../auth/hooks/useAuth';
+import { useEffect, useState } from 'react';
 
 export const BottomNavigationBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { checkSignIn } = useAuth();
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   const isActive = (path: string) => {
     return location.pathname.startsWith(path);
   };
+
+  const handleProfileClick = () => {
+    if (!isSignedIn) {
+      navigate('/auth/login');
+      return;
+    }
+    navigate('/user/profile');
+  };
+
+  useEffect(() => {
+    const checkSignInStatus = async () => {
+      const res = await checkSignIn();
+      setIsSignedIn(!res.error);
+    };
+    checkSignInStatus();
+  }, [checkSignIn]);
 
   return (
     <div className="absolute bottom-0 left-0 right-0 p-6 bg-white flex justify-around items-center">
@@ -28,7 +48,7 @@ export const BottomNavigationBar = () => {
           <span className="text-sm">모임보기</span>
         </button>
         <button
-          onClick={() => navigate('/user/profile')}
+          onClick={handleProfileClick}
           className={`flex flex-col items-center w-1/3 ${
             isActive('/user/profile') ? 'text-green-500' : 'text-gray-500'
           }`}
