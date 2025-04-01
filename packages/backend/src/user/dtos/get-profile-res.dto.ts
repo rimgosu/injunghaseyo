@@ -6,6 +6,13 @@ import { GroupStatus } from '@/group/utils/enums';
 
 class ProfileGroupElem {
   @ApiProperty({
+    description: '그룹 id',
+    example: 1,
+    type: Number,
+  })
+  id: number;
+
+  @ApiProperty({
     description: '그룹 이름',
     example: '팔굽혀펴기 인증 모임',
     type: String,
@@ -27,6 +34,7 @@ class ProfileGroupElem {
       return acc + (isCompleted ? 1 : 0);
     }, 0);
 
+    this.id = group.id;
     this.name = group.title;
     this.proofDays = proofDays;
   }

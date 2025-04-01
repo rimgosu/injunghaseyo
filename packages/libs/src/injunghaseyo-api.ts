@@ -214,6 +214,11 @@ export interface ProfilePhotoElem {
 
 export interface ProfileGroupElem {
   /**
+   * 그룹 id
+   * @example 1
+   */
+  id: number;
+  /**
    * 그룹 이름
    * @example "팔굽혀펴기 인증 모임"
    */

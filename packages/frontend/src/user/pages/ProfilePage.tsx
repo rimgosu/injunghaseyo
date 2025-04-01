@@ -49,6 +49,10 @@ export const ProfilePage = () => {
     navigate('/user/profile/photo');
   };
 
+  const handleGroupClick = (groupId: number) => {
+    navigate(`/group/${groupId}/today`);
+  };
+
   return (
     <BaseLayout
       title="내 정보"
@@ -116,6 +120,7 @@ export const ProfilePage = () => {
                 key={index}
                 days={group.proofDays}
                 name={group.name}
+                onClick={() => handleGroupClick(group.id)}
               />
             ))}
           </div>

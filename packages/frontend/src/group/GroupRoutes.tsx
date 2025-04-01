@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { GroupPage } from './pages/GroupPage';
 import { CreateGroupFlow } from './pages/CreateGroupFlow';
 import { GroupDetailPage } from './pages/GroupDetailPage';
+import { GetTodayPage } from './pages/GetTodayPage';
 
 export const GroupRoutes = () => {
   return (
@@ -9,6 +10,7 @@ export const GroupRoutes = () => {
       <Route path="/" element={<GroupPage />} />
       <Route path="/create" element={<CreateGroupFlow />} />
       <Route path="/:groupId" element={<GroupDetailPage />} />
+      <Route path="/:groupId/today" element={<GetTodayPage />} />
     </Routes>
   );
 };
