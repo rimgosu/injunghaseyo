@@ -102,6 +102,8 @@ async function createInProgressGroups() {
       UserSeedData.users.user1,
     ]);
 
+  await groupSeedData.createProof();
+
   logger.debug(`${group.id} group created`);
   logger.debug(`${groupDate.length} groupDate created`);
   logger.debug(
