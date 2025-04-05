@@ -61,7 +61,7 @@ export class UserService {
   async addProfilePhoto(user: User, profilePhoto: Express.Multer.File) {
     const uploadUrl = await this.s3.uploadFile(
       profilePhoto,
-      `${this.s3.profilePhotoDir}:${user.email}:${new Date().toISOString()}`,
+      `${this.s3.profilePhotoDir}/${user.email}:${new Date().toISOString()}`,
     );
 
     await this.prisma.profilePhoto.create({
