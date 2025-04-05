@@ -380,7 +380,14 @@ export class GroupService {
       include: {
         groupDate: {
           include: {
-            groupProgress: true,
+            groupProgress: {
+              where: {
+                join: {
+                  userId: user.id,
+                  deletedAt: null,
+                },
+              },
+            },
           },
         },
         proofMethod: {
