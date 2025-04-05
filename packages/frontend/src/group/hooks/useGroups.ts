@@ -7,6 +7,9 @@ import {
   GroupControllerGetGroupsParams,
   GroupControllerGetTagsParams,
   GroupControllerGetTodayParams,
+  GroupControllerUploadProofButtonParams,
+  GroupControllerUploadProofLocationParams,
+  GroupControllerUploadProofPhotoParams,
   ModifiedGetTodayRes,
   ValidateCreateGroupElementBody,
 } from '@rimgosu/libs';
@@ -15,6 +18,42 @@ import { ApiErrorType, ApiResponse } from '../../common/types';
 import { useCallback } from 'react';
 
 export const useGroups = () => {
+  const uploadProofLocation = async (
+    params: GroupControllerUploadProofLocationParams,
+  ): Promise<ApiResponse<void>> => {
+    return await ApiSingleton.getInstance()
+      .groups.groupControllerUploadProofLocation(params)
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
+  const uploadProofButton = async (
+    params: GroupControllerUploadProofButtonParams,
+  ): Promise<ApiResponse<void>> => {
+    return await ApiSingleton.getInstance()
+      .groups.groupControllerUploadProofButton(params)
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
+  const uploadProofPhoto = async (
+    params: GroupControllerUploadProofPhotoParams,
+    proofPhoto: File,
+  ): Promise<ApiResponse<void>> => {
+    return await ApiSingleton.getInstance()
+      .groups.groupControllerUploadProofPhoto(params, {
+        proofPhoto,
+      })
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
   const getToday = async (
     params: GroupControllerGetTodayParams,
   ): Promise<ApiResponse<ModifiedGetTodayRes>> => {
@@ -95,5 +134,8 @@ export const useGroups = () => {
     getTags,
     getGroup,
     getToday,
+    uploadProofLocation,
+    uploadProofButton,
+    uploadProofPhoto,
   };
 };

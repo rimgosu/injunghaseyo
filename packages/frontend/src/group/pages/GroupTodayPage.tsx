@@ -35,7 +35,7 @@ export const GroupTodayPage = () => {
       }
     >
       {selectedTodayGroupTopNavBar === TodayGroupTopNavBarEnum.PROOF && (
-        <TodayProof todayGroup={todayGroup} />
+        <TodayProof todayGroup={todayGroup} groupId={Number(groupId)} />
       )}
     </BaseLayout>
   );
