@@ -53,6 +53,60 @@ async function main() {
   await handleSeedOperation(createAdminUser, 'Admin user');
   await handleSeedOperation(createUsers, 'User');
   await handleSeedOperation(createGroups, 'Group');
+  await handleSeedOperation(createInProgressGroups, 'InProgressGroup');
+}
+
+/**
+ * 현재 진행 중인 그룹 bulk 생성
+ * @description 현재 진행 중인 그룹 대량 생성
+ *
+ * - 테스트를 위해 group seed data가 좀 다양하게 있어야 한다.
+ * 1. 과거 시점 인증 완료 날짜
+ * 2. 과거 시점 인증 못한 날짜
+ */
+async function createInProgressGroups() {
+  const groupDateUtil = new GroupDateUtil();
+  const groupSeedData = new GroupSeedData(
+    99995,
+    30000,
+    '조금 진행 된 그룹',
+    '조금 진행 된 그룹입니다.',
+    tags[0],
+    [
+      {
+        contents: '사진 인증',
+        type: ProofType.UPLOAD_PHOTO,
+        fromMin: 0,
+        toMin: 60 * 24,
+      },
+      {
+        contents: '위치 확인 인증',
+        type: ProofType.CHECK_LOCATION,
+        fromMin: 0,
+        toMin: 60 * 24,
+      },
+      {
+        contents: '버튼 클릭 인증',
+        type: ProofType.CLICK_BUTTON,
+        fromMin: 0,
+        toMin: 60 * 24,
+      },
+    ],
+    groupDateUtil.inProgressYmds,
+    prisma,
+  );
+
+  const { group, groupDate, createdGroupProgresses } =
+    await groupSeedData.createGroupSeedData([
+      UserSeedData.users.admin,
+      UserSeedData.users.user1,
+    ]);
+
+  logger.debug(`${group.id} group created`);
+  logger.debug(`${groupDate.length} groupDate created`);
+  logger.debug(
+    `${createdGroupProgresses.length} createdGroupProgresses created`,
+  );
 }
 
 /**
@@ -76,22 +130,26 @@ async function createGroups() {
       [
         {
           contents: '아침 촬영',
-          type: ProofType.UPLOAD_PHOTO,
-          fromMin: 60 * 6,
-          toMin: 60 * 10,
+          type: ProofType.CLICK_BUTTON,
+          fromMin: 0,
+          toMin: 60 * 24,
+        },
+        {
+          contents: '아침 촬영',
+          type: ProofType.CHECK_LOCATION,
+          fromMin: 0,
+          toMin: 60 * 24,
         },
         {
           contents: '저녁 촬영',
           type: ProofType.UPLOAD_PHOTO,
-          fromMin: 60 * 18,
-          toMin: 60 * 22,
+          fromMin: 0,
+          toMin: 60 * 24,
         },
       ],
       groupDateUtil.inProgressYmds,
-    ).createGroupSeedData(prisma, [
-      UserSeedData.users.admin,
-      UserSeedData.users.user1,
-    ]);
+      prisma,
+    ).createGroupSeedData([UserSeedData.users.admin, UserSeedData.users.user1]);
 
   // 2. 종료된 그룹
   const { group: completedGroup, groupDate: completedGroupDate } =
@@ -116,7 +174,8 @@ async function createGroups() {
         },
       ],
       groupDateUtil.finishedYmds,
-    ).createGroupSeedData(prisma, [
+      prisma,
+    ).createGroupSeedData([
       UserSeedData.users.admin,
       UserSeedData.users.user1,
       UserSeedData.users.user2,
@@ -145,7 +204,8 @@ async function createGroups() {
         },
       ],
       groupDateUtil.notStartedYmds,
-    ).createGroupSeedData(prisma, [UserSeedData.users.admin]);
+      prisma,
+    ).createGroupSeedData([UserSeedData.users.admin]);
 
   const { group: notStartedGroup2, groupDate: notStartedGroupDate2 } =
     await new GroupSeedData(
@@ -163,7 +223,8 @@ async function createGroups() {
         },
       ],
       groupDateUtil.notStartedYmds,
-    ).createGroupSeedData(prisma, [
+      prisma,
+    ).createGroupSeedData([
       UserSeedData.users.admin,
       UserSeedData.users.user1,
       UserSeedData.users.user2,

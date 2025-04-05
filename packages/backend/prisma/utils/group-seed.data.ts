@@ -1,5 +1,14 @@
-import { GroupProgressStatus, PrismaClient } from '@prisma/client';
-import { ProofMethodSeedInput, UserWithJoinRole } from './types';
+import {
+  GroupDate,
+  GroupProgress,
+  GroupProgressStatus,
+  PrismaClient,
+} from '@prisma/client';
+import {
+  GroupWithGroupDate,
+  ProofMethodSeedInput,
+  UserWithJoinRole,
+} from './types';
 
 export class GroupSeedData {
   constructor(
@@ -10,13 +19,18 @@ export class GroupSeedData {
     private readonly tag: string,
     private readonly proofMethods: ProofMethodSeedInput[],
     private readonly dates: string[],
+    private readonly prisma: PrismaClient,
   ) {}
+
+  private group: GroupWithGroupDate;
+  private groupDate: GroupDate[];
+  private createdGroupProgresses: GroupProgress[];
 
   /**
    * @description 그룹 및 그룹 날짜 데이터 생성
    */
-  async createGroupSeedData(prisma: PrismaClient, users: UserWithJoinRole[]) {
-    return await prisma.$transaction(async (tx) => {
+  async createGroupSeedData(users: UserWithJoinRole[]) {
+    return await this.prisma.$transaction(async (tx) => {
       const group = await tx.group.upsert({
         where: {
           id: this.id,
@@ -67,7 +81,7 @@ export class GroupSeedData {
       // groupDate seed 시점에 따라 업데이트
       const groupDate = await Promise.all(
         group.groupDate.map(async (d, index) => {
-          return await tx.groupDate.update({
+          return await this.prisma.groupDate.update({
             where: {
               id: d.id,
             },
@@ -80,23 +94,23 @@ export class GroupSeedData {
 
       // groupProgress bulk create
       const [joins, proofMethods] = await Promise.all([
-        tx.join.findMany({
+        this.prisma.join.findMany({
           where: {
             groupId: group.id,
           },
         }),
-        tx.proofMethod.findMany({
+        this.prisma.proofMethod.findMany({
           where: {
             groupId: group.id,
           },
         }),
       ]);
 
-      await Promise.all(
+      const createdGroupProgresses = await Promise.all(
         joins.flatMap((join) =>
           groupDate.flatMap((date) =>
             proofMethods.map((method) =>
-              tx.groupProgress.create({
+              this.prisma.groupProgress.create({
                 data: {
                   joinId: join.id,
                   groupDateId: date.id,
@@ -109,10 +123,17 @@ export class GroupSeedData {
         ),
       );
 
+      this.group = group;
+      this.groupDate = groupDate;
+      this.createdGroupProgresses = createdGroupProgresses;
+
       return {
         group,
         groupDate,
+        createdGroupProgresses,
       };
     });
   }
+
+  async createProof() {}
 }

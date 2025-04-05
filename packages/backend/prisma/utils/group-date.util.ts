@@ -46,7 +46,7 @@ export class GroupDateUtil {
   }
 
   get inProgressYmds(): string[] {
-    return [this.before1Ymd, this.nowYmd, this.after1Ymd];
+    return [this.before2Ymd, this.before1Ymd, this.nowYmd, this.after1Ymd];
   }
 
   get finishedYmds(): string[] {
