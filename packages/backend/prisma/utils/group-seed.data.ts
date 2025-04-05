@@ -17,103 +17,109 @@ export class GroupSeedData {
    * @description 그룹 및 그룹 날짜 데이터 생성
    */
   async createGroupSeedData(users: UserWithJoinRole[]) {
-    const group = await this.prisma.group.upsert({
-      where: {
-        id: this.id,
-      },
-      update: {},
-      create: {
-        id: this.id,
-        price: this.price,
-        title: this.title,
-        description: this.description,
-        join: {
-          createMany: {
-            data: users.map((u) => {
-              return {
-                userId: u.id,
-                joinRole: u.joinRole,
-              };
-            }),
-          },
+    return await this.prisma.$transaction(async (tx) => {
+      const group = await tx.group.upsert({
+        where: {
+          id: this.id,
         },
-        groupTagMap: {
-          create: {
-            tag: {
-              connect: {
-                name: this.tag,
+        update: {},
+        create: {
+          id: this.id,
+          price: this.price,
+          title: this.title,
+          description: this.description,
+          join: {
+            createMany: {
+              data: users.map((u) => {
+                return {
+                  userId: u.id,
+                  joinRole: u.joinRole,
+                };
+              }),
+            },
+          },
+          groupTagMap: {
+            create: {
+              tag: {
+                connect: {
+                  name: this.tag,
+                },
               },
             },
           },
-        },
-        proofMethod: {
-          createMany: {
-            data: this.proofMethods.map((method) => ({
-              ...method,
-            })),
+          proofMethod: {
+            createMany: {
+              data: this.proofMethods.map((method) => ({
+                ...method,
+              })),
+            },
+          },
+          groupDate: {
+            createMany: {
+              data: this.dates.map((date) => ({ date })),
+            },
           },
         },
-        groupDate: {
-          createMany: {
-            data: this.dates.map((date) => ({ date })),
-          },
+        include: {
+          groupDate: true,
         },
-      },
-      include: {
-        groupDate: true,
-      },
-    });
+      });
 
-    // groupDate seed 시점에 따라 업데이트
-    const groupDate = await Promise.all(
-      group.groupDate.map(async (d, index) => {
-        return await this.prisma.groupDate.update({
+      // groupDate seed 시점에 따라 업데이트
+      const groupDate = await Promise.all(
+        group.groupDate.map(async (d, index) => {
+          return await tx.groupDate.update({
+            where: {
+              id: d.id,
+            },
+            data: {
+              date: this.dates[index],
+            },
+          });
+        }),
+      ).catch((error) => {
+        // 최초 실행 시 group 정보가 없어서 에러 발생
+        console.error(error);
+        return [];
+      });
+
+      // groupProgress bulk create
+      const [joins, proofMethods] = await Promise.all([
+        tx.join.findMany({
           where: {
-            id: d.id,
+            groupId: group.id,
           },
-          data: {
-            date: this.dates[index],
+        }),
+        tx.proofMethod.findMany({
+          where: {
+            groupId: group.id,
           },
-        });
-      }),
-    );
+        }),
+      ]);
 
-    // groupProgress bulk create
-    const [joins, proofMethods] = await Promise.all([
-      this.prisma.join.findMany({
-        where: {
-          groupId: group.id,
-        },
-      }),
-      this.prisma.proofMethod.findMany({
-        where: {
-          groupId: group.id,
-        },
-      }),
-    ]);
-
-    const createdGroupProgresses = await Promise.all(
-      joins.flatMap((join) =>
-        groupDate.flatMap((date) =>
-          proofMethods.map((method) =>
-            this.prisma.groupProgress.create({
-              data: {
-                joinId: join.id,
-                groupDateId: date.id,
-                proofMethodId: method.id,
-                status: GroupProgressStatus.PENDING,
-              },
-            }),
+      const createdGroupProgresses = await Promise.all(
+        joins.flatMap((join) =>
+          groupDate.flatMap((date) =>
+            proofMethods.map((method) =>
+              tx.groupProgress.create({
+                data: {
+                  joinId: join.id,
+                  groupDateId: date.id,
+                  proofMethodId: method.id,
+                  status: GroupProgressStatus.PENDING,
+                },
+              }),
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    return {
-      group,
-      groupDate,
-      createdGroupProgresses,
-    };
+      return {
+        group,
+        groupDate,
+        createdGroupProgresses,
+      };
+    });
   }
 
   /**

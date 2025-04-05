@@ -56,6 +56,14 @@ async function main() {
   await handleSeedOperation(createInProgressGroups, 'InProgressGroup');
 }
 
+async function createInProgressGroups() {
+  await createInProgressGroupsBase({ id: 99990, createProof: true });
+  await createInProgressGroupsBase({ id: 99991, createProof: true });
+  await createInProgressGroupsBase({ id: 99992, createProof: false });
+  await createInProgressGroupsBase({ id: 99993, createProof: false });
+  await createInProgressGroupsBase({ id: 99994, createProof: false });
+}
+
 /**
  * 현재 진행 중인 그룹 bulk 생성
  * @description 현재 진행 중인 그룹 대량 생성
@@ -64,10 +72,16 @@ async function main() {
  * 1. 과거 시점 인증 완료 날짜
  * 2. 과거 시점 인증 못한 날짜
  */
-async function createInProgressGroups() {
+async function createInProgressGroupsBase({
+  id,
+  createProof,
+}: {
+  id: number;
+  createProof: boolean;
+}) {
   const groupDateUtil = new GroupDateUtil();
   const groupSeedData = new GroupSeedData(
-    99995,
+    id,
     30000,
     '조금 진행 된 그룹',
     '조금 진행 된 그룹입니다.',
@@ -102,7 +116,9 @@ async function createInProgressGroups() {
       UserSeedData.users.user1,
     ]);
 
-  await groupSeedData.createProof();
+  if (createProof) {
+    await groupSeedData.createProof();
+  }
 
   logger.debug(`${group.id} group created`);
   logger.debug(`${groupDate.length} groupDate created`);
