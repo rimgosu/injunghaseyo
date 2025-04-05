@@ -5,3 +5,9 @@ export const ProofMethodTypeView = {
   [ProofMethodElemTypeEnum.CLICK_BUTTON]: '버튼 클릭',
   [ProofMethodElemTypeEnum.UPLOAD_PHOTO]: '인증 사진',
 } as const;
+
+export enum TodayGroupTopNavBarEnum {
+  PROOF = 'PROOF',
+  LEVEL = 'LEVEL',
+  GALLERY = 'GALLERY',
+}
