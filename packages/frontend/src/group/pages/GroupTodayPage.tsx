@@ -1,13 +1,15 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useGroups } from '../hooks/useGroups';
 import { useTodayGroupStore } from '../stores/useTodayGroupStore';
 import { useEffect } from 'react';
 import { BaseLayout } from '../../common/BaseLayout';
+import { TodayGroupTopNavBar } from '../components/TodayGroupTopNavBar';
 
 export const GroupTodayPage = () => {
   const { groupId } = useParams();
   const { getToday } = useGroups();
   const { todayGroup, setTodayGroup } = useTodayGroupStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTodayGroup = async () => {
@@ -21,15 +23,24 @@ export const GroupTodayPage = () => {
   }, []);
 
   return (
-    <BaseLayout
-      headerElement={
-        <div>
-          <div>상단</div>
-          <div>하단</div>
+    <BaseLayout headerElement={<TodayGroupTopNavBar />}>
+      <div className="flex flex-col gap-12">
+        <div className="h-full w-full flex flex-col gap-2">
+          <h2 className="text-2xl font-bold">{todayGroup?.title}</h2>
+          <p className="text-gray-500">{todayGroup?.description}</p>
         </div>
-      }
-    >
-      인증
+        <div className="flex flex-col gap-2">
+          <h3 className="text-xl text-center">오늘의 인증</h3>
+          {todayGroup?.proofs.map((proof) => (
+            // <div key={proof.}>
+            //   <img src={proof.imageUrl} alt={proof.title} />
+            //   <p>{proof.title}</p>
+            //   <p>{proof.description}</p>
+            // </div>
+            <div>1</div>
+          ))}
+        </div>
+      </div>
     </BaseLayout>
   );
 };
