@@ -3,6 +3,7 @@ model Group {
     title       String
     price       Int
     description String?
+    photo       String  @default("https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/group-default-image.png")
 
     createdAt   DateTime      @default(now())
     updatedAt   DateTime      @updatedAt
