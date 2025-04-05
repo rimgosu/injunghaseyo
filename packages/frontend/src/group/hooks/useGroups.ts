@@ -3,11 +3,11 @@ import {
   GetGroupRes,
   GetGroupsRes,
   GetTagsRes,
-  GetTodayRes,
   GroupControllerCreateGroupParams,
   GroupControllerGetGroupsParams,
   GroupControllerGetTagsParams,
   GroupControllerGetTodayParams,
+  ModifiedGetTodayRes,
   ValidateCreateGroupElementBody,
 } from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
@@ -17,10 +17,13 @@ import { useCallback } from 'react';
 export const useGroups = () => {
   const getToday = async (
     params: GroupControllerGetTodayParams,
-  ): Promise<ApiResponse<GetTodayRes>> => {
+  ): Promise<ApiResponse<ModifiedGetTodayRes>> => {
     return await ApiSingleton.getInstance()
       .groups.groupControllerGetToday(params)
-      .then((res) => ({ data: res.data }))
+      .then((res) => {
+        const data = res.data as ModifiedGetTodayRes;
+        return { data };
+      })
       .catch(async (error: Response) => {
         return { error: (await error.json()) as ApiErrorType };
       });

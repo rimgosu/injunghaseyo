@@ -1,9 +1,9 @@
-import { GetTodayRes } from '@rimgosu/libs';
+import { ModifiedGetTodayRes } from '@rimgosu/libs';
 import { create } from 'zustand';
 
 export type TodayGroupStore = {
-  todayGroup: GetTodayRes | null;
-  setTodayGroup: (todayGroup: GetTodayRes) => void;
+  todayGroup: ModifiedGetTodayRes | null;
+  setTodayGroup: (todayGroup: ModifiedGetTodayRes) => void;
 };
 
 export const useTodayGroupStore = create<TodayGroupStore>((set) => ({
