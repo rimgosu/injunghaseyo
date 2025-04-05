@@ -130,6 +130,7 @@ export class GetTodayRes extends PickType(BaseGroupRes, [
     this.title = group.title;
     this.description = group.description;
     this.groupDate = group.groupDate.map((date) => date.date);
+
     this.completedDate = group.groupDate
       .filter((date) =>
         date.groupProgress.every(

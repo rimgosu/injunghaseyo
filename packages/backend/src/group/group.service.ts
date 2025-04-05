@@ -88,6 +88,7 @@ export class GroupService {
     return await this.prisma.groupProgress.update({
       where: { id: progressId, deletedAt: null },
       data: {
+        status: GroupProgressStatus.COMPLETED,
         proof: {
           upsert: {
             create: {
