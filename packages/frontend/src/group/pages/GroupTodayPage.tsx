@@ -4,13 +4,6 @@ import { useTodayGroupStore } from '../stores/useTodayGroupStore';
 import { useEffect, useState } from 'react';
 import { BaseLayout } from '../../common/BaseLayout';
 import { TodayGroupTopNavBar } from '../components/today-group/TodayGroupTopNavBar';
-import { ProofMethodElemTypeEnum } from '@rimgosu/libs';
-import {
-  CameraIcon,
-  CursorArrowRaysIcon,
-  MapPinIcon,
-} from '@heroicons/react/24/outline';
-import { formatMinutesToTime } from '../utils/utils';
 import { TodayGroupTopNavBarEnum } from '../utils/types';
 import { TodayProof } from '../components/today-group/TodayProof';
 
@@ -33,7 +26,14 @@ export const GroupTodayPage = () => {
   }, []);
 
   return (
-    <BaseLayout headerElement={<TodayGroupTopNavBar />}>
+    <BaseLayout
+      headerElement={
+        <TodayGroupTopNavBar
+          selected={selectedTodayGroupTopNavBar}
+          setSelected={setSelectedTodayGroupTopNavBar}
+        />
+      }
+    >
       {selectedTodayGroupTopNavBar === TodayGroupTopNavBarEnum.PROOF && (
         <TodayProof todayGroup={todayGroup} />
       )}

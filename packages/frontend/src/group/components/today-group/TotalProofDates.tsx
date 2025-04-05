@@ -7,8 +7,26 @@ export const TotalProofDates = ({
   groupDate,
   completedDate,
 }: TotalProofDatesProps) => {
+  if (!groupDate.length) {
+    return <div className="mt-4 text-gray-500">표시할 날짜가 없습니다.</div>;
+  }
+
+  // 유효한 날짜만 필터링
+  const validDates = groupDate.filter((date) => {
+    try {
+      const d = new Date(date);
+      return !isNaN(d.getTime());
+    } catch {
+      return false;
+    }
+  });
+
+  if (!validDates.length) {
+    return <div className="mt-4 text-gray-500">유효한 날짜가 없습니다.</div>;
+  }
+
   // 달력에 표시할 날짜들을 요일에 맞게 정렬
-  const sortedDates = [...groupDate].sort((a, b) => {
+  const sortedDates = validDates.sort((a, b) => {
     const dateA = new Date(a);
     const dateB = new Date(b);
     return dateA.getTime() - dateB.getTime();

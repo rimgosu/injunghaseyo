@@ -1,7 +1,16 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
+import { TodayGroupTopNavBarEnum } from '../../utils/types';
 
-export const TodayGroupTopNavBar = () => {
+type TodayGroupTopNavBarProps = {
+  selected: TodayGroupTopNavBarEnum;
+  setSelected: (selected: TodayGroupTopNavBarEnum) => void;
+};
+
+export const TodayGroupTopNavBar = ({
+  selected,
+  setSelected,
+}: TodayGroupTopNavBarProps) => {
   const navigate = useNavigate();
 
   return (
@@ -13,15 +22,36 @@ export const TodayGroupTopNavBar = () => {
         />
       </div>
       <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-lg border border-gray-300 px-4 py-3 text-center">
+        <button
+          className={`rounded-lg border border-gray-300 px-4 py-3 text-center ${
+            selected === TodayGroupTopNavBarEnum.PROOF
+              ? 'bg-green-200'
+              : 'bg-white'
+          }`}
+          onClick={() => setSelected(TodayGroupTopNavBarEnum.PROOF)}
+        >
           인증
-        </div>
-        <div className="rounded-lg border border-gray-300 px-4 py-3 text-center">
+        </button>
+        <button
+          className={`rounded-lg border border-gray-300 px-4 py-3 text-center ${
+            selected === TodayGroupTopNavBarEnum.LEVEL
+              ? 'bg-green-200'
+              : 'bg-white'
+          }`}
+          onClick={() => setSelected(TodayGroupTopNavBarEnum.LEVEL)}
+        >
           레벨
-        </div>
-        <div className="rounded-lg border border-gray-300 px-4 py-3 text-center">
+        </button>
+        <button
+          className={`rounded-lg border border-gray-300 px-4 py-3 text-center ${
+            selected === TodayGroupTopNavBarEnum.GALLERY
+              ? 'bg-green-200'
+              : 'bg-white'
+          }`}
+          onClick={() => setSelected(TodayGroupTopNavBarEnum.GALLERY)}
+        >
           갤러리
-        </div>
+        </button>
       </div>
     </div>
   );
