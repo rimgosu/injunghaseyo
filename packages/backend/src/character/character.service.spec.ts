@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CharacterService } from './character.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CharacterInfoSelect } from './utils/types';
-import { ExpHistoryType } from '@prisma/client';
+import { ExpHistoryType, GroupProgressStatus } from '@prisma/client';
 import { getToday } from '@/group/utils/utils';
 
 class TestCharacterService extends CharacterService {
@@ -17,9 +17,18 @@ describe('CharacterService', () => {
   let service: TestCharacterService;
 
   const mockPrismaService = {
+    groupProgress: {
+      findMany: jest.fn(),
+    },
+    group: {
+      findFirst: jest.fn(),
+    },
     myCharacter: {
       findUnique: jest.fn(),
       update: jest.fn(),
+    },
+    expHistory: {
+      findUnique: jest.fn(),
     },
   };
 
@@ -35,6 +44,10 @@ describe('CharacterService', () => {
     }).compile();
 
     service = module.get<TestCharacterService>(TestCharacterService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('checkLevelUp', () => {
@@ -172,6 +185,149 @@ describe('CharacterService', () => {
 
       // When
       const result = await service.rewardSignIn(userId);
+
+      // Then
+      expect(result).toEqual({
+        levelUp: true,
+        beforeLevel: 1,
+        afterLevel: 2,
+      });
+    });
+  });
+
+  describe('rewardProof', () => {
+    const mockParams = {
+      joinId: 1,
+      groupDateId: 1,
+      userId: 1,
+    };
+
+    mockPrismaService.expHistory.findUnique.mockResolvedValueOnce(null);
+
+    it('모든 proofMethod가 완료되지 않았을 때 undefined를 반환해야 함', async () => {
+      // Given
+      mockPrismaService.groupProgress.findMany.mockResolvedValue([
+        { status: GroupProgressStatus.COMPLETED },
+        { status: GroupProgressStatus.PENDING },
+      ]);
+
+      // When
+      const result = await service.rewardProof(mockParams);
+
+      // Then
+      expect(result).toBeUndefined();
+      expect(mockPrismaService.myCharacter.update).not.toHaveBeenCalled();
+    });
+
+    it('경험치 증가량이 올바르게 계산되어야 함', async () => {
+      // Given
+      mockPrismaService.groupProgress.findMany.mockResolvedValue([
+        { status: GroupProgressStatus.COMPLETED },
+        { status: GroupProgressStatus.COMPLETED },
+      ]);
+      mockPrismaService.group.findFirst.mockResolvedValue({
+        price: 30000,
+        _count: {
+          groupDate: 10,
+        },
+      });
+      mockPrismaService.myCharacter.update.mockResolvedValue({
+        totalExp: 0,
+        character: {
+          characterInfo: [
+            { level: 1, expNeed: 0 },
+            { level: 2, expNeed: 100 },
+            { level: 3, expNeed: 225 },
+          ],
+        },
+      });
+
+      // When
+      await service.rewardProof(mockParams);
+
+      // Then
+      const expectedExp = Math.ceil((46 * 30000) / 10000 / 10); // PROOF_REWARD_EXP_PER_10000WON * price / 10000 / groupDateCount
+      expect(mockPrismaService.myCharacter.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            totalExp: {
+              increment: expectedExp,
+            },
+          }),
+        }),
+      );
+    });
+
+    it('모든 proofMethod가 완료되었을 때 경험치가 정상적으로 지급되어야 함', async () => {
+      // Given
+      mockPrismaService.groupProgress.findMany.mockResolvedValue([
+        { status: GroupProgressStatus.COMPLETED },
+        { status: GroupProgressStatus.COMPLETED },
+      ]);
+      mockPrismaService.group.findFirst.mockResolvedValue({
+        price: 30000,
+        _count: {
+          groupDate: 10,
+        },
+      });
+      mockPrismaService.myCharacter.update.mockResolvedValue({
+        totalExp: 150,
+        character: {
+          characterInfo: [
+            { level: 1, expNeed: 0 },
+            { level: 2, expNeed: 100 },
+            { level: 3, expNeed: 225 },
+          ],
+        },
+      });
+
+      // When
+      await service.rewardProof(mockParams);
+
+      // Then
+      expect(mockPrismaService.myCharacter.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            ExpHistory: {
+              create: expect.objectContaining({
+                type: ExpHistoryType.PROOF_REWARD,
+                groupDateId: mockParams.groupDateId,
+                joinId: mockParams.joinId,
+              }),
+            },
+          }),
+        }),
+      );
+    });
+
+    it('레벨업이 발생했을 때 레벨업 정보를 반환해야 함', async () => {
+      // Given
+      const beforeExp = 90;
+      mockPrismaService.groupProgress.findMany.mockResolvedValue([
+        { status: GroupProgressStatus.COMPLETED },
+      ]);
+      mockPrismaService.group.findFirst.mockResolvedValue({
+        price: 30000,
+        _count: {
+          groupDate: 3,
+        },
+      });
+      mockPrismaService.expHistory.findUnique.mockResolvedValue(null);
+
+      const increaseExp = Math.ceil((46 * 30000) / 10000 / 3); // 46원
+      mockPrismaService.myCharacter.update.mockResolvedValue({
+        totalExp: beforeExp + increaseExp,
+        character: {
+          characterInfo: [
+            { level: 1, expNeed: 0 },
+            { level: 2, expNeed: 100 },
+            { level: 3, expNeed: 225 },
+          ],
+        },
+      });
+
+      // When
+      const result = await service.rewardProof(mockParams);
 
       // Then
       expect(result).toEqual({

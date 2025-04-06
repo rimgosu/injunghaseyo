@@ -40,8 +40,8 @@ export class CharacterService {
     joinId: number;
     groupDateId: number;
     userId: number;
-  }) {
-    const [groupProgress, group] = await Promise.all([
+  }): Promise<ICheckLevelUpReturnType | void> {
+    const [groupProgress, group, expHistory] = await Promise.all([
       this.prisma.groupProgress.findMany({
         where: {
           deletedAt: null,
@@ -68,25 +68,36 @@ export class CharacterService {
           },
         },
       }),
+      this.prisma.expHistory.findUnique({
+        where: {
+          groupDateId_joinId: {
+            groupDateId,
+            joinId,
+          },
+        },
+      }),
     ]);
 
+    // validation
+    // - 해당 일자의 모든 proofMethod가 완료 상태인지 확인
+    // - 이미 경험치 지급 내역이 있는지 확인
+    const isAllProofMethodCompleted = groupProgress.every(
+      (progress) => progress.status === GroupProgressStatus.COMPLETED,
+    );
+
+    if (!isAllProofMethodCompleted || expHistory) {
+      return;
+    }
+
+    // 줄 경험치 양 계산
     const increaseExp = Math.ceil(
       (this.PROOF_REWARD_EXP_PER_10000WON * group.price) /
         10000 /
         group._count.groupDate,
     );
 
-    // 해당 일자의 모든 proofMethod가 완료 상태인지 확인
-    const isAllProofMethodCompleted = groupProgress.every(
-      (progress) => progress.status === GroupProgressStatus.COMPLETED,
-    );
-
-    if (!isAllProofMethodCompleted) {
-      return;
-    }
-
     // 경험치 지급
-    await this.prisma.myCharacter.update({
+    const updatedMyCharacter = await this.prisma.myCharacter.update({
       where: {
         userId,
         deletedAt: null,
@@ -104,7 +115,27 @@ export class CharacterService {
           },
         },
       },
+      include: {
+        character: {
+          select: {
+            characterInfo: true,
+          },
+        },
+      },
     });
+
+    // 레벨업 했는지 확인
+    const checkLevelUpResult = this.checkLevelUp({
+      beforeTotalExp: updatedMyCharacter.totalExp - increaseExp,
+      afterTotalExp: updatedMyCharacter.totalExp,
+      characterInfo: updatedMyCharacter.character.characterInfo,
+    });
+
+    console.log('checkLevelUpResult', checkLevelUpResult);
+
+    if (!checkLevelUpResult.levelUp) return;
+
+    return checkLevelUpResult;
   }
 
   /**
