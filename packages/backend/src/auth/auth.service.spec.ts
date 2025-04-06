@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
 import { UnauthorizedException } from '@nestjs/common';
 import { createMock } from '@golevelup/ts-jest';
+import { CharacterService } from '@/character/character.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -41,6 +42,7 @@ describe('AuthService', () => {
         ConfigService,
         EmailService,
         JwtService,
+        CharacterService,
         {
           provide: PrismaService,
           useValue: {

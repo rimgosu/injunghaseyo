@@ -2,7 +2,7 @@ import { getToday } from '@/group/utils/utils';
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { ExpHistoryType } from '@prisma/client';
-import { CharacterInfoSelect } from './utils/types';
+import { CharacterInfoSelect, CheckLevelUpReturnType } from './utils/types';
 
 /**
  * @description 캐릭터 관련 서비스
@@ -31,8 +31,10 @@ export class CharacterService {
 
   /**
    * @description 출석체크 보상 지급
+   *
+   * - 레벨업과 같은 특수한 이벤트 시에만 레벨업 결과를 반환한다.
    */
-  async rewardSignIn(userId: number) {
+  async rewardSignIn(userId: number): Promise<CheckLevelUpReturnType | void> {
     const todayTs = new Date(getToday('kst')).getTime();
     const todayNightTs = todayTs + 24 * 60 * 60 * 1000;
 
@@ -92,11 +94,15 @@ export class CharacterService {
     });
 
     // 레벨업 했는지 확인
-    this.checkLevelUp({
+    const checkLevelUpResult = this.checkLevelUp({
       beforeTotalExp: myCharacter.totalExp,
       afterTotalExp: updatedMyCharacter.totalExp,
       characterInfo: updatedMyCharacter.character.characterInfo,
     });
+
+    if (!checkLevelUpResult.levelUp) return;
+
+    return checkLevelUpResult;
   }
 
   /**
@@ -110,11 +116,7 @@ export class CharacterService {
     beforeTotalExp: number;
     afterTotalExp: number;
     characterInfo: CharacterInfoSelect[];
-  }): {
-    levelUp: boolean;
-    beforeLevel: number;
-    afterLevel: number;
-  } {
+  }): CheckLevelUpReturnType {
     const sortedInfo = characterInfo.sort((a, b) => a.expNeed - b.expNeed);
 
     const findLevel = (exp: number) => {
