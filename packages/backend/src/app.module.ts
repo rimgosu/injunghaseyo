@@ -12,6 +12,7 @@ import { OpenaiModule } from './openai/openai.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { S3Module } from './s3/s3.module';
+import { CharacterModule } from './character/character.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { S3Module } from './s3/s3.module';
     OpenaiModule,
     UserModule,
     S3Module,
+    CharacterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
