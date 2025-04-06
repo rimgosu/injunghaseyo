@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useGroups } from '../hooks/useGroups';
 import { useTodayGroupStore } from '../stores/useTodayGroupStore';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BaseLayout } from '../../common/BaseLayout';
 import { TodayGroupTopNavBar } from '../components/today-group/TodayGroupTopNavBar';
 import { TodayGroupTopNavBarEnum } from '../utils/types';
@@ -14,16 +14,12 @@ export const GroupTodayPage = () => {
   const [selectedTodayGroupTopNavBar, setSelectedTodayGroupTopNavBar] =
     useState<TodayGroupTopNavBarEnum>(TodayGroupTopNavBarEnum.PROOF);
 
-  useEffect(() => {
-    const fetchTodayGroup = async () => {
-      const res = await getToday({ groupId: Number(groupId) });
-
-      if (res.data) {
-        setTodayGroup(res.data);
-      }
-    };
-    fetchTodayGroup();
-  }, []);
+  const fetchTodayGroup = async () => {
+    const res = await getToday({ groupId: Number(groupId) });
+    if (res.data) {
+      setTodayGroup(res.data);
+    }
+  };
 
   return (
     <BaseLayout
@@ -35,7 +31,11 @@ export const GroupTodayPage = () => {
       }
     >
       {selectedTodayGroupTopNavBar === TodayGroupTopNavBarEnum.PROOF && (
-        <TodayProof todayGroup={todayGroup} groupId={Number(groupId)} />
+        <TodayProof
+          todayGroup={todayGroup}
+          groupId={Number(groupId)}
+          onProofComplete={fetchTodayGroup}
+        />
       )}
     </BaseLayout>
   );

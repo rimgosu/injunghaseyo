@@ -12,6 +12,7 @@ import { useGroups } from '../../hooks/useGroups';
 type TodayProofProps = {
   todayGroup: ModifiedGetTodayRes | null;
   groupId: number;
+  onProofComplete: () => void;
 };
 
 const ProofMethodIcon = ({
@@ -37,11 +38,15 @@ const ProofMethodIcon = ({
   }
 };
 
-export const TodayProof = ({ todayGroup, groupId }: TodayProofProps) => {
+export const TodayProof = ({
+  todayGroup,
+  groupId,
+  onProofComplete,
+}: TodayProofProps) => {
   const { uploadProofPhoto, uploadProofButton, uploadProofLocation } =
     useGroups();
 
-  const handleProofSubmit = (proof: any) => {
+  const handleProofSubmit = async (proof: any) => {
     const params = {
       groupId,
       progressId: proof.groupProgressId,
@@ -57,13 +62,15 @@ export const TodayProof = ({ todayGroup, groupId }: TodayProofProps) => {
           const file = (e.target as HTMLInputElement).files?.[0];
           if (file) {
             await uploadProofPhoto(params, file);
+            onProofComplete();
           }
         };
         fileInput.click();
         break;
 
       case ProofMethodElemTypeEnum.CLICK_BUTTON:
-        uploadProofButton(params);
+        await uploadProofButton(params);
+        onProofComplete();
         break;
 
       case ProofMethodElemTypeEnum.CHECK_LOCATION:
@@ -75,6 +82,7 @@ export const TodayProof = ({ todayGroup, groupId }: TodayProofProps) => {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
               });
+              onProofComplete();
             },
             (error) => {
               console.error('위치 정보를 가져오는데 실패했습니다:', error);
