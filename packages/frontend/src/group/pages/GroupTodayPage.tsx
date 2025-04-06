@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useGroups } from '../hooks/useGroups';
 import { useTodayGroupStore } from '../stores/useTodayGroupStore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BaseLayout } from '../../common/BaseLayout';
 import { TodayGroupTopNavBar } from '../components/today-group/TodayGroupTopNavBar';
 import { TodayGroupTopNavBarEnum } from '../utils/types';
@@ -20,6 +20,10 @@ export const GroupTodayPage = () => {
       setTodayGroup(res.data);
     }
   };
+
+  useEffect(() => {
+    fetchTodayGroup();
+  }, []);
 
   return (
     <BaseLayout
