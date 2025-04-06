@@ -1,5 +1,6 @@
 import {
   CameraIcon,
+  CheckCircleIcon,
   CursorArrowRaysIcon,
   MapPinIcon,
 } from '@heroicons/react/24/outline';
@@ -13,7 +14,19 @@ type TodayProofProps = {
   groupId: number;
 };
 
-const ProofMethodIcon = ({ type }: { type: ProofMethodElemTypeEnum }) => {
+const ProofMethodIcon = ({
+  type,
+  proofElem,
+}: {
+  type: ProofMethodElemTypeEnum;
+  proofElem: unknown | null;
+}) => {
+  if (proofElem) {
+    return (
+      <CheckCircleIcon strokeWidth={0.5} className="w-12 text-green-500" />
+    );
+  }
+
   switch (type) {
     case ProofMethodElemTypeEnum.UPLOAD_PHOTO:
       return <CameraIcon strokeWidth={0.5} className="w-12" />;
@@ -90,11 +103,21 @@ export const TodayProof = ({ todayGroup, groupId }: TodayProofProps) => {
             return (
               <button
                 key={index}
-                className="flex gap-2 justify-between p-4 border border-gray-300 rounded-2xl"
+                className={`flex gap-2 justify-between p-4 border rounded-2xl ${
+                  proof.proofElem ? 'border-green-300' : 'border-gray-300'
+                }`}
                 onClick={() => handleProofSubmit(proof)}
               >
-                <div className="flex text-gray-600 gap-1 justify-center flex-col">
-                  <div className="flex gap-1">
+                <div
+                  className={
+                    'flex  gap-1 justify-center flex-col text-gray-600'
+                  }
+                >
+                  <div
+                    className={`flex gap-1 ${
+                      proof.proofElem ? 'text-green-500' : 'text-gray-600'
+                    }`}
+                  >
                     <p>인증 {index + 1}.</p>
                     <p>{proof.proofMethod.contents}</p>
                   </div>
@@ -105,7 +128,10 @@ export const TodayProof = ({ todayGroup, groupId }: TodayProofProps) => {
                   </p>
                 </div>
                 <div className="flex justify-center">
-                  <ProofMethodIcon type={proof.proofMethod.type} />
+                  <ProofMethodIcon
+                    type={proof.proofMethod.type}
+                    proofElem={proof.proofElem}
+                  />
                 </div>
               </button>
             );
