@@ -42,7 +42,9 @@ model CharacterInfo {
 model ExpHistory {
     id            Int            @id @default(autoincrement())
     myCharacterId Int
-    groupId       Int?
+    groupId       Int? /// 모임 종료 보상 시 (END_REWARD)
+    groupDateId   Int? /// 오늘의 인증 완료 시 (PROOF_REWARD)
+    joinId        Int? /// 오늘의 인증 완료 시 (PROOF_REWARD)
     increasedExp  Int
     type          ExpHistoryType
 
@@ -51,6 +53,8 @@ model ExpHistory {
     deletedAt DateTime?
 
     myCharacter MyCharacter @relation(fields: [myCharacterId], references: [id])
+
+    @@unique([groupDateId, joinId])
 }
 
 enum ExpHistoryType {
