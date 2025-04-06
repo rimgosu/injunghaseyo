@@ -1,5 +1,8 @@
+import { getToday } from '@/group/utils/utils';
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
+import { ExpHistoryType } from '@prisma/client';
+import { CharacterInfoSelect } from './utils/types';
 
 /**
  * @description 캐릭터 관련 서비스
@@ -25,4 +28,112 @@ export class CharacterService {
   private readonly END_REWARD_EXP_PER_10000WON = 12;
 
   constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * @description 출석체크 보상 지급
+   */
+  async rewardSignIn(userId: number) {
+    const todayTs = new Date(getToday('kst')).getTime();
+    const todayNightTs = todayTs + 24 * 60 * 60 * 1000;
+
+    const myCharacter = await this.prisma.myCharacter.findUnique({
+      where: {
+        userId,
+        deletedAt: null,
+      },
+      include: {
+        ExpHistory: {
+          where: {
+            type: ExpHistoryType.ATTENDANCE_CHECK_REWARD,
+            createdAt: {
+              gte: new Date(todayTs),
+              lt: new Date(todayNightTs),
+            },
+          },
+        },
+      },
+    });
+
+    // 이미 출석체크 했으면 return
+    if (myCharacter.ExpHistory.length > 0) {
+      return;
+    }
+
+    // 출석체크 보상 지급
+    const updatedMyCharacter = await this.prisma.myCharacter.update({
+      where: {
+        userId,
+        deletedAt: null,
+      },
+      data: {
+        totalExp: {
+          increment: this.ATTENDANCE_CHECK_REWARD_EXP,
+        },
+        ExpHistory: {
+          create: {
+            type: ExpHistoryType.ATTENDANCE_CHECK_REWARD,
+            increasedExp: this.ATTENDANCE_CHECK_REWARD_EXP,
+          },
+        },
+      },
+      select: {
+        totalExp: true,
+        character: {
+          select: {
+            characterInfo: {
+              select: {
+                expNeed: true,
+                level: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // 레벨업 했는지 확인
+    this.checkLevelUp({
+      beforeTotalExp: myCharacter.totalExp,
+      afterTotalExp: updatedMyCharacter.totalExp,
+      characterInfo: updatedMyCharacter.character.characterInfo,
+    });
+  }
+
+  /**
+   * @description 보상 지급으로 레벨업 했는지 확인
+   */
+  protected checkLevelUp({
+    beforeTotalExp,
+    afterTotalExp,
+    characterInfo,
+  }: {
+    beforeTotalExp: number;
+    afterTotalExp: number;
+    characterInfo: CharacterInfoSelect[];
+  }): {
+    levelUp: boolean;
+    beforeLevel: number;
+    afterLevel: number;
+  } {
+    const sortedInfo = characterInfo.sort((a, b) => a.expNeed - b.expNeed);
+
+    const findLevel = (exp: number) => {
+      const nextLevel = sortedInfo.find((info) => info.expNeed > exp);
+      if (!nextLevel) {
+        return sortedInfo[sortedInfo.length - 1].level;
+      }
+      const currentLevelInfo =
+        sortedInfo[sortedInfo.findIndex((info) => info.expNeed > exp) - 1];
+      return currentLevelInfo ? currentLevelInfo.level : sortedInfo[0].level;
+    };
+
+    const beforeLevel = findLevel(beforeTotalExp);
+    const afterLevel = findLevel(afterTotalExp);
+
+    return {
+      levelUp: beforeLevel !== afterLevel,
+      beforeLevel,
+      afterLevel,
+    };
+  }
 }

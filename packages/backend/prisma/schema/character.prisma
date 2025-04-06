@@ -14,6 +14,7 @@ model MyCharacter {
     id          Int @id @default(autoincrement())
     characterId Int
     userId      Int @unique
+    totalExp    Int @default(0)
 
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt

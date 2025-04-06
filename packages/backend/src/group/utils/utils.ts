@@ -21,7 +21,7 @@ export const isBetweenMinutes = (
 };
 
 /**
- * @description 현재 시간을 0 - 2400으로 표현
+ * @description 현재 시간을 0 - 1440으로 표현
  */
 export const getCurrentMinute = (timeZone: 'kst' | 'utc' = 'kst'): number => {
   const now = new Date();
