@@ -1,7 +1,7 @@
 import { getToday } from '@/group/utils/utils';
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { ExpHistoryType } from '@prisma/client';
+import { ExpHistoryType, GroupProgressStatus } from '@prisma/client';
 import { CharacterInfoSelect, ICheckLevelUpReturnType } from './utils/types';
 
 /**
@@ -30,7 +30,85 @@ export class CharacterService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * @description 출석체크 보상 지급
+   * @description 오늘의 인증 시, 경험치 보상 지급
+   */
+  async rewardProof({
+    joinId,
+    groupDateId,
+    userId,
+  }: {
+    joinId: number;
+    groupDateId: number;
+    userId: number;
+  }) {
+    const [groupProgress, group] = await Promise.all([
+      this.prisma.groupProgress.findMany({
+        where: {
+          deletedAt: null,
+          joinId,
+          groupDateId,
+        },
+      }),
+      this.prisma.group.findFirst({
+        where: {
+          deletedAt: null,
+          join: {
+            some: {
+              id: joinId,
+              deletedAt: null,
+            },
+          },
+        },
+        select: {
+          price: true,
+          _count: {
+            select: {
+              groupDate: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    const increaseExp = Math.ceil(
+      (this.PROOF_REWARD_EXP_PER_10000WON * group.price) /
+        10000 /
+        group._count.groupDate,
+    );
+
+    // 해당 일자의 모든 proofMethod가 완료 상태인지 확인
+    const isAllProofMethodCompleted = groupProgress.every(
+      (progress) => progress.status === GroupProgressStatus.COMPLETED,
+    );
+
+    if (!isAllProofMethodCompleted) {
+      return;
+    }
+
+    // 경험치 지급
+    await this.prisma.myCharacter.update({
+      where: {
+        userId,
+        deletedAt: null,
+      },
+      data: {
+        totalExp: {
+          increment: increaseExp,
+        },
+        ExpHistory: {
+          create: {
+            type: ExpHistoryType.PROOF_REWARD,
+            increasedExp: increaseExp,
+            groupDateId,
+            joinId,
+          },
+        },
+      },
+    });
+  }
+
+  /**
+   * @description 출석체크 경험치 보상 지급
    *
    * - 레벨업과 같은 특수한 이벤트 시에만 레벨업 결과를 반환한다.
    */
