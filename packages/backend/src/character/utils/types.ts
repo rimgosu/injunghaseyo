@@ -7,7 +7,7 @@ export type CharacterInfoSelect = Prisma.CharacterInfoGetPayload<{
   };
 }>;
 
-export type CheckLevelUpReturnType = {
+export type ICheckLevelUpReturnType = {
   levelUp: boolean;
   beforeLevel: number;
   afterLevel: number;

@@ -1,10 +1,16 @@
-import { PickType } from '@nestjs/swagger';
+import { IntersectionType, PickType } from '@nestjs/swagger';
 import { BaseUseraAuthDto } from './base.dto';
 import { User } from '@prisma/client';
+import { ICheckLevelUpReturnType } from '@/character/utils/types';
+import { BaseCharacterDto } from './base-character.dto';
 
-export class GetCheckSignIn extends PickType(BaseUseraAuthDto, ['userStatus']) {
-  constructor(user: User) {
+export class GetCheckSignIn extends IntersectionType(
+  PickType(BaseUseraAuthDto, ['userStatus']),
+  PickType(BaseCharacterDto, ['checkLevelUpResult']),
+) {
+  constructor(user: User, checkLevelUpResult: ICheckLevelUpReturnType | void) {
     super();
     this.userStatus = user.status;
+    this.checkLevelUpResult = checkLevelUpResult;
   }
 }

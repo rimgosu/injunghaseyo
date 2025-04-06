@@ -1,3 +1,4 @@
+import { ICheckLevelUpReturnType } from '@/character/utils/types';
 import { Prisma, Role } from '@prisma/client';
 
 export interface JwtPaylaod {
@@ -13,6 +14,7 @@ export interface GeneratedJwt {
 export interface TokenWithUser {
   email: string;
   generatedJwt: GeneratedJwt;
+  checkLevelUpResult?: ICheckLevelUpReturnType | void;
 }
 
 export interface ExtractedJwt {

@@ -17,7 +17,7 @@ import { SignInParams } from './dtos/sign-in-params.dto';
 import { AuthHelper } from './utils/auth.helper';
 import { GeneratedJwt, OauthUser, TokenWithUser } from './utils/types';
 import { ReissueAtkRes } from './dtos/reissue-atk-res.dto';
-import { Provider, User, UserStatus } from '@prisma/client';
+import { Provider, Role, User, UserStatus } from '@prisma/client';
 import { FindPasswordParam } from './dtos/find-password-param.dto';
 import { ChgPasswordParams } from './dtos/chg-password-params.dto';
 import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
@@ -60,7 +60,11 @@ export class AuthService {
   }
 
   async checkSignIn(user: User): Promise<GetCheckSignIn> {
-    return new GetCheckSignIn(user);
+    const checkLevelUpResult = await this.characterService.rewardSignIn(
+      user.id,
+    );
+
+    return new GetCheckSignIn(user, checkLevelUpResult);
   }
 
   async verifyPassword(params: VerifyPasswordParams) {
@@ -183,22 +187,45 @@ export class AuthService {
       });
     }
 
-    const generatedJwt: GeneratedJwt = this.authHelper.generateJwt({
+    return await this.genTokenAndUpdateUser({
       uuid: user.uuid,
       role: user.role,
+      userId: user.id,
+    });
+  }
+
+  /**
+   * @description 회원가입 후 처리
+   */
+  private async genTokenAndUpdateUser({
+    uuid,
+    role,
+    userId,
+  }: {
+    uuid: string;
+    role: Role;
+    userId: number;
+  }): Promise<TokenWithUser> {
+    const generatedJwt: GeneratedJwt = this.authHelper.generateJwt({
+      uuid,
+      role,
     });
 
-    await this.prisma.user.update({
-      where: { uuid: user.uuid },
-      data: {
-        lastLogin: new Date(),
-        refreshToken: generatedJwt.refreshToken,
-      },
-    });
+    const [updatedUser, checkLevelUpResult] = await Promise.all([
+      this.prisma.user.update({
+        where: { uuid },
+        data: {
+          lastLogin: new Date(),
+          refreshToken: generatedJwt.refreshToken,
+        },
+      }),
+      this.characterService.rewardSignIn(userId),
+    ]);
 
     return {
-      email: user.email,
+      email: updatedUser.email,
       generatedJwt,
+      checkLevelUpResult,
     };
   }
 
@@ -329,23 +356,11 @@ export class AuthService {
       }
     }
 
-    const generatedJwt: GeneratedJwt = this.authHelper.generateJwt({
+    return await this.genTokenAndUpdateUser({
       uuid: user.uuid,
       role: user.role,
+      userId: user.id,
     });
-
-    await this.prisma.user.update({
-      where: { uuid: user.uuid },
-      data: {
-        lastLogin: new Date(),
-        refreshToken: generatedJwt.refreshToken,
-      },
-    });
-
-    return {
-      email: user.email,
-      generatedJwt,
-    };
   }
 
   /**

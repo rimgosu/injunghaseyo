@@ -17,6 +17,7 @@ describe('AuthService', () => {
   let service: AuthService;
   let prismaService: PrismaService;
   let cacheManager: Cache;
+  let characterService: CharacterService;
 
   const mockUser = createMock<User>({
     id: 1,
@@ -66,6 +67,9 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
     prismaService = module.get<PrismaService>(PrismaService);
     cacheManager = module.get<Cache>(CACHE_MANAGER);
+    characterService = module.get<CharacterService>(CharacterService);
+
+    jest.spyOn(characterService, 'rewardSignIn').mockResolvedValue();
   });
 
   describe('activateOauth', () => {
