@@ -47,6 +47,7 @@ import { GetTodayRewardRes } from './dtos/get-today-reward-res.dto';
 import { CreateGroupBody } from './dtos/create-group-body.dto';
 import { ValidateCreateGroupElementBody } from './dtos/validate-create-group-elem-query.dto';
 import { GetGroupsQueryDto } from './dtos/get-groups-query.dto';
+import { UploadProofRes } from './dtos/upload-proof-res.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -206,6 +207,11 @@ export class GroupController {
       },
     },
   })
+  @ApiResponse({
+    status: 200,
+    description: '인증 사진 업로드',
+    type: UploadProofRes,
+  })
   async uploadProofPhoto(
     @Param() param: UploadProofParam,
     @Query() query: UploadProofQuery,
@@ -221,6 +227,11 @@ export class GroupController {
   @Post(':groupId/proof/button')
   @UseGuards(AtkGuard)
   @ApiBearerAuth('jwt')
+  @ApiResponse({
+    status: 200,
+    description: '인증 버튼 클릭',
+    type: UploadProofRes,
+  })
   async uploadProofButton(
     @Param() param: UploadProofParam,
     @Query() query: UploadProofQuery,
@@ -235,6 +246,11 @@ export class GroupController {
   @Post(':groupId/proof/location')
   @UseGuards(AtkGuard)
   @ApiBearerAuth('jwt')
+  @ApiResponse({
+    status: 200,
+    description: '현재 위치 확인',
+    type: UploadProofRes,
+  })
   async uploadProofLocation(
     @Param() param: UploadProofParam,
     @Query() query: UploadProofLocationQuery,

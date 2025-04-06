@@ -53,6 +53,8 @@ import { ValidateCreateGroupElementBody } from './dtos/validate-create-group-ele
 import { GroupElementValidationStrategyFactory } from './utils/group-create-validate.strategy';
 import { GetGroupsQueryDto } from './dtos/get-groups-query.dto';
 import { GroupDateHelper } from './utils/group-date.helper';
+import { CharacterService } from '@/character/character.service';
+import { UploadProofRes } from './dtos/upload-proof-res.dto';
 
 @Injectable()
 export class GroupService {
@@ -63,6 +65,7 @@ export class GroupService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly s3: S3Service,
+    private readonly characterService: CharacterService,
   ) {}
 
   /**
@@ -72,7 +75,7 @@ export class GroupService {
     param: UploadProofParam,
     query: UploadProofLocationQuery,
     user: User,
-  ) {
+  ): Promise<UploadProofRes> {
     const { groupId } = param;
     const { progressId, today, latitude, longitude } = query;
 
@@ -85,7 +88,7 @@ export class GroupService {
 
     await this.validateProof(group, groupProgress, ProofType.CHECK_LOCATION);
 
-    return await this.prisma.groupProgress.update({
+    await this.prisma.groupProgress.update({
       where: { id: progressId, deletedAt: null },
       data: {
         status: GroupProgressStatus.COMPLETED,
@@ -108,6 +111,14 @@ export class GroupService {
         },
       },
     });
+
+    return new UploadProofRes(
+      await this.characterService.rewardProof({
+        joinId: groupProgress.joinId,
+        groupDateId: groupProgress.groupDateId,
+        userId: user.id,
+      }),
+    );
   }
 
   /**
@@ -117,7 +128,7 @@ export class GroupService {
     param: UploadProofParam,
     query: UploadProofQuery,
     user: User,
-  ) {
+  ): Promise<UploadProofRes> {
     const { groupId } = param;
     const { progressId, today } = query;
 
@@ -130,7 +141,7 @@ export class GroupService {
 
     await this.validateProof(group, groupProgress, ProofType.CLICK_BUTTON);
 
-    return await this.prisma.groupProgress.update({
+    await this.prisma.groupProgress.update({
       where: { id: progressId, deletedAt: null },
       data: {
         status: GroupProgressStatus.COMPLETED,
@@ -143,6 +154,14 @@ export class GroupService {
         },
       },
     });
+
+    return new UploadProofRes(
+      await this.characterService.rewardProof({
+        joinId: groupProgress.joinId,
+        groupDateId: groupProgress.groupDateId,
+        userId: user.id,
+      }),
+    );
   }
 
   /**
@@ -208,7 +227,7 @@ export class GroupService {
     query: UploadProofQuery,
     proofPhoto: Express.Multer.File,
     user: User,
-  ) {
+  ): Promise<UploadProofRes> {
     const { groupId } = param;
     const { progressId } = query;
 
@@ -228,7 +247,7 @@ export class GroupService {
     );
 
     // 인증 사진 업데이트
-    return await this.prisma.groupProgress.update({
+    await this.prisma.groupProgress.update({
       where: {
         id: progressId,
         deletedAt: null,
@@ -280,6 +299,14 @@ export class GroupService {
         status: true,
       },
     });
+
+    return new UploadProofRes(
+      await this.characterService.rewardProof({
+        joinId: groupProgress.joinId,
+        groupDateId: groupProgress.groupDateId,
+        userId: user.id,
+      }),
+    );
   }
 
   /**
@@ -311,6 +338,8 @@ export class GroupService {
         },
         include: {
           proofMethod: true,
+          join: true,
+          groupDate: true,
         },
       }),
       this.prisma.group.findUnique({
