@@ -103,8 +103,7 @@ export class AuthController {
     @Query() param: SignInParams,
     @Res({ passthrough: true }) res: Response,
   ): Promise<SignInRes> {
-    const { email, generatedJwt, checkLevelUpResult } =
-      await this.authService.signIn(param);
+    const { email, generatedJwt } = await this.authService.signIn(param);
     const { accessToken, refreshToken } = generatedJwt;
 
     res.cookie('_SESSION', refreshToken, {
@@ -112,7 +111,7 @@ export class AuthController {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30일
     });
 
-    return new SignInRes(email, accessToken, checkLevelUpResult);
+    return new SignInRes(email, accessToken);
   }
 
   /**

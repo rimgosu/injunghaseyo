@@ -190,7 +190,6 @@ export class AuthService {
     return await this.genTokenAndUpdateUser({
       uuid: user.uuid,
       role: user.role,
-      userId: user.id,
     });
   }
 
@@ -200,32 +199,26 @@ export class AuthService {
   private async genTokenAndUpdateUser({
     uuid,
     role,
-    userId,
   }: {
     uuid: string;
     role: Role;
-    userId: number;
   }): Promise<TokenWithUser> {
     const generatedJwt: GeneratedJwt = this.authHelper.generateJwt({
       uuid,
       role,
     });
 
-    const [updatedUser, checkLevelUpResult] = await Promise.all([
-      this.prisma.user.update({
-        where: { uuid },
-        data: {
-          lastLogin: new Date(),
-          refreshToken: generatedJwt.refreshToken,
-        },
-      }),
-      this.characterService.rewardSignIn(userId),
-    ]);
+    const updatedUser = await this.prisma.user.update({
+      where: { uuid },
+      data: {
+        lastLogin: new Date(),
+        refreshToken: generatedJwt.refreshToken,
+      },
+    });
 
     return {
       email: updatedUser.email,
       generatedJwt,
-      checkLevelUpResult,
     };
   }
 
@@ -359,7 +352,6 @@ export class AuthService {
     return await this.genTokenAndUpdateUser({
       uuid: user.uuid,
       role: user.role,
-      userId: user.id,
     });
   }
 
