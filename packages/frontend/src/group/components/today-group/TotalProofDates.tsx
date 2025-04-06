@@ -51,7 +51,12 @@ export const TotalProofDates = ({
     <div className="mt-4 grid grid-cols-7 gap-2">
       {/* 요일 헤더 */}
       {['일', '월', '화', '수', '목', '금', '토'].map((day) => (
-        <div key={day} className="text-center font-medium">
+        <div
+          key={day}
+          className={`text-center font-medium ${
+            day === '일' || day === '토' ? 'text-red-500' : ''
+          }`}
+        >
           {day}
         </div>
       ))}

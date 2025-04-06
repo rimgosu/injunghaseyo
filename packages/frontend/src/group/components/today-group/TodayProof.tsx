@@ -13,6 +13,17 @@ type TodayProofProps = {
   groupId: number;
 };
 
+const ProofMethodIcon = ({ type }: { type: ProofMethodElemTypeEnum }) => {
+  switch (type) {
+    case ProofMethodElemTypeEnum.UPLOAD_PHOTO:
+      return <CameraIcon strokeWidth={0.5} className="w-12" />;
+    case ProofMethodElemTypeEnum.CLICK_BUTTON:
+      return <CursorArrowRaysIcon strokeWidth={0.5} className="w-12" />;
+    case ProofMethodElemTypeEnum.CHECK_LOCATION:
+      return <MapPinIcon strokeWidth={0.5} className="w-12" />;
+  }
+};
+
 export const TodayProof = ({ todayGroup, groupId }: TodayProofProps) => {
   const { uploadProofPhoto, uploadProofButton, uploadProofLocation } =
     useGroups();
@@ -76,22 +87,6 @@ export const TodayProof = ({ todayGroup, groupId }: TodayProofProps) => {
         <h3 className="text-xl">오늘의 인증</h3>
         <div className="flex flex-col gap-4">
           {todayGroup?.proofs.map((proof, index) => {
-            let icon = null;
-            if (
-              proof.proofMethod.type === ProofMethodElemTypeEnum.UPLOAD_PHOTO
-            ) {
-              icon = <CameraIcon strokeWidth={1} className="w-16" />;
-            }
-            if (
-              proof.proofMethod.type === ProofMethodElemTypeEnum.CLICK_BUTTON
-            ) {
-              icon = <CursorArrowRaysIcon strokeWidth={1} className="w-16" />;
-            }
-            if (
-              proof.proofMethod.type === ProofMethodElemTypeEnum.CHECK_LOCATION
-            ) {
-              icon = <MapPinIcon strokeWidth={1} className="w-16" />;
-            }
             return (
               <button
                 key={index}
@@ -109,7 +104,9 @@ export const TodayProof = ({ todayGroup, groupId }: TodayProofProps) => {
                     {formatMinutesToTime(proof.proofMethod.toMin)}
                   </p>
                 </div>
-                <div className="flex justify-center">{icon}</div>
+                <div className="flex justify-center">
+                  <ProofMethodIcon type={proof.proofMethod.type} />
+                </div>
               </button>
             );
           })}
