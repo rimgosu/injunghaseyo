@@ -64,6 +64,8 @@ export const TotalProofDates = ({
       {/* 달력 날짜들 */}
       {calendar.map((date, index) => {
         const currentDate = allWeekDates[index];
+        const today = new Date().toISOString().split('T')[0];
+        const isFutureDate = currentDate > today;
 
         if (!date) {
           return (
@@ -81,9 +83,11 @@ export const TotalProofDates = ({
           <div
             key={date}
             className={`aspect-square flex items-center justify-center rounded-lg border ${
-              isCompleted
-                ? 'bg-green-100 border-green-200'
-                : 'bg-gray-100 border-gray-200'
+              isFutureDate
+                ? 'bg-white border-gray-200'
+                : isCompleted
+                  ? 'bg-green-100 border-green-200'
+                  : 'bg-gray-100 border-gray-200'
             }`}
           >
             {new Date(date).getDate()}
