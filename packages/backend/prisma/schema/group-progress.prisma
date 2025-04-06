@@ -11,6 +11,8 @@ model GroupProgress {
     updatedAt     DateTime            @updatedAt
     deletedAt     DateTime?
     proof         Proof?
+
+    @@unique([groupDateId, joinId, proofMethodId])
 }
 
 enum GroupProgressStatus {
