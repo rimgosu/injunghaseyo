@@ -19,9 +19,20 @@ export interface SignInRes {
   accessToken: string;
 }
 
+export interface CheckLevelUpReturnType {
+  /** 레벨업 여부 */
+  levelUp: boolean;
+  /** 이전 레벨 */
+  beforeLevel: number;
+  /** 이후 레벨 */
+  afterLevel: number;
+}
+
 export interface GetCheckSignIn {
   /** sign in status */
   userStatus: GetCheckSignInUserStatusEnum;
+  /** 레벨업 시 노출 정보 */
+  checkLevelUpResult: CheckLevelUpReturnType;
 }
 
 export interface ReissueAtkRes {
@@ -189,6 +200,11 @@ export interface GetTodayRes {
   completedDate: string[];
   /** 인증 정보 */
   proofs: Proof[];
+}
+
+export interface UploadProofRes {
+  /** 레벨업 시 노출 정보 */
+  checkLevelUpResult: CheckLevelUpReturnType;
 }
 
 export interface GetTodayRewardRes {
@@ -1323,13 +1339,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<void, any>({
+      this.request<UploadProofRes, any>({
         path: `/groups/${groupId}/proof/photo`,
         method: 'POST',
         query: query,
         body: data,
         secure: true,
         type: ContentType.FormData,
+        format: 'json',
         ...params,
       }),
 
@@ -1345,11 +1362,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       { groupId, ...query }: GroupControllerUploadProofButtonParams,
       params: RequestParams = {},
     ) =>
-      this.request<void, any>({
+      this.request<UploadProofRes, any>({
         path: `/groups/${groupId}/proof/button`,
         method: 'POST',
         query: query,
         secure: true,
+        format: 'json',
         ...params,
       }),
 
@@ -1365,11 +1383,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       { groupId, ...query }: GroupControllerUploadProofLocationParams,
       params: RequestParams = {},
     ) =>
-      this.request<void, any>({
+      this.request<UploadProofRes, any>({
         path: `/groups/${groupId}/proof/location`,
         method: 'POST',
         query: query,
         secure: true,
+        format: 'json',
         ...params,
       }),
 

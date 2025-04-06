@@ -11,6 +11,7 @@ import {
   GroupControllerUploadProofLocationParams,
   GroupControllerUploadProofPhotoParams,
   ModifiedGetTodayRes,
+  UploadProofRes,
   ValidateCreateGroupElementBody,
 } from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
@@ -20,7 +21,7 @@ import { useCallback } from 'react';
 export const useGroups = () => {
   const uploadProofLocation = async (
     params: GroupControllerUploadProofLocationParams,
-  ): Promise<ApiResponse<void>> => {
+  ): Promise<ApiResponse<UploadProofRes>> => {
     return await ApiSingleton.getInstance()
       .groups.groupControllerUploadProofLocation(params)
       .then((res) => ({ data: res.data }))
@@ -31,7 +32,7 @@ export const useGroups = () => {
 
   const uploadProofButton = async (
     params: GroupControllerUploadProofButtonParams,
-  ): Promise<ApiResponse<void>> => {
+  ): Promise<ApiResponse<UploadProofRes>> => {
     return await ApiSingleton.getInstance()
       .groups.groupControllerUploadProofButton(params)
       .then((res) => ({ data: res.data }))
@@ -43,7 +44,7 @@ export const useGroups = () => {
   const uploadProofPhoto = async (
     params: GroupControllerUploadProofPhotoParams,
     proofPhoto: File,
-  ): Promise<ApiResponse<void>> => {
+  ): Promise<ApiResponse<UploadProofRes>> => {
     return await ApiSingleton.getInstance()
       .groups.groupControllerUploadProofPhoto(params, {
         proofPhoto,
