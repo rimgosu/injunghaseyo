@@ -3,14 +3,29 @@ import { GroupPage } from './pages/GroupPage';
 import { CreateGroupFlow } from './pages/CreateGroupFlow';
 import { GroupDetailPage } from './pages/GroupDetailPage';
 import { GroupTodayPage } from './pages/GroupTodayPage';
+import { PrivateRoute } from '../common/PrivateRoute';
 
 export const GroupRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<GroupPage />} />
-      <Route path="/create" element={<CreateGroupFlow />} />
+      <Route
+        path="/create"
+        element={
+          <PrivateRoute>
+            <CreateGroupFlow />
+          </PrivateRoute>
+        }
+      />
       <Route path="/:groupId" element={<GroupDetailPage />} />
-      <Route path="/:groupId/today" element={<GroupTodayPage />} />
+      <Route
+        path="/:groupId/today"
+        element={
+          <PrivateRoute>
+            <GroupTodayPage />
+          </PrivateRoute>
+        }
+      />
     </Routes>
   );
 };

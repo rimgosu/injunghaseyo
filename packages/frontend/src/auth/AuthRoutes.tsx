@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 import { GetCheckSignInUserStatusEnum } from '@rimgosu/libs';
 import { CharacterSelectPage } from './pages/CharacterSelectPage';
 import { OauthPendingPage } from './pages/OauthPendingPage';
+import { PrivateRoute } from '../common/PrivateRoute';
 
 export const AuthRoutes = () => {
   const { checkSignIn } = useAuth();
@@ -63,13 +64,33 @@ export const AuthRoutes = () => {
       <Route path="/" element={<Navigate to="/auth/init" replace />} />
       <Route path="init" element={<InitPage />} />
       <Route path="login" element={<LoginPage />} />
-      <Route path="signup" element={<SignUpPage />} />
+      <Route
+        path="signup"
+        element={
+          <PrivateRoute>
+            <SignUpPage />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="search-password"
         element={<BaseLayout>비밀번호 찾기</BaseLayout>}
       />
-      <Route path="oauth-pending" element={<OauthPendingPage />} />
-      <Route path="select-character" element={<CharacterSelectPage />} />
+      <Route
+        path="oauth-pending"
+        element={
+          <PrivateRoute>
+            <OauthPendingPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        element={
+          <PrivateRoute>
+            <CharacterSelectPage />
+          </PrivateRoute>
+        }
+      />
     </Routes>
   );
 };
