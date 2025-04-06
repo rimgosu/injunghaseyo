@@ -7,7 +7,7 @@ import {
 import { User } from '@prisma/client';
 import { GetMoneyDto } from './dtos/get-money.dto';
 import { GetProfileResDto } from './dtos/get-profile-res.dto';
-import { USER_WITH_JOIN } from './utils/types';
+import { UserWithJoin } from './utils/types';
 import { S3Service } from '@/s3/s3.service';
 import { DeleteProfilePhotoParam } from './dtos/delete-profile-photo-param.dto';
 
@@ -76,9 +76,32 @@ export class UserService {
    * @description 유저 프로필을 조회합니다.
    */
   async getProfile(user: User): Promise<GetProfileResDto> {
-    const userData = await this.prisma.user.findUnique({
+    const userData: UserWithJoin = await this.prisma.user.findUnique({
       where: { id: user.id, deletedAt: null },
-      ...USER_WITH_JOIN,
+      include: {
+        wallet: true,
+        profilePhoto: true,
+        join: {
+          include: {
+            group: {
+              include: {
+                groupDate: {
+                  include: {
+                    groupProgress: {
+                      where: {
+                        join: {
+                          userId: user.id,
+                          deletedAt: null,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!userData) throw new NotFoundException('유저를 찾을 수 없습니다.');
