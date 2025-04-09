@@ -115,6 +115,8 @@ export interface GetTagsRes {
 }
 
 export interface GroupElem {
+  /** 그룹 사진 */
+  groupPhoto: string;
   /** 그룹 ID */
   id: number;
   /** 그룹 제목 */

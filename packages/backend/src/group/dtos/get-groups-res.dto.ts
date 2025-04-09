@@ -17,6 +17,7 @@ class GroupElem extends PickType(BaseGroupRes, [
   'joinStatus',
   'numberOfParticipants',
   'tags',
+  'groupPhoto',
 ]) {}
 
 export class GetGroupsRes extends BaseCursorPaginationResDto<GroupElem> {
@@ -57,6 +58,7 @@ export class GetGroupsRes extends BaseCursorPaginationResDto<GroupElem> {
         joinStatus,
         numberOfParticipants,
         tags,
+        groupPhoto: group.photo,
       };
     });
 

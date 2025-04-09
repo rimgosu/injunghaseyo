@@ -18,6 +18,12 @@ class Participant {
 
 export class BaseGroupRes {
   @ApiProperty({
+    description: '그룹 사진',
+    type: String,
+  })
+  groupPhoto: string;
+
+  @ApiProperty({
     description: '그룹 ID',
     type: Number,
   })
