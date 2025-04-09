@@ -105,7 +105,7 @@ export const GroupPage = () => {
     >
       <SearchBar onSearch={handleSearch} />
       <div className="flex flex-col gap-4 w-full pb-24">
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-8 mt-2">
           {groupsData?.items.map((group, index) => (
             <div
               key={group.id}

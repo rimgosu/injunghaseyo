@@ -7,22 +7,30 @@ interface GroupCardProps {
 
 export const GroupCard = ({ group, onClick }: GroupCardProps) => {
   return (
-    <div
-      className="border rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow"
-      onClick={onClick}
-    >
-      <div className="flex flex-col gap-2">
-        <h3 className="font-semibold text-lg">{group.title}</h3>
-        <div className="text-gray-600 text-sm">
-          <div className="flex justify-end">
-            가격: {group.price.toLocaleString()}원
+    <div className="flex rounded-2xl cursor-pointer" onClick={onClick}>
+      <div className="flex-2 justify-center items-center pr-4">
+        <img
+          src={group.groupPhoto}
+          alt="group photo"
+          className="w-44 rounded-lg"
+        />
+      </div>
+      <div className="flex-1 flex-col gap-1 flex justify-center">
+        <div className="text-xl truncate max-w-[300px]">{group.title}</div>
+        <div>
+          <div className="text-sm text-gray-500 flex gap-1">
+            <p>모임 개최일:</p>
+            <p>
+              {group.startDate} - {group.endDate}
+            </p>
           </div>
-          <div className="flex justify-end">
-            {group.startDate} - {group.endDate}
+          <div className="text-sm text-gray-500 flex gap-1">
+            <p>참여 인원:</p>
+            <p>{group.numberOfParticipants}명</p>
           </div>
-          <div className="flex justify-end">
-            파티 참여 인원: {group.numberOfParticipants}명
-          </div>
+        </div>
+        <div className="text-lg text-black flex gap-1 font-semibold">
+          <p>{group.price.toLocaleString()}원</p>
         </div>
       </div>
     </div>
