@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CharacterService } from './character.service';
+import { CharacterRewardService } from './character-reward.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CharacterInfoSelect } from './utils/types';
 import { ExpHistoryType, GroupProgressStatus } from '@prisma/client';
 import { getToday } from '@/group/utils/utils';
 
-class TestCharacterService extends CharacterService {
+class TestCharacterService extends CharacterRewardService {
   public testCheckLevelUp(
-    params: Parameters<CharacterService['checkLevelUp']>[0],
+    params: Parameters<CharacterRewardService['checkLevelUp']>[0],
   ) {
     return this.checkLevelUp(params);
   }

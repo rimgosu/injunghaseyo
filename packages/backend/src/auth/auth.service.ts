@@ -30,7 +30,7 @@ import { VerifyPasswordParams } from './dtos/verify-password.dto';
 import { verifyPassword } from './utils/auth.util';
 import { GetCheckSignIn } from './dtos/get-check-sign-in.dto';
 import { CacheKeyConstants } from '@/common/cache-key';
-import { CharacterService } from '@/character/character.service';
+import { CharacterRewardService } from '@/character/character-reward.service';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +40,7 @@ export class AuthService {
     private readonly emailService: EmailService,
     private readonly authHelper: AuthHelper,
     private readonly configService: ConfigService,
-    private readonly characterService: CharacterService,
+    private readonly characterService: CharacterRewardService,
   ) {}
 
   async signOut(user: User, accessToken: string): Promise<void> {

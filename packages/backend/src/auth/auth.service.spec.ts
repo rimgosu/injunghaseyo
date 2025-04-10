@@ -11,13 +11,13 @@ import { JwtService } from '@nestjs/jwt';
 import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
 import { UnauthorizedException } from '@nestjs/common';
 import { createMock } from '@golevelup/ts-jest';
-import { CharacterService } from '@/character/character.service';
+import { CharacterRewardService } from '@/character/character-reward.service';
 
 describe('AuthService', () => {
   let service: AuthService;
   let prismaService: PrismaService;
   let cacheManager: Cache;
-  let characterService: CharacterService;
+  let characterService: CharacterRewardService;
 
   const mockUser = createMock<User>({
     id: 1,
@@ -43,7 +43,7 @@ describe('AuthService', () => {
         ConfigService,
         EmailService,
         JwtService,
-        CharacterService,
+        CharacterRewardService,
         {
           provide: PrismaService,
           useValue: {
@@ -67,7 +67,9 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
     prismaService = module.get<PrismaService>(PrismaService);
     cacheManager = module.get<Cache>(CACHE_MANAGER);
-    characterService = module.get<CharacterService>(CharacterService);
+    characterService = module.get<CharacterRewardService>(
+      CharacterRewardService,
+    );
 
     jest.spyOn(characterService, 'rewardSignIn').mockResolvedValue();
   });

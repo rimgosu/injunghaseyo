@@ -1,9 +1,11 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { CharacterRewardService } from './character-reward.service';
 import { CharacterService } from './character.service';
+import { CharacterController } from './character.controller';
 
 @Module({
-  providers: [CharacterService],
-  exports: [CharacterService],
+  controllers: [CharacterController],
+  providers: [CharacterRewardService, CharacterService],
+  exports: [CharacterRewardService],
 })
-@Global()
 export class CharacterModule {}

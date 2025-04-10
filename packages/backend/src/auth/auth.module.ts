@@ -12,6 +12,7 @@ import { OauthPendingStrategy } from './guards/oauth-pending.strategy';
 import { CharacterSelectStrategy } from './guards/character-choose.strategy';
 import { RoleStrategy } from './guards/role.strategy';
 import { AtkOptionalStrategy } from './guards/atk-optional.strategy';
+import { CharacterRewardService } from '@/character/character-reward.service';
 
 @Global()
 @Module({
@@ -29,6 +30,7 @@ import { AtkOptionalStrategy } from './guards/atk-optional.strategy';
     CharacterSelectStrategy,
     RoleStrategy,
     AtkOptionalStrategy,
+    CharacterRewardService,
   ],
 })
 export class AuthModule {}
