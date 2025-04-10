@@ -6,11 +6,14 @@ import { BaseLayout } from '../../common/BaseLayout';
 import { TodayGroupTopNavBar } from '../components/today-group/TodayGroupTopNavBar';
 import { TodayGroupTopNavBarEnum } from '../utils/types';
 import { TodayProof } from '../components/today-group/TodayProof';
+import { useTodayRewardStore } from '../stores/useTodayRewardStore';
+import { TodayReward } from '../components/today-group/TodayReward';
 
 export const GroupTodayPage = () => {
   const { groupId } = useParams();
-  const { getToday } = useGroups();
+  const { getToday, getTodayReward } = useGroups();
   const { todayGroup, setTodayGroup } = useTodayGroupStore();
+  const { todayReward, setTodayReward } = useTodayRewardStore();
   const [selectedTodayGroupTopNavBar, setSelectedTodayGroupTopNavBar] =
     useState<TodayGroupTopNavBarEnum>(TodayGroupTopNavBarEnum.PROOF);
 
@@ -21,12 +24,21 @@ export const GroupTodayPage = () => {
     }
   };
 
+  const fetchTodayReward = async () => {
+    const res = await getTodayReward(Number(groupId));
+    if (res.data) {
+      setTodayReward(res.data);
+    }
+  };
+
   useEffect(() => {
     fetchTodayGroup();
+    fetchTodayReward();
   }, []);
 
   return (
     <BaseLayout
+      overflowY=""
       headerElement={
         <TodayGroupTopNavBar
           selected={selectedTodayGroupTopNavBar}
@@ -40,6 +52,9 @@ export const GroupTodayPage = () => {
           groupId={Number(groupId)}
           onProofComplete={fetchTodayGroup}
         />
+      )}
+      {selectedTodayGroupTopNavBar === TodayGroupTopNavBarEnum.REWARD && (
+        <TodayReward todayReward={todayReward} />
       )}
     </BaseLayout>
   );

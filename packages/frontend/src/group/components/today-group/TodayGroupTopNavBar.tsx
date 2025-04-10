@@ -34,11 +34,11 @@ export const TodayGroupTopNavBar = ({
         </button>
         <button
           className={`rounded-lg border border-gray-300 px-4 py-3 text-center ${
-            selected === TodayGroupTopNavBarEnum.LEVEL
+            selected === TodayGroupTopNavBarEnum.REWARD
               ? 'bg-green-200'
               : 'bg-white'
           }`}
-          onClick={() => setSelected(TodayGroupTopNavBarEnum.LEVEL)}
+          onClick={() => setSelected(TodayGroupTopNavBarEnum.REWARD)}
         >
           레벨
         </button>

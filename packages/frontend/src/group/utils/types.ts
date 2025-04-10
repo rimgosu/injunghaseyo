@@ -8,6 +8,6 @@ export const ProofMethodTypeView = {
 
 export enum TodayGroupTopNavBarEnum {
   PROOF = 'PROOF',
-  LEVEL = 'LEVEL',
+  REWARD = 'REWARD',
   GALLERY = 'GALLERY',
 }

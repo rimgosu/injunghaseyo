@@ -3,6 +3,7 @@ import {
   GetGroupRes,
   GetGroupsRes,
   GetTagsRes,
+  GetTodayRewardRes,
   GroupControllerCreateGroupParams,
   GroupControllerGetGroupsParams,
   GroupControllerGetTagsParams,
@@ -19,6 +20,17 @@ import { ApiErrorType, ApiResponse } from '../../common/types';
 import { useCallback } from 'react';
 
 export const useGroups = () => {
+  const getTodayReward = async (
+    groupId: number,
+  ): Promise<ApiResponse<GetTodayRewardRes>> => {
+    return await ApiSingleton.getInstance()
+      .groups.groupControllerGetTodayReward(groupId)
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
   const uploadProofLocation = async (
     params: GroupControllerUploadProofLocationParams,
   ): Promise<ApiResponse<UploadProofRes>> => {
@@ -138,5 +150,6 @@ export const useGroups = () => {
     uploadProofLocation,
     uploadProofButton,
     uploadProofPhoto,
+    getTodayReward,
   };
 };
