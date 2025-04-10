@@ -3,10 +3,25 @@ import { GetCharacter } from '@/auth/dtos/get-character.dto';
 import { PrismaService } from '@/prisma/prisma.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { User, UserStatus } from '@prisma/client';
+import { GetMyCharacter } from './dtos/get-my-character.dto';
+import { MY_CHARACTER_CHARACTER_INFO } from './utils/types';
 
 @Injectable()
 export class CharacterService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async getMyCharacter(user: User): Promise<GetMyCharacter> {
+    const myCharacter = await this.prisma.myCharacter.findUnique({
+      where: { userId: user.id, deletedAt: null },
+      ...MY_CHARACTER_CHARACTER_INFO,
+    });
+
+    if (!myCharacter) {
+      throw new BadRequestException('캐릭터가 없습니다.');
+    }
+
+    return new GetMyCharacter(myCharacter);
+  }
 
   async getCharacters(): Promise<GetCharacter[]> {
     const characters = await this.prisma.character.findMany({

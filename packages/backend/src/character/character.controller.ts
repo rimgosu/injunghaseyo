@@ -6,6 +6,8 @@ import { GetUser } from '@/common/get-user.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { User } from '@prisma/client';
+import { AtkGuard } from '@/auth/guards/atk.guard';
+import { GetMyCharacter } from './dtos/get-my-character.dto';
 
 @Controller('characters')
 export class CharacterController {
@@ -40,5 +42,24 @@ export class CharacterController {
     @Query() param: CharacterSelectParam,
   ) {
     return await this.characterService.characterSelect(user, param);
+  }
+
+  /**
+   * @description 유저의 character를 조회한다.
+   *
+   * - 레벨 정보,
+   * - 현재, 해당 레벨 경험치, 그 다음 레벨 경험치
+   * - 캐릭터의 이미지를 불러온다.
+   */
+  @Get('my')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  @ApiResponse({
+    status: 200,
+    description: '유저의 character 조회 성공',
+    type: GetMyCharacter,
+  })
+  async getMyCharacter(@GetUser() user: User) {
+    return await this.characterService.getMyCharacter(user);
   }
 }
