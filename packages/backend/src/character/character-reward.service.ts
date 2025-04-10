@@ -1,6 +1,6 @@
 import { getToday } from '@/group/utils/utils';
 import { PrismaService } from '@/prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ExpHistoryType, GroupProgressStatus } from '@prisma/client';
 import { CharacterInfoSelect, ICheckLevelUpReturnType } from './utils/types';
 
@@ -26,6 +26,10 @@ export class CharacterRewardService {
   private readonly ATTENDANCE_CHECK_REWARD_EXP = 1;
   private readonly PROOF_REWARD_EXP_PER_10000WON = 46;
   private readonly END_REWARD_EXP_PER_10000WON = 12;
+
+  private readonly logger = new Logger(CharacterRewardService.name, {
+    timestamp: true,
+  });
 
   constructor(private readonly prisma: PrismaService) {}
 
@@ -164,6 +168,11 @@ export class CharacterRewardService {
         },
       },
     });
+
+    if (!myCharacter) {
+      this.logger.debug('캐릭터가 없는 유저');
+      return;
+    }
 
     // 이미 출석체크 했으면 return
     if (myCharacter.ExpHistory.length > 0) {

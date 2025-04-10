@@ -1,7 +1,7 @@
 import { BaseLayout } from '../../common/BaseLayout';
 import React, { useEffect, useState } from 'react';
 import {
-  AuthControllerCharacterSelectParams,
+  CharacterControllerCharacterSelectParams,
   GetCharacter,
 } from '@rimgosu/libs';
 import { useCharacter } from '../hooks/useCharacter';
@@ -26,7 +26,7 @@ export const CharacterSelectPage = () => {
   }, [getCharacter]);
 
   const handleSelectCharacter = async (
-    param: AuthControllerCharacterSelectParams,
+    param: CharacterControllerCharacterSelectParams,
   ) => {
     const { characterId } = param;
     setSelectedCharacter(characterId);

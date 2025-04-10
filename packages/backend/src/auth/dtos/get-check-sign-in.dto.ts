@@ -2,7 +2,7 @@ import { IntersectionType, PickType } from '@nestjs/swagger';
 import { BaseUseraAuthDto } from './base.dto';
 import { User } from '@prisma/client';
 import { ICheckLevelUpReturnType } from '@/character/utils/types';
-import { BaseCharacterDto } from './base-character.dto';
+import { BaseCharacterDto } from '../../character/dtos/base-character.dto';
 
 export class GetCheckSignIn extends IntersectionType(
   PickType(BaseUseraAuthDto, ['userStatus']),

@@ -40,34 +40,6 @@ export interface ReissueAtkRes {
   accessToken: string;
 }
 
-export interface CharacterInfo {
-  /**
-   * 캐릭터 레벨
-   * @example 1
-   */
-  level: number;
-  /**
-   * 캐릭터 이미지 URL
-   * @example "https://example.com/image.jpg"
-   */
-  photoUrl: string;
-}
-
-export interface GetCharacter {
-  /**
-   * 캐릭터 ID
-   * @example 1
-   */
-  id: number;
-  /**
-   * 캐릭터 이름
-   * @example "캐릭터 이름"
-   */
-  name: string;
-  /** 캐릭터 정보 */
-  characterInfos: CharacterInfo[];
-}
-
 export interface ProofMethodElem {
   /**
    * 인증 방법 내용
@@ -290,6 +262,34 @@ export interface GetMoneyDto {
   money: number;
 }
 
+export interface CharacterInfo {
+  /**
+   * 캐릭터 레벨
+   * @example 1
+   */
+  level: number;
+  /**
+   * 캐릭터 이미지 URL
+   * @example "https://example.com/image.jpg"
+   */
+  photoUrl: string;
+}
+
+export interface GetCharacter {
+  /**
+   * 캐릭터 ID
+   * @example 1
+   */
+  id: number;
+  /**
+   * 캐릭터 이름
+   * @example "캐릭터 이름"
+   */
+  name: string;
+  /** 캐릭터 정보 */
+  characterInfos: CharacterInfo[];
+}
+
 /** sign in status */
 export enum GetCheckSignInUserStatusEnum {
   ACTIVE = 'ACTIVE',
@@ -476,14 +476,6 @@ export interface AuthControllerActivateOauthParams {
   eventAgree: boolean;
 }
 
-export interface AuthControllerCharacterSelectParams {
-  /**
-   * 유저가 고른 character id
-   * @example 1
-   */
-  characterId: number;
-}
-
 export interface GroupControllerCreateGroupParams {
   /**
    * 모임 제목
@@ -623,6 +615,14 @@ export interface UserMgmtControllerGainMoneyParams {
    * @example 35000
    */
   money: number;
+}
+
+export interface CharacterControllerCharacterSelectParams {
+  /**
+   * 유저가 고른 character id
+   * @example 1
+   */
+  characterId: number;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -1148,40 +1148,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         secure: true,
         ...params,
       }),
-
-    /**
-     * No description
-     *
-     * @tags Auth
-     * @name AuthControllerGetCharacters
-     * @request GET:/auth/characters
-     * @secure
-     */
-    authControllerGetCharacters: (params: RequestParams = {}) =>
-      this.request<GetCharacter[], any>({
-        path: `/auth/characters`,
-        method: 'GET',
-        secure: true,
-        format: 'json',
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Auth
-     * @name AuthControllerCharacterSelect
-     * @request POST:/auth/character-select
-     * @secure
-     */
-    authControllerCharacterSelect: (query: AuthControllerCharacterSelectParams, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/auth/character-select`,
-        method: 'POST',
-        query: query,
-        secure: true,
-        ...params,
-      }),
   };
   groups = {
     /**
@@ -1515,6 +1481,41 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     userMgmtControllerGainMoney: (query: UserMgmtControllerGainMoneyParams, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/users-mgmt/gain-money`,
+        method: 'POST',
+        query: query,
+        secure: true,
+        ...params,
+      }),
+  };
+  characters = {
+    /**
+     * No description
+     *
+     * @tags Character
+     * @name CharacterControllerGetCharacters
+     * @request GET:/characters
+     * @secure
+     */
+    characterControllerGetCharacters: (params: RequestParams = {}) =>
+      this.request<GetCharacter[], any>({
+        path: `/characters`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Character
+     * @name CharacterControllerCharacterSelect
+     * @request POST:/characters/select
+     * @secure
+     */
+    characterControllerCharacterSelect: (query: CharacterControllerCharacterSelectParams, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/characters/select`,
         method: 'POST',
         query: query,
         secure: true,

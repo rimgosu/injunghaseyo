@@ -85,6 +85,7 @@ export const AuthRoutes = () => {
         }
       />
       <Route
+        path="select-character"
         element={
           <PrivateRoute>
             <CharacterSelectPage />
