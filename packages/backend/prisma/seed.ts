@@ -392,122 +392,66 @@ async function createTags() {
 }
 
 async function createCharacters() {
-  const yello = await prisma.character.create({
-    data: {
+  const characterData = [
+    {
       name: yelloName,
       description: '귀여운 노랑이입니다.',
-      characterInfo: {
-        createMany: {
-          data: [
-            {
-              level: 1,
-              expNeed: 0,
-              photoUrl: yelloLv1,
-            },
-            {
-              level: 2,
-              expNeed: 100,
-              photoUrl: yelloLv2,
-            },
-            {
-              level: 3,
-              expNeed: 225,
-              photoUrl: yelloLv3,
-            },
-            {
-              level: 4,
-              expNeed: 375,
-              photoUrl: yelloLv4,
-            },
-            {
-              level: 5,
-              expNeed: 575,
-              photoUrl: yelloLv5,
-            },
-          ],
-        },
-      },
+      levelPhotos: [yelloLv1, yelloLv2, yelloLv3, yelloLv4, yelloLv5],
     },
-  });
-
-  const green = await prisma.character.create({
-    data: {
+    {
       name: greenName,
       description: '귀여운 초록이입니다.',
-      characterInfo: {
-        createMany: {
-          data: [
-            {
-              level: 1,
-              expNeed: 0,
-              photoUrl: greenLv1,
-            },
-            {
-              level: 2,
-              expNeed: 100,
-              photoUrl: greenLv2,
-            },
-            {
-              level: 3,
-              expNeed: 225,
-              photoUrl: greenLv3,
-            },
-            {
-              level: 4,
-              expNeed: 375,
-              photoUrl: greenLv4,
-            },
-            {
-              level: 5,
-              expNeed: 575,
-              photoUrl: greenLv5,
-            },
-          ],
-        },
-      },
+      levelPhotos: [greenLv1, greenLv2, greenLv3, greenLv4, greenLv5],
     },
-  });
-
-  const blue = await prisma.character.create({
-    data: {
+    {
       name: blueName,
       description: '귀여운 파랑이입니다.',
-      characterInfo: {
-        createMany: {
-          data: [
-            {
-              level: 1,
-              expNeed: 0,
-              photoUrl: blueLv1,
-            },
-            {
-              level: 2,
-              expNeed: 100,
-              photoUrl: blueLv2,
-            },
-            {
-              level: 3,
-              expNeed: 225,
-              photoUrl: blueLv3,
-            },
-            {
-              level: 4,
-              expNeed: 375,
-              photoUrl: blueLv4,
-            },
-            {
-              level: 5,
-              expNeed: 575,
-              photoUrl: blueLv5,
-            },
-          ],
-        },
-      },
+      levelPhotos: [blueLv1, blueLv2, blueLv3, blueLv4, blueLv5],
     },
-  });
+  ];
+
+  const expLevels = [
+    { level: 1, expNeed: 0, nextExpNeed: 100 },
+    { level: 2, expNeed: 100, nextExpNeed: 225 },
+    { level: 3, expNeed: 225, nextExpNeed: 375 },
+    { level: 4, expNeed: 375, nextExpNeed: 575 },
+    { level: 5, expNeed: 575, nextExpNeed: null },
+  ];
+
+  const characters = await Promise.all(
+    characterData.map(async (char) => {
+      return prisma.character.upsert({
+        where: { name: char.name },
+        update: {
+          description: char.description,
+          characterInfo: {
+            deleteMany: {},
+            createMany: {
+              data: expLevels.map((level, idx) => ({
+                ...level,
+                photoUrl: char.levelPhotos[idx],
+              })),
+            },
+          },
+        },
+        create: {
+          name: char.name,
+          description: char.description,
+          characterInfo: {
+            createMany: {
+              data: expLevels.map((level, idx) => ({
+                ...level,
+                photoUrl: char.levelPhotos[idx],
+              })),
+            },
+          },
+        },
+      });
+    }),
+  );
 
   logger.debug('Seed data created:');
-  logger.debug('Character:', yello, green, blue);
+  logger.debug('Characters:', characters);
 }
 
 main()

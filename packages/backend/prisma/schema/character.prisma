@@ -29,6 +29,7 @@ model CharacterInfo {
     id          Int    @id @default(autoincrement())
     level       Int    @default(1)
     expNeed     Int    @default(0)
+    nextExpNeed Int?
     photoUrl    String
     characterId Int
 
