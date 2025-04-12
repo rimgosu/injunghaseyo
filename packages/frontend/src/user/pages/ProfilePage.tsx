@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BaseLayout } from '../../common/BaseLayout';
 import { useUsers } from '../hooks/useUsers';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
@@ -58,7 +58,9 @@ export const ProfilePage = () => {
     <BaseLayout
       title="내 정보"
       rightElement={
-        <Cog6ToothIcon className="w-6 h-6 text-gray-600 cursor-pointer" />
+        <Link to="/user/setting">
+          <Cog6ToothIcon className="w-6 h-6 text-gray-600 cursor-pointer" />
+        </Link>
       }
       bottomNavBar={
         <div className="flex justify-center items-center">

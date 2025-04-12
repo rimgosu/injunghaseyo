@@ -1,6 +1,7 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { TodayGroupTopNavBarEnum } from '../../utils/types';
+import { XButton } from '../../../common/components/XButton';
 
 type TodayGroupTopNavBarProps = {
   selected: TodayGroupTopNavBarEnum;
@@ -11,15 +12,10 @@ export const TodayGroupTopNavBar = ({
   selected,
   setSelected,
 }: TodayGroupTopNavBarProps) => {
-  const navigate = useNavigate();
-
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="flex justify-end p-1">
-        <XMarkIcon
-          className="w-6 h-6 text-gray-600 cursor-pointer"
-          onClick={() => navigate(-1)}
-        />
+        <XButton />
       </div>
       <div className="grid grid-cols-3 gap-3">
         <button

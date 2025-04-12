@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ProfilePage } from './pages/ProfilePage';
 import { ProfilePhotoPage } from './pages/ProfilePhotoPage';
 import { PrivateRoute } from '../common/PrivateRoute';
+import { SettingPage } from './pages/SettingPage';
 
 export const UserRoutes = () => {
   return (
@@ -19,6 +20,14 @@ export const UserRoutes = () => {
         element={
           <PrivateRoute>
             <ProfilePhotoPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/setting"
+        element={
+          <PrivateRoute>
+            <SettingPage />
           </PrivateRoute>
         }
       />
