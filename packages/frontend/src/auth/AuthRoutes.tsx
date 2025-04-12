@@ -70,14 +70,7 @@ export const AuthRoutes = () => {
       <Route path="/" element={<Navigate to="/auth/init" replace />} />
       <Route path="init" element={<InitPage />} />
       <Route path="login" element={<LoginPage />} />
-      <Route
-        path="signup"
-        element={
-          <PrivateRoute>
-            <SignUpPage />
-          </PrivateRoute>
-        }
-      />
+      <Route path="signup" element={<SignUpPage />} />
       <Route
         path="search-password"
         element={<BaseLayout>비밀번호 찾기</BaseLayout>}
