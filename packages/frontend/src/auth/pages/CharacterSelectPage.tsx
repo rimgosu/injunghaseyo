@@ -4,7 +4,7 @@ import {
   CharacterControllerCharacterSelectParams,
   GetCharacter,
 } from '@rimgosu/libs';
-import { useCharacter } from '../hooks/useCharacter';
+import { useCharacter } from '../../character/hooks/useCharacter';
 import { GreenButton } from '../components/GreenButton';
 import { useNavigate } from 'react-router-dom';
 
