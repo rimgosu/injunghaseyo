@@ -13,17 +13,49 @@ export interface ICheckLevelUpReturnType {
   afterLevel: number;
 }
 
-export const MY_CHARACTER_CHARACTER_INFO =
-  Prisma.validator<Prisma.MyCharacterDefaultArgs>()({
+export const MY_CHARACTER_CHARACTER_INFO = (totalExp: number) => {
+  return Prisma.validator<Prisma.MyCharacterDefaultArgs>()({
     include: {
       character: {
         include: {
-          characterInfo: true,
+          characterInfo: {
+            where: {
+              OR: [
+                {
+                  AND: [
+                    {
+                      expNeed: {
+                        lte: totalExp,
+                      },
+                    },
+                    {
+                      nextExpNeed: {
+                        gt: totalExp,
+                      },
+                    },
+                  ],
+                },
+                {
+                  AND: [
+                    {
+                      expNeed: {
+                        lte: totalExp,
+                      },
+                    },
+                    {
+                      nextExpNeed: null,
+                    },
+                  ],
+                },
+              ],
+            },
+          },
         },
       },
     },
   });
+};
 
 export type MyCharacterCharacterInfo = Prisma.MyCharacterGetPayload<
-  typeof MY_CHARACTER_CHARACTER_INFO
+  ReturnType<typeof MY_CHARACTER_CHARACTER_INFO>
 >;

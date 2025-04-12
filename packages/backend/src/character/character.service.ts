@@ -11,9 +11,20 @@ export class CharacterService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getMyCharacter(user: User): Promise<GetMyCharacter> {
+    const myCharacterExp = await this.prisma.myCharacter.findUnique({
+      where: { userId: user.id, deletedAt: null },
+      select: {
+        totalExp: true,
+      },
+    });
+
+    if (!myCharacterExp) {
+      throw new BadRequestException('캐릭터가 없습니다.');
+    }
+
     const myCharacter = await this.prisma.myCharacter.findUnique({
       where: { userId: user.id, deletedAt: null },
-      ...MY_CHARACTER_CHARACTER_INFO,
+      ...MY_CHARACTER_CHARACTER_INFO(myCharacterExp.totalExp),
     });
 
     if (!myCharacter) {

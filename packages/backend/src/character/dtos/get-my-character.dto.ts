@@ -53,5 +53,11 @@ export class GetMyCharacter {
 
   constructor(myCharacter: MyCharacterCharacterInfo) {
     this.myCharacterId = myCharacter.id;
+    this.currentLevel = myCharacter.character.characterInfo[0].level;
+    this.currentExp = myCharacter.totalExp;
+    this.nextExp = myCharacter.character.characterInfo[0].nextExpNeed;
+    this.previousExp = myCharacter.character.characterInfo[0].expNeed;
+    this.name = myCharacter.character.name;
+    this.characterImage = myCharacter.character.characterInfo[0].photoUrl;
   }
 }
