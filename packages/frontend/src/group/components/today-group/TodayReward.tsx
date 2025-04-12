@@ -42,44 +42,39 @@ export const TodayReward = ({
         value={number2Won(todayReward?.todayReward ?? 0)}
       />
       <div className="flex flex-col gap-8">
+        <div className="flex justify-center items-center">
+          <img
+            src={myCharacter?.characterImage}
+            alt="character"
+            width="200"
+            height="200"
+          />
+        </div>
         <div className="flex flex-col gap-1 p-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <span className="text-green-600">
+              <span className="text-green-500 text-xl">
                 레벨 {myCharacter?.currentLevel}
               </span>
             </div>
             <div className="relative">
-              <div className="w-full h-8 border border-gray-300 bg-gray-200 rounded-lg">
+              <div className="w-full h-12 border border-gray-300 rounded-lg relative">
                 <div
-                  className="h-full bg-green-400 rounded-lg"
+                  className="h-full bg-green-300 rounded-lg flex items-center justify-center text-white text-center text-xl"
                   style={{
                     width: `${calculateProgress()}%`,
                   }}
-                />
+                ></div>
+                <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-xl">
+                  {myCharacter?.currentExp}exp
+                </div>
               </div>
               <div className="absolute bottom-[-20px] left-0 right-0 flex justify-between text-sm text-gray-500">
-                <span>{myCharacter?.previousExp}</span>
-                <span
-                  className="absolute transform -translate-x-1/2"
-                  style={{
-                    left: `${calculateProgress()}%`,
-                  }}
-                >
-                  {myCharacter?.currentExp}
-                </span>
-                <span>{myCharacter?.nextExp}</span>
+                <span>{myCharacter?.previousExp}exp</span>
+                <span>{myCharacter?.nextExp}exp</span>
               </div>
             </div>
           </div>
-        </div>
-        <div className="flex justify-center items-center">
-          <svg
-            xmlns={myCharacter?.characterImage}
-            width="100"
-            height="100"
-            viewBox="0 0 24 24"
-          />
         </div>
       </div>
     </div>
