@@ -8,10 +8,14 @@ import { TodayGroupTopNavBarEnum } from '../utils/types';
 import { TodayProof } from '../components/today-group/TodayProof';
 import { useTodayRewardStore } from '../stores/useTodayRewardStore';
 import { TodayReward } from '../components/today-group/TodayReward';
+import { useCharacter } from '../../character/hooks/useCharacter';
+import { useGetMyCharacterStore } from '../../character/stores/useGetMyCharacter';
 
 export const GroupTodayPage = () => {
   const { groupId } = useParams();
   const { getToday, getTodayReward } = useGroups();
+  const { getMyCharacter } = useCharacter();
+  const { myCharacter, setMyCharacter } = useGetMyCharacterStore();
   const { todayGroup, setTodayGroup } = useTodayGroupStore();
   const { todayReward, setTodayReward } = useTodayRewardStore();
   const [selectedTodayGroupTopNavBar, setSelectedTodayGroupTopNavBar] =
@@ -31,9 +35,17 @@ export const GroupTodayPage = () => {
     }
   };
 
+  const fetchMyCharacter = async () => {
+    const res = await getMyCharacter();
+    if (res.data) {
+      setMyCharacter(res.data);
+    }
+  };
+
   useEffect(() => {
     fetchTodayGroup();
     fetchTodayReward();
+    fetchMyCharacter();
   }, [selectedTodayGroupTopNavBar]);
 
   return (
@@ -54,7 +66,11 @@ export const GroupTodayPage = () => {
         />
       )}
       {selectedTodayGroupTopNavBar === TodayGroupTopNavBarEnum.REWARD && (
-        <TodayReward todayReward={todayReward} />
+        <TodayReward
+          todayReward={todayReward}
+          myCharacter={myCharacter}
+          todayGroup={todayGroup}
+        />
       )}
     </BaseLayout>
   );
