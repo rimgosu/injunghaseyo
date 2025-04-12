@@ -52,11 +52,10 @@ export const CharacterSelectPage = () => {
               className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer hover:border-green-500 
                 ${selectedCharacter === character.id ? 'border-green-500' : ''}`}
             >
-              <div
+              <img
+                src={character.characterInfos[0].photoUrl}
+                alt={character.name}
                 className="w-24 h-24 mb-2"
-                dangerouslySetInnerHTML={{
-                  __html: character.characterInfos[0].photoUrl,
-                }}
               />
               <div className="text-center font-medium">{character.name}</div>
             </div>
