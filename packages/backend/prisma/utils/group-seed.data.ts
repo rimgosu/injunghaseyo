@@ -119,28 +119,30 @@ export class GroupSeedData {
                     },
                   },
                 });
-                await tx.proof
-                  .findFirst({
-                    where: {
-                      groupProgressId: todayProgress.id,
-                    },
-                  })
-                  .then(async (proof) => {
-                    if (proof) {
-                      await tx.photoProof.deleteMany({
-                        where: { proofId: proof.id },
-                      });
-                      await tx.buttonClickProof.deleteMany({
-                        where: { proofId: proof.id },
-                      });
-                      await tx.locationProof.deleteMany({
-                        where: { proofId: proof.id },
-                      });
-                      await tx.proof.delete({
-                        where: { id: proof.id },
-                      });
-                    }
-                  });
+                if (todayProgress) {
+                  await tx.proof
+                    .findFirst({
+                      where: {
+                        groupProgressId: todayProgress.id,
+                      },
+                    })
+                    .then(async (proof) => {
+                      if (proof) {
+                        await tx.photoProof.deleteMany({
+                          where: { proofId: proof.id },
+                        });
+                        await tx.buttonClickProof.deleteMany({
+                          where: { proofId: proof.id },
+                        });
+                        await tx.locationProof.deleteMany({
+                          where: { proofId: proof.id },
+                        });
+                        await tx.proof.delete({
+                          where: { id: proof.id },
+                        });
+                      }
+                    });
+                }
               }
 
               return tx.groupProgress.upsert({
