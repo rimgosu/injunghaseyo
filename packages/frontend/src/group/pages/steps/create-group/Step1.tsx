@@ -4,6 +4,7 @@ import { useGroups } from '../../../hooks/useGroups';
 import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
 import { useEffect, useState } from 'react';
 import { useUsers } from '../../../../user/hooks/useUsers';
+import { errorMessage2String } from '../../../../common/common.util';
 
 export const CreateGroupStep1 = () => {
   const { formData, updateFormData, setError, setIsValid } =
@@ -25,9 +26,11 @@ export const CreateGroupStep1 = () => {
     ]);
 
     const titleErrorMessage =
-      formData.title !== '' && validateTitle.error?.message;
+      formData.title !== '' &&
+      errorMessage2String(validateTitle.error?.message as string | string[]);
     const priceErrorMessage =
-      formData.price !== 0 && validatePrice.error?.message;
+      formData.price !== 0 &&
+      errorMessage2String(validatePrice.error?.message as string | string[]);
     const error = titleErrorMessage || priceErrorMessage;
     setError(error || null);
     setIsValid(!error && formData.title !== '');
@@ -36,8 +39,12 @@ export const CreateGroupStep1 = () => {
   useEffect(() => {
     const fetchMoneyData = async () => {
       const res = await fetchMoney();
-      res.data && setMoneyData(res.data.money);
-      res.error && setError(res.error.message);
+      if (res.error) {
+        setError(errorMessage2String(res.error.message));
+      }
+      if (res.data) {
+        setMoneyData(res.data.money);
+      }
     };
     fetchMoneyData();
   }, [fetchMoney]);
@@ -60,7 +67,10 @@ export const CreateGroupStep1 = () => {
             validateValue: e.target.value,
             validateType: ValidateCreateGroupElementBodyValidateTypeEnum.TITLE,
           });
-          setError(validateTitle.error?.message || null);
+          const errorMessage = errorMessage2String(
+            validateTitle.error?.message as string | string[],
+          );
+          setError(errorMessage || null);
         }}
         required
       />
@@ -76,7 +86,10 @@ export const CreateGroupStep1 = () => {
             validateValue: value,
             validateType: ValidateCreateGroupElementBodyValidateTypeEnum.PRICE,
           });
-          setError(validatePrice.error?.message || null);
+          const errorMessage = errorMessage2String(
+            validatePrice.error?.message as string | string[],
+          );
+          setError(errorMessage || null);
         }}
         required
         suffix="원"

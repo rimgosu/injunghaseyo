@@ -14,6 +14,7 @@ import dayjs from 'dayjs';
 import { TimeIgnoreCheckbox } from '../../../components/TimeIgnoreCheckbox';
 import { useGroups } from '../../../hooks/useGroups';
 import { ValidationMessage } from '../../../../common/components/ValidationMessage';
+import { errorMessage2String } from '../../../../common/common.util';
 
 const convertDayjsToMinutes = (time: dayjs.Dayjs | null) => {
   if (!time) return 0;
@@ -51,7 +52,7 @@ export const CreateGroupStep2AddProofMethod = () => {
       if (res.error) {
         setIsValid(false);
         if (proofMethod.contents !== '') {
-          setError(res.error.message);
+          setError(errorMessage2String(res.error.message));
           return;
         }
         return;

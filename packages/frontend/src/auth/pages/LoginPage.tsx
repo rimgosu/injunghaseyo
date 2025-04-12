@@ -10,6 +10,7 @@ import {
 } from '@rimgosu/libs';
 import { SocialLogin } from '../components/SocialLogin';
 import { OtherPage } from '../components/OtherPage';
+import { errorMessage2String } from '../../common/common.util';
 
 export const LoginPage = () => {
   const [formData, setFormData] = useState<AuthControllerSignInParams>({
@@ -28,7 +29,7 @@ export const LoginPage = () => {
   const handleLogin = async () => {
     const res = await login(formData);
     if (res.error) {
-      setLoginError(res.error.message);
+      setLoginError(errorMessage2String(res.error.message));
       return;
     }
     res.data && localStorage.setItem('accessToken', res.data.accessToken);

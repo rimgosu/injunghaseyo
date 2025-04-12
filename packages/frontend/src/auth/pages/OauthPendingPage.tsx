@@ -7,6 +7,7 @@ import { ValidationMessage } from '../../common/components/ValidationMessage';
 import { useAuth } from '../hooks/useAuth';
 import { AuthControllerActivateOauthParams } from '@rimgosu/libs';
 import { useNavigate } from 'react-router-dom';
+import { errorMessage2String } from '../../common/common.util';
 
 export const OauthPendingPage = () => {
   const { verifyNickname, activateOauth } = useAuth();
@@ -38,8 +39,11 @@ export const OauthPendingPage = () => {
       }
 
       const res = await verifyNickname({ nickname });
-      res.data && setValidNickname('');
-      res.error && setValidNickname(res.error.message);
+      if (res.error) {
+        setValidNickname(errorMessage2String(res.error.message));
+      } else {
+        setValidNickname('');
+      }
     } catch (error) {
       if (error instanceof Error) {
         setValidNickname(error.message);

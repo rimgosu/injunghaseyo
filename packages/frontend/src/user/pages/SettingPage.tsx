@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BaseLayout } from '../../common/BaseLayout';
 import { XButton } from '../../common/components/XButton';
 
@@ -10,9 +10,9 @@ export const SettingPage = () => {
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-bold">계정 관리</h2>
           <div className="flex flex-col gap-1 text-xl">
-            <a href="#">- 비밀번호 변경</a>
-            <a href="#">- 회원 탈퇴</a>
-            <a href="#">- 로그아웃</a>
+            <Link to="/auth/change-password">- 비밀번호 변경</Link>
+            <Link to="/auth/withdraw">- 회원 탈퇴</Link>
+            <Link to="/auth/logout">- 로그아웃</Link>
           </div>
         </div>
         <div className="flex flex-col gap-2">

@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { SignUpFormData } from '../types';
 import {
   AuthControllerActivateOauthParams,
+  AuthControllerChangePasswordParams,
   AuthControllerSignInParams,
   AuthControllerVerifyCodeParams,
   AuthControllerVerifyEmailParams,
@@ -14,6 +15,17 @@ import { ApiSingleton } from '../../common/apiSingleton';
 import { ApiErrorType, ApiResponse } from '../../common/types';
 
 export const useAuth = () => {
+  const changePassword = async (
+    params: AuthControllerChangePasswordParams,
+  ): Promise<ApiResponse<void>> => {
+    return await ApiSingleton.getInstance()
+      .auth.authControllerChangePassword(params)
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
   const sendVerificationEmail = async (
     params: AuthControllerVerifyEmailParams,
   ): Promise<ApiResponse<void>> => {
@@ -126,5 +138,6 @@ export const useAuth = () => {
     login,
     checkSignIn,
     activateOauth,
+    changePassword,
   };
 };

@@ -1,5 +1,3 @@
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { useNavigate } from 'react-router-dom';
 import { TodayGroupTopNavBarEnum } from '../../utils/types';
 import { XButton } from '../../../common/components/XButton';
 

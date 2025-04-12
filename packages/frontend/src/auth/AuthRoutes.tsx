@@ -15,6 +15,7 @@ import { GetCheckSignInUserStatusEnum } from '@rimgosu/libs';
 import { CharacterSelectPage } from './pages/CharacterSelectPage';
 import { OauthPendingPage } from './pages/OauthPendingPage';
 import { PrivateRoute } from '../common/PrivateRoute';
+import { ChangePasswordPage } from '../user/pages/settings/ChangePasswordPage';
 
 export const AuthRoutes = () => {
   const { checkSignIn } = useAuth();
@@ -34,7 +35,12 @@ export const AuthRoutes = () => {
 
   useEffect(() => {
     const currentPath = location.pathname;
-    const publicPaths = ['/auth/init', '/auth/login', '/auth/signup'];
+    const publicPaths = [
+      '/auth/init',
+      '/auth/login',
+      '/auth/signup',
+      '/auth/change-password',
+    ];
 
     if (publicPaths.includes(currentPath)) {
       return;
@@ -89,6 +95,14 @@ export const AuthRoutes = () => {
         element={
           <PrivateRoute>
             <CharacterSelectPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="change-password"
+        element={
+          <PrivateRoute>
+            <ChangePasswordPage />
           </PrivateRoute>
         }
       />
