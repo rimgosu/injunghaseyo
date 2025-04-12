@@ -6,6 +6,7 @@ import { BottomNavigationBar } from '../../common/components/BottomNavigationBar
 import { ProfileGroupCard } from '../components/ProfileGroupCard';
 import { CameraIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 import { useProfileStore } from '../stores/useProfileStore';
+import { number2Won } from '../../common/common.util';
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ export const ProfilePage = () => {
         </div>
       }
     >
-      <div className="flex flex-col p-4 gap-4">
+      <div className="flex flex-col p-4 gap-12">
         {/* 상단 프로필 섹션 */}
         <div className="flex items-center flex-col gap-4">
           <div className="w-36 h-36 rounded-full relative border border-gray-300 cursor-pointer">
@@ -99,12 +100,12 @@ export const ProfilePage = () => {
             <div className="flex-1 bg-gray-50 rounded-lg p-4 text-center">
               <div className="text-gray-600 text-sm">인증머니</div>
               <div className="text-xl font-bold mt-1">
-                {profileData?.money}원
+                {number2Won(profileData?.money ?? 0)}
               </div>
             </div>
             <div className="flex-1 bg-gray-50 rounded-lg p-4 text-center">
               <div className="text-gray-600 text-sm">총 인증한 일수</div>
-              <div className="text-xl font-bold mt-1">
+              <div className="text-3xl text-green-400 font-bold mt-1">
                 {profileData?.totalProofDays}일
               </div>
             </div>
@@ -113,7 +114,7 @@ export const ProfilePage = () => {
 
         {/* 진행 중인 인증 */}
         <div className="mt-4">
-          <h2 className="font-bold mb-2">진행 중인 인증</h2>
+          <h2 className="mb-2 text-xl">진행 중인 인증</h2>
           <div className="grid grid-cols gap-4">
             {profileData?.currentGroup.map((group, index) => (
               <ProfileGroupCard
@@ -128,7 +129,7 @@ export const ProfilePage = () => {
 
         {/* 예약한 인증 */}
         <div className="mt-4">
-          <h2 className="font-bold mb-2">예약한 인증</h2>
+          <h2 className="mb-2 text-xl">예약한 인증</h2>
           <div className="grid grid-cols-2 gap-4">
             {profileData?.reservedGroup.map((group, index) => (
               <ProfileGroupCard
@@ -142,7 +143,7 @@ export const ProfilePage = () => {
 
         {/* 완료한 인증 */}
         <div className="mb-24">
-          <h2 className="font-bold mb-2">완료한 인증</h2>
+          <h2 className="mb-2 text-xl">완료한 인증</h2>
           <div className="grid grid-cols-2 gap-4">
             {profileData?.completedGroup.map((group, index) => (
               <ProfileGroupCard
