@@ -290,6 +290,44 @@ export interface GetCharacter {
   characterInfos: CharacterInfo[];
 }
 
+export interface GetMyCharacter {
+  /**
+   * my character id
+   * @example 1
+   */
+  myCharacterId: number;
+  /**
+   * 현재 레벨
+   * @example 2
+   */
+  currentLevel: number;
+  /**
+   * 현재 경험치
+   * @example 125
+   */
+  currentExp: number;
+  /**
+   * 다음 레벨 경험치
+   * @example 200
+   */
+  nextExp: number;
+  /**
+   * 이전 레벨 경험치
+   * @example 100
+   */
+  previousExp: number;
+  /**
+   * 캐릭터 이름
+   * @example "캐릭터 이름"
+   */
+  name: string;
+  /**
+   * 캐릭터 이미지
+   * @example "https://example.com/image.png"
+   */
+  characterImage: string;
+}
+
 /** sign in status */
 export enum GetCheckSignInUserStatusEnum {
   ACTIVE = 'ACTIVE',
@@ -1519,6 +1557,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         query: query,
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Character
+     * @name CharacterControllerGetMyCharacter
+     * @request GET:/characters/my
+     * @secure
+     */
+    characterControllerGetMyCharacter: (params: RequestParams = {}) =>
+      this.request<GetMyCharacter, any>({
+        path: `/characters/my`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
         ...params,
       }),
   };
