@@ -34,7 +34,7 @@ export const GroupTodayPage = () => {
   useEffect(() => {
     fetchTodayGroup();
     fetchTodayReward();
-  }, []);
+  }, [selectedTodayGroupTopNavBar]);
 
   return (
     <BaseLayout
