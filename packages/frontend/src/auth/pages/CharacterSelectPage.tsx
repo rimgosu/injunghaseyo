@@ -1,10 +1,10 @@
 import { BaseLayout } from '../../common/BaseLayout';
 import React, { useEffect, useState } from 'react';
 import {
-  AuthControllerCharacterSelectParams,
+  CharacterControllerCharacterSelectParams,
   GetCharacter,
 } from '@rimgosu/libs';
-import { useCharacter } from '../hooks/useCharacter';
+import { useCharacter } from '../../character/hooks/useCharacter';
 import { GreenButton } from '../components/GreenButton';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,7 +26,7 @@ export const CharacterSelectPage = () => {
   }, [getCharacter]);
 
   const handleSelectCharacter = async (
-    param: AuthControllerCharacterSelectParams,
+    param: CharacterControllerCharacterSelectParams,
   ) => {
     const { characterId } = param;
     setSelectedCharacter(characterId);

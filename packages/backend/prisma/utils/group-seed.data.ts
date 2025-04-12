@@ -100,16 +100,72 @@ export class GroupSeedData {
       const createdGroupProgresses = await Promise.all(
         joins.flatMap((join) =>
           groupDate.flatMap((date) =>
-            proofMethods.map((method) =>
-              tx.groupProgress.create({
-                data: {
+            proofMethods.map(async (method) => {
+              const isToday =
+                new Date(date.date)
+                  .toLocaleString('en-US', { timeZone: 'Asia/Seoul' })
+                  .split(',')[0] ===
+                new Date()
+                  .toLocaleString('en-US', { timeZone: 'Asia/Seoul' })
+                  .split(',')[0];
+
+              if (isToday) {
+                const todayProgress = await tx.groupProgress.findUnique({
+                  where: {
+                    groupDateId_joinId_proofMethodId: {
+                      groupDateId: date.id,
+                      joinId: join.id,
+                      proofMethodId: method.id,
+                    },
+                  },
+                });
+                if (todayProgress) {
+                  await tx.proof
+                    .findFirst({
+                      where: {
+                        groupProgressId: todayProgress.id,
+                      },
+                    })
+                    .then(async (proof) => {
+                      if (proof) {
+                        await tx.photoProof.deleteMany({
+                          where: { proofId: proof.id },
+                        });
+                        await tx.buttonClickProof.deleteMany({
+                          where: { proofId: proof.id },
+                        });
+                        await tx.locationProof.deleteMany({
+                          where: { proofId: proof.id },
+                        });
+                        await tx.proof.delete({
+                          where: { id: proof.id },
+                        });
+                      }
+                    });
+                }
+              }
+
+              return tx.groupProgress.upsert({
+                where: {
+                  groupDateId_joinId_proofMethodId: {
+                    groupDateId: date.id,
+                    joinId: join.id,
+                    proofMethodId: method.id,
+                  },
+                },
+                create: {
                   joinId: join.id,
                   groupDateId: date.id,
                   proofMethodId: method.id,
                   status: GroupProgressStatus.PENDING,
                 },
-              }),
-            ),
+                update: isToday
+                  ? {
+                      status: GroupProgressStatus.PENDING,
+                    }
+                  : {},
+              });
+            }),
           ),
         ),
       );

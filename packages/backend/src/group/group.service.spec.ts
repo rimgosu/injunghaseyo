@@ -21,7 +21,7 @@ import { S3Service } from '@/s3/s3.service';
 import { createMock } from '@golevelup/ts-jest';
 import { GroupWith, GroupWithProofDate } from './utils/types';
 import { GetGroupsQueryDto } from './dtos/get-groups-query.dto';
-import { CharacterService } from '@/character/character.service';
+import { CharacterRewardService } from '@/character/character-reward.service';
 
 // 공통으로 사용되는 mock 객체들
 const mockUser: User = createMock<User>({
@@ -50,7 +50,7 @@ describe('GroupService', () => {
         GroupService,
         S3Service,
         {
-          provide: CharacterService,
+          provide: CharacterRewardService,
           useValue: {
             rewardProof: jest.fn(),
           },

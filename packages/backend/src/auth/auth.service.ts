@@ -24,13 +24,11 @@ import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
 import { ActivateOauthParams } from './dtos/activate-oauth-params.dto';
 import { ConfigService } from '@nestjs/config';
 import { VerifyNicknameParam } from './dtos/verify-nickname-params.dto';
-import { CharacterSelectParam } from './dtos/character-select-param.dto';
-import { GetCharacter } from './dtos/get-character.dto';
 import { VerifyPasswordParams } from './dtos/verify-password.dto';
 import { verifyPassword } from './utils/auth.util';
 import { GetCheckSignIn } from './dtos/get-check-sign-in.dto';
 import { CacheKeyConstants } from '@/common/cache-key';
-import { CharacterService } from '@/character/character.service';
+import { CharacterRewardService } from '@/character/character-reward.service';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +38,7 @@ export class AuthService {
     private readonly emailService: EmailService,
     private readonly authHelper: AuthHelper,
     private readonly configService: ConfigService,
-    private readonly characterService: CharacterService,
+    private readonly characterRewardService: CharacterRewardService,
   ) {}
 
   async signOut(user: User, accessToken: string): Promise<void> {
@@ -60,7 +58,7 @@ export class AuthService {
   }
 
   async checkSignIn(user: User): Promise<GetCheckSignIn> {
-    const checkLevelUpResult = await this.characterService.rewardSignIn(
+    const checkLevelUpResult = await this.characterRewardService.rewardSignIn(
       user.id,
     );
 
@@ -78,45 +76,6 @@ export class AuthService {
       );
 
     return { message: '올바른 비밀번호' };
-  }
-
-  async getCharacters(): Promise<GetCharacter[]> {
-    const characters = await this.prisma.character.findMany({
-      include: { characterInfo: true },
-    });
-
-    return characters.map((character) => new GetCharacter(character));
-  }
-
-  async characterSelect(user: User, param: CharacterSelectParam) {
-    const { characterId } = param;
-
-    const existingCharacter = await this.prisma.character.findUnique({
-      where: { id: characterId },
-    });
-
-    if (!existingCharacter)
-      throw new BadRequestException('존재하지 않는 캐릭터입니다.');
-
-    return await Promise.all([
-      this.prisma.myCharacter.create({
-        data: {
-          characterId,
-          userId: user.id,
-        },
-        select: {
-          character: true,
-        },
-      }),
-      this.prisma.user.update({
-        where: { id: user.id },
-        data: { status: UserStatus.ACTIVE },
-        select: {
-          email: true,
-          status: true,
-        },
-      }),
-    ]);
   }
 
   async verifyNickname(param: VerifyNicknameParam) {

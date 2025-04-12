@@ -53,7 +53,7 @@ import { ValidateCreateGroupElementBody } from './dtos/validate-create-group-ele
 import { GroupElementValidationStrategyFactory } from './utils/group-create-validate.strategy';
 import { GetGroupsQueryDto } from './dtos/get-groups-query.dto';
 import { GroupDateHelper } from './utils/group-date.helper';
-import { CharacterService } from '@/character/character.service';
+import { CharacterRewardService } from '@/character/character-reward.service';
 import { UploadProofRes } from './dtos/upload-proof-res.dto';
 
 @Injectable()
@@ -65,7 +65,7 @@ export class GroupService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly s3: S3Service,
-    private readonly characterService: CharacterService,
+    private readonly characterService: CharacterRewardService,
   ) {}
 
   /**

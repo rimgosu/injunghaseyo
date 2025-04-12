@@ -5,26 +5,9 @@ import {
   Role,
   UserStatus,
 } from '@prisma/client';
-import {
-  blueLv1,
-  blueLv2,
-  blueLv3,
-  blueLv4,
-  blueLv5,
-  greenLv1,
-  greenLv2,
-  greenLv3,
-  greenLv4,
-  greenLv5,
-  yelloLv1,
-  yelloLv2,
-  yelloLv3,
-  yelloLv4,
-  yelloLv5,
-} from './utils/svgs';
 import { tags } from './utils/tags';
 import { Logger } from '@nestjs/common';
-import { blueName, greenName, yelloName } from './utils/types';
+import { rabbitName, yelloName, bearName } from './utils/types';
 import { GroupDateUtil } from './utils/group-date.util';
 import { GroupSeedData } from './utils/group-seed.data';
 import { UserSeedData } from './utils/user-seed.data';
@@ -287,7 +270,7 @@ async function createUsers() {
             create: {
               character: {
                 connect: {
-                  name: yelloName,
+                  name: bearName,
                 },
               },
             },
@@ -321,7 +304,7 @@ async function createUsers() {
             create: {
               character: {
                 connect: {
-                  name: greenName,
+                  name: yelloName,
                 },
               },
             },
@@ -367,7 +350,7 @@ async function createAdminUser() {
         create: {
           character: {
             connect: {
-              name: blueName,
+              name: rabbitName,
             },
           },
         },
@@ -392,122 +375,84 @@ async function createTags() {
 }
 
 async function createCharacters() {
-  const yello = await prisma.character.create({
-    data: {
+  const characterData = [
+    {
+      name: bearName,
+      description: '위풍당당한 곰입니다.',
+      levelPhotos: [
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/bear-lv1.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/bear-lv2.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/bear-lv3.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/bear-lv4.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/bear-lv5.png',
+      ],
+    },
+    {
       name: yelloName,
-      description: '귀여운 노랑이입니다.',
-      characterInfo: {
-        createMany: {
-          data: [
-            {
-              level: 1,
-              expNeed: 0,
-              photoUrl: yelloLv1,
-            },
-            {
-              level: 2,
-              expNeed: 100,
-              photoUrl: yelloLv2,
-            },
-            {
-              level: 3,
-              expNeed: 225,
-              photoUrl: yelloLv3,
-            },
-            {
-              level: 4,
-              expNeed: 375,
-              photoUrl: yelloLv4,
-            },
-            {
-              level: 5,
-              expNeed: 575,
-              photoUrl: yelloLv5,
-            },
-          ],
-        },
-      },
+      description: '깜찍한 노랑이입니다.',
+      levelPhotos: [
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/yello-lv1.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/yello-lv2.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/yello-lv3.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/yello-lv4.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/yello-lv5.png',
+      ],
     },
-  });
+    {
+      name: rabbitName,
+      description: '귀여운 토끼입니다.',
+      levelPhotos: [
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/rabbit-lv1.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/rabbit-lv2.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/rabbit-lv3.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/rabbit-lv4.png',
+        'https://injunghaseyo-dev.s3.ap-northeast-2.amazonaws.com/default/rabbit-lv5.png',
+      ],
+    },
+  ];
 
-  const green = await prisma.character.create({
-    data: {
-      name: greenName,
-      description: '귀여운 초록이입니다.',
-      characterInfo: {
-        createMany: {
-          data: [
-            {
-              level: 1,
-              expNeed: 0,
-              photoUrl: greenLv1,
-            },
-            {
-              level: 2,
-              expNeed: 100,
-              photoUrl: greenLv2,
-            },
-            {
-              level: 3,
-              expNeed: 225,
-              photoUrl: greenLv3,
-            },
-            {
-              level: 4,
-              expNeed: 375,
-              photoUrl: greenLv4,
-            },
-            {
-              level: 5,
-              expNeed: 575,
-              photoUrl: greenLv5,
-            },
-          ],
-        },
-      },
-    },
-  });
+  const expLevels = [
+    { level: 1, expNeed: 0, nextExpNeed: 100 },
+    { level: 2, expNeed: 100, nextExpNeed: 225 },
+    { level: 3, expNeed: 225, nextExpNeed: 375 },
+    { level: 4, expNeed: 375, nextExpNeed: 575 },
+    { level: 5, expNeed: 575, nextExpNeed: null },
+  ];
 
-  const blue = await prisma.character.create({
-    data: {
-      name: blueName,
-      description: '귀여운 파랑이입니다.',
-      characterInfo: {
-        createMany: {
-          data: [
-            {
-              level: 1,
-              expNeed: 0,
-              photoUrl: blueLv1,
+  const characters = await Promise.all(
+    characterData.map(async (char) => {
+      return prisma.character.upsert({
+        where: { name: char.name },
+        update: {
+          description: char.description,
+          characterInfo: {
+            deleteMany: {},
+            createMany: {
+              data: expLevels.map((level, idx) => ({
+                ...level,
+                photoUrl: char.levelPhotos[idx],
+              })),
             },
-            {
-              level: 2,
-              expNeed: 100,
-              photoUrl: blueLv2,
-            },
-            {
-              level: 3,
-              expNeed: 225,
-              photoUrl: blueLv3,
-            },
-            {
-              level: 4,
-              expNeed: 375,
-              photoUrl: blueLv4,
-            },
-            {
-              level: 5,
-              expNeed: 575,
-              photoUrl: blueLv5,
-            },
-          ],
+          },
         },
-      },
-    },
-  });
+        create: {
+          name: char.name,
+          description: char.description,
+          characterInfo: {
+            createMany: {
+              data: expLevels.map((level, idx) => ({
+                ...level,
+                photoUrl: char.levelPhotos[idx],
+              })),
+            },
+          },
+        },
+      });
+    }),
+  );
 
   logger.debug('Seed data created:');
-  logger.debug('Character:', yello, green, blue);
+  logger.debug('Characters:', characters);
 }
 
 main()

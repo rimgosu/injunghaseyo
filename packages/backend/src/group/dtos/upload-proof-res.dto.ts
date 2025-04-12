@@ -1,4 +1,4 @@
-import { BaseCharacterDto } from '@/auth/dtos/base-character.dto';
+import { BaseCharacterDto } from '@/character/dtos/base-character.dto';
 import { ICheckLevelUpReturnType } from '@/character/utils/types';
 import { PickType } from '@nestjs/swagger';
 

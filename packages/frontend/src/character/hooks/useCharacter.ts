@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 import {
-  AuthControllerCharacterSelectParams,
+  CharacterControllerCharacterSelectParams,
   GetCharacter,
+  GetMyCharacter,
 } from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
 import { ApiErrorType, ApiResponse } from '../../common/types';
@@ -11,7 +12,7 @@ export const useCharacter = () => {
     ApiResponse<GetCharacter[]>
   > => {
     return await ApiSingleton.getInstance()
-      .auth.authControllerGetCharacters()
+      .characters.characterControllerGetCharacters()
       .then((res) => ({ data: res.data }))
       .catch(async (error: Response) => {
         return { error: (await error.json()) as ApiErrorType };
@@ -19,11 +20,22 @@ export const useCharacter = () => {
   }, []);
 
   const selectCharacter = async (
-    params: AuthControllerCharacterSelectParams,
+    params: CharacterControllerCharacterSelectParams,
   ): Promise<ApiResponse<void>> => {
     return await ApiSingleton.getInstance()
-      .auth.authControllerCharacterSelect(params)
+      .characters.characterControllerCharacterSelect(params)
       .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
+  const getMyCharacter = async (): Promise<ApiResponse<GetMyCharacter>> => {
+    return await ApiSingleton.getInstance()
+      .characters.characterControllerGetMyCharacter()
+      .then((res) => ({
+        data: res.data,
+      }))
       .catch(async (error: Response) => {
         return { error: (await error.json()) as ApiErrorType };
       });
@@ -32,5 +44,6 @@ export const useCharacter = () => {
   return {
     getCharacter,
     selectCharacter,
+    getMyCharacter,
   };
 };
