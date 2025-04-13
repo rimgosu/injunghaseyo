@@ -7,6 +7,7 @@ import { BottomNavigationBar } from '../../common/components/BottomNavigationBar
 import { ProofMethodCard } from '../components/ProofMethodCard';
 import { Tag } from '../components/Tag';
 import { useCheckSignInStore } from '../../auth/stores/useCheckSignInStore';
+import { errorMessage2String } from '../../common/common.util';
 
 const getJoinStatusMessage = (status: GetGroupResJoinStatusEnum) => {
   switch (status) {
@@ -35,7 +36,7 @@ const calculateRemainingDays = (startDate: string): number => {
 
 export const GroupDetailPage = () => {
   const { groupId } = useParams<{ groupId: string }>();
-  const { getGroup } = useGroups();
+  const { getGroup, joinGroup } = useGroups();
   const { isSignedIn } = useCheckSignInStore();
   const [groupData, setGroupData] = useState<GetGroupRes | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,14 +57,25 @@ export const GroupDetailPage = () => {
     fetchGroupData();
   }, [groupId]);
 
-  const handleJoinGroup = () => {
+  const handleJoinGroup = async () => {
     if (!isSignedIn) {
       navigate('/auth/login');
       return;
     }
 
-    // 모임 참여 로직 구현 필요
-    navigate(`/group/${groupId}/join`);
+    if (!groupId) return;
+
+    const res = await joinGroup(parseInt(groupId));
+
+    if (res.data) {
+      navigate(`/group/${groupId}`);
+      return;
+    }
+
+    if (res.error) {
+      alert(errorMessage2String(res.error.message));
+      return;
+    }
   };
 
   if (isLoading) {
