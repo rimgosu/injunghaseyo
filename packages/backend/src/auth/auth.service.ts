@@ -41,6 +41,8 @@ export class AuthService {
     private readonly characterRewardService: CharacterRewardService,
   ) {}
 
+  private signUpMoney = process.env.NODE_ENV === 'dev' ? 100000 : 1000;
+
   async signOut(user: User, accessToken: string): Promise<void> {
     await Promise.all([
       this.prisma.user.update({
@@ -140,7 +142,7 @@ export class AuthService {
           status: UserStatus.OAUTH_PENDING,
           provider,
           wallet: {
-            create: {},
+            create: { money: this.signUpMoney },
           },
         },
       });
@@ -402,7 +404,7 @@ export class AuthService {
         salt: salt,
         status: UserStatus.CHARACTER_CHOOSE,
         profilePhoto: { create: { url: BASE_PROFILE_PHOTO_S3_URL } },
-        wallet: { create: {} },
+        wallet: { create: { money: this.signUpMoney } },
       },
       select: {
         email: true,
