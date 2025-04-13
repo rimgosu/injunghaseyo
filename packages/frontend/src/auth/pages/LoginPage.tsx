@@ -41,41 +41,47 @@ export const LoginPage = () => {
 
   return (
     <BaseLayout title="로그인">
-      <Input
-        label="이메일"
-        type="email"
-        value={formData.email}
-        onChange={handleInputChange}
-        name="email"
-        placeholder="이메일 입력"
-        required
-        onKeyDown={handleKeyDown}
-      />
+      <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-4">
+          <Input
+            label="이메일"
+            type="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            name="email"
+            placeholder="이메일 입력"
+            required
+            onKeyDown={handleKeyDown}
+          />
 
-      <Input
-        label="비밀번호"
-        type="password"
-        value={formData.password}
-        onChange={handleInputChange}
-        name="password"
-        placeholder="패스워드 입력"
-        required
-        onKeyDown={handleKeyDown}
-      />
+          <Input
+            label="비밀번호"
+            type="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            name="password"
+            placeholder="패스워드 입력"
+            required
+            onKeyDown={handleKeyDown}
+          />
+        </div>
 
-      <GreenButton
-        text="로그인"
-        onClick={handleLogin}
-        disabled={!formData.email || !formData.password}
-      />
+        <div className="flex flex-col gap-4">
+          <GreenButton
+            text="로그인"
+            onClick={handleLogin}
+            disabled={!formData.email || !formData.password}
+          />
 
-      {loginError && <div className="text-red-500">{loginError}</div>}
+          {loginError && <div className="text-red-500">{loginError}</div>}
 
-      <div className="mt-4 flex justify-end">
-        <SocialLogin />
+          <div className="mt-4 flex justify-end">
+            <SocialLogin />
+          </div>
+
+          <OtherPage />
+        </div>
       </div>
-
-      <OtherPage />
     </BaseLayout>
   );
 };
