@@ -1,4 +1,4 @@
-import { useProofMethodStore } from '../../../stores/useProofMethodStore';
+import { useProofMethodStore } from '../../stores/useProofMethodStore';
 import { CreateGroupStep2AddProofMethod } from './Step2AddMode';
 import { CreateGroupStep2ViewMode } from './Step2ViewMode';
 

@@ -1,8 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { BaseLayout } from '../../common/BaseLayout';
-import { XButton } from '../../common/components/XButton';
-import { useAuth } from '../../auth/hooks/useAuth';
-import { WithdrawModal } from '../../auth/components/WithdrawModal';
+import { BaseLayout } from '../common/BaseLayout';
+import { XButton } from '../common/components/XButton';
+import { useAuth } from '../auth/hooks/useAuth';
+import { WithdrawModal } from './components/WithdrawModal';
 import { useState } from 'react';
 
 export const SettingPage = () => {

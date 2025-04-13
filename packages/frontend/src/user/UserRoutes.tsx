@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ProfilePage } from './pages/ProfilePage';
 import { ProfilePhotoPage } from './pages/ProfilePhotoPage';
 import { PrivateRoute } from '../common/PrivateRoute';
-import { SettingPage } from './pages/SettingPage';
+import { SettingPage } from '../setting/SettingPage';
 
 export const UserRoutes = () => {
   return (

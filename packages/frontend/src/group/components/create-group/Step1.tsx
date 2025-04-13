@@ -1,10 +1,10 @@
 import { ValidateCreateGroupElementBodyValidateTypeEnum } from '@rimgosu/libs';
-import { Input } from '../../../../common/components/Input';
-import { useGroups } from '../../../hooks/useGroups';
-import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
 import { useEffect, useState } from 'react';
-import { useUsers } from '../../../../user/hooks/useUsers';
-import { errorMessage2String } from '../../../../common/common.util';
+import { useCreateGroupStore } from '../../stores/useCreateGroupStore';
+import { useGroups } from '../../hooks/useGroups';
+import { useUsers } from '../../../user/hooks/useUsers';
+import { errorMessage2String } from '../../../common/common.util';
+import { Input } from '../../../common/components/Input';
 
 export const CreateGroupStep1 = () => {
   const { formData, updateFormData, setError, setIsValid } =

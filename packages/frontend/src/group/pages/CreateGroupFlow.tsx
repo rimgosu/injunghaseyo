@@ -1,17 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import { useGroups } from '../hooks/useGroups';
 import { BaseLayout } from '../../common/BaseLayout';
-import { CreateGroupStep1 } from './steps/create-group/Step1';
 import {
   CreateGroupStore,
   useCreateGroupStore,
 } from '../stores/useCreateGroupStore';
-import { CreateGroupStep2 } from './steps/create-group/Step2';
 import { useProofMethodStore } from '../stores/useProofMethodStore';
 import { NavigationButtons } from '../../common/components/NavigationButtons';
 import { ValidationMessage } from '../../common/components/ValidationMessage';
-import { CreateGroupStep3 } from './steps/create-group/Step3';
-import { CreateGroupStep4 } from './steps/create-group/Step4';
+import { CreateGroupStep1 } from '../components/create-group/Step1';
+import { CreateGroupStep2 } from '../components/create-group/Step2';
+import { CreateGroupStep3 } from '../components/create-group/Step3';
+import { CreateGroupStep4 } from '../components/create-group/Step4';
 
 const stepMap: Record<CreateGroupStore['step'], CreateGroupStore['step']> = {
   모임생성: '인증방법',

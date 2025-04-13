@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Input } from '../../../../common/components/Input';
-import { useProofMethodStore } from '../../../stores/useProofMethodStore';
 import {
   ProofMethodElem,
   ProofMethodElemTypeEnum,
   ValidateCreateGroupElementBodyValidateTypeEnum,
 } from '@rimgosu/libs';
-import { ProofMethodSelector } from '../../../components/ProofMethodSelector';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { TimeIgnoreCheckbox } from '../../../components/TimeIgnoreCheckbox';
-import { useGroups } from '../../../hooks/useGroups';
-import { ValidationMessage } from '../../../../common/components/ValidationMessage';
-import { errorMessage2String } from '../../../../common/common.util';
+import { useProofMethodStore } from '../../stores/useProofMethodStore';
+import { useGroups } from '../../hooks/useGroups';
+import { errorMessage2String } from '../../../common/common.util';
+import { Input } from '../../../common/components/Input';
+import { ProofMethodSelector } from '../ProofMethodSelector';
+import { TimeIgnoreCheckbox } from '../TimeIgnoreCheckbox';
+import { ValidationMessage } from '../../../common/components/ValidationMessage';
 
 const convertDayjsToMinutes = (time: dayjs.Dayjs | null) => {
   if (!time) return 0;

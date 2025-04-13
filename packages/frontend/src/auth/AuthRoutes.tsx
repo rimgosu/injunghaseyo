@@ -6,7 +6,7 @@ import { LoginPage } from './pages/LoginPage';
 import { CharacterSelectPage } from './pages/CharacterSelectPage';
 import { OauthPendingPage } from './pages/OauthPendingPage';
 import { PrivateRoute } from '../common/PrivateRoute';
-import { ChangePasswordPage } from '../user/pages/settings/ChangePasswordPage';
+import { ChangePasswordPage } from '../setting/ChangePasswordPage';
 
 export const AuthRoutes = () => {
   return (

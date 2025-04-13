@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useGroups } from '../../../hooks/useGroups';
-import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
-import { Input } from '../../../../common/components/Input';
-import { useUsers } from '../../../../user/hooks/useUsers';
-import { Tag } from '../../../components/Tag';
+import { useGroups } from '../../hooks/useGroups';
+import { useCreateGroupStore } from '../../stores/useCreateGroupStore';
+import { useUsers } from '../../../user/hooks/useUsers';
+import { Input } from '../../../common/components/Input';
+import { Tag } from '../Tag';
 
 export const CreateGroupStep4 = () => {
   const [searchQuery, setSearchQuery] = useState('');

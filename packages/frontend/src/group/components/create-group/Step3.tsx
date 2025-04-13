@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
 import dayjs from 'dayjs';
-import { useGroups } from '../../../hooks/useGroups';
 import { ValidateCreateGroupElementBodyValidateTypeEnum } from '@rimgosu/libs';
-import { errorMessage2String } from '../../../../common/common.util';
+import { useCreateGroupStore } from '../../stores/useCreateGroupStore';
+import { useGroups } from '../../hooks/useGroups';
+import { errorMessage2String } from '../../../common/common.util';
 
 // 날짜가 선택 가능한지 확인하는 함수 추가
 const isDateSelectable = (date: string) => {

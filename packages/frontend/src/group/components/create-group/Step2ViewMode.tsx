@@ -1,8 +1,8 @@
-import { useProofMethodStore } from '../../../stores/useProofMethodStore';
-import { ProofMethodCard } from '../../../components/ProofMethodCard';
-import { useCreateGroupStore } from '../../../stores/useCreateGroupStore';
 import { useEffect } from 'react';
-import { ValidationMessage } from '../../../../common/components/ValidationMessage';
+import { useProofMethodStore } from '../../stores/useProofMethodStore';
+import { useCreateGroupStore } from '../../stores/useCreateGroupStore';
+import { ProofMethodCard } from '../ProofMethodCard';
+import { ValidationMessage } from '../../../common/components/ValidationMessage';
 
 export const CreateGroupStep2ViewMode = () => {
   const { proofMethods, removeProofMethod, setCreateProofMethodMode } =

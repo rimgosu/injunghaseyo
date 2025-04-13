@@ -1,12 +1,13 @@
 import { AuthControllerChangePasswordParams } from '@rimgosu/libs';
-import { useAuth } from '../../../auth/hooks/useAuth';
-import { BaseLayout } from '../../../common/BaseLayout';
-import { Input } from '../../../common/components/Input';
-import { XButton } from '../../../common/components/XButton';
+import { useAuth } from '../auth/hooks/useAuth';
+import { BaseLayout } from '../common/BaseLayout';
+import { Input } from '../common/components/Input';
+import { XButton } from '../common/components/XButton';
 import { useState } from 'react';
-import { GreenButton } from '../../../auth/components/GreenButton';
-import { errorMessage2String } from '../../../common/common.util';
+import { GreenButton } from '../auth/components/GreenButton';
+import { errorMessage2String } from '../common/common.util';
 import { useNavigate } from 'react-router-dom';
+import { usePasswordChanged } from './stores/usePasswordChanged';
 
 const error2humanReadable = (message: string) => {
   if (message.includes('strong enough')) {
@@ -24,6 +25,7 @@ export const ChangePasswordPage = () => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const { changePassword } = useAuth();
   const navigate = useNavigate();
+  const { setPasswordChanged } = usePasswordChanged();
 
   const handleChangePassword = async () => {
     const res = await changePassword(formData);
@@ -34,7 +36,10 @@ export const ChangePasswordPage = () => {
       return;
     }
 
-    navigate(-1);
+    setPasswordChanged(true);
+    setTimeout(() => {
+      navigate(-1);
+    }, 2000);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
