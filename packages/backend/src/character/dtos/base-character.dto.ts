@@ -36,6 +36,7 @@ export class BaseCharacterDto {
   @ApiProperty({
     description: '레벨업 시 노출 정보',
     type: CheckLevelUpReturnType,
+    nullable: true,
   })
   checkLevelUpResult?: ICheckLevelUpReturnType | void;
 }

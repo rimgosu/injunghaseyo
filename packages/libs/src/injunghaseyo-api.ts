@@ -32,7 +32,7 @@ export interface GetCheckSignIn {
   /** sign in status */
   userStatus: GetCheckSignInUserStatusEnum;
   /** 레벨업 시 노출 정보 */
-  checkLevelUpResult: CheckLevelUpReturnType;
+  checkLevelUpResult: CheckLevelUpReturnType | null;
 }
 
 export interface ReissueAtkRes {
@@ -178,7 +178,7 @@ export interface GetTodayRes {
 
 export interface UploadProofRes {
   /** 레벨업 시 노출 정보 */
-  checkLevelUpResult: CheckLevelUpReturnType;
+  checkLevelUpResult: CheckLevelUpReturnType | null;
 }
 
 export interface GetTodayRewardRes {
@@ -1087,10 +1087,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Auth
-     * @name AuthControllerGoogleAuth
+     * @name AuthController
      * @request GET:/auth/google
      */
-    authControllerGoogleAuth: (params: RequestParams = {}) =>
+    authController: (params: RequestParams = {}) =>
       this.request<any, void>({
         path: `/auth/google`,
         method: 'GET',
@@ -1101,11 +1101,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Auth
-     * @name AuthControllerGoogleAuthRedirect
+     * @name AuthController2
      * @request GET:/auth/google/callback
      * @deprecated
+     * @originalName authController
+     * @duplicate
      */
-    authControllerGoogleAuthRedirect: (params: RequestParams = {}) =>
+    authController2: (params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/auth/google/callback`,
         method: 'GET',
@@ -1116,10 +1118,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Auth
-     * @name AuthControllerKakaoLogin
+     * @name AuthController3
      * @request GET:/auth/kakao
+     * @originalName authController
+     * @duplicate
      */
-    authControllerKakaoLogin: (params: RequestParams = {}) =>
+    authController3: (params: RequestParams = {}) =>
       this.request<any, void>({
         path: `/auth/kakao`,
         method: 'GET',
@@ -1130,11 +1134,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Auth
-     * @name AuthControllerKakaoCallback
+     * @name AuthController4
      * @request GET:/auth/kakao/callback
      * @deprecated
+     * @originalName authController
+     * @duplicate
      */
-    authControllerKakaoCallback: (params: RequestParams = {}) =>
+    authController4: (params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/auth/kakao/callback`,
         method: 'GET',
@@ -1145,10 +1151,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Auth
-     * @name AuthControllerNaverLogin
+     * @name AuthController5
      * @request GET:/auth/naver
+     * @originalName authController
+     * @duplicate
      */
-    authControllerNaverLogin: (params: RequestParams = {}) =>
+    authController5: (params: RequestParams = {}) =>
       this.request<any, void>({
         path: `/auth/naver`,
         method: 'GET',
@@ -1159,11 +1167,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Auth
-     * @name AuthControllerNaverCallback
+     * @name AuthController6
      * @request GET:/auth/naver/callback
      * @deprecated
+     * @originalName authController
+     * @duplicate
      */
-    authControllerNaverCallback: (params: RequestParams = {}) =>
+    authController6: (params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/auth/naver/callback`,
         method: 'GET',

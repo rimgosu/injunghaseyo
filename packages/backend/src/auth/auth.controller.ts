@@ -32,6 +32,7 @@ import { VerifyNicknameParam } from './dtos/verify-nickname-params.dto';
 import { VerifyPasswordParams } from './dtos/verify-password.dto';
 import { GetCheckSignIn } from './dtos/get-check-sign-in.dto';
 import { ConfigService } from '@nestjs/config';
+import { ControllerLogging } from '@/common/controller-logging.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -203,6 +204,7 @@ export class AuthController {
   @Get('google')
   @UseGuards(AuthGuard('google'))
   @HttpCode(301)
+  @ControllerLogging()
   async googleAuth() {}
 
   /**
@@ -211,6 +213,7 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   @ApiOperation({ deprecated: true })
+  @ControllerLogging()
   async googleAuthRedirect(@GetUser() user: OauthUser, @Res() res: Response) {
     const result = await this.authService.oauthLogin(user, Provider.GOOGLE);
     res.cookie('_SESSION', result.generatedJwt.refreshToken, {
@@ -228,6 +231,7 @@ export class AuthController {
   @Get('kakao')
   @UseGuards(AuthGuard('kakao'))
   @HttpCode(301)
+  @ControllerLogging()
   async kakaoLogin() {}
 
   /**
@@ -236,6 +240,7 @@ export class AuthController {
   @Get('kakao/callback')
   @UseGuards(AuthGuard('kakao'))
   @ApiOperation({ deprecated: true })
+  @ControllerLogging()
   async kakaoCallback(@GetUser() user: OauthUser, @Res() res: Response) {
     const result = await this.authService.oauthLogin(user, Provider.KAKAO);
     res.cookie('_SESSION', result.generatedJwt.refreshToken, {
@@ -253,6 +258,7 @@ export class AuthController {
   @Get('naver')
   @UseGuards(AuthGuard('naver'))
   @HttpCode(301)
+  @ControllerLogging()
   async naverLogin() {}
 
   /**
@@ -261,6 +267,7 @@ export class AuthController {
   @Get('naver/callback')
   @UseGuards(AuthGuard('naver'))
   @ApiOperation({ deprecated: true })
+  @ControllerLogging()
   async naverCallback(@GetUser() user: OauthUser, @Res() res: Response) {
     const result = await this.authService.oauthLogin(user, Provider.NAVER);
     res.cookie('_SESSION', result.generatedJwt.refreshToken, {

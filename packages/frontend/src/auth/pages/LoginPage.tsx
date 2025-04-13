@@ -18,8 +18,7 @@ export const LoginPage = () => {
     password: '',
   });
   const [loginError, setLoginError] = useState<string>('');
-
-  const { login, checkSignIn } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,13 +32,6 @@ export const LoginPage = () => {
       return;
     }
     res.data && localStorage.setItem('accessToken', res.data.accessToken);
-    const checkSignInRes = await checkSignIn();
-    if (
-      checkSignInRes?.data?.userStatus ===
-      GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE
-    ) {
-      navigate('/auth/select-character');
-    }
 
     navigate('/group');
   };

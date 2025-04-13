@@ -1,12 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../auth/hooks/useAuth';
-import { useEffect, useState } from 'react';
+import { useCheckSignInStore } from '../../auth/stores/useCheckSignInStore';
 
 export const BottomNavigationBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { checkSignIn } = useAuth();
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const { isSignedIn } = useCheckSignInStore();
 
   const isActive = (path: string) => {
     return location.pathname.startsWith(path);
@@ -19,14 +17,6 @@ export const BottomNavigationBar = () => {
     }
     navigate('/user/profile');
   };
-
-  useEffect(() => {
-    const checkSignInStatus = async () => {
-      const res = await checkSignIn();
-      setIsSignedIn(!res.error);
-    };
-    checkSignInStatus();
-  }, [checkSignIn]);
 
   return (
     <div className="absolute bottom-0 left-0 right-0 p-6 bg-white flex justify-around items-center">

@@ -5,21 +5,19 @@ import { GroupCard } from '../components/GroupCard';
 import { useGroups } from '../hooks/useGroups';
 import { CreateButton } from '../../common/components/CreateButton';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
-import { useAuth } from '../../auth/hooks/useAuth';
 import { GetGroupsRes } from '@rimgosu/libs';
 import { throttle } from 'lodash';
 import { useNavigate } from 'react-router-dom';
+import { useCheckSignInStore } from '../../auth/stores/useCheckSignInStore';
 
 export const GroupPage = () => {
   const { fetchGroups } = useGroups();
-  const { checkSignIn } = useAuth();
-  const [isSignedIn, setIsSignedIn] = useState(false);
   const [groupsData, setGroupsData] = useState<GetGroupsRes | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [cursor, setCursor] = useState<number | undefined>(undefined);
   const navigate = useNavigate();
-
+  const { isSignedIn } = useCheckSignInStore();
   const fetchGroupsData = async () => {
     setIsLoading(true);
     const res = await fetchGroups({ take: 10, cursor, q: searchQuery });
@@ -78,16 +76,6 @@ export const GroupPage = () => {
       throttledHandleScroll.cancel();
     };
   }, [throttledHandleScroll]);
-
-  useEffect(() => {
-    const checkSignInStatus = async () => {
-      const res = await checkSignIn();
-
-      res.data && setIsSignedIn(true);
-      res.error && setIsSignedIn(false);
-    };
-    checkSignInStatus();
-  }, [checkSignIn]);
 
   const handleGroupClick = (groupId: number) => {
     navigate(`/group/${groupId}`);

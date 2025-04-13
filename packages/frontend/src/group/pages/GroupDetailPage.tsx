@@ -7,6 +7,7 @@ import { BottomNavigationBar } from '../../common/components/BottomNavigationBar
 import { useAuth } from '../../auth/hooks/useAuth';
 import { ProofMethodCard } from '../components/ProofMethodCard';
 import { Tag } from '../components/Tag';
+import { useCheckSignInStore } from '../../auth/stores/useCheckSignInStore';
 
 const getJoinStatusMessage = (status: GetGroupResJoinStatusEnum) => {
   switch (status) {
@@ -36,8 +37,7 @@ const calculateRemainingDays = (startDate: string): number => {
 export const GroupDetailPage = () => {
   const { groupId } = useParams<{ groupId: string }>();
   const { getGroup } = useGroups();
-  const { checkSignIn } = useAuth();
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const { isSignedIn } = useCheckSignInStore();
   const [groupData, setGroupData] = useState<GetGroupRes | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -56,19 +56,6 @@ export const GroupDetailPage = () => {
 
     fetchGroupData();
   }, [groupId]);
-
-  useEffect(() => {
-    const checkSignInStatus = async () => {
-      const res = await checkSignIn();
-
-      if (!res.error) {
-        setIsSignedIn(true);
-      } else {
-        setIsSignedIn(false);
-      }
-    };
-    checkSignInStatus();
-  }, [checkSignIn]);
 
   const handleJoinGroup = () => {
     if (!isSignedIn) {
