@@ -7,6 +7,7 @@ import { CharacterSelectPage } from './pages/CharacterSelectPage';
 import { OauthPendingPage } from './pages/OauthPendingPage';
 import { PrivateRoute } from '../common/PrivateRoute';
 import { ChangePasswordPage } from '../setting/ChangePasswordPage';
+import { FindPasswordPage } from './pages/SearchPasswordPage';
 
 export const AuthRoutes = () => {
   return (
@@ -15,10 +16,7 @@ export const AuthRoutes = () => {
       <Route path="init" element={<InitPage />} />
       <Route path="login" element={<LoginPage />} />
       <Route path="signup" element={<SignUpPage />} />
-      <Route
-        path="search-password"
-        element={<BaseLayout>비밀번호 찾기</BaseLayout>}
-      />
+      <Route path="find-password" element={<FindPasswordPage />} />
       <Route
         path="oauth-pending"
         element={

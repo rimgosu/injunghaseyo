@@ -255,7 +255,7 @@ export class AuthService {
       1000 * 60 * 5,
     );
 
-    await this.emailService.sendVerificationEmail(
+    this.emailService.sendVerificationEmail(
       email,
       tempPassword,
       'find-password',
