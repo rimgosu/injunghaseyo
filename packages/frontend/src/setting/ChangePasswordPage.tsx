@@ -37,9 +37,7 @@ export const ChangePasswordPage = () => {
     }
 
     setPasswordChanged(true);
-    setTimeout(() => {
-      navigate(-1);
-    }, 2000);
+    navigate(-1);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

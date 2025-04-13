@@ -19,8 +19,7 @@ export const AppRoutes = () => {
   const { checkSignIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { checkSignInRes, setCheckSignInRes, setIsSignedIn } =
-    useCheckSignInStore();
+  const { setCheckSignInRes, setIsSignedIn } = useCheckSignInStore();
 
   /**
    * @description 초기 유저의 경우 oauth-pending, select-character 페이지를 거쳐야 한다.
@@ -41,7 +40,7 @@ export const AppRoutes = () => {
       res.data.userStatus === GetCheckSignInUserStatusEnum.ACTIVE &&
         setIsSignedIn(true);
 
-      const userStatus = checkSignInRes.userStatus;
+      const userStatus = res.data.userStatus;
 
       switch (userStatus) {
         case GetCheckSignInUserStatusEnum.OAUTH_PENDING:
@@ -51,13 +50,21 @@ export const AppRoutes = () => {
         case GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE:
           navigate('/auth/select-character');
           return;
-      }
-    }
 
-    // 로그인 후 콜백 시 group 페이지로 이동한다.
-    if (currentPath === '/auth') {
-      navigate('/group', { replace: true });
-      return;
+        default:
+          if (
+            currentPath === '/auth/oauth-pending' ||
+            currentPath === '/auth/select-character'
+          ) {
+            navigate('/group');
+            return;
+          }
+
+          if (currentPath === '/auth') {
+            navigate('/group', { replace: true });
+            return;
+          }
+      }
     }
   };
 
@@ -70,8 +77,7 @@ export const AppRoutes = () => {
 
     if (accessToken) {
       localStorage.setItem('accessToken', accessToken);
-      navigate('/group', { replace: true });
-      return;
+      asyncCheckSignIn();
     }
   }, [location.search, navigate]);
 
