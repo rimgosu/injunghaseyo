@@ -12,9 +12,9 @@ export const PasswordChangeSuccessModal: React.FC = () => {
   return (
     <BaseModal isOpen={true} onClose={handleClose}>
       <div className="text-center mb-8">
-        <div className="w-20 h-20 mx-auto mb-8 bg-green-100 rounded-full flex items-center justify-center">
+        <div className="w-20 h-20 mx-auto mb-8 bg-green-100 rounded-full flex items-center justify-center border border-gray-300">
           <svg
-            className="w-12 h-12 text-green-500"
+            className="w-12 h-12 text-green-500 "
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -33,7 +33,7 @@ export const PasswordChangeSuccessModal: React.FC = () => {
       <div className="flex gap-1 flex-col">
         <button
           onClick={handleClose}
-          className="flex-1 px-4 py-3 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="flex-1 px-4 py-3 bg-green-400 text-white rounded hover:bg-green-500"
         >
           확인
         </button>
