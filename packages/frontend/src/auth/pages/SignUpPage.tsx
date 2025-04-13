@@ -243,6 +243,9 @@ export const SignUpPage = () => {
           <p className="text-sm text-gray-600 mb-2">
             이메일로 받은 인증 코드를 입력해주세요
           </p>
+          <p className="text-sm text-gray-600 mb-2">
+            인증 코드가 도착하지 않았다면 스팸 메일함을 확인해주세요
+          </p>
           <div className="flex items-center gap-2 border border-gray-300 rounded p-2">
             <input
               type="text"
