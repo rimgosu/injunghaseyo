@@ -8,6 +8,8 @@ import { ProofMethodCard } from '../components/ProofMethodCard';
 import { Tag } from '../components/Tag';
 import { useCheckSignInStore } from '../../auth/stores/useCheckSignInStore';
 import { errorMessage2String } from '../../common/common.util';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { GreenButton } from '../../auth/components/GreenButton';
 
 const getJoinStatusMessage = (status: GetGroupResJoinStatusEnum) => {
   switch (status) {
@@ -105,53 +107,46 @@ export const GroupDetailPage = () => {
       title="모임 상세"
       bottomNavBar={<BottomNavigationBar />}
       paddingTop=""
+      rightElement={
+        <XMarkIcon className="w-6 h-6 mt-1" onClick={() => navigate(-1)} />
+      }
     >
-      <div className="flex flex-col gap-4 w-full pb-24">
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="text-xl font-bold">{groupData.title}</h2>
-          <button onClick={() => navigate(-1)} className="text-gray-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+      <div className="flex flex-col gap-12 w-full pb-24">
+        <img
+          src={groupData.groupPhoto}
+          alt="모임 사진"
+          className="w-full object-cover rounded-xl"
+        />
+        <div className="flex justify-between">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-2xl font-bold">{groupData.title}</h2>
+            <p className="text-gray-600 text-md">{groupData.description}</p>
+          </div>
         </div>
 
-        <p className="text-gray-600">{groupData.description}</p>
-
-        <div className="grid grid-cols-2 gap-4 bg-green-100 border-green-300 border rounded-xl p-4 mb-6">
+        <div className="grid grid-cols-2 gap-4 border-green-300 border rounded-xl px-4 py-8">
           <div className="flex flex-col gap-1">
-            <span className="text-sm text-gray-500">가격</span>
-            <span className="text-lg font-semibold text-gray-800">
+            <span className="text-md text-gray-500">가격</span>
+            <span className="text-xl font-semibold text-gray-800">
               {groupData.price.toLocaleString()}원
             </span>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-sm text-gray-500">모임 개최일</span>
-            <span className="text-lg font-semibold text-gray-800">
+            <span className="text-md text-gray-500">참여 인원</span>
+            <span className="text-xl font-semibold text-gray-800">
+              {groupData.participants.length}명
+            </span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-md text-gray-500">모임 개최일</span>
+            <span className="text-xl font-semibold text-gray-800">
               {new Date(groupData.startDate).toLocaleDateString()}
             </span>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-sm text-gray-500">종료일</span>
-            <span className="text-lg font-semibold text-gray-800">
+            <span className="text-md text-gray-500">종료일</span>
+            <span className="text-xl font-semibold text-gray-800">
               {new Date(groupData.endDate).toLocaleDateString()}
-            </span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-sm text-gray-500">참여 인원</span>
-            <span className="text-lg font-semibold text-gray-800">
-              {groupData.participants.length}명
             </span>
           </div>
         </div>
@@ -162,9 +157,9 @@ export const GroupDetailPage = () => {
           ))}
         </div>
 
-        <div className="mb-4">
-          <h3 className="font-bold mb-2">인증 방법</h3>
-          <div className="space-y-2">
+        <div className="flex flex-col gap-3">
+          <h3 className="text-xl">인증 방법</h3>
+          <div className="flex flex-col gap-2">
             {groupData.proofMethods.map((method) => (
               <ProofMethodCard key={method.contents} proofMethod={method} />
             ))}
@@ -172,42 +167,37 @@ export const GroupDetailPage = () => {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <h3 className="font-bold w-full mb-2">참여자</h3>
+          <h3 className="text-xl w-full mb-2">참여자</h3>
           <div className="flex flex-wrap gap-2">
             {groupData.participants.map((participant) => (
               <div
                 key={participant.id}
-                className="w-10 h-10 rounded-full overflow-hidden"
+                className="w-16 h-16a rounded-full overflow-hidden"
               >
                 <img
                   src={participant.profilePhoto}
                   alt="프로필"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-full border border-gray-800"
                 />
               </div>
             ))}
           </div>
         </div>
-        <div>
+        <div className="flex flex-col gap-12">
           {remainingDays > 0 && (
-            <p className="text-2xl flex justify-center items-center text-center text-green-600 font-bold my-16">
-              시작까지 {remainingDays}일
-            </p>
+            <div className="flex flex-col gap-2 items-center">
+              <p className="text-xl">시작까지</p>
+              <p className="text-4xl text-green-400">{remainingDays}일</p>
+            </div>
           )}
 
-          <button
+          <GreenButton
+            text={getJoinStatusMessage(groupData.joinStatus)}
             onClick={handleJoinGroup}
             disabled={
               groupData.joinStatus !== GetGroupResJoinStatusEnum.NOT_JOINED
             }
-            className={`mb-8 w-full py-3 rounded-lg ${
-              groupData.joinStatus === GetGroupResJoinStatusEnum.NOT_JOINED
-                ? 'bg-green-500 text-white'
-                : 'bg-gray-300 text-gray-600'
-            }`}
-          >
-            {getJoinStatusMessage(groupData.joinStatus)}
-          </button>
+          />
         </div>
       </div>
     </BaseLayout>

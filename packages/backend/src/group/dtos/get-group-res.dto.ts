@@ -17,6 +17,7 @@ export class GetGroupRes extends PickType(BaseGroupRes, [
   'joinStatus',
   'tags',
   'participants',
+  'groupPhoto',
 ]) {
   constructor(group: GroupWith, user: User | undefined) {
     super();
@@ -43,6 +44,7 @@ export class GetGroupRes extends PickType(BaseGroupRes, [
       toMin: method.toMin,
     }));
     this.tags = group.groupTagMap.map((tagMap) => tagMap.tag.name);
+    this.groupPhoto = group.photo;
   }
 
   /**

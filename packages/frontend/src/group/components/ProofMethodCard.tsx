@@ -12,7 +12,7 @@ export const ProofMethodCard = ({
   onDelete,
 }: ProofMethodCardProps) => {
   return (
-    <div className="border rounded-lg p-4 shadow-sm mb-3">
+    <div className="border rounded-lg px-4 py-6 shadow-sm mb-3">
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
           <h3 className="font-semibold text-lg">{proofMethod.contents}</h3>
@@ -25,7 +25,7 @@ export const ProofMethodCard = ({
             </button>
           )}
         </div>
-        <div className="text-gray-600 text-sm">
+        <div className="text-gray-600 text-md">
           <div className="flex justify-between items-center py-1">
             <span>인증 유형:</span>
             <span className="font-medium">
