@@ -40,7 +40,7 @@ export const LoginPage = () => {
   };
 
   return (
-    <BaseLayout>
+    <BaseLayout title="로그인">
       <Input
         label="이메일"
         type="email"

@@ -8,6 +8,7 @@ import { useAuth } from '../hooks/useAuth';
 import { AuthControllerActivateOauthParams } from '@rimgosu/libs';
 import { useNavigate } from 'react-router-dom';
 import { errorMessage2String } from '../../common/common.util';
+import { XButton } from '../../common/components/XButton';
 
 export const OauthPendingPage = () => {
   const { verifyNickname, activateOauth } = useAuth();
@@ -88,7 +89,7 @@ export const OauthPendingPage = () => {
   };
 
   return (
-    <BaseLayout>
+    <BaseLayout title="추가 정보 입력">
       <Input
         label="닉네임"
         type="text"

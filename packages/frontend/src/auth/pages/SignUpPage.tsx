@@ -11,6 +11,7 @@ import { Input } from '../../common/components/Input';
 import { useAuth } from '../hooks/useAuth';
 import { ValidationMessage } from '../../common/components/ValidationMessage';
 import { GreenButton } from '../components/GreenButton';
+import { XButton } from '../../common/components/XButton';
 
 export const SignUpPage = () => {
   const [formData, setFormData] = useState<SignUpFormData>({
@@ -217,7 +218,7 @@ export const SignUpPage = () => {
   };
 
   return (
-    <BaseLayout>
+    <BaseLayout title="회원가입" paddingTop="">
       <Input
         label="이메일"
         type="email"

@@ -90,6 +90,7 @@ export const GroupPage = () => {
         </div>
       }
       title="모임 목록"
+      paddingTop=""
     >
       <SearchBar onSearch={handleSearch} />
       <div className="flex flex-col gap-4 w-full pb-24">

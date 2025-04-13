@@ -7,6 +7,7 @@ import { GreenButton } from '../components/GreenButton';
 import { ValidationMessage } from '../../common/components/ValidationMessage';
 import { errorMessage2String } from '../../common/common.util';
 import { useNavigate } from 'react-router-dom';
+import { XButton } from '../../common/components/XButton';
 
 const errorString2HumanReadable = (errorString: string): string => {
   if (errorString.includes('email must be an email')) {
@@ -60,7 +61,7 @@ export const FindPasswordPage = () => {
   };
 
   return (
-    <BaseLayout title="비밀번호 찾기">
+    <BaseLayout title="비밀번호 찾기" rightElement={<XButton />}>
       <div className="flex flex-col gap-12">
         <Input
           label="이메일"

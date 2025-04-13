@@ -1,5 +1,4 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
-import { BaseLayout } from '../common/BaseLayout';
 import { InitPage } from './pages/InitPage';
 import { SignUpPage } from './pages/SignUpPage';
 import { LoginPage } from './pages/LoginPage';
@@ -7,7 +6,7 @@ import { CharacterSelectPage } from './pages/CharacterSelectPage';
 import { OauthPendingPage } from './pages/OauthPendingPage';
 import { PrivateRoute } from '../common/PrivateRoute';
 import { ChangePasswordPage } from '../setting/ChangePasswordPage';
-import { FindPasswordPage } from './pages/SearchPasswordPage';
+import { FindPasswordPage } from './pages/FindPasswordPage';
 
 export const AuthRoutes = () => {
   return (

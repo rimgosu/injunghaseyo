@@ -9,7 +9,7 @@ export const OtherPage = () => {
         <Link to="/auth/signup">회원가입</Link>
       </div>
       <div className="flex justify-end text-gray-500">
-        <Link to="/auth/search-password">비밀번호 찾기</Link>
+        <Link to="/auth/find-password">비밀번호 찾기</Link>
       </div>
     </div>
   );

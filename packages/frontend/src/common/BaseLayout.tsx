@@ -10,6 +10,7 @@ interface BaseLayoutProps {
   headerElement?: React.ReactNode;
   padding?: string;
   overflowY?: string;
+  paddingTop?: string;
 }
 
 export const BaseLayout = ({
@@ -22,20 +23,26 @@ export const BaseLayout = ({
   headerElement,
   padding = 'p-8',
   overflowY = 'overflow-y-auto',
+  paddingTop = '20.0%',
 }: BaseLayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-      <div className="min-h-screen w-full max-w-xl bg-white flex flex-col relative">
-        {headerElement && <div className="p-6">{headerElement}</div>}
-        {title && <div className="p-6 text-2xl font-semibold">{title}</div>}
-        {leftElement && (
-          <div className="absolute top-0 left-0 p-6">{leftElement}</div>
-        )}
-        {rightElement && (
-          <div className="absolute top-0 right-0 p-6">{rightElement}</div>
-        )}
-        <div className={`flex-1 ${overflowY}`}>
-          <div className={`flex flex-1 flex-col gap-4 w-full ${padding}`}>
+      <div className="h-screen w-full max-w-xl bg-white flex flex-col relative">
+        <header>
+          {headerElement && <div className="p-6">{headerElement}</div>}
+          {title && <div className="p-6 text-2xl font-semibold">{title}</div>}
+          {leftElement && (
+            <div className="absolute top-0 left-0 p-6">{leftElement}</div>
+          )}
+          {rightElement && (
+            <div className="absolute top-0 right-0 p-6">{rightElement}</div>
+          )}
+        </header>
+        <div
+          className={`${overflowY} h-screen flex items-start justify-center`}
+          style={{ paddingTop }}
+        >
+          <div className={`flex flex-col gap-4 w-full ${padding}`}>
             {children}
           </div>
         </div>

@@ -67,6 +67,7 @@ export const ProfilePage = () => {
           <BottomNavigationBar />
         </div>
       }
+      paddingTop=""
     >
       <div className="flex flex-col p-4 gap-12">
         {/* 상단 프로필 섹션 */}

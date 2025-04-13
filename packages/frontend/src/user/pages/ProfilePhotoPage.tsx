@@ -84,6 +84,7 @@ export const ProfilePhotoPage = () => {
         />
       }
       padding="p-1"
+      paddingTop="30%"
     >
       <div className="p-4 text-center text-sm text-gray-600 absolute top-12 left-0 right-0">
         {currentPhotoIndex + 1}/{profileData?.profilePhotos?.length || 1}

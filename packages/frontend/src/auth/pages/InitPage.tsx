@@ -5,7 +5,7 @@ import { SocialLoginHome } from '../components/SocialLoginHome';
 import { Link } from 'react-router-dom';
 
 export const InitPage = () => (
-  <BaseLayout>
+  <BaseLayout paddingTop="">
     <div className="text-center py-12 mb-10">
       <h1 className="text-3xl p-12">인증하세요</h1>
     </div>

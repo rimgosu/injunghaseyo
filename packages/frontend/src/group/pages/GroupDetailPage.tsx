@@ -89,7 +89,11 @@ export const GroupDetailPage = () => {
   const remainingDays = calculateRemainingDays(groupData.startDate);
 
   return (
-    <BaseLayout title="모임 상세" bottomNavBar={<BottomNavigationBar />}>
+    <BaseLayout
+      title="모임 상세"
+      bottomNavBar={<BottomNavigationBar />}
+      paddingTop=""
+    >
       <div className="flex flex-col gap-4 w-full pb-24">
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-bold">{groupData.title}</h2>
