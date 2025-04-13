@@ -68,7 +68,7 @@ export const GroupDetailPage = () => {
     const res = await joinGroup(parseInt(groupId));
 
     if (res.data) {
-      navigate(`/group/${groupId}`);
+      window.location.reload();
       return;
     }
 

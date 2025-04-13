@@ -48,6 +48,7 @@ import { CreateGroupBody } from './dtos/create-group-body.dto';
 import { ValidateCreateGroupElementBody } from './dtos/validate-create-group-elem-query.dto';
 import { GetGroupsQueryDto } from './dtos/get-groups-query.dto';
 import { UploadProofRes } from './dtos/upload-proof-res.dto';
+import { ControllerLogging } from '@/common/controller-logging.decorator';
 
 @Controller('groups')
 export class GroupController {
@@ -178,6 +179,7 @@ export class GroupController {
     description: '오늘의 인증 조회',
     type: GetTodayRes,
   })
+  @ControllerLogging()
   async getToday(
     @Param() param: GetTodayParam,
     @Query() query: GetTodayQuery,
