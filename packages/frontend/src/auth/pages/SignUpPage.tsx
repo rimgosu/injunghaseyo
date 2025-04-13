@@ -11,7 +11,6 @@ import { Input } from '../../common/components/Input';
 import { useAuth } from '../hooks/useAuth';
 import { ValidationMessage } from '../../common/components/ValidationMessage';
 import { GreenButton } from '../components/GreenButton';
-import { XButton } from '../../common/components/XButton';
 
 export const SignUpPage = () => {
   const [formData, setFormData] = useState<SignUpFormData>({

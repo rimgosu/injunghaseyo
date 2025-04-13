@@ -8,7 +8,6 @@ import { useAuth } from '../hooks/useAuth';
 import { AuthControllerActivateOauthParams } from '@rimgosu/libs';
 import { useNavigate } from 'react-router-dom';
 import { errorMessage2String } from '../../common/common.util';
-import { XButton } from '../../common/components/XButton';
 
 export const OauthPendingPage = () => {
   const { verifyNickname, activateOauth } = useAuth();

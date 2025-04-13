@@ -97,6 +97,7 @@ async function createInProgressGroupsBase({
     await groupSeedData.createGroupSeedData([
       UserSeedData.users.admin,
       UserSeedData.users.user1,
+      UserSeedData.users.user2,
     ]);
 
   if (createProof) {
@@ -150,7 +151,11 @@ async function createGroups() {
       ],
       groupDateUtil.inProgressYmds,
       prisma,
-    ).createGroupSeedData([UserSeedData.users.admin, UserSeedData.users.user1]);
+    ).createGroupSeedData([
+      UserSeedData.users.admin,
+      UserSeedData.users.user1,
+      UserSeedData.users.user2,
+    ]);
 
   // 2. 종료된 그룹
   const { group: completedGroup, groupDate: completedGroupDate } =
@@ -206,7 +211,11 @@ async function createGroups() {
       ],
       groupDateUtil.notStartedYmds,
       prisma,
-    ).createGroupSeedData([UserSeedData.users.admin]);
+    ).createGroupSeedData([
+      UserSeedData.users.admin,
+      UserSeedData.users.user1,
+      UserSeedData.users.user2,
+    ]);
 
   const { group: notStartedGroup2, groupDate: notStartedGroupDate2 } =
     await new GroupSeedData(
@@ -319,7 +328,6 @@ async function createUsers() {
 
   UserSeedData.users.user1 = users[0];
   UserSeedData.users.user2 = users[1];
-
   logger.debug(`${users.length} users created`);
 }
 

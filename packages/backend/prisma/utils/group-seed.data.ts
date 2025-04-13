@@ -244,7 +244,7 @@ export class GroupSeedData {
               },
             });
 
-          case 'CHECK_LOCATION':
+          case ProofType.CHECK_LOCATION:
             return this.prisma.groupProgress.update({
               where: { id: progress.id },
               data: {
