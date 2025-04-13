@@ -4,7 +4,6 @@ import { BaseLayout } from '../../common/BaseLayout';
 import { useGroups } from '../hooks/useGroups';
 import { GetGroupRes, GetGroupResJoinStatusEnum } from '@rimgosu/libs';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
-import { useAuth } from '../../auth/hooks/useAuth';
 import { ProofMethodCard } from '../components/ProofMethodCard';
 import { Tag } from '../components/Tag';
 import { useCheckSignInStore } from '../../auth/stores/useCheckSignInStore';

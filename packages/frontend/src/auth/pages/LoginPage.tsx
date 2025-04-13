@@ -4,10 +4,7 @@ import { Input } from '../../common/components/Input';
 import { GreenButton } from '../components/GreenButton';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import {
-  AuthControllerSignInParams,
-  GetCheckSignInUserStatusEnum,
-} from '@rimgosu/libs';
+import { AuthControllerSignInParams } from '@rimgosu/libs';
 import { SocialLogin } from '../components/SocialLogin';
 import { OtherPage } from '../components/OtherPage';
 import { errorMessage2String } from '../../common/common.util';
