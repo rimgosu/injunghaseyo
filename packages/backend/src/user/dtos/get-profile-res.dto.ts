@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { GroupWithProgress, UserWithJoin } from '../utils/types';
+import { GroupWithProgress, UserForProfile } from '../utils/types';
 import { GroupProgressStatus, ProfilePhoto } from '@prisma/client';
 import { GroupDateHelper } from '@/group/utils/group-date.helper';
 import { GroupStatus } from '@/group/utils/enums';
@@ -28,9 +28,11 @@ class ProfileGroupElem {
 
   constructor(group: GroupWithProgress) {
     const proofDays = group.groupDate.reduce((acc, curr) => {
-      const isCompleted = curr.groupProgress.every(
-        (gp) => gp.status === GroupProgressStatus.COMPLETED,
-      );
+      const isCompleted =
+        curr.groupProgress.length !== 0 &&
+        curr.groupProgress.every(
+          (gp) => gp.status === GroupProgressStatus.COMPLETED,
+        );
       return acc + (isCompleted ? 1 : 0);
     }, 0);
 
@@ -125,7 +127,7 @@ export class GetProfileResDto {
   completedGroup: ProfileGroupElem[];
 
   private filterGroupsByStatus(
-    userData: UserWithJoin,
+    userData: UserForProfile,
     status: GroupStatus,
   ): ProfileGroupElem[] {
     return userData.join
@@ -136,7 +138,9 @@ export class GetProfileResDto {
       .map((join) => new ProfileGroupElem(join.group));
   }
 
-  constructor(userData: UserWithJoin) {
+  constructor(userData: UserForProfile) {
+    console.log('userData:', JSON.stringify(userData, null, 2));
+
     this.money = userData.wallet.money;
     this.introduction = userData.introduction;
     this.nickname = userData.nickname;
