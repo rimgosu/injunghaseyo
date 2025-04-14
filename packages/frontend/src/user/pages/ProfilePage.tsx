@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BaseLayout } from '../../common/BaseLayout';
 import { useUsers } from '../hooks/useUsers';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
-import { ProfileGroupCard } from '../components/ProfileGroupCard';
 import { CameraIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 import { useProfileStore } from '../stores/useProfileStore';
 import { number2Won } from '../../common/common.util';
+import { GroupSection } from '../components/GroupSection';
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
@@ -115,48 +115,28 @@ export const ProfilePage = () => {
           </div>
         </div>
 
-        {/* 진행 중인 인증 */}
-        <div className="mt-4">
-          <h2 className="mb-2 text-xl">진행 중인 인증</h2>
-          <div className="grid grid-cols gap-4">
-            {profileData?.currentGroup.map((group, index) => (
-              <ProfileGroupCard
-                key={index}
-                days={group.proofDays}
-                name={group.name}
-                onClick={() => handleGroupClick(group.id)}
-              />
-            ))}
-          </div>
-        </div>
+        {/* 그룹 섹션들 */}
+        <GroupSection
+          title="진행 중인 인증"
+          groups={profileData?.currentGroup ?? []}
+          onGroupClick={handleGroupClick}
+          gridCols={1}
+          className="mt-4"
+        />
 
-        {/* 예약한 인증 */}
-        <div className="mt-4">
-          <h2 className="mb-2 text-xl">예약한 인증</h2>
-          <div className="grid grid-cols-2 gap-4">
-            {profileData?.reservedGroup.map((group, index) => (
-              <ProfileGroupCard
-                key={index}
-                days={group.proofDays}
-                name={group.name}
-              />
-            ))}
-          </div>
-        </div>
+        <GroupSection
+          title="예약한 인증"
+          groups={profileData?.reservedGroup ?? []}
+          onGroupClick={handleGroupClick}
+          className="mt-4"
+        />
 
-        {/* 완료한 인증 */}
-        <div className="mb-24">
-          <h2 className="mb-2 text-xl">완료한 인증</h2>
-          <div className="grid grid-cols-2 gap-4">
-            {profileData?.completedGroup.map((group, index) => (
-              <ProfileGroupCard
-                key={index}
-                days={group.proofDays}
-                name={group.name}
-              />
-            ))}
-          </div>
-        </div>
+        <GroupSection
+          title="완료한 인증"
+          groups={profileData?.completedGroup ?? []}
+          onGroupClick={handleGroupClick}
+          className="mb-24"
+        />
       </div>
     </BaseLayout>
   );
