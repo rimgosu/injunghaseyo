@@ -7,19 +7,35 @@ export const TotalProofDates = ({
   groupDate,
   completedDate,
 }: TotalProofDatesProps) => {
+  // KST로 날짜 변환하는 헬퍼 함수
+  const toKSTDate = (dateString: string) => {
+    const date = new Date(dateString);
+    date.setHours(date.getHours() + 9);
+    return date.toISOString().split('T')[0];
+  };
+
+  // 현재 KST 날짜 구하기
+  const getKSTToday = () => {
+    const now = new Date();
+    now.setHours(now.getHours() + 9);
+    return now.toISOString().split('T')[0];
+  };
+
   if (!groupDate.length) {
     return <div className="mt-4 text-gray-500">표시할 날짜가 없습니다.</div>;
   }
 
-  // 유효한 날짜만 필터링
-  const validDates = groupDate.filter((date) => {
-    try {
-      const d = new Date(date);
-      return !isNaN(d.getTime());
-    } catch {
-      return false;
-    }
-  });
+  // 유효한 날짜만 필터링 (KST 기준)
+  const validDates = groupDate
+    .filter((date) => {
+      try {
+        const d = new Date(date);
+        return !isNaN(d.getTime());
+      } catch {
+        return false;
+      }
+    })
+    .map(toKSTDate);
 
   if (!validDates.length) {
     return <div className="mt-4 text-gray-500">유효한 날짜가 없습니다.</div>;
@@ -35,11 +51,11 @@ export const TotalProofDates = ({
   const firstDate = new Date(sortedDates[0]);
   const startDay = firstDate.getDay();
 
-  // 첫 주와 다음 주의 모든 날짜 계산
+  // 첫 주와 다음 주의 모든 날짜 계산 (KST 기준)
   const allWeekDates = Array.from({ length: 14 }, (_, i) => {
     const date = new Date(firstDate);
     date.setDate(date.getDate() - startDay + i);
-    return date.toISOString().split('T')[0];
+    return toKSTDate(date.toISOString());
   });
 
   // 달력 배열 생성 (2주치)
@@ -64,8 +80,9 @@ export const TotalProofDates = ({
       {/* 달력 날짜들 */}
       {calendar.map((date, index) => {
         const currentDate = allWeekDates[index];
-        const today = new Date().toISOString().split('T')[0];
+        const today = getKSTToday();
         const isFutureDate = currentDate > today;
+        const isToday = currentDate === today;
 
         if (!date) {
           return (
@@ -78,16 +95,20 @@ export const TotalProofDates = ({
           );
         }
 
-        const isCompleted = completedDate.includes(date);
+        const isCompleted = completedDate.map(toKSTDate).includes(date);
         return (
           <div
             key={date}
             className={`aspect-square flex items-center justify-center rounded-lg border ${
-              isFutureDate
-                ? 'bg-white border-gray-200'
-                : isCompleted
-                  ? 'bg-green-100 border-green-200'
-                  : 'bg-gray-100 border-gray-200'
+              isToday
+                ? isCompleted
+                  ? 'bg-green-100 border-green-500 border-2'
+                  : 'border-green-500 border-2'
+                : isFutureDate
+                  ? 'bg-white border-gray-200'
+                  : isCompleted
+                    ? 'bg-green-100 border-green-200'
+                    : 'bg-gray-100 border-gray-200'
             }`}
           >
             {new Date(date).getDate()}
