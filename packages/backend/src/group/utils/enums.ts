@@ -23,3 +23,12 @@ export enum CreateGroupElement {
   DATES = 'DATES',
   TAGS = 'TAGS',
 }
+
+/**
+ * @description 진행중인 인증 상태
+ */
+export enum InProgressGroupTodayStatus {
+  COMPLETED = 'COMPLETED',
+  NO_PROOF = 'NO_PROOF', // 중간에 참여하는 경우
+  IN_PROGRESS = 'IN_PROGRESS',
+}

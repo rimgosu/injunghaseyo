@@ -2,7 +2,49 @@ import { ApiProperty } from '@nestjs/swagger';
 import { GroupWithProgress, UserForProfile } from '../utils/types';
 import { GroupProgressStatus, ProfilePhoto } from '@prisma/client';
 import { GroupDateHelper } from '@/group/utils/group-date.helper';
-import { GroupStatus } from '@/group/utils/enums';
+import { GroupStatus, InProgressGroupTodayStatus } from '@/group/utils/enums';
+import { getToday } from '@/group/utils/utils';
+
+class TodayGroupStatusElem {
+  @ApiProperty({
+    description: '당일 인증 진행 상태',
+    example: InProgressGroupTodayStatus.COMPLETED,
+    enum: InProgressGroupTodayStatus,
+  })
+  status: InProgressGroupTodayStatus;
+
+  @ApiProperty({
+    description: '남은 인증일 수',
+    example: 3,
+    type: Number,
+  })
+  remainingProofs: number;
+
+  constructor(group: GroupWithProgress) {
+    const todayDateYmd = getToday();
+
+    const todayGroupDate = group.groupDate.find(
+      (gd) => gd.date === todayDateYmd,
+    );
+
+    if (todayGroupDate.groupProgress.length === 0) {
+      this.remainingProofs = 0;
+      this.status = InProgressGroupTodayStatus.NO_PROOF;
+      return;
+    }
+
+    this.remainingProofs = todayGroupDate.groupProgress.reduce((acc, curr) => {
+      if (curr.status === GroupProgressStatus.PENDING) {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
+    this.status =
+      this.remainingProofs === 0
+        ? InProgressGroupTodayStatus.COMPLETED
+        : InProgressGroupTodayStatus.IN_PROGRESS;
+  }
+}
 
 class ProfileGroupElem {
   @ApiProperty({
@@ -26,7 +68,14 @@ class ProfileGroupElem {
   })
   proofDays: number;
 
-  constructor(group: GroupWithProgress) {
+  @ApiProperty({
+    description: '진행중인 그룹의 당일 인증 진행 상태',
+    type: TodayGroupStatusElem,
+    nullable: true,
+  })
+  todayStatus?: TodayGroupStatusElem;
+
+  constructor(group: GroupWithProgress, isInProgressGroup: boolean = false) {
     const proofDays = group.groupDate.reduce((acc, curr) => {
       const isCompleted =
         curr.groupProgress.length !== 0 &&
@@ -39,6 +88,9 @@ class ProfileGroupElem {
     this.id = group.id;
     this.name = group.title;
     this.proofDays = proofDays;
+    this.todayStatus = isInProgressGroup
+      ? new TodayGroupStatusElem(group)
+      : null;
   }
 }
 
@@ -129,13 +181,14 @@ export class GetProfileResDto {
   private filterGroupsByStatus(
     userData: UserForProfile,
     status: GroupStatus,
+    isInProgressGroup: boolean = false,
   ): ProfileGroupElem[] {
     return userData.join
       .filter((join) => {
         const groupDateHelper = new GroupDateHelper(join.group.groupDate);
         return groupDateHelper.getGroupStatus() === status;
       })
-      .map((join) => new ProfileGroupElem(join.group));
+      .map((join) => new ProfileGroupElem(join.group, isInProgressGroup));
   }
 
   constructor(userData: UserForProfile) {
@@ -151,6 +204,7 @@ export class GetProfileResDto {
     this.currentGroup = this.filterGroupsByStatus(
       userData,
       GroupStatus.IN_PROGRESS,
+      true,
     );
     this.reservedGroup = this.filterGroupsByStatus(
       userData,

@@ -204,6 +204,19 @@ export interface ProfilePhotoElem {
   url: string;
 }
 
+export interface TodayGroupStatusElem {
+  /**
+   * 당일 인증 진행 상태
+   * @example "COMPLETED"
+   */
+  status: TodayGroupStatusElemStatusEnum;
+  /**
+   * 남은 인증일 수
+   * @example 3
+   */
+  remainingProofs: number;
+}
+
 export interface ProfileGroupElem {
   /**
    * 그룹 id
@@ -220,6 +233,8 @@ export interface ProfileGroupElem {
    * @example 10
    */
   proofDays: number;
+  /** 진행중인 그룹의 당일 인증 진행 상태 */
+  todayStatus: TodayGroupStatusElem | null;
 }
 
 export interface GetProfileResDto {
@@ -390,6 +405,16 @@ export enum GetGroupResJoinStatusEnum {
   COMPLETED = 'COMPLETED',
   NOT_JOINED = 'NOT_JOINED',
   NOT_JOINABLE = 'NOT_JOINABLE',
+}
+
+/**
+ * 당일 인증 진행 상태
+ * @example "COMPLETED"
+ */
+export enum TodayGroupStatusElemStatusEnum {
+  COMPLETED = 'COMPLETED',
+  NO_PROOF = 'NO_PROOF',
+  IN_PROGRESS = 'IN_PROGRESS',
 }
 
 export interface AuthControllerVerifyEmailParams {
