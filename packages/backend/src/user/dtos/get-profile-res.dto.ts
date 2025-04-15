@@ -192,8 +192,6 @@ export class GetProfileResDto {
   }
 
   constructor(userData: UserForProfile) {
-    console.log('userData:', JSON.stringify(userData, null, 2));
-
     this.money = userData.wallet.money;
     this.introduction = userData.introduction;
     this.nickname = userData.nickname;

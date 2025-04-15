@@ -10,6 +10,7 @@ import { useCheckSignInStore } from '../../auth/stores/useCheckSignInStore';
 import { errorMessage2String } from '../../common/common.util';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { GreenButton } from '../../auth/components/GreenButton';
+import { JoinModal } from '../components/JoinModal';
 
 const getJoinStatusMessage = (status: GetGroupResJoinStatusEnum) => {
   switch (status) {
@@ -42,6 +43,7 @@ export const GroupDetailPage = () => {
   const { isSignedIn } = useCheckSignInStore();
   const [groupData, setGroupData] = useState<GetGroupRes | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,7 +72,7 @@ export const GroupDetailPage = () => {
     const res = await joinGroup(parseInt(groupId));
 
     if (res.data) {
-      window.location.reload();
+      setIsJoinModalOpen(true);
       return;
     }
 
@@ -78,6 +80,11 @@ export const GroupDetailPage = () => {
       alert(errorMessage2String(res.error.message));
       return;
     }
+  };
+
+  const handleJoinModalClose = () => {
+    setIsJoinModalOpen(false);
+    navigate('/user/profile');
   };
 
   if (isLoading) {
@@ -200,6 +207,11 @@ export const GroupDetailPage = () => {
           />
         </div>
       </div>
+      <JoinModal
+        isOpen={isJoinModalOpen}
+        onClose={handleJoinModalClose}
+        title={groupData.title}
+      />
     </BaseLayout>
   );
 };
