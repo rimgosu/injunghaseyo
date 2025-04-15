@@ -23,7 +23,8 @@ export class GetGroupRes extends PickType(BaseGroupRes, [
     super();
     this.participants = group.join.map((join) => ({
       id: join.user.id,
-      profilePhoto: join.user.profilePhoto[0].url,
+      profilePhoto:
+        join.user.profilePhoto[join.user.profilePhoto.length - 1].url,
     }));
     const { startDate, endDate, joinStatus, status } = GetGroupRes.getDetails(
       group,
