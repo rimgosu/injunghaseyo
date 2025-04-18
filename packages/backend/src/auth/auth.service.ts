@@ -136,7 +136,7 @@ export class AuthService {
     });
 
     if (duplicatedNickname) {
-      newNickname = `${nickname}_${Math.random().toString(36).substring(2, 6)}`;
+      newNickname = `${nickname}_${Math.random().toString(36).substring(2, 10)}`;
     }
 
     if (!user) {
