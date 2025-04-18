@@ -126,15 +126,24 @@ export class AuthService {
   ): Promise<TokenWithUser> {
     const { email, nickname, profile_image } = oauthUser;
 
+    let newNickname = undefined;
     let user = await this.prisma.user.findUnique({
       where: { email },
     });
+
+    const duplicatedNickname = await this.prisma.user.findUnique({
+      where: { nickname },
+    });
+
+    if (duplicatedNickname) {
+      newNickname = `${nickname}_${Math.random().toString(36).substring(2, 6)}`;
+    }
 
     if (!user) {
       user = await this.prisma.user.create({
         data: {
           email,
-          nickname,
+          nickname: newNickname ?? nickname,
           eventAgree: false,
           profilePhoto: {
             create: { url: profile_image ?? BASE_PROFILE_PHOTO_S3_URL },
