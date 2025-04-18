@@ -26,7 +26,7 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
       <input
         type="text"
         placeholder="검색..."
-        className="w-full p-4 border rounded-lg pr-10"
+        className="w-full p-4 border rounded-lg pr-10 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400"
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         value={inputValue}

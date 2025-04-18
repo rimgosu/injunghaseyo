@@ -43,10 +43,17 @@ export const GroupPage = () => {
     setIsLoading(false);
   };
 
-  const handleSearch = (query: string) => {
+  const handleSearch = async (query: string) => {
     setSearchQuery(query);
     setGroupsData(null);
     setCursor(undefined);
+    setIsLoading(true);
+    const res = await fetchGroups({ take: 10, cursor: undefined, q: query });
+    if (res.data) {
+      setCursor(res.data.nextCursor);
+      setGroupsData(res.data);
+    }
+    setIsLoading(false);
   };
 
   const handleScroll = useCallback(() => {
@@ -65,9 +72,13 @@ export const GroupPage = () => {
     handleScroll,
   ]);
 
+  const handleGroupClick = (groupId: number) => {
+    navigate(`/group/${groupId}`);
+  };
+
   useEffect(() => {
     fetchGroupsData();
-  }, [searchQuery]);
+  }, []);
 
   useEffect(() => {
     window.addEventListener('scroll', throttledHandleScroll);
@@ -76,10 +87,6 @@ export const GroupPage = () => {
       throttledHandleScroll.cancel();
     };
   }, [throttledHandleScroll]);
-
-  const handleGroupClick = (groupId: number) => {
-    navigate(`/group/${groupId}`);
-  };
 
   return (
     <BaseLayout
