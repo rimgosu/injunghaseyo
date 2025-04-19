@@ -48,6 +48,8 @@ import { CreateGroupBody } from './dtos/create-group-body.dto';
 import { ValidateCreateGroupElementBody } from './dtos/validate-create-group-elem-query.dto';
 import { GetGroupsQueryDto } from './dtos/get-groups-query.dto';
 import { UploadProofRes } from './dtos/upload-proof-res.dto';
+import { GetGalleryParam } from './dtos/get-gallery-param.dto';
+import { GetGalleryRes } from './dtos/get-gallery-res.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -281,5 +283,23 @@ export class GroupController {
     @GetUser() user: User,
   ): Promise<GetTodayRewardRes> {
     return this.groupService.getTodayReward(param, user);
+  }
+
+  /**
+   * @description 모임 갤러리 조회
+   *
+   * 일별로 유저들이 한 인증을 조회한다.
+   */
+  @Get(':groupId/gallery')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  @ApiResponse({
+    status: 200,
+    description: '모임 갤러리 조회',
+    type: GetGalleryRes,
+  })
+  async getGallery(@Param() param: GetGalleryParam) {
+    // return this.groupService.getGallery(param, user);
+    return null;
   }
 }
