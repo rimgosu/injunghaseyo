@@ -51,7 +51,11 @@ export const GroupTodayPage = () => {
 
   return (
     <BaseLayout
-      overflowY=""
+      overflowY={
+        selectedTodayGroupTopNavBar === TodayGroupTopNavBarEnum.GALLERY
+          ? 'overflow-y-auto'
+          : ''
+      }
       headerElement={
         <TodayGroupTopNavBar
           selected={selectedTodayGroupTopNavBar}
