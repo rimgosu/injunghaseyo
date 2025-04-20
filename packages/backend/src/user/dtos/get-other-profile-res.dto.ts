@@ -7,16 +7,12 @@ export class GetOtherProfileResDto extends GetProfileResDto {
   money: never;
 
   @ApiHideProperty()
-  currentGroup: never;
-
-  @ApiHideProperty()
   reservedGroup: never;
 
   constructor(userData: UserForProfile) {
     super(userData);
 
     delete this.money;
-    delete this.currentGroup;
     delete this.reservedGroup;
   }
 }

@@ -1,8 +1,23 @@
-import { GetMoneyDto, GetProfileResDto } from '@rimgosu/libs';
+import {
+  GetMoneyDto,
+  GetOtherProfileResDto,
+  GetProfileResDto,
+} from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
 import { ApiErrorType, ApiResponse } from '../../common/types';
 
 export const useUsers = () => {
+  const fetchOtherProfile = async (
+    userId: number,
+  ): Promise<ApiResponse<GetOtherProfileResDto>> => {
+    return await ApiSingleton.getInstance()
+      .users.userControllerGetOtherProfile(userId)
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
   const fetchMoney = async (): Promise<ApiResponse<GetMoneyDto>> => {
     return await ApiSingleton.getInstance()
       .users.userControllerGetMoney()
@@ -53,5 +68,6 @@ export const useUsers = () => {
     fetchProfile,
     uploadProfilePhoto,
     deleteProfilePhoto,
+    fetchOtherProfile,
   };
 };

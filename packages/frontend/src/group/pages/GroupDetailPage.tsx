@@ -179,7 +179,8 @@ export const GroupDetailPage = () => {
             {groupData.participants.map((participant) => (
               <div
                 key={participant.id}
-                className="w-16 h-16a rounded-full overflow-hidden"
+                className="w-16 h-16a rounded-full overflow-hidden cursor-pointer"
+                onClick={() => navigate(`/user/${participant.id}/profile`)}
               >
                 <img
                   src={participant.profilePhoto}

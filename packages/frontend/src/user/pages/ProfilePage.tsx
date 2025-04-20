@@ -8,21 +8,48 @@ import { useProfileStore } from '../stores/useProfileStore';
 import { number2Won } from '../../common/common.util';
 import { GroupSection } from '../components/GroupSection';
 
-export const ProfilePage = () => {
+interface ProfilePageProps {
+  showCameraButton?: boolean;
+  rightElement?: React.ReactNode;
+  showCurrentGroups?: boolean;
+  showReservedGroups?: boolean;
+  showCompletedGroups?: boolean;
+  isOtherProfile?: boolean;
+  profileStore?: any; // 구체적인 타입은 실제 사용하는 스토어 타입으로 대체 필요
+  userId?: number; // 다른 사용자의 프로필을 볼 때 사용
+}
+
+export const ProfilePage = ({
+  showCameraButton = true,
+  rightElement = (
+    <Link to="/user/setting">
+      <Cog6ToothIcon className="w-6 h-6 text-gray-600 cursor-pointer" />
+    </Link>
+  ),
+  showCurrentGroups = true,
+  showReservedGroups = true,
+  showCompletedGroups = true,
+  isOtherProfile = false,
+  profileStore = useProfileStore(),
+  userId,
+}: ProfilePageProps) => {
   const navigate = useNavigate();
-  const { fetchProfile, uploadProfilePhoto } = useUsers();
-  const { profileData, setProfileData } = useProfileStore();
+  const { fetchProfile, fetchOtherProfile, uploadProfilePhoto } = useUsers();
+  const { profileData, setProfileData } = profileStore;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchProfileData = async () => {
-      const res = await fetchProfile();
+      const res =
+        isOtherProfile && userId
+          ? await fetchOtherProfile(userId)
+          : await fetchProfile();
       if (res.data) {
         setProfileData(res.data);
       }
     };
     fetchProfileData();
-  }, []);
+  }, [isOtherProfile, userId]);
 
   const handlePhotoUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -57,11 +84,7 @@ export const ProfilePage = () => {
   return (
     <BaseLayout
       title="내 정보"
-      rightElement={
-        <Link to="/user/setting">
-          <Cog6ToothIcon className="w-6 h-6 text-gray-600 cursor-pointer" />
-        </Link>
-      }
+      rightElement={rightElement}
       bottomNavBar={
         <div className="flex justify-center items-center">
           <BottomNavigationBar />
@@ -86,12 +109,14 @@ export const ProfilePage = () => {
               accept="image/*"
               onChange={handlePhotoUpload}
             />
-            <div
-              className="absolute bottom-0 right-0 p-1 border border-gray-400 bg-white rounded-full shadow-md cursor-pointer"
-              onClick={handleCameraClick}
-            >
-              <CameraIcon className="w-7 h-7" />
-            </div>
+            {showCameraButton && (
+              <div
+                className="absolute bottom-0 right-0 p-1 border border-gray-400 bg-white rounded-full shadow-md cursor-pointer"
+                onClick={handleCameraClick}
+              >
+                <CameraIcon className="w-7 h-7" />
+              </div>
+            )}
           </div>
           <div className="text-2xl font-bold">{profileData?.nickname}</div>
           <div className="text-sm text-gray-500">
@@ -116,27 +141,33 @@ export const ProfilePage = () => {
         </div>
 
         {/* 그룹 섹션들 */}
-        <GroupSection
-          title="진행 중인 인증"
-          groups={profileData?.currentGroup ?? []}
-          onGroupClick={handleGroupClick}
-          gridCols={1}
-          className="mt-4"
-        />
+        {showCurrentGroups && (
+          <GroupSection
+            title="진행 중인 인증"
+            groups={profileData?.currentGroup ?? []}
+            onGroupClick={handleGroupClick}
+            gridCols={1}
+            className="mt-4"
+          />
+        )}
 
-        <GroupSection
-          title="예약한 인증"
-          groups={profileData?.reservedGroup ?? []}
-          onGroupClick={handleGroupClick}
-          className="mt-4"
-        />
+        {showReservedGroups && (
+          <GroupSection
+            title="예약한 인증"
+            groups={profileData?.reservedGroup ?? []}
+            onGroupClick={handleGroupClick}
+            className="mt-4"
+          />
+        )}
 
-        <GroupSection
-          title="완료한 인증"
-          groups={profileData?.completedGroup ?? []}
-          onGroupClick={handleGroupClick}
-          className="mb-24"
-        />
+        {showCompletedGroups && (
+          <GroupSection
+            title="완료한 인증"
+            groups={profileData?.completedGroup ?? []}
+            onGroupClick={handleGroupClick}
+            className="mb-24"
+          />
+        )}
       </div>
     </BaseLayout>
   );

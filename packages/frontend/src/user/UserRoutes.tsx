@@ -3,6 +3,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { ProfilePhotoPage } from './pages/ProfilePhotoPage';
 import { PrivateRoute } from '../common/PrivateRoute';
 import { SettingPage } from '../setting/SettingPage';
+import { OtherProfilePage } from './pages/OtherProfilePage';
 
 export const UserRoutes = () => {
   return (
@@ -31,6 +32,7 @@ export const UserRoutes = () => {
           </PrivateRoute>
         }
       />
+      <Route path="/:userId/profile" element={<OtherProfilePage />} />
     </Routes>
   );
 };
