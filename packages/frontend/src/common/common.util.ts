@@ -7,3 +7,10 @@ export const errorMessage2String = (
 ): string => {
   return Array.isArray(errorMessage) ? errorMessage[0] : errorMessage;
 };
+
+export const ymd2Human = (ymd: string): string => {
+  const [, month, day] = ymd.split('-');
+  const monthInt = +month;
+  const dayInt = +day;
+  return `${monthInt}월 ${dayInt}일`;
+};
