@@ -192,20 +192,48 @@ export interface GetTodayRewardRes {
 }
 
 export interface ParticipantForGallery {
-  /** 참여자 ID */
-  id: number;
-  /** 참여자 사진 */
-  profilePhoto: string;
   /**
-   * 참여자 닉네임
+   * 침여자 id
+   * @example 1
+   */
+  id: number;
+  /**
+   * 침여자 닉네임
    * @example "홍길동"
    */
-  nickname: number;
+  nickname: string;
+  /**
+   * 침여자 사진
+   * @example "https://example.com/photo.jpg"
+   */
+  profilePhoto: string;
+}
+
+export interface ProofForGallery {
+  /** 인증 사진 */
+  proofPhoto: string | null;
+  /**
+   * proof id
+   * @example 1
+   */
+  id: number;
+  /**
+   * 인증 타입
+   * @example "CHECK_LOCATION"
+   */
+  proofType: ProofForGalleryProofTypeEnum;
+  /** 참여자 목록 */
+  participant: ParticipantForGallery;
 }
 
 export interface GetGalleryRes {
-  /** 갤러리에 들어가는 참여자 정보 */
-  participantForGallery: ParticipantForGallery;
+  /**
+   * 일자
+   * @example "2025-01-01"
+   */
+  date: string;
+  /** 인증 사진 */
+  proofsForGallery: ProofForGallery[];
 }
 
 export interface ProfilePhotoElem {
@@ -422,6 +450,16 @@ export enum GetGroupResJoinStatusEnum {
   COMPLETED = 'COMPLETED',
   NOT_JOINED = 'NOT_JOINED',
   NOT_JOINABLE = 'NOT_JOINABLE',
+}
+
+/**
+ * 인증 타입
+ * @example "CHECK_LOCATION"
+ */
+export enum ProofForGalleryProofTypeEnum {
+  UPLOAD_PHOTO = 'UPLOAD_PHOTO',
+  CLICK_BUTTON = 'CLICK_BUTTON',
+  CHECK_LOCATION = 'CHECK_LOCATION',
 }
 
 /**
@@ -1468,7 +1506,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     groupControllerGetGallery: (groupId: number, params: RequestParams = {}) =>
-      this.request<GetGalleryRes, any>({
+      this.request<GetGalleryRes[], any>({
         path: `/groups/${groupId}/gallery`,
         method: 'GET',
         secure: true,

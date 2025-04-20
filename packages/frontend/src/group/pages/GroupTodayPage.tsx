@@ -10,6 +10,7 @@ import { useTodayRewardStore } from '../stores/useTodayRewardStore';
 import { TodayReward } from '../components/today-group/TodayReward';
 import { useCharacter } from '../../character/hooks/useCharacter';
 import { useGetMyCharacterStore } from '../../character/stores/useGetMyCharacter';
+import { GalleryPage } from '../components/today-group/GalleryPage';
 
 export const GroupTodayPage = () => {
   const { groupId } = useParams();
@@ -72,6 +73,9 @@ export const GroupTodayPage = () => {
           myCharacter={myCharacter}
           todayGroup={todayGroup}
         />
+      )}
+      {selectedTodayGroupTopNavBar === TodayGroupTopNavBarEnum.GALLERY && (
+        <GalleryPage groupId={Number(groupId)} />
       )}
     </BaseLayout>
   );

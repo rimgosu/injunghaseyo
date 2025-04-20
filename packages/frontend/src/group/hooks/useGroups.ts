@@ -1,5 +1,6 @@
 import {
   CreateGroupBody,
+  GetGalleryRes,
   GetGroupRes,
   GetGroupsRes,
   GetTagsRes,
@@ -20,6 +21,17 @@ import { ApiErrorType, ApiResponse } from '../../common/types';
 import { useCallback } from 'react';
 
 export const useGroups = () => {
+  const getGallery = async (
+    groupId: number,
+  ): Promise<ApiResponse<GetGalleryRes[]>> => {
+    return await ApiSingleton.getInstance()
+      .groups.groupControllerGetGallery(groupId)
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
   const joinGroup = async (groupId: number): Promise<ApiResponse<any>> => {
     return await ApiSingleton.getInstance()
       .groups.groupControllerJoinGroup(groupId)
@@ -161,5 +173,6 @@ export const useGroups = () => {
     uploadProofPhoto,
     getTodayReward,
     joinGroup,
+    getGallery,
   };
 };

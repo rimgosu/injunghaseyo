@@ -40,6 +40,13 @@ class ParticipantForGallery {
 
 class ProofForGallery extends PickType(BaseGroupRes, ['proofPhoto']) {
   @ApiProperty({
+    description: 'proof id',
+    example: 1,
+    type: Number,
+  })
+  id: number;
+
+  @ApiProperty({
     description: '인증 타입',
     example: ProofType.CHECK_LOCATION,
     enum: ProofType,
@@ -54,6 +61,8 @@ class ProofForGallery extends PickType(BaseGroupRes, ['proofPhoto']) {
 
   constructor(groupProgressWithUser: TGroupProgressWithUser) {
     super();
+
+    this.id = groupProgressWithUser.proof.id;
 
     const proof = groupProgressWithUser.proof;
 
