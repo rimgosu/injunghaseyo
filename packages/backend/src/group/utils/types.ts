@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Prisma, ProofMethod, ProofType } from '@prisma/client';
+import {
+  GroupProgressStatus,
+  Prisma,
+  ProofMethod,
+  ProofType,
+} from '@prisma/client';
 import {
   IsString,
   IsNotEmpty,
@@ -9,6 +14,66 @@ import {
   Max,
   MinLength,
 } from 'class-validator';
+
+export const GROUP_PROGRESS_WITH_USER =
+  Prisma.validator<Prisma.GroupProgressDefaultArgs>()({
+    include: {
+      proof: {
+        include: {
+          photoProof: true,
+          locationProof: true,
+          buttonClickProof: true,
+        },
+      },
+      join: {
+        include: {
+          user: {
+            include: {
+              profilePhoto: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+export type TGroupProgressWithUser = Prisma.GroupProgressGetPayload<
+  typeof GROUP_PROGRESS_WITH_USER
+>;
+
+export const GROUP_DATE_FOR_GALLERY =
+  Prisma.validator<Prisma.GroupDateDefaultArgs>()({
+    include: {
+      groupProgress: {
+        where: {
+          status: GroupProgressStatus.COMPLETED,
+          deletedAt: null,
+        },
+        include: {
+          proof: {
+            include: {
+              photoProof: true,
+              locationProof: true,
+              buttonClickProof: true,
+            },
+          },
+          join: {
+            include: {
+              user: {
+                include: {
+                  profilePhoto: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+export type TGroupDateForGallery = Prisma.GroupDateGetPayload<
+  typeof GROUP_DATE_FOR_GALLERY
+>;
 
 export type StringOrNumber = string | number;
 

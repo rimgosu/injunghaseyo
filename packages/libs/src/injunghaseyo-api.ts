@@ -191,6 +191,23 @@ export interface GetTodayRewardRes {
   todayReward: number;
 }
 
+export interface ParticipantForGallery {
+  /** 참여자 ID */
+  id: number;
+  /** 참여자 사진 */
+  profilePhoto: string;
+  /**
+   * 참여자 닉네임
+   * @example "홍길동"
+   */
+  nickname: number;
+}
+
+export interface GetGalleryRes {
+  /** 갤러리에 들어가는 참여자 정보 */
+  participantForGallery: ParticipantForGallery;
+}
+
 export interface ProfilePhotoElem {
   /**
    * 프로필 사진 id
@@ -1436,6 +1453,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     groupControllerGetTodayReward: (groupId: number, params: RequestParams = {}) =>
       this.request<GetTodayRewardRes, any>({
         path: `/groups/${groupId}/today-reward`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerGetGallery
+     * @request GET:/groups/{groupId}/gallery
+     * @secure
+     */
+    groupControllerGetGallery: (groupId: number, params: RequestParams = {}) =>
+      this.request<GetGalleryRes, any>({
+        path: `/groups/${groupId}/gallery`,
         method: 'GET',
         secure: true,
         format: 'json',

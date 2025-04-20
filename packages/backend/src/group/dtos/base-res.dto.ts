@@ -16,22 +16,7 @@ class Participant {
   profilePhoto: string;
 }
 
-class ParticipantForGallery extends Participant {
-  @ApiProperty({
-    description: '참여자 닉네임',
-    type: Number,
-    example: '홍길동',
-  })
-  nickname: string;
-}
-
 export class BaseGroupRes {
-  @ApiProperty({
-    description: '갤러리에 들어가는 참여자 정보',
-    type: ParticipantForGallery,
-  })
-  participantForGallery: ParticipantForGallery;
-
   @ApiProperty({
     description: '그룹 사진',
     type: String,

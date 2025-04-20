@@ -18,6 +18,7 @@ import { GetTagsParams } from './dtos/get-tags-param.dto';
 import { GetTagsRes } from './dtos/get-tags-res.dto';
 import { JoinGroupParam } from './dtos/join-group-param.dto';
 import {
+  GROUP_DATE_FOR_GALLERY,
   GROUP_WITH_INCLUDE,
   GroupProgressWithMethod,
   GroupWith,
@@ -55,6 +56,8 @@ import { GetGroupsQueryDto } from './dtos/get-groups-query.dto';
 import { GroupDateHelper } from './utils/group-date.helper';
 import { CharacterRewardService } from '@/character/character-reward.service';
 import { UploadProofRes } from './dtos/upload-proof-res.dto';
+import { GetGalleryParam } from './dtos/get-gallery-param.dto';
+import { GetGalleryRes } from './dtos/get-gallery-res.dto';
 
 @Injectable()
 export class GroupService {
@@ -67,6 +70,24 @@ export class GroupService {
     private readonly s3: S3Service,
     private readonly characterService: CharacterRewardService,
   ) {}
+
+  /**
+   * @description 갤러리 조회
+   */
+  async getGallery(param: GetGalleryParam): Promise<GetGalleryRes[]> {
+    const { groupId } = param;
+
+    const groupDates = await this.prisma.groupDate.findMany({
+      where: { groupId, deletedAt: null },
+      ...GROUP_DATE_FOR_GALLERY,
+    });
+
+    if (groupDates.length === 0) {
+      throw new NotFoundException('갤러리에 표시할 인증이 없습니다.');
+    }
+
+    return GetGalleryRes.fromGroupDate(groupDates);
+  }
 
   /**
    * @description 현재 위치 확인

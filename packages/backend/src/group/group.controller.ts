@@ -296,10 +296,9 @@ export class GroupController {
   @ApiResponse({
     status: 200,
     description: '모임 갤러리 조회',
-    type: GetGalleryRes,
+    type: [GetGalleryRes],
   })
-  async getGallery(@Param() param: GetGalleryParam) {
-    // return this.groupService.getGallery(param, user);
-    return null;
+  async getGallery(@Param() param: GetGalleryParam): Promise<GetGalleryRes[]> {
+    return this.groupService.getGallery(param);
   }
 }
