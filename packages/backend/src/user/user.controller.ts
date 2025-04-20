@@ -22,6 +22,7 @@ import { GetMoneyDto } from './dtos/get-money.dto';
 import { GetProfileResDto } from './dtos/get-profile-res.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DeleteProfilePhotoParam } from './dtos/delete-profile-photo-param.dto';
+import { GetOtherProfileResDto } from './dtos/get-other-profile-res.dto';
 
 @Controller('users')
 export class UserController {
@@ -46,6 +47,21 @@ export class UserController {
   })
   async getProfile(@GetUser() user: User): Promise<GetProfileResDto> {
     return this.userService.getProfile(user);
+  }
+
+  /**
+   * @description 다른 유저의 프로필을 조회합니다.
+   */
+  @Get(':userId/profile')
+  @ApiResponse({
+    status: 200,
+    type: GetOtherProfileResDto,
+    description: '다른 유저의 프로필',
+  })
+  async getOtherProfile(
+    @Param('userId') userId: number,
+  ): Promise<GetOtherProfileResDto> {
+    return this.userService.getOtherProfile(userId);
   }
 
   /**

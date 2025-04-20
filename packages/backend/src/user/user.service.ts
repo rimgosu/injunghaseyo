@@ -10,6 +10,7 @@ import { GetProfileResDto } from './dtos/get-profile-res.dto';
 import { USER_FOR_PROFILE } from './utils/types';
 import { S3Service } from '@/s3/s3.service';
 import { DeleteProfilePhotoParam } from './dtos/delete-profile-photo-param.dto';
+import { GetOtherProfileResDto } from './dtos/get-other-profile-res.dto';
 
 @Injectable()
 export class UserService {
@@ -17,6 +18,20 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly s3: S3Service,
   ) {}
+
+  /**
+   * @description 다른 유저의 프로필을 조회합니다.
+   */
+  async getOtherProfile(userId: number): Promise<GetOtherProfileResDto> {
+    const userData = await this.prisma.user.findUnique({
+      where: { id: userId, deletedAt: null },
+      ...USER_FOR_PROFILE(userId),
+    });
+
+    if (!userData) throw new NotFoundException('유저를 찾을 수 없습니다.');
+
+    return new GetOtherProfileResDto(userData);
+  }
 
   /**
    * @description 유저 프로필 사진을 삭제합니다.

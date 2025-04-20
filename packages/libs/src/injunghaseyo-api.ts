@@ -316,6 +316,40 @@ export interface GetProfileResDto {
   completedGroup: ProfileGroupElem[];
 }
 
+export interface GetOtherProfileResDto {
+  /**
+   * 인증머니
+   * @example 100000
+   */
+  money: number;
+  /**
+   * 자기소개
+   * @example "등록된 소개말이 없습니다."
+   */
+  introduction: string;
+  /**
+   * 닉네임
+   * @example "홍길동"
+   */
+  nickname: string;
+  /**
+   * 총 인증한 일 수
+   * @example 10
+   */
+  totalProofDays: number;
+  /**
+   * 프로필 사진, 최신일 기준으로 내림차순 정렬
+   * @example [{"id":1,"url":"https://example.com/photo1.jpg"},{"id":2,"url":"https://example.com/photo2.jpg"}]
+   */
+  profilePhotos: ProfilePhotoElem[];
+  /** 진행중인 인증 */
+  currentGroup: ProfileGroupElem[];
+  /** 예약한 인증 */
+  reservedGroup: ProfileGroupElem[];
+  /** 완료한 인증 */
+  completedGroup: ProfileGroupElem[];
+}
+
 export interface GetMoneyDto {
   /**
    * 보유한 인증 머니
@@ -1528,6 +1562,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/users/profile`,
         method: 'GET',
         secure: true,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserControllerGetOtherProfile
+     * @request GET:/users/{userId}/profile
+     */
+    userControllerGetOtherProfile: (userId: number, params: RequestParams = {}) =>
+      this.request<GetOtherProfileResDto, any>({
+        path: `/users/${userId}/profile`,
+        method: 'GET',
         format: 'json',
         ...params,
       }),
