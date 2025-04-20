@@ -39,18 +39,23 @@ export const GalleryPage = ({ groupId }: GalleryPageProps) => {
   const [gallery, setGallery] = useState<GetGalleryRes[] | null>(null);
   const { getGallery } = useGroups();
 
+  const fetchGallery = async () => {
+    const res = await getGallery(groupId);
+    if (res.data) {
+      setGallery(res.data);
+    }
+  };
+
   useEffect(() => {
-    const fetchGallery = async () => {
-      const res = await getGallery(groupId);
-      if (res.data) {
-        setGallery(res.data);
-      }
-    };
     fetchGallery();
   }, []);
 
-  if (!gallery) {
-    return <div>등록된 사진이 없습니다.</div>;
+  if (
+    !gallery ||
+    gallery.length === 0 ||
+    gallery.every((g) => g.proofsForGallery.length === 0)
+  ) {
+    return <div className="text-xl text-gray-600">등록된 사진이 없습니다.</div>;
   }
 
   return (
