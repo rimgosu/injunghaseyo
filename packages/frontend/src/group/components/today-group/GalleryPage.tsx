@@ -65,15 +65,15 @@ export const GalleryPage = ({ groupId }: GalleryPageProps) => {
                   proof={p.proofType}
                   proofPhoto={p.proofPhoto}
                 />
-                <div className="absolute bottom-1 left-1 flex gap-2 bg-green-200 border rounded-2xl px-2">
+                <div className="absolute bottom-2 right-2 flex items-end gap-1">
+                  <div className="text-md text-gray-500">
+                    {p.participant.nickname}
+                  </div>
                   <img
                     src={p.participant.profilePhoto}
                     alt="profile photo"
-                    className="w-10 h-10 rounded-full border border-gray-600 p-1 flex gap-2 items-center justify-center"
+                    className="w-10 h-10 rounded-full border-2 border-gray-500 object-cover"
                   />
-                  <div className="text-lg flex items-center">
-                    {p.participant.nickname}
-                  </div>
                 </div>
               </div>
             ))}
