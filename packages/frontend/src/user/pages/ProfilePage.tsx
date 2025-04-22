@@ -17,6 +17,7 @@ interface ProfilePageProps {
   isOtherProfile?: boolean;
   profileStore?: any; // 구체적인 타입은 실제 사용하는 스토어 타입으로 대체 필요
   userId?: number; // 다른 사용자의 프로필을 볼 때 사용
+  isOtherProfilePhoto?: boolean;
 }
 
 export const ProfilePage = ({
@@ -32,6 +33,7 @@ export const ProfilePage = ({
   isOtherProfile = false,
   profileStore = useProfileStore(),
   userId,
+  isOtherProfilePhoto = false,
 }: ProfilePageProps) => {
   const navigate = useNavigate();
   const { fetchProfile, fetchOtherProfile, uploadProfilePhoto } = useUsers();
@@ -74,7 +76,11 @@ export const ProfilePage = ({
   };
 
   const handleProfilePhotoClick = () => {
-    navigate('/user/profile/photo');
+    if (isOtherProfilePhoto) {
+      navigate(`/user/${userId}/profile/photo`);
+    } else {
+      navigate('/user/profile/photo');
+    }
   };
 
   const handleGroupClick = (groupId: number) => {

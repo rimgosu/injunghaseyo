@@ -43,6 +43,7 @@ export class UserService {
       this.prisma.profilePhoto.findUnique({
         where: {
           id: param.profilePhotoId,
+          userId: user.id,
           deletedAt: null,
         },
       }),
@@ -65,6 +66,7 @@ export class UserService {
     return await this.prisma.profilePhoto.delete({
       where: {
         id: param.profilePhotoId,
+        userId: user.id,
         deletedAt: null,
       },
     });

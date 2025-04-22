@@ -24,6 +24,7 @@ export const OtherProfilePage = () => {
       showReservedGroups={false}
       isOtherProfile={true}
       profileStore={useOtherProfileStore()}
+      isOtherProfilePhoto={true}
     />
   );
 };

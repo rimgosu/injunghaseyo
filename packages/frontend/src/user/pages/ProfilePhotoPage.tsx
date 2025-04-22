@@ -5,9 +5,17 @@ import { XMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useProfileStore } from '../stores/useProfileStore';
 import { useUsers } from '../hooks/useUsers';
 
-export const ProfilePhotoPage = () => {
+interface ProfilePhotoPageProps {
+  profileStore?: any;
+  existDeleteButton?: boolean;
+}
+
+export const ProfilePhotoPage = ({
+  profileStore = useProfileStore(),
+  existDeleteButton = true,
+}: ProfilePhotoPageProps) => {
   const navigate = useNavigate();
-  const { profileData, setProfileData } = useProfileStore();
+  const { profileData, setProfileData } = profileStore;
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
@@ -101,10 +109,12 @@ export const ProfilePhotoPage = () => {
             alt="프로필 사진"
             className="w-full h-full object-contain"
           />
-          <TrashIcon
-            className="w-6 h-6 text-gray-600 cursor-pointer absolute top-4 right-4 hover:text-red-500 transition-colors drop-shadow-lg"
-            onClick={handleDeletePhoto}
-          />
+          {existDeleteButton && (
+            <TrashIcon
+              className="w-6 h-6 text-gray-600 cursor-pointer absolute top-4 right-4 hover:text-red-500 transition-colors drop-shadow-lg"
+              onClick={handleDeletePhoto}
+            />
+          )}
           <div className="absolute bottom-0 left-0 right-0 flex justify-between p-4 text-sm bg-gradient-to-t from-black/30 to-transparent">
             <div
               className={`text-white cursor-pointer ${
