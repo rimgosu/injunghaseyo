@@ -29,6 +29,7 @@ import { verifyPassword } from './utils/auth.util';
 import { GetCheckSignIn } from './dtos/get-check-sign-in.dto';
 import { CacheKeyConstants } from '@/common/cache-key';
 import { CharacterRewardService } from '@/character/character-reward.service';
+import { S3Service } from '@/s3/s3.service';
 
 @Injectable()
 export class AuthService {
@@ -39,6 +40,7 @@ export class AuthService {
     private readonly authHelper: AuthHelper,
     private readonly configService: ConfigService,
     private readonly characterRewardService: CharacterRewardService,
+    private readonly s3Service: S3Service,
   ) {}
 
   private signUpMoney = process.env.NODE_ENV === 'dev' ? 100000 : 1000;
@@ -139,6 +141,24 @@ export class AuthService {
       newNickname = `${nickname}_${Math.random().toString(36).substring(2, 10)}`;
     }
 
+    let profilePhotoUrl = BASE_PROFILE_PHOTO_S3_URL;
+
+    if (profile_image) {
+      const response = await fetch(profile_image);
+      const buffer = Buffer.from(await response.arrayBuffer());
+
+      const filename = `${Date.now()}_${provider}_profile`;
+      const encodedFilename = this.s3Service.encodeFilename(filename);
+
+      const key = `${this.s3Service.profilePhotoDir}/${encodedFilename}`;
+      const file = {
+        buffer,
+        mimetype: response.headers.get('content-type') || 'image/jpeg',
+      } as Express.Multer.File;
+
+      profilePhotoUrl = await this.s3Service.uploadFile(file, key);
+    }
+
     if (!user) {
       user = await this.prisma.user.create({
         data: {
@@ -146,7 +166,7 @@ export class AuthService {
           nickname: newNickname ?? nickname,
           eventAgree: false,
           profilePhoto: {
-            create: { url: profile_image ?? BASE_PROFILE_PHOTO_S3_URL },
+            create: { url: profilePhotoUrl },
           },
           status: UserStatus.OAUTH_PENDING,
           provider,

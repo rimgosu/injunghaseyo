@@ -12,6 +12,7 @@ import { BASE_PROFILE_PHOTO_S3_URL } from '@/common/constants';
 import { UnauthorizedException } from '@nestjs/common';
 import { createMock } from '@golevelup/ts-jest';
 import { CharacterRewardService } from '@/character/character-reward.service';
+import { S3Service } from '@/s3/s3.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -45,6 +46,13 @@ describe('AuthService', () => {
         JwtService,
         CharacterRewardService,
         {
+          provide: S3Service,
+          useValue: {
+            encodeFilename: jest.fn(),
+            uploadFile: jest.fn(),
+          },
+        },
+        {
           provide: PrismaService,
           useValue: {
             user: {
@@ -70,7 +78,6 @@ describe('AuthService', () => {
     characterService = module.get<CharacterRewardService>(
       CharacterRewardService,
     );
-
     jest.spyOn(characterService, 'rewardSignIn').mockResolvedValue();
   });
 
@@ -210,9 +217,6 @@ describe('AuthService', () => {
           nickname: mockOauthUser.nickname,
           status: UserStatus.OAUTH_PENDING,
           provider: Provider.GOOGLE,
-          profilePhoto: {
-            create: { url: mockOauthUser.profile_image },
-          },
         }),
       });
     });
@@ -278,9 +282,6 @@ describe('AuthService', () => {
           eventAgree: false,
           status: UserStatus.OAUTH_PENDING,
           provider: Provider.GOOGLE,
-          profilePhoto: {
-            create: { url: mockOauthUser.profile_image },
-          },
         }),
       });
       expect(result).toEqual({
