@@ -15,5 +15,6 @@ export class GetOtherProfileResDto extends OmitType(GetProfileResDto, [
     this.profilePhotos = getProfileResDto.profilePhotos;
     this.currentGroup = getProfileResDto.currentGroup;
     this.completedGroup = getProfileResDto.completedGroup;
+    this.totalProofDays = getProfileResDto.totalProofDays;
   }
 }
