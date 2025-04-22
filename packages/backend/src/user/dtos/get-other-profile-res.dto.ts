@@ -1,18 +1,19 @@
 import { GetProfileResDto } from './get-profile-res.dto';
 import { UserForProfile } from '../utils/types';
-import { ApiHideProperty } from '@nestjs/swagger';
+import { OmitType } from '@nestjs/swagger';
 
-export class GetOtherProfileResDto extends GetProfileResDto {
-  @ApiHideProperty()
-  money: never;
-
-  @ApiHideProperty()
-  reservedGroup: never;
-
+export class GetOtherProfileResDto extends OmitType(GetProfileResDto, [
+  'money',
+  'reservedGroup',
+]) {
   constructor(userData: UserForProfile) {
-    super(userData);
+    super();
+    const getProfileResDto = new GetProfileResDto(userData);
 
-    delete this.money;
-    delete this.reservedGroup;
+    this.introduction = getProfileResDto.introduction;
+    this.nickname = getProfileResDto.nickname;
+    this.profilePhotos = getProfileResDto.profilePhotos;
+    this.currentGroup = getProfileResDto.currentGroup;
+    this.completedGroup = getProfileResDto.completedGroup;
   }
 }

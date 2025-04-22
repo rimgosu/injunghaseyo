@@ -318,11 +318,6 @@ export interface GetProfileResDto {
 
 export interface GetOtherProfileResDto {
   /**
-   * 인증머니
-   * @example 100000
-   */
-  money: number;
-  /**
    * 자기소개
    * @example "등록된 소개말이 없습니다."
    */
@@ -344,8 +339,6 @@ export interface GetOtherProfileResDto {
   profilePhotos: ProfilePhotoElem[];
   /** 진행중인 인증 */
   currentGroup: ProfileGroupElem[];
-  /** 예약한 인증 */
-  reservedGroup: ProfileGroupElem[];
   /** 완료한 인증 */
   completedGroup: ProfileGroupElem[];
 }
