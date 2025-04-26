@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { S3Module } from './s3/s3.module';
 import { CharacterModule } from './character/character.module';
+import { ProofModule } from './proof/proof.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { CharacterModule } from './character/character.module';
     UserModule,
     S3Module,
     CharacterModule,
+    ProofModule,
   ],
   controllers: [AppController],
   providers: [AppService],
