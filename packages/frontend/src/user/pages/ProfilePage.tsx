@@ -7,6 +7,7 @@ import { Cog6ToothIcon } from '@heroicons/react/24/outline';
 import { useProfileStore } from '../stores/useProfileStore';
 import { GroupSection } from '../components/GroupSection';
 import { ProfileSection } from '../components/ProfileSection';
+import { OtherProfileSection } from '../components/OtherProfileSection';
 
 interface ProfilePageProps {
   showCameraButton?: boolean;
@@ -83,8 +84,12 @@ export const ProfilePage = ({
     }
   };
 
-  const handleGroupClick = (groupId: number) => {
+  const navigateGroupToday = (groupId: number) => {
     navigate(`/group/${groupId}/today`);
+  };
+
+  const navigateGroupDetail = (groupId: number) => {
+    navigate(`/group/${groupId}`);
   };
 
   return (
@@ -100,21 +105,34 @@ export const ProfilePage = ({
     >
       <div className="flex flex-col p-4 gap-12">
         {/* 상단 프로필 섹션 */}
-        <ProfileSection
-          profileData={profileData}
-          handleProfilePhotoClick={handleProfilePhotoClick}
-          handlePhotoUpload={handlePhotoUpload}
-          handleCameraClick={handleCameraClick}
-          fileInputRef={fileInputRef}
-          showCameraButton={showCameraButton}
-        />
+        {isOtherProfile ? (
+          <OtherProfileSection
+            profileData={profileData}
+            handleProfilePhotoClick={handleProfilePhotoClick}
+            handlePhotoUpload={handlePhotoUpload}
+            handleCameraClick={handleCameraClick}
+            fileInputRef={fileInputRef}
+            showCameraButton={showCameraButton}
+          />
+        ) : (
+          <ProfileSection
+            profileData={profileData}
+            handleProfilePhotoClick={handleProfilePhotoClick}
+            handlePhotoUpload={handlePhotoUpload}
+            handleCameraClick={handleCameraClick}
+            fileInputRef={fileInputRef}
+            showCameraButton={showCameraButton}
+          />
+        )}
 
         {/* 그룹 섹션들 */}
         {showCurrentGroups && (
           <GroupSection
             title="진행 중인 인증"
             groups={profileData?.currentGroup ?? []}
-            onGroupClick={handleGroupClick}
+            onGroupClick={
+              isOtherProfile ? navigateGroupDetail : navigateGroupToday
+            }
             gridCols={1}
             className="mt-4"
           />
@@ -124,7 +142,7 @@ export const ProfilePage = ({
           <GroupSection
             title="예약한 인증"
             groups={profileData?.reservedGroup ?? []}
-            onGroupClick={handleGroupClick}
+            onGroupClick={navigateGroupDetail}
             className="mt-4"
           />
         )}
@@ -133,7 +151,9 @@ export const ProfilePage = ({
           <GroupSection
             title="완료한 인증"
             groups={profileData?.completedGroup ?? []}
-            onGroupClick={handleGroupClick}
+            onGroupClick={
+              isOtherProfile ? navigateGroupDetail : navigateGroupToday
+            }
             className="mb-24"
           />
         )}
