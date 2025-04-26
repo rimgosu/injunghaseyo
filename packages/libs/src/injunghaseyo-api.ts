@@ -422,6 +422,34 @@ export interface GetMyCharacter {
   characterImage: string;
 }
 
+export interface ProofForMainGallery {
+  /**
+   * 인증 id
+   * @example 1
+   */
+  proofId: number;
+  /**
+   * 인증 이미지 url
+   * @example "https://example.com/image.jpg"
+   */
+  url: string;
+  /**
+   * 인증 생성일
+   * @format date-time
+   * @example "2025-01-01T00:00:00Z"
+   */
+  createdAt: string;
+}
+
+export interface GetProofRes {
+  /** 인증 목록 */
+  items: ProofForMainGallery[];
+  /** 다음 페이지 존재 여부 */
+  hasNextPage: boolean;
+  /** 다음 페이지 조회를 위한 커서 값 (다음 페이지가 없는 경우 null) */
+  nextCursor?: number;
+}
+
 /** sign in status */
 export enum GetCheckSignInUserStatusEnum {
   ACTIVE = 'ACTIVE',
@@ -775,6 +803,16 @@ export interface CharacterControllerCharacterSelectParams {
    * @example 1
    */
   characterId: number;
+}
+
+export interface ProofControllerGetProofsParams {
+  /**
+   * 페이지 당 아이템 수
+   * @default 20
+   */
+  take?: number;
+  /** 첫 아이템의 id */
+  cursor?: number;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -1719,6 +1757,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/characters/my`,
         method: 'GET',
         secure: true,
+        format: 'json',
+        ...params,
+      }),
+  };
+  proofs = {
+    /**
+     * No description
+     *
+     * @tags Proof
+     * @name ProofControllerGetProofs
+     * @request GET:/proofs
+     */
+    proofControllerGetProofs: (query: ProofControllerGetProofsParams, params: RequestParams = {}) =>
+      this.request<GetProofRes, any>({
+        path: `/proofs`,
+        method: 'GET',
+        query: query,
         format: 'json',
         ...params,
       }),

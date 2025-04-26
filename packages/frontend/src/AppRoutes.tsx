@@ -14,6 +14,7 @@ import { useAuth } from './auth/hooks/useAuth';
 import { GetCheckSignInUserStatusEnum } from '@rimgosu/libs';
 import { useEffect } from 'react';
 import { useCheckSignInStore } from './auth/stores/useCheckSignInStore';
+import { ProofRoutes } from './proof/ProofRoutes';
 
 export const AppRoutes = () => {
   const { checkSignIn } = useAuth();
@@ -90,6 +91,7 @@ export const AppRoutes = () => {
       <Route path="/auth/*" element={<AuthRoutes />} />
       <Route path="/group/*" element={<GroupRoutes />} />
       <Route path="/user/*" element={<UserRoutes />} />
+      <Route path="/proof/*" element={<ProofRoutes />} />
       <Route path="/" element={<Navigate to="/group" replace />} />
     </Routes>
   );
