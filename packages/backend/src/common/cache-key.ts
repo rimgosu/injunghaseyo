@@ -14,4 +14,8 @@ export class CacheKeyConstants {
   static readonly BLACKLIST_ATK = (atk: string) => {
     return `blacklist:atk:${atk}`;
   };
+
+  static readonly PROOF_VIEW = (proofId: number, ip: string) => {
+    return `view:proof:${proofId}:ip:${ip}`;
+  };
 }
