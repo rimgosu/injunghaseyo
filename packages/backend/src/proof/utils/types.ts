@@ -1,12 +1,9 @@
 import { Prisma } from '@prisma/client';
 
-export const PHOTO_WITH_PROOF =
-  Prisma.validator<Prisma.PhotoProofDefaultArgs>()({
-    include: {
-      proof: true,
-    },
-  });
+export const PROOF_WITH_PHOTO = Prisma.validator<Prisma.ProofDefaultArgs>()({
+  include: {
+    photoProof: true,
+  },
+});
 
-export type PhotoWithProof = Prisma.PhotoProofGetPayload<
-  typeof PHOTO_WITH_PROOF
->;
+export type ProofWithPhoto = Prisma.ProofGetPayload<typeof PROOF_WITH_PHOTO>;

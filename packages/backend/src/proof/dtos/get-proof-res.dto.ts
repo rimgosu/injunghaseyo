@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PhotoWithProof } from '../utils/types';
+import { BaseCursorPaginationResDto } from '@/common/base-cursor-pagination-res.dto';
+import { ProofWithPhoto } from '../utils/types';
 
-export class GetProofRes {
+class Proof {
   @ApiProperty({
     description: '인증 id',
     example: 1,
@@ -23,9 +24,29 @@ export class GetProofRes {
   })
   createdAt: Date;
 
-  constructor(photoProof: PhotoWithProof) {
-    this.proofId = photoProof.proofId;
-    this.url = photoProof.url;
-    this.createdAt = photoProof.createdAt;
+  constructor(proof: ProofWithPhoto) {
+    this.proofId = proof.id;
+    this.url = proof.photoProof.url;
+    this.createdAt = proof.createdAt;
+  }
+}
+
+export class GetProofRes extends BaseCursorPaginationResDto<Proof> {
+  @ApiProperty({
+    description: '인증 목록',
+    type: [Proof],
+  })
+  items: Proof[];
+
+  constructor(
+    proofs: ProofWithPhoto[],
+    hasNextPage: boolean,
+    nextCursor?: number,
+  ) {
+    super(
+      proofs.map((proof) => new Proof(proof)),
+      hasNextPage,
+      nextCursor,
+    );
   }
 }
