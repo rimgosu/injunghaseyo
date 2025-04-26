@@ -70,7 +70,7 @@ export const GalleryPage = () => {
           </div>
         ))}
       </div>
-      <div ref={observerTarget} className="h-10" />
+      <div ref={observerTarget} className="h-10 mt-16" />
     </BaseLayout>
   );
 };
