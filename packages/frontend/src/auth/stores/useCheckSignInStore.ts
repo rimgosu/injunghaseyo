@@ -12,6 +12,7 @@ export const useCheckSignInStore = create<TCheckSignInStore>((set) => ({
   checkSignInRes: {
     userStatus: GetCheckSignInUserStatusEnum.ACTIVE,
     checkLevelUpResult: null,
+    userId: 0,
   },
   isSignedIn: false,
   setCheckSignInRes: (res) => set({ checkSignInRes: res }),

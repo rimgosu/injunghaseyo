@@ -92,6 +92,13 @@ class ChgPasswordMatchConstraint implements ValidatorConstraintInterface {
 
 export class BaseUseraAuthDto {
   @ApiProperty({
+    description: 'user id',
+    type: Number,
+    example: 1,
+  })
+  userId: number;
+
+  @ApiProperty({
     description: 'email',
     type: String,
     example: 'newnyup@gmail.com',

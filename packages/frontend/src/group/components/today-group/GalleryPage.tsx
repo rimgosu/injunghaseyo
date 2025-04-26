@@ -3,6 +3,8 @@ import { useGroups } from '../../hooks/useGroups';
 import { GetGalleryRes, ProofForGalleryProofTypeEnum } from '@rimgosu/libs';
 import { CursorArrowRaysIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { ymd2Human } from '../../../common/common.util';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../auth/hooks/useAuth';
 
 interface GalleryPageProps {
   groupId: number;
@@ -37,7 +39,10 @@ const ImgByProofType = ({
 
 export const GalleryPage = ({ groupId }: GalleryPageProps) => {
   const [gallery, setGallery] = useState<GetGalleryRes[] | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
   const { getGallery } = useGroups();
+  const { checkSignIn } = useAuth();
+  const navigate = useNavigate();
 
   const fetchGallery = async () => {
     const res = await getGallery(groupId);
@@ -46,8 +51,24 @@ export const GalleryPage = ({ groupId }: GalleryPageProps) => {
     }
   };
 
+  const fetchUserId = async () => {
+    const res = await checkSignIn();
+    if (res.data) {
+      setUserId(res.data.userId);
+    }
+  };
+
+  const handleParticipantClick = (participantId: number) => {
+    if (participantId === userId) {
+      navigate('/user/profile');
+    } else {
+      navigate(`/user/${participantId}/profile`);
+    }
+  };
+
   useEffect(() => {
     fetchGallery();
+    fetchUserId();
   }, []);
 
   if (
@@ -75,7 +96,10 @@ export const GalleryPage = ({ groupId }: GalleryPageProps) => {
                     proof={p.proofType}
                     proofPhoto={p.proofPhoto}
                   />
-                  <div className="absolute bottom-2 right-2 flex items-end gap-1">
+                  <div
+                    className="absolute bottom-2 right-2 flex items-end gap-1 cursor-pointer"
+                    onClick={() => handleParticipantClick(p.participant.id)}
+                  >
                     <div className="text-md text-gray-500">
                       {p.participant.nickname}
                     </div>

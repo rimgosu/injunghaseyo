@@ -29,6 +29,11 @@ export interface CheckLevelUpReturnType {
 }
 
 export interface GetCheckSignIn {
+  /**
+   * user id
+   * @example 1
+   */
+  userId: number;
   /** sign in status */
   userStatus: GetCheckSignInUserStatusEnum;
   /** 레벨업 시 노출 정보 */
