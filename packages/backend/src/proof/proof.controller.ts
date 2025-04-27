@@ -16,11 +16,13 @@ import { GetProofRes } from './dtos/get-proof-res.dto';
 import { GetClientIp } from '@/common/get-client-ip.decorator';
 import { AtkGuard } from '@/auth/guards/atk.guard';
 import { User } from '@prisma/client';
-import { GetUser } from '@/common/get-user.decorator';
+import { GetOptionalUser, GetUser } from '@/common/get-user.decorator';
 import { InteractionProofQuery } from './dtos/interaction-proof-query.dto';
 import { ReportProofQuery } from './dtos/report-proof-query.dto';
 import { CreateCommentQuery } from './dtos/create-comment-query.dto';
 import { CreateCommentBody } from './dtos/create-comment-body.dto';
+import { GetCommentsResDto } from './dtos/get-comments-res.dto';
+import { AtkOptionalGuard } from '@/auth/guards/atk-optional.guard';
 
 @Controller('proofs')
 export class ProofController {
@@ -115,5 +117,24 @@ export class ProofController {
     @Query() query: CreateCommentQuery,
   ) {
     return this.proofService.createComment(proofId, user, body, query);
+  }
+
+  /**
+   * @description 댓글 조회
+   */
+  @Get(':proofId/comments')
+  @HttpCode(200)
+  @UseGuards(AtkOptionalGuard)
+  @ApiResponse({
+    status: 200,
+    type: GetCommentsResDto,
+    description: '댓글 조회',
+  })
+  async getComments(
+    @GetOptionalUser() user: User | undefined,
+    @Param('proofId') proofId: number,
+    @Query() query: BaseCursorPaginationQueryDto,
+  ): Promise<GetCommentsResDto> {
+    return this.proofService.getComments(proofId, user, query);
   }
 }

@@ -3,9 +3,7 @@ model ProofComment {
     userId             Int
     proofId            Int
     contents           String
-    like               Int                  @default(0)
     parentId           Int?
-    depth              Int                  @default(1) /// root=1 
     user               User                 @relation(fields: [userId], references: [id])
     proof              Proof                @relation(fields: [proofId], references: [id])
     commentInteraction CommentInteraction[]
@@ -13,4 +11,7 @@ model ProofComment {
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
+
+    replies ProofComment[] @relation("CommentReplies")
+    parent  ProofComment?  @relation("CommentReplies", fields: [parentId], references: [id])
 }

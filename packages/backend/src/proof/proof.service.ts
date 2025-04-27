@@ -1,7 +1,17 @@
 import { PrismaService } from '@/prisma/prisma.service';
-import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { GetProofsRes } from './dtos/get-proofs-res.dto';
-import { PROOF_FOR_GET_PROOF, PROOF_WITH_PHOTO } from './utils/types';
+import {
+  PROOF_COMMENT_WITH_INTERACTION,
+  PROOF_FOR_GET_PROOF,
+  PROOF_WITH_PHOTO,
+} from './utils/types';
 import { BaseCursorPaginationQueryDto } from '@/common/base-cursor-pagination-query.dto';
 import { GetProofRes } from './dtos/get-proof-res.dto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -12,6 +22,7 @@ import { InteractionProofQuery } from './dtos/interaction-proof-query.dto';
 import { ReportProofQuery } from './dtos/report-proof-query.dto';
 import { CreateCommentBody } from './dtos/create-comment-body.dto';
 import { CreateCommentQuery } from './dtos/create-comment-query.dto';
+import { GetCommentsResDto } from './dtos/get-comments-res.dto';
 
 @Injectable()
 export class ProofService {
@@ -20,6 +31,38 @@ export class ProofService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   private readonly logger = new Logger(ProofService.name, { timestamp: true });
+
+  async getComments(
+    proofId: number,
+    user: User | undefined,
+    query: BaseCursorPaginationQueryDto,
+  ) {
+    const { take, cursor } = query;
+    const comments = await this.prisma.proofComment.findMany({
+      where: { proofId, deletedAt: null, parentId: null },
+      orderBy: [
+        {
+          commentInteraction: {
+            _count: 'desc',
+          },
+        },
+        {
+          createdAt: 'desc',
+        },
+      ],
+      ...PROOF_COMMENT_WITH_INTERACTION(user?.id),
+      take: take ? take + 1 : undefined,
+      cursor: cursor ? { id: cursor } : undefined,
+    });
+
+    const hasNextPage = comments.length > take;
+    const items = hasNextPage ? comments.slice(0, -1) : comments;
+    const nextCursor = hasNextPage
+      ? comments[comments.length - 1].id
+      : undefined;
+
+    return new GetCommentsResDto(items, hasNextPage, nextCursor);
+  }
 
   private async checkProof(proofId: number) {
     const proof = await this.prisma.proof.findUnique({
@@ -37,6 +80,34 @@ export class ProofService {
     return proof;
   }
 
+  private async checkParentComment({
+    parentCommentId,
+    proofId,
+  }: {
+    parentCommentId?: number;
+    proofId: number;
+  }) {
+    if (!parentCommentId) {
+      return; // 대댓글이 아니라면 처리 없이 종료
+    }
+
+    const parentComment = await this.prisma.proofComment.findUnique({
+      where: {
+        id: parentCommentId,
+        proofId,
+        deletedAt: null,
+      },
+    });
+
+    if (!parentComment) {
+      throw new NotFoundException('대댓글의 부모 댓글이 존재하지 않습니다.');
+    }
+
+    if (parentComment.parentId) {
+      throw new BadRequestException('대댓글의 대댓글은 달 수 없습니다.');
+    }
+  }
+
   async createComment(
     proofId: number,
     user: User,
@@ -45,33 +116,17 @@ export class ProofService {
   ) {
     const { parentCommentId } = query;
     const { contents } = body;
-    let depth = 1;
 
-    await this.checkProof(proofId);
-
-    // 대댓글 처리
-    if (parentCommentId) {
-      const parentComment = await this.prisma.proofComment.findUnique({
-        where: {
-          id: parentCommentId,
-          proofId,
-          deletedAt: null,
-        },
-      });
-
-      if (!parentComment) {
-        throw new NotFoundException('대댓글의 부모 댓글이 존재하지 않습니다.');
-      }
-
-      depth = parentComment.depth + 1;
-    }
+    await Promise.all([
+      this.checkProof(proofId),
+      this.checkParentComment({ parentCommentId, proofId }),
+    ]);
 
     return await this.prisma.proofComment.create({
       data: {
         proofId,
         userId: user.id,
         contents,
-        depth,
         ...(parentCommentId && { parentId: parentCommentId }),
       },
     });

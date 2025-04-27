@@ -60,3 +60,39 @@ export const PROOF_FOR_GET_PROOF = Prisma.validator<Prisma.ProofDefaultArgs>()({
 export type ProofForGetProof = Prisma.ProofGetPayload<
   typeof PROOF_FOR_GET_PROOF
 >;
+
+export const PROOF_COMMENT_WITH_INTERACTION = (userId?: number) => {
+  return Prisma.validator<Prisma.ProofCommentDefaultArgs>()({
+    include: {
+      _count: {
+        select: {
+          commentInteraction: {
+            where: {
+              type: InteractionType.LIKE,
+            },
+          },
+          replies: true,
+        },
+      },
+      commentInteraction: {
+        select: {
+          type: true,
+        },
+        where: {
+          userId: userId ?? -1,
+        },
+      },
+      user: {
+        select: {
+          id: true,
+          nickname: true,
+          profilePhoto: true,
+        },
+      },
+    },
+  });
+};
+
+export type ProofCommentWithInteraction = Prisma.ProofCommentGetPayload<
+  ReturnType<typeof PROOF_COMMENT_WITH_INTERACTION>
+>;

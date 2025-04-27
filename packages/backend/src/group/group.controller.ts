@@ -18,10 +18,7 @@ import {
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
-import {
-  GetOptionalUser as GetUserOptional,
-  GetUser,
-} from '@/common/get-user.decorator';
+import { GetOptionalUser, GetUser } from '@/common/get-user.decorator';
 import { User } from '@prisma/client';
 import { CreateGroupParams } from './dtos/create-group-params.dto';
 import { AtkGuard } from '@/auth/guards/atk.guard';
@@ -128,7 +125,7 @@ export class GroupController {
     type: GetGroupsRes,
   })
   async getGroups(
-    @GetUserOptional() user: User | undefined,
+    @GetOptionalUser() user: User | undefined,
     @Query() query: GetGroupsQueryDto,
   ): Promise<GetGroupsRes> {
     return this.groupService.getGroups(user, query);
@@ -146,7 +143,7 @@ export class GroupController {
   })
   async getGroup(
     @Param() param: GetGroupParam,
-    @GetUserOptional() user: User | undefined,
+    @GetOptionalUser() user: User | undefined,
   ): Promise<GetGroupRes> {
     return this.groupService.getGroup(param, user);
   }
