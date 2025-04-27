@@ -103,6 +103,7 @@ class ProofCommentItem {
         (interaction) => interaction.type === InteractionType.DISLIKE,
       );
     }
+    this.likeCount = item._count.commentInteraction;
     this.user = {
       id: item.userId,
       nickname: item.user.nickname,
