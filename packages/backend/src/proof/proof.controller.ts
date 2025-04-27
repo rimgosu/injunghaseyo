@@ -17,6 +17,7 @@ import { AtkGuard } from '@/auth/guards/atk.guard';
 import { User } from '@prisma/client';
 import { GetUser } from '@/common/get-user.decorator';
 import { InteractionProofQuery } from './dtos/interaction-proof-query.dto';
+import { ReportProofQuery } from './dtos/report-proof-query.dto';
 
 @Controller('proofs')
 export class ProofController {
@@ -80,5 +81,21 @@ export class ProofController {
     @Query() query: InteractionProofQuery,
   ) {
     return this.proofService.interactionProof(proofId, user, query);
+  }
+
+  /**
+   * @description 인증 신고
+   *
+   * - 한 유저는 인증 하나 당 신고 하나만 할 수 있음.
+   */
+  @Post(':proofId/report')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async reportProof(
+    @Param('proofId') proofId: number,
+    @GetUser() user: User,
+    @Query() query: ReportProofQuery,
+  ) {
+    return this.proofService.reportProof(proofId, user, query);
   }
 }

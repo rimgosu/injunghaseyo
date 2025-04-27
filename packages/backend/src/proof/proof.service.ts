@@ -9,6 +9,7 @@ import { Cache } from 'cache-manager';
 import { CacheKeyConstants } from '@/common/cache-key';
 import { User } from '@prisma/client';
 import { InteractionProofQuery } from './dtos/interaction-proof-query.dto';
+import { ReportProofQuery } from './dtos/report-proof-query.dto';
 
 @Injectable()
 export class ProofService {
@@ -16,6 +17,27 @@ export class ProofService {
     private readonly prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  async reportProof(proofId: number, user: User, query: ReportProofQuery) {
+    const { reason } = query;
+
+    return await this.prisma.proofReport.upsert({
+      where: {
+        proofId_userId: {
+          proofId,
+          userId: user.id,
+        },
+      },
+      update: {
+        reason,
+      },
+      create: {
+        proofId,
+        userId: user.id,
+        reason,
+      },
+    });
+  }
 
   async interactionProof(
     proofId: number,
