@@ -441,9 +441,160 @@ export interface ProofForMainGallery {
   createdAt: string;
 }
 
-export interface GetProofRes {
+export interface GetProofsRes {
   /** 인증 목록 */
   items: ProofForMainGallery[];
+  /** 다음 페이지 존재 여부 */
+  hasNextPage: boolean;
+  /** 다음 페이지 조회를 위한 커서 값 (다음 페이지가 없는 경우 null) */
+  nextCursor?: number;
+}
+
+export interface UserForGetProof {
+  /**
+   * 유저 아이디
+   * @example 1
+   */
+  userId: number;
+  /**
+   * 유저 닉네임
+   * @example "홍길동"
+   */
+  nickname: string;
+  /**
+   * 유저 프로필 사진 주소
+   * @example "https://example.com/profile.jpg"
+   */
+  profilePhotoUrl: string;
+}
+
+export interface GroupForGetProof {
+  /**
+   * 그룹 아이디
+   * @example 1
+   */
+  groupId: number;
+  /**
+   * 그룹 제목
+   * @example "홍길동"
+   */
+  title: string;
+}
+
+export interface GetProofRes {
+  /**
+   * 증명 아이디
+   * @example 1
+   */
+  proofId: number;
+  /**
+   * 증명 사진 주소
+   * @example "https://example.com/proof.jpg"
+   */
+  url: string;
+  /**
+   * 좋아요 수
+   * @example 1
+   */
+  like: number;
+  /**
+   * 조회 수
+   * @example 1
+   */
+  view: number;
+  /**
+   * 댓글 수
+   * @example 1
+   */
+  commentCount: number;
+  /**
+   * 생성 일자
+   * @format date-time
+   * @example "2021-01-01"
+   */
+  createdAt: string;
+  /** 유저 정보 */
+  user: UserForGetProof;
+  /** 그룹 정보 */
+  group: GroupForGetProof;
+}
+
+export interface CreateCommentBody {
+  /**
+   * 댓글 내용
+   * @example "댓글 내용"
+   */
+  contents: string;
+}
+
+export interface UserForComment {
+  /**
+   * 유저 id
+   * @example 1
+   */
+  id: number;
+  /**
+   * 유저 닉네임
+   * @example "홍길동"
+   */
+  nickname: string;
+  /**
+   * 유저 프로필 이미지
+   * @example "https://example.com/profile.jpg"
+   */
+  profilePhotoUrl: string;
+}
+
+export interface ProofCommentItem {
+  /**
+   * 댓글 id
+   * @example 1
+   */
+  id: number;
+  /**
+   * 댓글 내용
+   * @example "댓글 내용"
+   */
+  contents: string;
+  /**
+   * 대댓글 갯수
+   * @example 5
+   */
+  childCommentCount: number;
+  /**
+   * 댓글 작성 시간
+   * @format date-time
+   * @example "2021-01-01T12:00:00Z"
+   */
+  createdAt: string;
+  /**
+   * 댓글 수정 시간
+   * @format date-time
+   * @example "2021-01-01T12:00:00Z"
+   */
+  updatedAt: string;
+  /**
+   * 내가 좋아요 했는지 여부
+   * @example true
+   */
+  isLiked: boolean;
+  /**
+   * 내가 싫어요 했는지 여부
+   * @example false
+   */
+  isDisliked: boolean;
+  /**
+   * 댓글 좋아요 수
+   * @example 10
+   */
+  likeCount: number;
+  /** 댓글 작성자 */
+  user: UserForComment;
+}
+
+export interface GetCommentsResDto {
+  /** 댓글 목록 */
+  items: ProofCommentItem[];
   /** 다음 페이지 존재 여부 */
   hasNextPage: boolean;
   /** 다음 페이지 조회를 위한 커서 값 (다음 페이지가 없는 경우 null) */
@@ -813,6 +964,85 @@ export interface ProofControllerGetProofsParams {
   take?: number;
   /** 첫 아이템의 id */
   cursor?: number;
+}
+
+export interface ProofControllerInteractionProofParams {
+  /**
+   * 좋아요 타입
+   * @example "LIKE"
+   */
+  type: TypeEnum;
+  proofId: number;
+}
+
+/**
+ * 좋아요 타입
+ * @example "LIKE"
+ */
+export enum TypeEnum {
+  LIKE = 'LIKE',
+  DISLIKE = 'DISLIKE',
+}
+
+/**
+ * 좋아요 타입
+ * @example "LIKE"
+ */
+export enum ProofControllerInteractionProofParams1TypeEnum {
+  LIKE = 'LIKE',
+  DISLIKE = 'DISLIKE',
+}
+
+export interface ProofControllerReportProofParams {
+  /**
+   * 신고 이유
+   * @example "SPAM"
+   */
+  reason: ReasonEnum;
+  proofId: number;
+}
+
+/**
+ * 신고 이유
+ * @example "SPAM"
+ */
+export enum ReasonEnum {
+  FAKE_PROOF = 'FAKE_PROOF',
+  SPAM = 'SPAM',
+  ADULT = 'ADULT',
+  HARMFUL_DANGEROUS = 'HARMFUL_DANGEROUS',
+  VIOLENT_DISGUSTING = 'VIOLENT_DISGUSTING',
+  ABUSE_HATRED = 'ABUSE_HATRED',
+}
+
+/**
+ * 신고 이유
+ * @example "SPAM"
+ */
+export enum ProofControllerReportProofParams1ReasonEnum {
+  FAKE_PROOF = 'FAKE_PROOF',
+  SPAM = 'SPAM',
+  ADULT = 'ADULT',
+  HARMFUL_DANGEROUS = 'HARMFUL_DANGEROUS',
+  VIOLENT_DISGUSTING = 'VIOLENT_DISGUSTING',
+  ABUSE_HATRED = 'ABUSE_HATRED',
+}
+
+export interface ProofControllerCreateCommentParams {
+  /** 부모 댓글 id */
+  parentCommentId?: number;
+  proofId: number;
+}
+
+export interface ProofControllerGetCommentsParams {
+  /**
+   * 페이지 당 아이템 수
+   * @default 20
+   */
+  take?: number;
+  /** 첫 아이템의 id */
+  cursor?: number;
+  proofId: number;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -1770,8 +2000,99 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/proofs
      */
     proofControllerGetProofs: (query: ProofControllerGetProofsParams, params: RequestParams = {}) =>
-      this.request<GetProofRes, any>({
+      this.request<GetProofsRes, any>({
         path: `/proofs`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Proof
+     * @name ProofControllerGetProof
+     * @request GET:/proofs/{proofId}
+     */
+    proofControllerGetProof: (proofId: number, params: RequestParams = {}) =>
+      this.request<GetProofRes, any>({
+        path: `/proofs/${proofId}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Proof
+     * @name ProofControllerInteractionProof
+     * @request POST:/proofs/{proofId}/interation
+     * @secure
+     */
+    proofControllerInteractionProof: (
+      { proofId, ...query }: ProofControllerInteractionProofParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/proofs/${proofId}/interation`,
+        method: 'POST',
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Proof
+     * @name ProofControllerReportProof
+     * @request POST:/proofs/{proofId}/report
+     * @secure
+     */
+    proofControllerReportProof: ({ proofId, ...query }: ProofControllerReportProofParams, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/proofs/${proofId}/report`,
+        method: 'POST',
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Proof
+     * @name ProofControllerCreateComment
+     * @request POST:/proofs/{proofId}/comment
+     * @secure
+     */
+    proofControllerCreateComment: (
+      { proofId, ...query }: ProofControllerCreateCommentParams,
+      data: CreateCommentBody,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/proofs/${proofId}/comment`,
+        method: 'POST',
+        query: query,
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Proof
+     * @name ProofControllerGetComments
+     * @request GET:/proofs/{proofId}/comments
+     */
+    proofControllerGetComments: ({ proofId, ...query }: ProofControllerGetCommentsParams, params: RequestParams = {}) =>
+      this.request<GetCommentsResDto, any>({
+        path: `/proofs/${proofId}/comments`,
         method: 'GET',
         query: query,
         format: 'json',

@@ -1,11 +1,11 @@
-import { GetProofRes, ProofControllerGetProofsParams } from '@rimgosu/libs';
+import { GetProofsRes, ProofControllerGetProofsParams } from '@rimgosu/libs';
 import { ApiSingleton } from '../../common/apiSingleton';
 import { ApiErrorType, ApiResponse } from '../../common/types';
 
 export const useProofHook = () => {
   const getProofs = async (
     params: ProofControllerGetProofsParams,
-  ): Promise<ApiResponse<GetProofRes>> => {
+  ): Promise<ApiResponse<GetProofsRes>> => {
     return await ApiSingleton.getInstance()
       .proofs.proofControllerGetProofs(params)
       .then((res) => ({ data: res.data }))
