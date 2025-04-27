@@ -7,6 +7,8 @@ import { GetProofRes } from './dtos/get-proof-res.dto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { CacheKeyConstants } from '@/common/cache-key';
+import { User } from '@prisma/client';
+import { InteractionProofQuery } from './dtos/interaction-proof-query.dto';
 
 @Injectable()
 export class ProofService {
@@ -14,6 +16,59 @@ export class ProofService {
     private readonly prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  async interactionProof(
+    proofId: number,
+    user: User,
+    query: InteractionProofQuery,
+  ) {
+    const { type } = query;
+
+    const proofInteraction = await this.prisma.proofInteraction.findUnique({
+      where: {
+        proofId_userId: {
+          proofId,
+          userId: user.id,
+        },
+      },
+    });
+
+    // 아무 인터렉션도 없다면 그대로 추가
+    if (!proofInteraction) {
+      return await this.prisma.proofInteraction.create({
+        data: {
+          proofId,
+          userId: user.id,
+          type,
+        },
+      });
+    }
+
+    // 반대 인터렉션이 있다면 업데이트
+    if (proofInteraction.type !== type) {
+      return await this.prisma.proofInteraction.update({
+        where: {
+          proofId_userId: {
+            proofId,
+            userId: user.id,
+          },
+        },
+        data: {
+          type,
+        },
+      });
+    }
+
+    // 같은 인터렉션이 있다면 삭제
+    return await this.prisma.proofInteraction.delete({
+      where: {
+        proofId_userId: {
+          proofId,
+          userId: user.id,
+        },
+      },
+    });
+  }
 
   async getProof(proofId: number, ip: string): Promise<GetProofRes> {
     const cacheKey = CacheKeyConstants.PROOF_VIEW(proofId, ip);
