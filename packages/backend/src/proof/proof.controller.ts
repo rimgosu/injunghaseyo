@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -18,6 +19,8 @@ import { User } from '@prisma/client';
 import { GetUser } from '@/common/get-user.decorator';
 import { InteractionProofQuery } from './dtos/interaction-proof-query.dto';
 import { ReportProofQuery } from './dtos/report-proof-query.dto';
+import { CreateCommentQuery } from './dtos/create-comment-query.dto';
+import { CreateCommentBody } from './dtos/create-comment-body.dto';
 
 @Controller('proofs')
 export class ProofController {
@@ -97,5 +100,20 @@ export class ProofController {
     @Query() query: ReportProofQuery,
   ) {
     return this.proofService.reportProof(proofId, user, query);
+  }
+
+  /**
+   * @description 댓글 달기
+   */
+  @Post(':proofId/comment')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async createComment(
+    @Param('proofId') proofId: number,
+    @GetUser() user: User,
+    @Body() body: CreateCommentBody,
+    @Query() query: CreateCommentQuery,
+  ) {
+    return this.proofService.createComment(proofId, user, body, query);
   }
 }

@@ -1,5 +1,5 @@
 import { PrismaService } from '@/prisma/prisma.service';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { GetProofsRes } from './dtos/get-proofs-res.dto';
 import { PROOF_FOR_GET_PROOF, PROOF_WITH_PHOTO } from './utils/types';
 import { BaseCursorPaginationQueryDto } from '@/common/base-cursor-pagination-query.dto';
@@ -10,6 +10,8 @@ import { CacheKeyConstants } from '@/common/cache-key';
 import { User } from '@prisma/client';
 import { InteractionProofQuery } from './dtos/interaction-proof-query.dto';
 import { ReportProofQuery } from './dtos/report-proof-query.dto';
+import { CreateCommentBody } from './dtos/create-comment-body.dto';
+import { CreateCommentQuery } from './dtos/create-comment-query.dto';
 
 @Injectable()
 export class ProofService {
@@ -17,9 +19,68 @@ export class ProofService {
     private readonly prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+  private readonly logger = new Logger(ProofService.name, { timestamp: true });
+
+  private async checkProof(proofId: number) {
+    const proof = await this.prisma.proof.findUnique({
+      where: {
+        id: proofId,
+        deletedAt: null,
+      },
+    });
+
+    if (!proof) {
+      this.logger.error(`인증을 찾을 수 없습니다. proofId: ${proofId}`);
+      throw new NotFoundException('인증을 찾을 수 없습니다.');
+    }
+
+    return proof;
+  }
+
+  async createComment(
+    proofId: number,
+    user: User,
+    body: CreateCommentBody,
+    query: CreateCommentQuery,
+  ) {
+    const { parentCommentId } = query;
+    const { contents } = body;
+    let depth = 1;
+
+    await this.checkProof(proofId);
+
+    // 대댓글 처리
+    if (parentCommentId) {
+      const parentComment = await this.prisma.proofComment.findUnique({
+        where: {
+          id: parentCommentId,
+          proofId,
+          deletedAt: null,
+        },
+      });
+
+      if (!parentComment) {
+        throw new NotFoundException('대댓글의 부모 댓글이 존재하지 않습니다.');
+      }
+
+      depth = parentComment.depth + 1;
+    }
+
+    return await this.prisma.proofComment.create({
+      data: {
+        proofId,
+        userId: user.id,
+        contents,
+        depth,
+        ...(parentCommentId && { parentId: parentCommentId }),
+      },
+    });
+  }
 
   async reportProof(proofId: number, user: User, query: ReportProofQuery) {
     const { reason } = query;
+
+    await this.checkProof(proofId);
 
     return await this.prisma.proofReport.upsert({
       where: {
@@ -45,6 +106,8 @@ export class ProofService {
     query: InteractionProofQuery,
   ) {
     const { type } = query;
+
+    await this.checkProof(proofId);
 
     const proofInteraction = await this.prisma.proofInteraction.findUnique({
       where: {
