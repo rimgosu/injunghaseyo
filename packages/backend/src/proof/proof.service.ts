@@ -22,7 +22,8 @@ import { InteractionProofQuery } from './dtos/interaction-proof-query.dto';
 import { ReportProofQuery } from './dtos/report-proof-query.dto';
 import { CreateCommentBody } from './dtos/create-comment-body.dto';
 import { CreateCommentQuery } from './dtos/create-comment-query.dto';
-import { GetCommentsResDto } from './dtos/get-comments-res.dto';
+import { GetCommentsResDto } from './dtos/core/get-comments-res.dto';
+import { GetRepliesResDto } from './dtos/get-replies-res.dto';
 
 @Injectable()
 export class ProofService {
@@ -31,6 +32,28 @@ export class ProofService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   private readonly logger = new Logger(ProofService.name, { timestamp: true });
+
+  async getReplies(
+    proofId: number,
+    commentId: number,
+    user: User | undefined,
+    query: BaseCursorPaginationQueryDto,
+  ) {
+    const { take, cursor } = query;
+    const replies = await this.prisma.proofComment.findMany({
+      where: { proofId, deletedAt: null, parentId: commentId },
+      orderBy: { createdAt: 'asc' },
+      take: take ? take + 1 : undefined,
+      cursor: cursor ? { id: cursor } : undefined,
+      ...PROOF_COMMENT_WITH_INTERACTION(user?.id, false),
+    });
+
+    const hasNextPage = replies.length > take;
+    const items = hasNextPage ? replies.slice(0, -1) : replies;
+    const nextCursor = hasNextPage ? replies[replies.length - 1].id : undefined;
+
+    return new GetRepliesResDto(items, hasNextPage, nextCursor);
+  }
 
   async getComments(
     proofId: number,
@@ -50,7 +73,7 @@ export class ProofService {
           createdAt: 'desc',
         },
       ],
-      ...PROOF_COMMENT_WITH_INTERACTION(user?.id),
+      ...PROOF_COMMENT_WITH_INTERACTION(user?.id, true),
       take: take ? take + 1 : undefined,
       cursor: cursor ? { id: cursor } : undefined,
     });

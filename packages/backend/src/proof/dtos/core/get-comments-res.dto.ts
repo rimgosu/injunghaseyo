@@ -1,6 +1,6 @@
 import { BaseCursorPaginationResDto } from '@/common/base-cursor-pagination-res.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { ProofCommentWithInteraction } from '../utils/types';
+import { ProofCommentWithInteraction } from '../../utils/types';
 import { InteractionType } from '@prisma/client';
 
 class UserForComment {
@@ -26,7 +26,7 @@ class UserForComment {
   profilePhotoUrl: string;
 }
 
-class ProofCommentItem {
+export class ProofCommentItem {
   @ApiProperty({
     description: '댓글 id',
     example: 1,

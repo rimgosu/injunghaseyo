@@ -21,8 +21,9 @@ import { InteractionProofQuery } from './dtos/interaction-proof-query.dto';
 import { ReportProofQuery } from './dtos/report-proof-query.dto';
 import { CreateCommentQuery } from './dtos/create-comment-query.dto';
 import { CreateCommentBody } from './dtos/create-comment-body.dto';
-import { GetCommentsResDto } from './dtos/get-comments-res.dto';
+import { GetCommentsResDto } from './dtos/core/get-comments-res.dto';
 import { AtkOptionalGuard } from '@/auth/guards/atk-optional.guard';
+import { GetRepliesResDto } from './dtos/get-replies-res.dto';
 
 @Controller('proofs')
 export class ProofController {
@@ -136,5 +137,25 @@ export class ProofController {
     @Query() query: BaseCursorPaginationQueryDto,
   ): Promise<GetCommentsResDto> {
     return this.proofService.getComments(proofId, user, query);
+  }
+
+  /**
+   * @description 대댓글 조회
+   */
+  @Get(':proofId/comments/:commentId/replies')
+  @HttpCode(200)
+  @UseGuards(AtkOptionalGuard)
+  @ApiResponse({
+    status: 200,
+    type: GetRepliesResDto,
+    description: '대댓글 조회',
+  })
+  async getReplies(
+    @GetOptionalUser() user: User | undefined,
+    @Param('proofId') proofId: number,
+    @Param('commentId') commentId: number,
+    @Query() query: BaseCursorPaginationQueryDto,
+  ) {
+    return this.proofService.getReplies(proofId, commentId, user, query);
   }
 }
