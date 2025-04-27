@@ -128,6 +128,27 @@ export class GroupSeedData {
                     })
                     .then(async (proof) => {
                       if (proof) {
+                        // 댓글 관련 삭제
+                        await tx.commentInteraction.deleteMany({
+                          where: {
+                            proofComment: {
+                              proofId: proof.id,
+                            },
+                          },
+                        });
+                        await tx.proofComment.deleteMany({
+                          where: { proofId: proof.id },
+                        });
+
+                        // 인증 관련 삭제
+                        await tx.proofReport.deleteMany({
+                          where: { proofId: proof.id },
+                        });
+                        await tx.proofInteraction.deleteMany({
+                          where: { proofId: proof.id },
+                        });
+
+                        // 기존 인증 타입별 데이터 삭제
                         await tx.photoProof.deleteMany({
                           where: { proofId: proof.id },
                         });
@@ -137,6 +158,8 @@ export class GroupSeedData {
                         await tx.locationProof.deleteMany({
                           where: { proofId: proof.id },
                         });
+
+                        // 최종 proof 삭제
                         await tx.proof.delete({
                           where: { id: proof.id },
                         });

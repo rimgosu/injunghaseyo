@@ -17,13 +17,14 @@ import { GetClientIp } from '@/common/get-client-ip.decorator';
 import { AtkGuard } from '@/auth/guards/atk.guard';
 import { User } from '@prisma/client';
 import { GetOptionalUser, GetUser } from '@/common/get-user.decorator';
-import { InteractionProofQuery } from './dtos/interaction-proof-query.dto';
+import { InteractionProofQuery } from './dtos/core/interaction-proof-query.dto';
 import { ReportProofQuery } from './dtos/report-proof-query.dto';
 import { CreateCommentQuery } from './dtos/create-comment-query.dto';
 import { CreateCommentBody } from './dtos/create-comment-body.dto';
 import { GetCommentsResDto } from './dtos/core/get-comments-res.dto';
 import { AtkOptionalGuard } from '@/auth/guards/atk-optional.guard';
 import { GetRepliesResDto } from './dtos/get-replies-res.dto';
+import { InteractionCommentQuery } from './dtos/interaction-comment-query.dto';
 
 @Controller('proofs')
 export class ProofController {
@@ -157,5 +158,27 @@ export class ProofController {
     @Query() query: BaseCursorPaginationQueryDto,
   ) {
     return this.proofService.getReplies(proofId, commentId, user, query);
+  }
+
+  /**
+   * @description 댓글 인터렉션
+   *
+   * - proof/interaction과 동일한 로직
+   */
+  @Post(':proofId/comments/:commentId/interaction')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async interactionComment(
+    @Param('proofId') proofId: number,
+    @Param('commentId') commentId: number,
+    @GetUser() user: User,
+    @Query() query: InteractionCommentQuery,
+  ) {
+    return this.proofService.interactionComment(
+      proofId,
+      commentId,
+      user,
+      query,
+    );
   }
 }

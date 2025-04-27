@@ -38,6 +38,8 @@ model CommentInteraction {
 
     proofComment ProofComment @relation(fields: [proofCommentId], references: [id])
     user         User         @relation(fields: [userId], references: [id])
+
+    @@unique([proofCommentId, userId])
 }
 
 model ProofReport {

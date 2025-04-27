@@ -18,12 +18,13 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { CacheKeyConstants } from '@/common/cache-key';
 import { User } from '@prisma/client';
-import { InteractionProofQuery } from './dtos/interaction-proof-query.dto';
+import { InteractionProofQuery } from './dtos/core/interaction-proof-query.dto';
 import { ReportProofQuery } from './dtos/report-proof-query.dto';
 import { CreateCommentBody } from './dtos/create-comment-body.dto';
 import { CreateCommentQuery } from './dtos/create-comment-query.dto';
 import { GetCommentsResDto } from './dtos/core/get-comments-res.dto';
 import { GetRepliesResDto } from './dtos/get-replies-res.dto';
+import { InteractionCommentQuery } from './dtos/interaction-comment-query.dto';
 
 @Injectable()
 export class ProofService {
@@ -32,6 +33,57 @@ export class ProofService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   private readonly logger = new Logger(ProofService.name, { timestamp: true });
+
+  /**
+   * @description 댓글 인터렉션
+   * @see interactionProof
+   */
+  async interactionComment(
+    proofId: number,
+    commentId: number,
+    user: User,
+    query: InteractionCommentQuery,
+  ) {
+    const { type } = query;
+
+    await this.checkComment(proofId, commentId);
+
+    const commentInteraction = await this.prisma.commentInteraction.findUnique({
+      where: {
+        proofCommentId_userId: {
+          proofCommentId: commentId,
+          userId: user.id,
+        },
+      },
+    });
+
+    if (!commentInteraction) {
+      return await this.prisma.commentInteraction.create({
+        data: { proofCommentId: commentId, userId: user.id, type },
+      });
+    }
+
+    if (commentInteraction.type !== type) {
+      return await this.prisma.commentInteraction.update({
+        where: { id: commentInteraction.id },
+        data: { type },
+      });
+    }
+
+    return await this.prisma.commentInteraction.delete({
+      where: { id: commentInteraction.id },
+    });
+  }
+
+  private async checkComment(proofId: number, commentId: number) {
+    const comment = await this.prisma.proofComment.findUnique({
+      where: { id: commentId, proofId, deletedAt: null },
+    });
+
+    if (!comment) {
+      throw new NotFoundException('존재하지 않는 댓글입니다.');
+    }
+  }
 
   async getReplies(
     proofId: number,
@@ -178,6 +230,10 @@ export class ProofService {
     });
   }
 
+  /**
+   * @description 인증 인터렉션
+   * @see interactionComment
+   */
   async interactionProof(
     proofId: number,
     user: User,
@@ -210,12 +266,7 @@ export class ProofService {
     // 반대 인터렉션이 있다면 업데이트
     if (proofInteraction.type !== type) {
       return await this.prisma.proofInteraction.update({
-        where: {
-          proofId_userId: {
-            proofId,
-            userId: user.id,
-          },
-        },
+        where: { id: proofInteraction.id },
         data: {
           type,
         },
@@ -224,12 +275,7 @@ export class ProofService {
 
     // 같은 인터렉션이 있다면 삭제
     return await this.prisma.proofInteraction.delete({
-      where: {
-        proofId_userId: {
-          proofId,
-          userId: user.id,
-        },
-      },
+      where: { id: proofInteraction.id },
     });
   }
 

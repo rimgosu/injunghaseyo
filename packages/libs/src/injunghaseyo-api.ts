@@ -601,6 +601,15 @@ export interface GetCommentsResDto {
   nextCursor?: number;
 }
 
+export interface GetRepliesResDto {
+  /** 데이터 목록 */
+  items: string[];
+  /** 다음 페이지 존재 여부 */
+  hasNextPage: boolean;
+  /** 다음 페이지 조회를 위한 커서 값 (다음 페이지가 없는 경우 null) */
+  nextCursor?: number;
+}
+
 /** sign in status */
 export enum GetCheckSignInUserStatusEnum {
   ACTIVE = 'ACTIVE',
@@ -1043,6 +1052,46 @@ export interface ProofControllerGetCommentsParams {
   /** 첫 아이템의 id */
   cursor?: number;
   proofId: number;
+}
+
+export interface ProofControllerGetRepliesParams {
+  /**
+   * 페이지 당 아이템 수
+   * @default 20
+   */
+  take?: number;
+  /** 첫 아이템의 id */
+  cursor?: number;
+  proofId: number;
+  commentId: number;
+}
+
+export interface ProofControllerInteractionCommentParams {
+  /**
+   * 좋아요 타입
+   * @example "LIKE"
+   */
+  type: TypeEnum1;
+  proofId: number;
+  commentId: number;
+}
+
+/**
+ * 좋아요 타입
+ * @example "LIKE"
+ */
+export enum TypeEnum1 {
+  LIKE = 'LIKE',
+  DISLIKE = 'DISLIKE',
+}
+
+/**
+ * 좋아요 타입
+ * @example "LIKE"
+ */
+export enum ProofControllerInteractionCommentParams1TypeEnum {
+  LIKE = 'LIKE',
+  DISLIKE = 'DISLIKE',
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -2096,6 +2145,45 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'GET',
         query: query,
         format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Proof
+     * @name ProofControllerGetReplies
+     * @request GET:/proofs/{proofId}/comments/{commentId}/replies
+     */
+    proofControllerGetReplies: (
+      { proofId, commentId, ...query }: ProofControllerGetRepliesParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<GetRepliesResDto, any>({
+        path: `/proofs/${proofId}/comments/${commentId}/replies`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Proof
+     * @name ProofControllerInteractionComment
+     * @request POST:/proofs/{proofId}/comments/{commentId}/interaction
+     * @secure
+     */
+    proofControllerInteractionComment: (
+      { proofId, commentId, ...query }: ProofControllerInteractionCommentParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/proofs/${proofId}/comments/${commentId}/interaction`,
+        method: 'POST',
+        query: query,
+        secure: true,
         ...params,
       }),
   };
