@@ -1,0 +1,56 @@
+enum InteractionType {
+    LIKE
+    DISLIKE
+}
+
+enum ProofReportReason {
+    FAKE_PROOF // 인정할 수 없는 인증
+    SPAM /// 스팸 또는 혼동을 야기하는 콘텐츠
+    ADULT /// 성적인 컨텐츠
+    HARMFUL_DANGEROUS /// 유해하거나 위험한 행위
+    VIOLENT_DISGUSTING /// 폭력적 또는 혐오스러운 콘텐츠
+    ABUSE_HATRED /// 증오 또는 학대하는 콘텐츠
+}
+
+model ProofInteraction {
+    id        Int             @id @default(autoincrement())
+    proofId   Int
+    userId    Int
+    type      InteractionType
+    createdAt DateTime        @default(now())
+    updatedAt DateTime        @updatedAt
+    deletedAt DateTime?
+
+    proof Proof @relation(fields: [proofId], references: [id])
+    user  User  @relation(fields: [userId], references: [id])
+
+    @@unique([proofId, userId])
+}
+
+model CommentInteraction {
+    id             Int             @id @default(autoincrement())
+    proofCommentId Int
+    userId         Int
+    type           InteractionType
+    createdAt      DateTime        @default(now())
+    updatedAt      DateTime        @updatedAt
+    deletedAt      DateTime?
+
+    proofComment ProofComment @relation(fields: [proofCommentId], references: [id])
+    user         User         @relation(fields: [userId], references: [id])
+}
+
+model ProofReport {
+    id        Int               @id @default(autoincrement())
+    proofId   Int
+    userId    Int
+    reason    ProofReportReason
+    createdAt DateTime          @default(now())
+    updatedAt DateTime          @updatedAt
+    deletedAt DateTime?
+
+    proof Proof @relation(fields: [proofId], references: [id])
+    user  User  @relation(fields: [userId], references: [id])
+
+    @@unique([proofId, userId])
+}

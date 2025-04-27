@@ -17,14 +17,17 @@ model User {
 
     profilePhoto ProfilePhoto[]
 
-    createdAt    DateTime       @default(now())
-    updatedAt    DateTime       @updatedAt
-    deletedAt    DateTime?
-    join         Join[]
-    photoComment PhotoComment[]
-    myCharacter  MyCharacter?
-    wallet       Wallet?
-    order        Order[]
+    createdAt          DateTime             @default(now())
+    updatedAt          DateTime             @updatedAt
+    deletedAt          DateTime?
+    join               Join[]
+    proofComment       ProofComment[]
+    myCharacter        MyCharacter?
+    wallet             Wallet?
+    order              Order[]
+    proofInteraction   ProofInteraction[]
+    commentInteraction CommentInteraction[]
+    proofReport        ProofReport[]
 }
 
 enum Provider {

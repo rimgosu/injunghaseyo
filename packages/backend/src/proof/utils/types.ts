@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { InteractionType, Prisma } from '@prisma/client';
 
 export const PROOF_WITH_PHOTO = Prisma.validator<Prisma.ProofDefaultArgs>()({
   include: {
@@ -11,12 +11,16 @@ export type ProofWithPhoto = Prisma.ProofGetPayload<typeof PROOF_WITH_PHOTO>;
 export const PROOF_FOR_GET_PROOF = Prisma.validator<Prisma.ProofDefaultArgs>()({
   select: {
     id: true,
-    like: true,
     view: true,
     createdAt: true,
     _count: {
       select: {
         photoComment: true,
+        proofInteraction: {
+          where: {
+            type: InteractionType.LIKE,
+          },
+        },
       },
     },
     photoProof: {

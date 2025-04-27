@@ -1,18 +1,18 @@
 model Proof {
     id              Int           @id @default(autoincrement())
     groupProgressId Int           @unique
-    like            Int           @default(0)
     view            Int           @default(0)
     groupProgress   GroupProgress @relation(fields: [groupProgressId], references: [id])
 
     photoProof       PhotoProof?
     buttonClickProof ButtonClickProof?
     locationProof    LocationProof?
-
-    createdAt    DateTime       @default(now())
-    updatedAt    DateTime       @updatedAt
-    deletedAt    DateTime?
-    photoComment PhotoComment[]
+    proofInteraction ProofInteraction[]
+    proofReport      ProofReport[]
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @updatedAt
+    deletedAt        DateTime?
+    photoComment     ProofComment[]
 }
 
 model PhotoProof {

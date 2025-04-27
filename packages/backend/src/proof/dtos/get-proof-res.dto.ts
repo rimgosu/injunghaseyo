@@ -109,7 +109,7 @@ export class GetProofRes {
   constructor(proof: ProofForGetProof) {
     this.proofId = proof.id;
     this.url = proof.photoProof.url;
-    this.like = proof.like;
+    this.like = proof._count.proofInteraction;
     this.view = proof.view;
     this.commentCount = proof._count.photoComment;
     this.createdAt = proof.createdAt;
