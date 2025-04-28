@@ -610,6 +610,14 @@ export interface GetRepliesResDto {
   nextCursor?: number;
 }
 
+export interface UpdateCommentBody {
+  /**
+   * 댓글 내용
+   * @example "댓글 내용"
+   */
+  contents: string;
+}
+
 /** sign in status */
 export enum GetCheckSignInUserStatusEnum {
   ACTIVE = 'ACTIVE',
@@ -2114,7 +2122,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags Proof
      * @name ProofControllerCreateComment
-     * @request POST:/proofs/{proofId}/comment
+     * @request POST:/proofs/{proofId}/comments
      * @secure
      */
     proofControllerCreateComment: (
@@ -2123,7 +2131,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<void, any>({
-        path: `/proofs/${proofId}/comment`,
+        path: `/proofs/${proofId}/comments`,
         method: 'POST',
         query: query,
         body: data,
@@ -2184,6 +2192,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         query: query,
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Proof
+     * @name ProofControllerUpdateComment
+     * @request PATCH:/proofs/{proofId}/comments/{commentId}
+     * @secure
+     */
+    proofControllerUpdateComment: (
+      proofId: number,
+      commentId: number,
+      data: UpdateCommentBody,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/proofs/${proofId}/comments/${commentId}`,
+        method: 'PATCH',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
   };

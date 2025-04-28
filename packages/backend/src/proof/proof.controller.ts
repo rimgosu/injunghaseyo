@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -25,6 +27,7 @@ import { GetCommentsResDto } from './dtos/core/get-comments-res.dto';
 import { AtkOptionalGuard } from '@/auth/guards/atk-optional.guard';
 import { GetRepliesResDto } from './dtos/get-replies-res.dto';
 import { InteractionCommentQuery } from './dtos/interaction-comment-query.dto';
+import { UpdateCommentBody } from './dtos/update-comment-body.dto';
 
 @Controller('proofs')
 export class ProofController {
@@ -109,7 +112,7 @@ export class ProofController {
   /**
    * @description 댓글 달기
    */
-  @Post(':proofId/comment')
+  @Post(':proofId/comments')
   @UseGuards(AtkGuard)
   @ApiBearerAuth('jwt')
   async createComment(
@@ -138,6 +141,40 @@ export class ProofController {
     @Query() query: BaseCursorPaginationQueryDto,
   ): Promise<GetCommentsResDto> {
     return this.proofService.getComments(proofId, user, query);
+  }
+
+  /**
+   * @description 댓글 수정
+   */
+  @Patch(':proofId/comments/:commentId')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async updateComment(
+    @Param('proofId') proofId: number,
+    @Param('commentId') commentId: number,
+    @GetUser() user: User,
+    @Body() body: UpdateCommentBody,
+  ) {
+    return this.proofService.updateComment({
+      proofId,
+      commentId,
+      user,
+      body,
+    });
+  }
+
+  /**
+   * @description 댓글 삭제
+   */
+  @Delete(':proofId/comments/:commentId')
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async deleteComment(
+    @Param('proofId') proofId: number,
+    @Param('commentId') commentId: number,
+    @GetUser() user: User,
+  ) {
+    return this.proofService.deleteComment({ proofId, commentId, user });
   }
 
   /**

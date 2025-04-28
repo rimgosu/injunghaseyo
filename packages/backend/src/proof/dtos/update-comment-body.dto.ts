@@ -1,4 +1,4 @@
 import { PickType } from '@nestjs/swagger';
 import { BaseProofReq } from './base';
 
-export class CreateCommentBody extends PickType(BaseProofReq, ['contents']) {}
+export class UpdateCommentBody extends PickType(BaseProofReq, ['contents']) {}

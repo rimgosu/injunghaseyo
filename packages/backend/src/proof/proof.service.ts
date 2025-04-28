@@ -25,6 +25,7 @@ import { CreateCommentQuery } from './dtos/create-comment-query.dto';
 import { GetCommentsResDto } from './dtos/core/get-comments-res.dto';
 import { GetRepliesResDto } from './dtos/get-replies-res.dto';
 import { InteractionCommentQuery } from './dtos/interaction-comment-query.dto';
+import { UpdateCommentBody } from './dtos/update-comment-body.dto';
 
 @Injectable()
 export class ProofService {
@@ -33,6 +34,65 @@ export class ProofService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   private readonly logger = new Logger(ProofService.name, { timestamp: true });
+
+  async deleteComment({
+    proofId,
+    commentId,
+    user,
+  }: {
+    proofId: number;
+    commentId: number;
+    user: User;
+  }) {
+    await this.checkMyComment({ proofId, commentId, user });
+
+    return await this.prisma.proofComment.update({
+      where: { id: commentId },
+      data: { deletedAt: new Date() },
+    });
+  }
+  async updateComment({
+    proofId,
+    commentId,
+    user,
+    body,
+  }: {
+    proofId: number;
+    commentId: number;
+    user: User;
+    body: UpdateCommentBody;
+  }) {
+    const { contents } = body;
+
+    await this.checkMyComment({ proofId, commentId, user });
+
+    return await this.prisma.proofComment.update({
+      where: { id: commentId },
+      data: { contents },
+    });
+  }
+
+  private async checkMyComment({
+    proofId,
+    commentId,
+    user,
+  }: {
+    proofId: number;
+    commentId: number;
+    user: User;
+  }) {
+    const comment = await this.prisma.proofComment.findUnique({
+      where: { id: commentId, proofId, deletedAt: null },
+    });
+
+    if (!comment) {
+      throw new NotFoundException('존재하지 않는 댓글입니다.');
+    }
+
+    if (comment.userId !== user.id) {
+      throw new BadRequestException('본인의 댓글만 수정, 삭제할 수 있습니다.');
+    }
+  }
 
   /**
    * @description 댓글 인터렉션
