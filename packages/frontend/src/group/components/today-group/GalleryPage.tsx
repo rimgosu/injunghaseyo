@@ -4,7 +4,7 @@ import { GetGalleryRes, ProofForGalleryProofTypeEnum } from '@rimgosu/libs';
 import { CursorArrowRaysIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { ymd2Human } from '../../../common/common.util';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../auth/hooks/useAuth';
+import { useCheckSignInStore } from '../../../auth/stores/useCheckSignInStore';
 
 interface GalleryPageProps {
   groupId: number;
@@ -39,9 +39,8 @@ const ImgByProofType = ({
 
 export const GalleryPage = ({ groupId }: GalleryPageProps) => {
   const [gallery, setGallery] = useState<GetGalleryRes[] | null>(null);
-  const [userId, setUserId] = useState<number | null>(null);
+  const { checkSignInRes } = useCheckSignInStore();
   const { getGallery } = useGroups();
-  const { checkSignIn } = useAuth();
   const navigate = useNavigate();
 
   const fetchGallery = async () => {
@@ -51,15 +50,8 @@ export const GalleryPage = ({ groupId }: GalleryPageProps) => {
     }
   };
 
-  const fetchUserId = async () => {
-    const res = await checkSignIn();
-    if (res.data) {
-      setUserId(res.data.userId);
-    }
-  };
-
   const handleParticipantClick = (participantId: number) => {
-    if (participantId === userId) {
+    if (participantId === checkSignInRes.userId) {
       navigate('/user/profile');
     } else {
       navigate(`/user/${participantId}/profile`);
@@ -68,7 +60,6 @@ export const GalleryPage = ({ groupId }: GalleryPageProps) => {
 
   useEffect(() => {
     fetchGallery();
-    fetchUserId();
   }, []);
 
   if (

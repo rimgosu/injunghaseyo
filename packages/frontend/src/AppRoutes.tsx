@@ -73,6 +73,8 @@ export const AppRoutes = () => {
    * @description 소셜 로그인 시 query param의 accessToken을 local storage에 저장한다.
    */
   useEffect(() => {
+    console.log('social?');
+
     const searchParams = new URLSearchParams(location.search);
     const accessToken = searchParams.get('accessToken');
 
@@ -83,6 +85,7 @@ export const AppRoutes = () => {
   }, [location.search, navigate]);
 
   useEffect(() => {
+    console.log('pathname?');
     asyncCheckSignIn();
   }, [location.pathname]);
 
