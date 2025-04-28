@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { InitPage } from './pages/InitPage';
 import { SignUpPage } from './pages/SignUpPage';
 import { LoginPage } from './pages/LoginPage';
@@ -11,7 +11,7 @@ import { FindPasswordPage } from './pages/FindPasswordPage';
 export const AuthRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/auth/init" replace />} />
+      <Route path="/" element={<InitPage />} />
       <Route path="init" element={<InitPage />} />
       <Route path="login" element={<LoginPage />} />
       <Route path="signup" element={<SignUpPage />} />
