@@ -22,6 +22,8 @@ export const AppRoutes = () => {
   const location = useLocation();
   const { setCheckSignInRes, setIsSignedIn } = useCheckSignInStore();
 
+  console.log('location:', location.pathname);
+
   /**
    * @description 초기 유저의 경우 oauth-pending, select-character 페이지를 거쳐야 한다.
    */
@@ -45,11 +47,15 @@ export const AppRoutes = () => {
 
       switch (userStatus) {
         case GetCheckSignInUserStatusEnum.OAUTH_PENDING:
-          navigate('/auth/oauth-pending');
+          if (currentPath !== '/auth/oauth-pending') {
+            navigate('/auth/oauth-pending');
+          }
           return;
 
         case GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE:
-          navigate('/auth/select-character');
+          if (currentPath !== '/auth/select-character') {
+            navigate('/auth/select-character');
+          }
           return;
 
         default:
