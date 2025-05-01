@@ -601,6 +601,14 @@ export interface GetCommentsResDto {
   nextCursor?: number;
 }
 
+export interface UpdateCommentBody {
+  /**
+   * 댓글 내용
+   * @example "댓글 내용"
+   */
+  contents: string;
+}
+
 export interface GetRepliesResDto {
   /** 데이터 목록 */
   items: string[];
@@ -608,14 +616,6 @@ export interface GetRepliesResDto {
   hasNextPage: boolean;
   /** 다음 페이지 조회를 위한 커서 값 (다음 페이지가 없는 경우 null) */
   nextCursor?: number;
-}
-
-export interface UpdateCommentBody {
-  /**
-   * 댓글 내용
-   * @example "댓글 내용"
-   */
-  contents: string;
 }
 
 /** sign in status */
@@ -2160,6 +2160,45 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Proof
+     * @name ProofControllerUpdateComment
+     * @request PATCH:/proofs/{proofId}/comments/{commentId}
+     * @secure
+     */
+    proofControllerUpdateComment: (
+      proofId: number,
+      commentId: number,
+      data: UpdateCommentBody,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/proofs/${proofId}/comments/${commentId}`,
+        method: 'PATCH',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Proof
+     * @name ProofControllerDeleteComment
+     * @request DELETE:/proofs/{proofId}/comments/{commentId}
+     * @secure
+     */
+    proofControllerDeleteComment: (proofId: number, commentId: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/proofs/${proofId}/comments/${commentId}`,
+        method: 'DELETE',
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Proof
      * @name ProofControllerGetReplies
      * @request GET:/proofs/{proofId}/comments/{commentId}/replies
      */
@@ -2192,29 +2231,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         query: query,
         secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Proof
-     * @name ProofControllerUpdateComment
-     * @request PATCH:/proofs/{proofId}/comments/{commentId}
-     * @secure
-     */
-    proofControllerUpdateComment: (
-      proofId: number,
-      commentId: number,
-      data: UpdateCommentBody,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, any>({
-        path: `/proofs/${proofId}/comments/${commentId}`,
-        method: 'PATCH',
-        body: data,
-        secure: true,
-        type: ContentType.Json,
         ...params,
       }),
   };

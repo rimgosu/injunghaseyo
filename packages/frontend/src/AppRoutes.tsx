@@ -22,8 +22,6 @@ export const AppRoutes = () => {
   const location = useLocation();
   const { setCheckSignInRes, setIsSignedIn } = useCheckSignInStore();
 
-  console.log('location:', location.pathname);
-
   /**
    * @description 초기 유저의 경우 oauth-pending, select-character 페이지를 거쳐야 한다.
    */
@@ -40,8 +38,15 @@ export const AppRoutes = () => {
 
     if (res.data) {
       setCheckSignInRes(res.data);
-      res.data.userStatus === GetCheckSignInUserStatusEnum.ACTIVE &&
+      if (
+        [
+          GetCheckSignInUserStatusEnum.ACTIVE,
+          GetCheckSignInUserStatusEnum.OAUTH_PENDING,
+          GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE,
+        ].includes(res.data.userStatus)
+      ) {
         setIsSignedIn(true);
+      }
 
       const userStatus = res.data.userStatus;
 
@@ -79,8 +84,6 @@ export const AppRoutes = () => {
    * @description 소셜 로그인 시 query param의 accessToken을 local storage에 저장한다.
    */
   useEffect(() => {
-    console.log('social?');
-
     const searchParams = new URLSearchParams(location.search);
     const accessToken = searchParams.get('accessToken');
 
@@ -91,7 +94,6 @@ export const AppRoutes = () => {
   }, [location.search, navigate]);
 
   useEffect(() => {
-    console.log('pathname?');
     asyncCheckSignIn();
   }, [location.pathname]);
 
