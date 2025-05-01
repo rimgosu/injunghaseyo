@@ -38,18 +38,29 @@ export const AppRoutes = () => {
 
     if (res.data) {
       setCheckSignInRes(res.data);
-      res.data.userStatus === GetCheckSignInUserStatusEnum.ACTIVE &&
+      if (
+        [
+          GetCheckSignInUserStatusEnum.ACTIVE,
+          GetCheckSignInUserStatusEnum.OAUTH_PENDING,
+          GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE,
+        ].includes(res.data.userStatus)
+      ) {
         setIsSignedIn(true);
+      }
 
       const userStatus = res.data.userStatus;
 
       switch (userStatus) {
         case GetCheckSignInUserStatusEnum.OAUTH_PENDING:
-          navigate('/auth/oauth-pending');
+          if (currentPath !== '/auth/oauth-pending') {
+            navigate('/auth/oauth-pending');
+          }
           return;
 
         case GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE:
-          navigate('/auth/select-character');
+          if (currentPath !== '/auth/select-character') {
+            navigate('/auth/select-character');
+          }
           return;
 
         default:
