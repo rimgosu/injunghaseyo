@@ -6,9 +6,10 @@ import {
   ProofControllerGetProofsParams,
   ProofForMainGallery,
 } from '@rimgosu/libs';
-
+import { useNavigate } from 'react-router-dom';
 export const GalleryPage = () => {
   const { getProofs } = useProofHook();
+  const navigate = useNavigate();
   const [proofs, setProofs] = useState<ProofForMainGallery[]>([]);
   const [query, setQuery] = useState<ProofControllerGetProofsParams>({
     cursor: 0,
@@ -61,7 +62,13 @@ export const GalleryPage = () => {
     >
       <div className="grid grid-cols-3 gap-1">
         {proofs.map((proof) => (
-          <div key={proof.proofId} className="aspect-square relative">
+          <div
+            key={proof.proofId}
+            className="aspect-square relative cursor-pointer"
+            onClick={() => {
+              navigate(`/proof/${proof.proofId}`);
+            }}
+          >
             <img
               src={proof.url}
               alt={proof.proofId.toString()}

@@ -53,14 +53,21 @@ class GroupForGetProof {
 
 export class GetProofRes {
   @ApiProperty({
-    description: '증명 아이디',
+    description: '인증 id',
     example: 1,
     type: Number,
   })
   proofId: number;
 
   @ApiProperty({
-    description: '증명 사진 주소',
+    description: '다음 인증 id',
+    example: 2,
+    type: Number,
+  })
+  nextProofId: number;
+
+  @ApiProperty({
+    description: '인증 사진 주소',
     example: 'https://example.com/proof.jpg',
     type: String,
   })
