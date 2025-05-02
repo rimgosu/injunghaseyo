@@ -11,6 +11,7 @@ interface BaseLayoutProps {
   padding?: string;
   overflowY?: string;
   paddingTop?: string;
+  bgColor?: string;
 }
 
 export const BaseLayout = ({
@@ -24,10 +25,13 @@ export const BaseLayout = ({
   padding = 'p-8',
   overflowY = 'overflow-y-auto',
   paddingTop = '20.0%',
+  bgColor = 'bg-white ',
 }: BaseLayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-      <div className="h-screen w-full max-w-xl bg-white flex flex-col relative">
+      <div
+        className={`h-screen w-full max-w-xl flex flex-col relative ${bgColor}`}
+      >
         <header>
           {headerElement && <div className="p-6">{headerElement}</div>}
           {title && <div className="p-6 text-2xl font-semibold">{title}</div>}
