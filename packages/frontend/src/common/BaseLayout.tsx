@@ -10,8 +10,8 @@ interface BaseLayoutProps {
   headerElement?: React.ReactNode;
   padding?: string;
   overflowY?: string;
-  paddingTop?: string;
   bgColor?: string;
+  height?: string;
 }
 
 export const BaseLayout = ({
@@ -24,8 +24,8 @@ export const BaseLayout = ({
   headerElement,
   padding = 'p-8',
   overflowY = 'overflow-y-auto',
-  paddingTop = '20.0%',
   bgColor = 'bg-white ',
+  height = '',
 }: BaseLayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
@@ -43,10 +43,9 @@ export const BaseLayout = ({
           )}
         </header>
         <div
-          className={`${overflowY} h-screen flex items-start justify-center`}
-          style={{ paddingTop }}
+          className={`${overflowY} h-screen flex items-start justify-center ${padding}`}
         >
-          <div className={`flex flex-col gap-4 w-full ${padding}`}>
+          <div className={`flex flex-col gap-4 w-full ${height}`}>
             {children}
           </div>
         </div>
@@ -56,7 +55,7 @@ export const BaseLayout = ({
           </div>
         )}
         {bottomButton && (
-          <div className="mb-16 p-10 w-full bg-white">{bottomButton}</div>
+          <div className="p-10 w-full bg-white">{bottomButton}</div>
         )}
       </div>
     </div>

@@ -32,7 +32,7 @@ export const SettingPage = () => {
   };
 
   return (
-    <BaseLayout title="설정" rightElement={<XButton />} paddingTop="">
+    <BaseLayout title="설정" rightElement={<XButton />}>
       <div className="flex flex-col gap-12">
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-bold">계정 관리</h2>

@@ -40,7 +40,7 @@ export const CharacterSelectPage = () => {
   };
 
   return (
-    <BaseLayout title="캐릭터 선택" paddingTop="30%">
+    <BaseLayout title="캐릭터 선택">
       <div className="flex flex-col items-center mb-6">
         <div className="grid grid-cols-3 gap-4">
           {characters.map((character) => (

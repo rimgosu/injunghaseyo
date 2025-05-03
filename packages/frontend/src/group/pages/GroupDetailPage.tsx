@@ -113,7 +113,6 @@ export const GroupDetailPage = () => {
     <BaseLayout
       title="모임 상세"
       bottomNavBar={<BottomNavigationBar />}
-      paddingTop=""
       rightElement={
         <XMarkIcon className="w-6 h-6 mt-1" onClick={() => navigate(-1)} />
       }

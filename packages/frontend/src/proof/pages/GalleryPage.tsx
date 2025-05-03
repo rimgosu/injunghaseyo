@@ -58,7 +58,6 @@ export const GalleryPage = () => {
       }
       title="갤러리"
       padding=""
-      paddingTop="0%"
     >
       <div className="grid grid-cols-3 gap-1">
         {proofs.map((proof) => (

@@ -217,7 +217,7 @@ export const SignUpPage = () => {
   };
 
   return (
-    <BaseLayout title="회원가입" paddingTop="">
+    <BaseLayout title="회원가입">
       <Input
         label="이메일"
         type="email"

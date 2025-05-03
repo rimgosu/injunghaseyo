@@ -26,9 +26,9 @@ export const ProofPage = () => {
       rightElement={<XButton textColor="text-white" />}
       padding=""
       bgColor="bg-gray-900"
-      paddingTop="40%"
+      height="h-screen"
     >
-      <div className="bg-black flex justify-center items-center">
+      <div className="bg-black flex justify-center items-center h-screen">
         <img src={proof?.url} />
       </div>
     </BaseLayout>

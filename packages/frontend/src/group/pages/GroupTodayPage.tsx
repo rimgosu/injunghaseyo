@@ -62,7 +62,6 @@ export const GroupTodayPage = () => {
           setSelected={setSelectedTodayGroupTopNavBar}
         />
       }
-      paddingTop=""
     >
       {selectedTodayGroupTopNavBar === TodayGroupTopNavBarEnum.PROOF && (
         <TodayProof

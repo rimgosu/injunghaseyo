@@ -92,12 +92,13 @@ export const ProfilePhotoPage = ({
         />
       }
       padding="p-1"
-      paddingTop="30%"
+      height="h-screen"
+      overflowY=""
     >
-      <div className="p-4 text-center text-sm text-gray-600 absolute top-12 left-0 right-0">
+      <div className="p-4 text-center text-sm text-white absolute top-12 left-0 right-0">
         {currentPhotoIndex + 1}/{profileData?.profilePhotos?.length || 1}
       </div>
-      <div className="flex h-full">
+      <div className="flex items-center justify-center h-full bg-black">
         <div
           className="flex-1 relative"
           onTouchStart={handleTouchStart}
