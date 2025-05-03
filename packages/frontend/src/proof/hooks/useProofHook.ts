@@ -108,9 +108,10 @@ export const useProofHook = () => {
 
   const getProof = async (
     proofId: number,
+    groupId?: number,
   ): Promise<ApiResponse<GetProofRes>> => {
     return await ApiSingleton.getInstance()
-      .proofs.proofControllerGetProof(proofId)
+      .proofs.proofControllerGetProof({ proofId, groupId })
       .then((res) => ({ data: res.data }))
       .catch(async (error: Response) => {
         return { error: (await error.json()) as ApiErrorType };

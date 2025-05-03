@@ -483,12 +483,22 @@ export interface GroupForGetProof {
 
 export interface GetProofRes {
   /**
-   * 증명 아이디
+   * 인증 id
    * @example 1
    */
   proofId: number;
   /**
-   * 증명 사진 주소
+   * 다음 인증 id
+   * @example 2
+   */
+  nextProofId: number | null;
+  /**
+   * 이전 인증 id
+   * @example null
+   */
+  prevProofId: number | null;
+  /**
+   * 인증 사진 주소
    * @example "https://example.com/proof.jpg"
    */
   url: string;
@@ -981,6 +991,12 @@ export interface ProofControllerGetProofsParams {
   take?: number;
   /** 첫 아이템의 id */
   cursor?: number;
+}
+
+export interface ProofControllerGetProofParams {
+  /** groupId */
+  groupId?: number;
+  proofId: number;
 }
 
 export interface ProofControllerInteractionProofParams {
@@ -2072,10 +2088,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name ProofControllerGetProof
      * @request GET:/proofs/{proofId}
      */
-    proofControllerGetProof: (proofId: number, params: RequestParams = {}) =>
+    proofControllerGetProof: ({ proofId, ...query }: ProofControllerGetProofParams, params: RequestParams = {}) =>
       this.request<GetProofRes, any>({
         path: `/proofs/${proofId}`,
         method: 'GET',
+        query: query,
         format: 'json',
         ...params,
       }),
