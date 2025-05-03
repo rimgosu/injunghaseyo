@@ -89,13 +89,20 @@ export const AppRoutes = () => {
 
     if (accessToken) {
       localStorage.setItem('accessToken', accessToken);
-      asyncCheckSignIn();
     }
+    asyncCheckSignIn();
   }, [location.search, navigate]);
 
   useEffect(() => {
     asyncCheckSignIn();
   }, [location.pathname]);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('accessToken');
+    if (storedToken) {
+      asyncCheckSignIn();
+    }
+  }, []);
 
   return (
     <Routes>
