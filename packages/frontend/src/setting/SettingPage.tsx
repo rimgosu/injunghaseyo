@@ -17,6 +17,7 @@ export const SettingPage = () => {
     }
 
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('isSignedIn');
     navigate('/auth/login');
   };
 

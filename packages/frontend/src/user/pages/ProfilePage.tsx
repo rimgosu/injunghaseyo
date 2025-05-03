@@ -66,7 +66,7 @@ export const ProfilePage = ({
       const profileRes = await fetchProfile();
       if (profileRes.data) {
         setProfileData(profileRes.data);
-        window.location.href = window.location.href;
+        navigate('/user/profile');
       }
     }
   };
