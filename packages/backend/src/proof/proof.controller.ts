@@ -28,6 +28,7 @@ import { AtkOptionalGuard } from '@/auth/guards/atk-optional.guard';
 import { GetRepliesResDto } from './dtos/get-replies-res.dto';
 import { InteractionCommentQuery } from './dtos/interaction-comment-query.dto';
 import { UpdateCommentBody } from './dtos/update-comment-body.dto';
+import { GetProofQuery } from './dtos/get-proof-query.dto';
 
 @Controller('proofs')
 export class ProofController {
@@ -64,9 +65,10 @@ export class ProofController {
   })
   async getProof(
     @Param('proofId') proofId: number,
+    @Query() query: GetProofQuery,
     @GetClientIp() ip: string,
   ): Promise<GetProofRes> {
-    return this.proofService.getProof(proofId, ip);
+    return this.proofService.getProof(proofId, ip, query);
   }
 
   /**

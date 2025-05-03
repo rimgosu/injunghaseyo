@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class BaseProofReq {
   @ApiProperty({
@@ -9,4 +10,14 @@ export class BaseProofReq {
   })
   @IsString()
   contents: string;
+
+  @ApiProperty({
+    description: 'groupId',
+    type: Number,
+    required: false,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Transform(({ value }) => +value)
+  groupId?: number;
 }

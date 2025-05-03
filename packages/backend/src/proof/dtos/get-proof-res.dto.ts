@@ -63,8 +63,17 @@ export class GetProofRes {
     description: '다음 인증 id',
     example: 2,
     type: Number,
+    nullable: true,
   })
-  nextProofId: number;
+  nextProofId?: number | null;
+
+  @ApiProperty({
+    description: '이전 인증 id',
+    example: null,
+    type: Number,
+    nullable: true,
+  })
+  prevProofId?: number | null;
 
   @ApiProperty({
     description: '인증 사진 주소',
@@ -113,7 +122,15 @@ export class GetProofRes {
   })
   group: GroupForGetProof;
 
-  constructor(proof: ProofForGetProof) {
+  constructor({
+    proof,
+    next,
+    prev,
+  }: {
+    proof: ProofForGetProof;
+    next?: { id: number };
+    prev?: { id: number };
+  }) {
     this.proofId = proof.id;
     this.url = proof.photoProof.url;
     this.like = proof._count.proofInteraction;
@@ -131,5 +148,7 @@ export class GetProofRes {
       proof.groupProgress.join.group.id,
       proof.groupProgress.join.group.title,
     );
+    this.nextProofId = next?.id ?? null;
+    this.prevProofId = prev?.id ?? null;
   }
 }

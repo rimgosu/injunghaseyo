@@ -26,6 +26,7 @@ import { GetCommentsResDto } from './dtos/core/get-comments-res.dto';
 import { GetRepliesResDto } from './dtos/get-replies-res.dto';
 import { InteractionCommentQuery } from './dtos/interaction-comment-query.dto';
 import { UpdateCommentBody } from './dtos/update-comment-body.dto';
+import { GetProofQuery } from './dtos/get-proof-query.dto';
 
 @Injectable()
 export class ProofService {
@@ -339,14 +340,58 @@ export class ProofService {
     });
   }
 
-  async getProof(proofId: number, ip: string): Promise<GetProofRes> {
+  async getProof(
+    proofId: number,
+    ip: string,
+    query: GetProofQuery,
+  ): Promise<GetProofRes> {
+    const { groupId } = query;
     const cacheKey = CacheKeyConstants.PROOF_VIEW(proofId, ip);
     const cachedView = await this.cacheManager.get(cacheKey);
 
-    const proof = await this.prisma.proof.findUnique({
-      where: { id: proofId, deletedAt: null, photoProof: { deletedAt: null } },
-      ...PROOF_FOR_GET_PROOF,
-    });
+    const [proof, prev, next] = await Promise.all([
+      this.prisma.proof.findUnique({
+        where: {
+          id: proofId,
+          deletedAt: null,
+          photoProof: { deletedAt: null },
+          ...(groupId && { groupProgress: { join: { groupId } } }),
+        },
+        ...PROOF_FOR_GET_PROOF,
+      }),
+      this.prisma.proof.findFirst({
+        where: {
+          deletedAt: null,
+          photoProof: { deletedAt: null },
+          ...(groupId && { groupProgress: { join: { groupId } } }),
+          id: {
+            lt: proofId,
+          },
+        },
+        orderBy: {
+          id: 'desc',
+        },
+        select: {
+          id: true,
+        },
+      }),
+      this.prisma.proof.findFirst({
+        where: {
+          deletedAt: null,
+          photoProof: { deletedAt: null },
+          ...(groupId && { groupProgress: { join: { groupId } } }),
+          id: {
+            gt: proofId,
+          },
+        },
+        orderBy: {
+          id: 'asc',
+        },
+        select: {
+          id: true,
+        },
+      }),
+    ]);
 
     if (!proof) {
       throw new NotFoundException('존재하지 않는 인증입니다.');
@@ -370,7 +415,7 @@ export class ProofService {
       proof.view += 1;
     }
 
-    return new GetProofRes(proof);
+    return new GetProofRes({ proof, next, prev });
   }
 
   async getProofs(query: BaseCursorPaginationQueryDto): Promise<GetProofsRes> {
