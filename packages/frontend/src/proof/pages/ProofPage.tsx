@@ -17,11 +17,13 @@ import {
   HandThumbUpIcon as HandThumbUpIconSolid,
 } from '@heroicons/react/24/solid';
 import LikeDisLikeButton from '../components/LikeDisLikeButton';
+import { ReportModal } from '../components/ReportModal';
 
 export const ProofPage = () => {
   const { getProof, interactionProof } = useProofHook();
   const { proofId } = useParams();
   const [proof, setProof] = useState<GetProofRes | null>(null);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const navigate = useNavigate();
   const fetchProof = async () => {
     const res = await getProof(Number(proofId));
@@ -76,7 +78,10 @@ export const ProofPage = () => {
             <ChatBubbleBottomCenterIcon className="w-8 h-8 text-white" />
             <span className="text-white">{proof?.commentCount}</span>
           </div>
-          <div className="flex items-center flex-col">
+          <div
+            className="flex items-center flex-col cursor-pointer"
+            onClick={() => setIsReportModalOpen(true)}
+          >
             <FlagIcon className="w-8 h-8 text-white" />
           </div>
         </section>
@@ -103,6 +108,10 @@ export const ProofPage = () => {
           </div>
         </section>
       </main>
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+      />
     </BaseLayout>
   );
 };

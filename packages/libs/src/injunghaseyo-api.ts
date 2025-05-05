@@ -640,12 +640,12 @@ export interface GetRepliesResDto {
 
 /** sign in status */
 export enum GetCheckSignInUserStatusEnum {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-  BLOCKED = 'BLOCKED',
-  WITHDRAWN = 'WITHDRAWN',
-  OAUTH_PENDING = 'OAUTH_PENDING',
-  CHARACTER_CHOOSE = 'CHARACTER_CHOOSE',
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  BLOCKED = "BLOCKED",
+  WITHDRAWN = "WITHDRAWN",
+  OAUTH_PENDING = "OAUTH_PENDING",
+  CHARACTER_CHOOSE = "CHARACTER_CHOOSE",
 }
 
 /**
@@ -653,51 +653,51 @@ export enum GetCheckSignInUserStatusEnum {
  * @example "CHECK_LOCATION"
  */
 export enum ProofMethodElemTypeEnum {
-  UPLOAD_PHOTO = 'UPLOAD_PHOTO',
-  CLICK_BUTTON = 'CLICK_BUTTON',
-  CHECK_LOCATION = 'CHECK_LOCATION',
+  UPLOAD_PHOTO = "UPLOAD_PHOTO",
+  CLICK_BUTTON = "CLICK_BUTTON",
+  CHECK_LOCATION = "CHECK_LOCATION",
 }
 
 /** 검증할 요소 타입 */
 export enum ValidateCreateGroupElementBodyValidateTypeEnum {
-  TITLE = 'TITLE',
-  PRICE = 'PRICE',
-  DESCRIPTION = 'DESCRIPTION',
-  PROOF_METHOD = 'PROOF_METHOD',
-  DATES = 'DATES',
-  TAGS = 'TAGS',
+  TITLE = "TITLE",
+  PRICE = "PRICE",
+  DESCRIPTION = "DESCRIPTION",
+  PROOF_METHOD = "PROOF_METHOD",
+  DATES = "DATES",
+  TAGS = "TAGS",
 }
 
 /** 그룹 상태 */
 export enum GroupElemStatusEnum {
-  NOT_STARTED = 'NOT_STARTED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
+  NOT_STARTED = "NOT_STARTED",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
 }
 
 /** 참여 상태 */
 export enum GroupElemJoinStatusEnum {
-  RESERVED = 'RESERVED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
-  NOT_JOINED = 'NOT_JOINED',
-  NOT_JOINABLE = 'NOT_JOINABLE',
+  RESERVED = "RESERVED",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+  NOT_JOINED = "NOT_JOINED",
+  NOT_JOINABLE = "NOT_JOINABLE",
 }
 
 /** 그룹 상태 */
 export enum GetGroupResStatusEnum {
-  NOT_STARTED = 'NOT_STARTED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
+  NOT_STARTED = "NOT_STARTED",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
 }
 
 /** 참여 상태 */
 export enum GetGroupResJoinStatusEnum {
-  RESERVED = 'RESERVED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
-  NOT_JOINED = 'NOT_JOINED',
-  NOT_JOINABLE = 'NOT_JOINABLE',
+  RESERVED = "RESERVED",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+  NOT_JOINED = "NOT_JOINED",
+  NOT_JOINABLE = "NOT_JOINABLE",
 }
 
 /**
@@ -705,9 +705,9 @@ export enum GetGroupResJoinStatusEnum {
  * @example "CHECK_LOCATION"
  */
 export enum ProofForGalleryProofTypeEnum {
-  UPLOAD_PHOTO = 'UPLOAD_PHOTO',
-  CLICK_BUTTON = 'CLICK_BUTTON',
-  CHECK_LOCATION = 'CHECK_LOCATION',
+  UPLOAD_PHOTO = "UPLOAD_PHOTO",
+  CLICK_BUTTON = "CLICK_BUTTON",
+  CHECK_LOCATION = "CHECK_LOCATION",
 }
 
 /**
@@ -715,9 +715,9 @@ export enum ProofForGalleryProofTypeEnum {
  * @example "COMPLETED"
  */
 export enum TodayGroupStatusElemStatusEnum {
-  COMPLETED = 'COMPLETED',
-  NO_PROOF = 'NO_PROOF',
-  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = "COMPLETED",
+  NO_PROOF = "NO_PROOF",
+  IN_PROGRESS = "IN_PROGRESS",
 }
 
 export interface AuthControllerVerifyEmailParams {
@@ -1023,8 +1023,8 @@ export interface ProofControllerInteractionProofParams {
  * @example "LIKE"
  */
 export enum TypeEnum {
-  LIKE = 'LIKE',
-  DISLIKE = 'DISLIKE',
+  LIKE = "LIKE",
+  DISLIKE = "DISLIKE",
 }
 
 /**
@@ -1032,8 +1032,8 @@ export enum TypeEnum {
  * @example "LIKE"
  */
 export enum ProofControllerInteractionProofParams1TypeEnum {
-  LIKE = 'LIKE',
-  DISLIKE = 'DISLIKE',
+  LIKE = "LIKE",
+  DISLIKE = "DISLIKE",
 }
 
 export interface ProofControllerReportProofParams {
@@ -1050,12 +1050,12 @@ export interface ProofControllerReportProofParams {
  * @example "SPAM"
  */
 export enum ReasonEnum {
-  FAKE_PROOF = 'FAKE_PROOF',
-  SPAM = 'SPAM',
-  ADULT = 'ADULT',
-  HARMFUL_DANGEROUS = 'HARMFUL_DANGEROUS',
-  VIOLENT_DISGUSTING = 'VIOLENT_DISGUSTING',
-  ABUSE_HATRED = 'ABUSE_HATRED',
+  FAKE_PROOF = "FAKE_PROOF",
+  SPAM = "SPAM",
+  ADULT = "ADULT",
+  HARMFUL_DANGEROUS = "HARMFUL_DANGEROUS",
+  VIOLENT_DISGUSTING = "VIOLENT_DISGUSTING",
+  ABUSE_HATRED = "ABUSE_HATRED",
 }
 
 /**
@@ -1063,12 +1063,12 @@ export enum ReasonEnum {
  * @example "SPAM"
  */
 export enum ProofControllerReportProofParams1ReasonEnum {
-  FAKE_PROOF = 'FAKE_PROOF',
-  SPAM = 'SPAM',
-  ADULT = 'ADULT',
-  HARMFUL_DANGEROUS = 'HARMFUL_DANGEROUS',
-  VIOLENT_DISGUSTING = 'VIOLENT_DISGUSTING',
-  ABUSE_HATRED = 'ABUSE_HATRED',
+  FAKE_PROOF = "FAKE_PROOF",
+  SPAM = "SPAM",
+  ADULT = "ADULT",
+  HARMFUL_DANGEROUS = "HARMFUL_DANGEROUS",
+  VIOLENT_DISGUSTING = "VIOLENT_DISGUSTING",
+  ABUSE_HATRED = "ABUSE_HATRED",
 }
 
 export interface ProofControllerCreateCommentParams {
@@ -1115,8 +1115,8 @@ export interface ProofControllerInteractionCommentParams {
  * @example "LIKE"
  */
 export enum TypeEnum1 {
-  LIKE = 'LIKE',
-  DISLIKE = 'DISLIKE',
+  LIKE = "LIKE",
+  DISLIKE = "DISLIKE",
 }
 
 /**
@@ -1124,14 +1124,14 @@ export enum TypeEnum1 {
  * @example "LIKE"
  */
 export enum ProofControllerInteractionCommentParams1TypeEnum {
-  LIKE = 'LIKE',
-  DISLIKE = 'DISLIKE',
+  LIKE = "LIKE",
+  DISLIKE = "DISLIKE",
 }
 
 export type QueryParamsType = Record<string | number, any>;
-export type ResponseFormat = keyof Omit<Body, 'body' | 'bodyUsed'>;
+export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
-export interface FullRequestParams extends Omit<RequestInit, 'body'> {
+export interface FullRequestParams extends Omit<RequestInit, "body"> {
   /** set parameter to `true` for call `securityWorker` for this request */
   secure?: boolean;
   /** request path */
@@ -1150,16 +1150,22 @@ export interface FullRequestParams extends Omit<RequestInit, 'body'> {
   cancelToken?: CancelToken;
 }
 
-export type RequestParams = Omit<FullRequestParams, 'body' | 'method' | 'query' | 'path'>;
+export type RequestParams = Omit<
+  FullRequestParams,
+  "body" | "method" | "query" | "path"
+>;
 
 export interface ApiConfig<SecurityDataType = unknown> {
   baseUrl?: string;
-  baseApiParams?: Omit<RequestParams, 'baseUrl' | 'cancelToken' | 'signal'>;
-  securityWorker?: (securityData: SecurityDataType | null) => Promise<RequestParams | void> | RequestParams | void;
+  baseApiParams?: Omit<RequestParams, "baseUrl" | "cancelToken" | "signal">;
+  securityWorker?: (
+    securityData: SecurityDataType | null
+  ) => Promise<RequestParams | void> | RequestParams | void;
   customFetch?: typeof fetch;
 }
 
-export interface HttpResponse<D extends unknown, E extends unknown = unknown> extends Response {
+export interface HttpResponse<D extends unknown, E extends unknown = unknown>
+  extends Response {
   data: D;
   error: E;
 }
@@ -1167,24 +1173,25 @@ export interface HttpResponse<D extends unknown, E extends unknown = unknown> ex
 type CancelToken = Symbol | string | number;
 
 export enum ContentType {
-  Json = 'application/json',
-  FormData = 'multipart/form-data',
-  UrlEncoded = 'application/x-www-form-urlencoded',
-  Text = 'text/plain',
+  Json = "application/json",
+  FormData = "multipart/form-data",
+  UrlEncoded = "application/x-www-form-urlencoded",
+  Text = "text/plain",
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = '';
+  public baseUrl: string = "";
   private securityData: SecurityDataType | null = null;
-  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
+  private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
-  private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams);
+  private customFetch = (...fetchParams: Parameters<typeof fetch>) =>
+    fetch(...fetchParams);
 
   private baseApiParams: RequestParams = {
-    credentials: 'same-origin',
+    credentials: "same-origin",
     headers: {},
-    redirect: 'follow',
-    referrerPolicy: 'no-referrer',
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
   };
 
   constructor(apiConfig: ApiConfig<SecurityDataType> = {}) {
@@ -1197,7 +1204,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected encodeQueryParam(key: string, value: any) {
     const encodedKey = encodeURIComponent(key);
-    return `${encodedKey}=${encodeURIComponent(typeof value === 'number' ? value : `${value}`)}`;
+    return `${encodedKey}=${encodeURIComponent(typeof value === "number" ? value : `${value}`)}`;
   }
 
   protected addQueryParam(query: QueryParamsType, key: string) {
@@ -1206,26 +1213,37 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected addArrayQueryParam(query: QueryParamsType, key: string) {
     const value = query[key];
-    return value.map((v: any) => this.encodeQueryParam(key, v)).join('&');
+    return value.map((v: any) => this.encodeQueryParam(key, v)).join("&");
   }
 
   protected toQueryString(rawQuery?: QueryParamsType): string {
     const query = rawQuery || {};
-    const keys = Object.keys(query).filter((key) => 'undefined' !== typeof query[key]);
+    const keys = Object.keys(query).filter(
+      (key) => "undefined" !== typeof query[key]
+    );
     return keys
-      .map((key) => (Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key)))
-      .join('&');
+      .map((key) =>
+        Array.isArray(query[key])
+          ? this.addArrayQueryParam(query, key)
+          : this.addQueryParam(query, key)
+      )
+      .join("&");
   }
 
   protected addQueryParams(rawQuery?: QueryParamsType): string {
     const queryString = this.toQueryString(rawQuery);
-    return queryString ? `?${queryString}` : '';
+    return queryString ? `?${queryString}` : "";
   }
 
   private contentFormatters: Record<ContentType, (input: any) => any> = {
     [ContentType.Json]: (input: any) =>
-      input !== null && (typeof input === 'object' || typeof input === 'string') ? JSON.stringify(input) : input,
-    [ContentType.Text]: (input: any) => (input !== null && typeof input !== 'string' ? JSON.stringify(input) : input),
+      input !== null && (typeof input === "object" || typeof input === "string")
+        ? JSON.stringify(input)
+        : input,
+    [ContentType.Text]: (input: any) =>
+      input !== null && typeof input !== "string"
+        ? JSON.stringify(input)
+        : input,
     [ContentType.FormData]: (input: any) =>
       Object.keys(input || {}).reduce((formData, key) => {
         const property = input[key];
@@ -1233,16 +1251,19 @@ export class HttpClient<SecurityDataType = unknown> {
           key,
           property instanceof Blob
             ? property
-            : typeof property === 'object' && property !== null
+            : typeof property === "object" && property !== null
               ? JSON.stringify(property)
-              : `${property}`,
+              : `${property}`
         );
         return formData;
       }, new FormData()),
     [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
   };
 
-  protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
+  protected mergeRequestParams(
+    params1: RequestParams,
+    params2?: RequestParams
+  ): RequestParams {
     return {
       ...this.baseApiParams,
       ...params1,
@@ -1255,7 +1276,9 @@ export class HttpClient<SecurityDataType = unknown> {
     };
   }
 
-  protected createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
+  protected createAbortSignal = (
+    cancelToken: CancelToken
+  ): AbortSignal | undefined => {
     if (this.abortControllers.has(cancelToken)) {
       const abortController = this.abortControllers.get(cancelToken);
       if (abortController) {
@@ -1290,7 +1313,7 @@ export class HttpClient<SecurityDataType = unknown> {
     ...params
   }: FullRequestParams): Promise<HttpResponse<T, E>> => {
     const secureParams =
-      ((typeof secure === 'boolean' ? secure : this.baseApiParams.secure) &&
+      ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
         this.securityWorker &&
         (await this.securityWorker(this.securityData))) ||
       {};
@@ -1299,15 +1322,26 @@ export class HttpClient<SecurityDataType = unknown> {
     const payloadFormatter = this.contentFormatters[type || ContentType.Json];
     const responseFormat = format || requestParams.format;
 
-    return this.customFetch(`${baseUrl || this.baseUrl || ''}${path}${queryString ? `?${queryString}` : ''}`, {
-      ...requestParams,
-      headers: {
-        ...(requestParams.headers || {}),
-        ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
-      },
-      signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
-      body: typeof body === 'undefined' || body === null ? null : payloadFormatter(body),
-    }).then(async (response) => {
+    return this.customFetch(
+      `${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`,
+      {
+        ...requestParams,
+        headers: {
+          ...(requestParams.headers || {}),
+          ...(type && type !== ContentType.FormData
+            ? { "Content-Type": type }
+            : {}),
+        },
+        signal:
+          (cancelToken
+            ? this.createAbortSignal(cancelToken)
+            : requestParams.signal) || null,
+        body:
+          typeof body === "undefined" || body === null
+            ? null
+            : payloadFormatter(body),
+      }
+    ).then(async (response) => {
       const r = response.clone() as HttpResponse<T, E>;
       r.data = null as unknown as T;
       r.error = null as unknown as E;
@@ -1345,7 +1379,9 @@ export class HttpClient<SecurityDataType = unknown> {
  *
  * NestJS로 만든 API 문서입니다.
  */
-export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+export class Api<
+  SecurityDataType extends unknown,
+> extends HttpClient<SecurityDataType> {
   /**
    * No description
    *
@@ -1356,7 +1392,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   appControllerGetHello = (params: RequestParams = {}) =>
     this.request<void, any>({
       path: `/`,
-      method: 'GET',
+      method: "GET",
       ...params,
     });
 
@@ -1368,10 +1404,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AuthControllerVerifyEmail
      * @request POST:/auth/verify-email
      */
-    authControllerVerifyEmail: (query: AuthControllerVerifyEmailParams, params: RequestParams = {}) =>
+    authControllerVerifyEmail: (
+      query: AuthControllerVerifyEmailParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/auth/verify-email`,
-        method: 'POST',
+        method: "POST",
         query: query,
         ...params,
       }),
@@ -1383,10 +1422,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AuthControllerVerifyCode
      * @request POST:/auth/verify-code
      */
-    authControllerVerifyCode: (query: AuthControllerVerifyCodeParams, params: RequestParams = {}) =>
+    authControllerVerifyCode: (
+      query: AuthControllerVerifyCodeParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/auth/verify-code`,
-        method: 'POST',
+        method: "POST",
         query: query,
         ...params,
       }),
@@ -1398,10 +1440,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AuthControllerVerifyPassword
      * @request GET:/auth/verify-password
      */
-    authControllerVerifyPassword: (query: AuthControllerVerifyPasswordParams, params: RequestParams = {}) =>
+    authControllerVerifyPassword: (
+      query: AuthControllerVerifyPasswordParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/auth/verify-password`,
-        method: 'GET',
+        method: "GET",
         query: query,
         ...params,
       }),
@@ -1413,10 +1458,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AuthControllerVerifyNickname
      * @request GET:/auth/verify-nickname
      */
-    authControllerVerifyNickname: (query: AuthControllerVerifyNicknameParams, params: RequestParams = {}) =>
+    authControllerVerifyNickname: (
+      query: AuthControllerVerifyNicknameParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/auth/verify-nickname`,
-        method: 'GET',
+        method: "GET",
         query: query,
         ...params,
       }),
@@ -1428,10 +1476,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AuthControllerSignUp
      * @request POST:/auth/sign-up
      */
-    authControllerSignUp: (query: AuthControllerSignUpParams, params: RequestParams = {}) =>
+    authControllerSignUp: (
+      query: AuthControllerSignUpParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/auth/sign-up`,
-        method: 'POST',
+        method: "POST",
         query: query,
         ...params,
       }),
@@ -1443,12 +1494,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AuthControllerSignIn
      * @request POST:/auth/sign-in
      */
-    authControllerSignIn: (query: AuthControllerSignInParams, params: RequestParams = {}) =>
+    authControllerSignIn: (
+      query: AuthControllerSignInParams,
+      params: RequestParams = {}
+    ) =>
       this.request<SignInRes, any>({
         path: `/auth/sign-in`,
-        method: 'POST',
+        method: "POST",
         query: query,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1463,7 +1517,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authControllerSignOut: (params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/auth/sign-out`,
-        method: 'POST',
+        method: "POST",
         secure: true,
         ...params,
       }),
@@ -1479,9 +1533,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authControllerCheckSignIn: (params: RequestParams = {}) =>
       this.request<GetCheckSignIn, any>({
         path: `/auth/check-sign-in`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1495,8 +1549,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authControllerReissueAtk: (params: RequestParams = {}) =>
       this.request<ReissueAtkRes, any>({
         path: `/auth/reissue-atk`,
-        method: 'POST',
-        format: 'json',
+        method: "POST",
+        format: "json",
         ...params,
       }),
 
@@ -1507,10 +1561,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AuthControllerFindPassword
      * @request POST:/auth/find-password
      */
-    authControllerFindPassword: (query: AuthControllerFindPasswordParams, params: RequestParams = {}) =>
+    authControllerFindPassword: (
+      query: AuthControllerFindPasswordParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/auth/find-password`,
-        method: 'POST',
+        method: "POST",
         query: query,
         ...params,
       }),
@@ -1523,10 +1580,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PATCH:/auth/change-password
      * @secure
      */
-    authControllerChangePassword: (query: AuthControllerChangePasswordParams, params: RequestParams = {}) =>
+    authControllerChangePassword: (
+      query: AuthControllerChangePasswordParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/auth/change-password`,
-        method: 'PATCH',
+        method: "PATCH",
         query: query,
         secure: true,
         ...params,
@@ -1543,7 +1603,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authControllerWithdraw: (params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/auth/withdraw`,
-        method: 'DELETE',
+        method: "DELETE",
         secure: true,
         ...params,
       }),
@@ -1558,7 +1618,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authControllerGoogleAuth: (params: RequestParams = {}) =>
       this.request<any, void>({
         path: `/auth/google`,
-        method: 'GET',
+        method: "GET",
         ...params,
       }),
 
@@ -1573,7 +1633,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authControllerGoogleAuthRedirect: (params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/auth/google/callback`,
-        method: 'GET',
+        method: "GET",
         ...params,
       }),
 
@@ -1587,7 +1647,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authControllerKakaoLogin: (params: RequestParams = {}) =>
       this.request<any, void>({
         path: `/auth/kakao`,
-        method: 'GET',
+        method: "GET",
         ...params,
       }),
 
@@ -1602,7 +1662,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authControllerKakaoCallback: (params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/auth/kakao/callback`,
-        method: 'GET',
+        method: "GET",
         ...params,
       }),
 
@@ -1616,7 +1676,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authControllerNaverLogin: (params: RequestParams = {}) =>
       this.request<any, void>({
         path: `/auth/naver`,
-        method: 'GET',
+        method: "GET",
         ...params,
       }),
 
@@ -1631,7 +1691,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authControllerNaverCallback: (params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/auth/naver/callback`,
-        method: 'GET',
+        method: "GET",
         ...params,
       }),
 
@@ -1643,10 +1703,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/auth/activate-oauth
      * @secure
      */
-    authControllerActivateOauth: (query: AuthControllerActivateOauthParams, params: RequestParams = {}) =>
+    authControllerActivateOauth: (
+      query: AuthControllerActivateOauthParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/auth/activate-oauth`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
         ...params,
@@ -1664,11 +1727,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     groupControllerCreateGroup: (
       query: GroupControllerCreateGroupParams,
       data: CreateGroupBody,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, any>({
         path: `/groups`,
-        method: 'POST',
+        method: "POST",
         query: query,
         body: data,
         secure: true,
@@ -1683,12 +1746,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GroupControllerGetGroups
      * @request GET:/groups
      */
-    groupControllerGetGroups: (query: GroupControllerGetGroupsParams, params: RequestParams = {}) =>
+    groupControllerGetGroups: (
+      query: GroupControllerGetGroupsParams,
+      params: RequestParams = {}
+    ) =>
       this.request<GetGroupsRes, any>({
         path: `/groups`,
-        method: 'GET',
+        method: "GET",
         query: query,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1701,10 +1767,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/groups/validate-element
      * @secure
      */
-    groupControllerValidateCreateGroupElement: (data: ValidateCreateGroupElementBody, params: RequestParams = {}) =>
+    groupControllerValidateCreateGroupElement: (
+      data: ValidateCreateGroupElementBody,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/groups/validate-element`,
-        method: 'POST',
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
@@ -1719,13 +1788,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/groups/tags
      * @secure
      */
-    groupControllerGetTags: (query: GroupControllerGetTagsParams, params: RequestParams = {}) =>
+    groupControllerGetTags: (
+      query: GroupControllerGetTagsParams,
+      params: RequestParams = {}
+    ) =>
       this.request<GetTagsRes, any>({
         path: `/groups/tags`,
-        method: 'GET',
+        method: "GET",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1740,7 +1812,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     groupControllerJoinGroup: (groupId: number, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/groups/${groupId}/join`,
-        method: 'POST',
+        method: "POST",
         secure: true,
         ...params,
       }),
@@ -1755,8 +1827,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     groupControllerGetGroup: (groupId: number, params: RequestParams = {}) =>
       this.request<GetGroupRes, any>({
         path: `/groups/${groupId}`,
-        method: 'GET',
-        format: 'json',
+        method: "GET",
+        format: "json",
         ...params,
       }),
 
@@ -1771,7 +1843,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     groupControllerLeaveGroup: (groupId: number, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/groups/${groupId}/leave`,
-        method: 'DELETE',
+        method: "DELETE",
         secure: true,
         ...params,
       }),
@@ -1784,13 +1856,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/groups/{groupId}/today
      * @secure
      */
-    groupControllerGetToday: ({ groupId, ...query }: GroupControllerGetTodayParams, params: RequestParams = {}) =>
+    groupControllerGetToday: (
+      { groupId, ...query }: GroupControllerGetTodayParams,
+      params: RequestParams = {}
+    ) =>
       this.request<GetTodayRes, any>({
         path: `/groups/${groupId}/today`,
-        method: 'GET',
+        method: "GET",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1808,16 +1883,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /** @format binary */
         proofPhoto?: File;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<UploadProofRes, any>({
         path: `/groups/${groupId}/proof/photo`,
-        method: 'POST',
+        method: "POST",
         query: query,
         body: data,
         secure: true,
         type: ContentType.FormData,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1831,14 +1906,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     groupControllerUploadProofButton: (
       { groupId, ...query }: GroupControllerUploadProofButtonParams,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<UploadProofRes, any>({
         path: `/groups/${groupId}/proof/button`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1852,14 +1927,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     groupControllerUploadProofLocation: (
       { groupId, ...query }: GroupControllerUploadProofLocationParams,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<UploadProofRes, any>({
         path: `/groups/${groupId}/proof/location`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1871,12 +1946,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/groups/{groupId}/today-reward
      * @secure
      */
-    groupControllerGetTodayReward: (groupId: number, params: RequestParams = {}) =>
+    groupControllerGetTodayReward: (
+      groupId: number,
+      params: RequestParams = {}
+    ) =>
       this.request<GetTodayRewardRes, any>({
         path: `/groups/${groupId}/today-reward`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1891,9 +1969,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     groupControllerGetGallery: (groupId: number, params: RequestParams = {}) =>
       this.request<GetGalleryRes[], any>({
         path: `/groups/${groupId}/gallery`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
   };
@@ -1909,9 +1987,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     userControllerGetProfile: (params: RequestParams = {}) =>
       this.request<GetProfileResDto, any>({
         path: `/users/profile`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1922,11 +2000,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name UserControllerGetOtherProfile
      * @request GET:/users/{userId}/profile
      */
-    userControllerGetOtherProfile: (userId: number, params: RequestParams = {}) =>
+    userControllerGetOtherProfile: (
+      userId: number,
+      params: RequestParams = {}
+    ) =>
       this.request<GetOtherProfileResDto, any>({
         path: `/users/${userId}/profile`,
-        method: 'GET',
-        format: 'json',
+        method: "GET",
+        format: "json",
         ...params,
       }),
 
@@ -1943,11 +2024,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /** @format binary */
         profilePhoto?: File;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, any>({
         path: `/users/profile-photo`,
-        method: 'POST',
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.FormData,
@@ -1962,10 +2043,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request DELETE:/users/profile-photo/{profilePhotoId}
      * @secure
      */
-    userControllerDeleteProfilePhoto: (profilePhotoId: number, params: RequestParams = {}) =>
+    userControllerDeleteProfilePhoto: (
+      profilePhotoId: number,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/users/profile-photo/${profilePhotoId}`,
-        method: 'DELETE',
+        method: "DELETE",
         secure: true,
         ...params,
       }),
@@ -1981,9 +2065,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     userControllerGetMoney: (params: RequestParams = {}) =>
       this.request<GetMoneyDto, any>({
         path: `/users/money`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
   };
@@ -1996,10 +2080,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/users-mgmt/admin
      * @secure
      */
-    userMgmtControllerGetAdminRole: (query: UserMgmtControllerGetAdminRoleParams, params: RequestParams = {}) =>
+    userMgmtControllerGetAdminRole: (
+      query: UserMgmtControllerGetAdminRoleParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/users-mgmt/admin`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
         ...params,
@@ -2013,10 +2100,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/users-mgmt/gain-money
      * @secure
      */
-    userMgmtControllerGainMoney: (query: UserMgmtControllerGainMoneyParams, params: RequestParams = {}) =>
+    userMgmtControllerGainMoney: (
+      query: UserMgmtControllerGainMoneyParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/users-mgmt/gain-money`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
         ...params,
@@ -2034,9 +2124,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     characterControllerGetCharacters: (params: RequestParams = {}) =>
       this.request<GetCharacter[], any>({
         path: `/characters`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -2048,10 +2138,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/characters/select
      * @secure
      */
-    characterControllerCharacterSelect: (query: CharacterControllerCharacterSelectParams, params: RequestParams = {}) =>
+    characterControllerCharacterSelect: (
+      query: CharacterControllerCharacterSelectParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/characters/select`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
         ...params,
@@ -2068,9 +2161,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     characterControllerGetMyCharacter: (params: RequestParams = {}) =>
       this.request<GetMyCharacter, any>({
         path: `/characters/my`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
   };
@@ -2082,12 +2175,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name ProofControllerGetProofs
      * @request GET:/proofs
      */
-    proofControllerGetProofs: (query: ProofControllerGetProofsParams, params: RequestParams = {}) =>
+    proofControllerGetProofs: (
+      query: ProofControllerGetProofsParams,
+      params: RequestParams = {}
+    ) =>
       this.request<GetProofsRes, any>({
         path: `/proofs`,
-        method: 'GET',
+        method: "GET",
         query: query,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -2098,12 +2194,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name ProofControllerGetProof
      * @request GET:/proofs/{proofId}
      */
-    proofControllerGetProof: ({ proofId, ...query }: ProofControllerGetProofParams, params: RequestParams = {}) =>
+    proofControllerGetProof: (
+      { proofId, ...query }: ProofControllerGetProofParams,
+      params: RequestParams = {}
+    ) =>
       this.request<GetProofRes, any>({
         path: `/proofs/${proofId}`,
-        method: 'GET',
+        method: "GET",
         query: query,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -2117,11 +2216,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     proofControllerInteractionProof: (
       { proofId, ...query }: ProofControllerInteractionProofParams,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, any>({
         path: `/proofs/${proofId}/interation`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
         ...params,
@@ -2135,10 +2234,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/proofs/{proofId}/report
      * @secure
      */
-    proofControllerReportProof: ({ proofId, ...query }: ProofControllerReportProofParams, params: RequestParams = {}) =>
+    proofControllerReportProof: (
+      { proofId, ...query }: ProofControllerReportProofParams,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/proofs/${proofId}/report`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
         ...params,
@@ -2155,11 +2257,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     proofControllerCreateComment: (
       { proofId, ...query }: ProofControllerCreateCommentParams,
       data: CreateCommentBody,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, any>({
         path: `/proofs/${proofId}/comments`,
-        method: 'POST',
+        method: "POST",
         query: query,
         body: data,
         secure: true,
@@ -2174,12 +2276,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name ProofControllerGetComments
      * @request GET:/proofs/{proofId}/comments
      */
-    proofControllerGetComments: ({ proofId, ...query }: ProofControllerGetCommentsParams, params: RequestParams = {}) =>
+    proofControllerGetComments: (
+      { proofId, ...query }: ProofControllerGetCommentsParams,
+      params: RequestParams = {}
+    ) =>
       this.request<GetCommentsResDto, any>({
         path: `/proofs/${proofId}/comments`,
-        method: 'GET',
+        method: "GET",
         query: query,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -2195,11 +2300,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       proofId: number,
       commentId: number,
       data: UpdateCommentBody,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, any>({
         path: `/proofs/${proofId}/comments/${commentId}`,
-        method: 'PATCH',
+        method: "PATCH",
         body: data,
         secure: true,
         type: ContentType.Json,
@@ -2214,10 +2319,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request DELETE:/proofs/{proofId}/comments/{commentId}
      * @secure
      */
-    proofControllerDeleteComment: (proofId: number, commentId: number, params: RequestParams = {}) =>
+    proofControllerDeleteComment: (
+      proofId: number,
+      commentId: number,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/proofs/${proofId}/comments/${commentId}`,
-        method: 'DELETE',
+        method: "DELETE",
         secure: true,
         ...params,
       }),
@@ -2231,13 +2340,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     proofControllerGetReplies: (
       { proofId, commentId, ...query }: ProofControllerGetRepliesParams,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<GetRepliesResDto, any>({
         path: `/proofs/${proofId}/comments/${commentId}/replies`,
-        method: 'GET',
+        method: "GET",
         query: query,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -2251,11 +2360,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     proofControllerInteractionComment: (
       { proofId, commentId, ...query }: ProofControllerInteractionCommentParams,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, any>({
         path: `/proofs/${proofId}/comments/${commentId}/interaction`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
         ...params,
