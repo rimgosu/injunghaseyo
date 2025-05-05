@@ -28,7 +28,7 @@ export const GalleryPage = () => {
         ...query,
         cursor: res.data.nextCursor,
       });
-      setHasMore(res.data.items.length === query.take);
+      setHasMore(res.data.hasNextPage);
     }
   };
 
