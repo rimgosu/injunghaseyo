@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ProofForGetProof } from '../utils/types';
+import { InteractionType } from '@prisma/client';
 
 class UserForGetProof {
   @ApiProperty({
@@ -122,6 +123,20 @@ export class GetProofRes {
   })
   group: GroupForGetProof;
 
+  @ApiProperty({
+    description: '내가 좋아요 했는지 여부',
+    example: true,
+    type: Boolean,
+  })
+  isLiked: boolean = false;
+
+  @ApiProperty({
+    description: '내가 싫어요 했는지 여부',
+    example: false,
+    type: Boolean,
+  })
+  isDisliked: boolean = false;
+
   constructor({
     proof,
     next,
@@ -150,5 +165,13 @@ export class GetProofRes {
     );
     this.nextProofId = next?.id ?? null;
     this.prevProofId = prev?.id ?? null;
+    if (proof.proofInteraction && proof.proofInteraction.length > 0) {
+      this.isLiked = proof.proofInteraction.some(
+        (interaction) => interaction.type === InteractionType.LIKE,
+      );
+      this.isDisliked = proof.proofInteraction.some(
+        (interaction) => interaction.type === InteractionType.DISLIKE,
+      );
+    }
   }
 }

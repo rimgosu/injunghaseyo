@@ -344,6 +344,7 @@ export class ProofService {
     proofId: number,
     ip: string,
     query: GetProofQuery,
+    user?: User,
   ): Promise<GetProofRes> {
     const { groupId } = query;
     const cacheKey = CacheKeyConstants.PROOF_VIEW(proofId, ip);
@@ -357,7 +358,7 @@ export class ProofService {
           photoProof: { deletedAt: null },
           ...(groupId && { groupProgress: { join: { groupId } } }),
         },
-        ...PROOF_FOR_GET_PROOF,
+        ...PROOF_FOR_GET_PROOF(user?.id),
       }),
       this.prisma.proof.findFirst({
         where: {

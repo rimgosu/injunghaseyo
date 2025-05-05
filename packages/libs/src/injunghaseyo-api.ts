@@ -527,6 +527,16 @@ export interface GetProofRes {
   user: UserForGetProof;
   /** 그룹 정보 */
   group: GroupForGetProof;
+  /**
+   * 내가 좋아요 했는지 여부
+   * @example true
+   */
+  isLiked: boolean;
+  /**
+   * 내가 싫어요 했는지 여부
+   * @example false
+   */
+  isDisliked: boolean;
 }
 
 export interface CreateCommentBody {

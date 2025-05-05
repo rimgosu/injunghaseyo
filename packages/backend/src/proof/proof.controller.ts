@@ -63,12 +63,14 @@ export class ProofController {
     type: GetProofRes,
     description: '인증 조회',
   })
+  @UseGuards(AtkOptionalGuard)
   async getProof(
     @Param('proofId') proofId: number,
     @Query() query: GetProofQuery,
+    @GetOptionalUser() user: User | undefined,
     @GetClientIp() ip: string,
   ): Promise<GetProofRes> {
-    return this.proofService.getProof(proofId, ip, query);
+    return this.proofService.getProof(proofId, ip, query, user);
   }
 
   /**

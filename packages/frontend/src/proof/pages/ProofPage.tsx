@@ -7,9 +7,16 @@ import { GetProofRes, TypeEnum } from '@rimgosu/libs';
 import {
   ChatBubbleBottomCenterIcon,
   FlagIcon,
-  HandThumbDownIcon,
-  HandThumbUpIcon,
 } from '@heroicons/react/24/outline';
+import {
+  HandThumbDownIcon as HandThumbDownIconOutline,
+  HandThumbUpIcon as HandThumbUpIconOutline,
+} from '@heroicons/react/24/outline';
+import {
+  HandThumbDownIcon as HandThumbDownIconSolid,
+  HandThumbUpIcon as HandThumbUpIconSolid,
+} from '@heroicons/react/24/solid';
+import LikeDisLikeButton from '../components/LikeDisLikeButton';
 
 export const ProofPage = () => {
   const { getProof, interactionProof } = useProofHook();
@@ -28,6 +35,7 @@ export const ProofPage = () => {
       type,
       proofId,
     });
+    await fetchProof();
   };
 
   useEffect(() => {
@@ -44,18 +52,26 @@ export const ProofPage = () => {
       <main className="bg-black flex justify-center items-center h-screen">
         <img src={proof?.url} />
         <section className="absolute bottom-4 right-4 flex flex-col gap-4">
-          <div className="flex items-center flex-col">
-            <HandThumbUpIcon
-              className="w-8 h-8 text-white cursor-pointer"
-              onClick={() => {
-                handleInteraction(TypeEnum.LIKE, proof?.proofId as number);
-              }}
-            />
-            <span className="text-white">{proof?.like}</span>
-          </div>
-          <div className="flex items-center flex-col">
-            <HandThumbDownIcon className="w-8 h-8 text-white" />
-          </div>
+          <LikeDisLikeButton
+            isActive={proof?.isLiked ?? false}
+            count={proof?.like}
+            onClick={() =>
+              handleInteraction(TypeEnum.LIKE, proof?.proofId as number)
+            }
+            ActiveIcon={HandThumbUpIconSolid}
+            InactiveIcon={HandThumbUpIconOutline}
+            iconClassName="w-8 h-8 text-white cursor-pointer"
+          />
+          <LikeDisLikeButton
+            isActive={proof?.isDisliked ?? false}
+            onClick={() =>
+              handleInteraction(TypeEnum.DISLIKE, proof?.proofId as number)
+            }
+            ActiveIcon={HandThumbDownIconSolid}
+            InactiveIcon={HandThumbDownIconOutline}
+            iconClassName="w-8 h-8 text-white cursor-pointer"
+            showCount={false}
+          />
           <div className="flex items-center flex-col">
             <ChatBubbleBottomCenterIcon className="w-8 h-8 text-white" />
             <span className="text-white">{proof?.commentCount}</span>
