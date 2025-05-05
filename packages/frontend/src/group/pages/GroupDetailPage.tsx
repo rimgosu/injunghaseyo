@@ -8,9 +8,9 @@ import { ProofMethodCard } from '../components/ProofMethodCard';
 import { Tag } from '../components/Tag';
 import { useCheckSignInStore } from '../../auth/stores/useCheckSignInStore';
 import { errorMessage2String } from '../../common/common.util';
-import { XMarkIcon } from '@heroicons/react/24/outline';
 import { GreenButton } from '../../auth/components/GreenButton';
 import { JoinModal } from '../components/JoinModal';
+import { XButton } from '../../common/components/XButton';
 
 const getJoinStatusMessage = (status: GetGroupResJoinStatusEnum) => {
   switch (status) {
@@ -113,9 +113,7 @@ export const GroupDetailPage = () => {
     <BaseLayout
       title="모임 상세"
       bottomNavBar={<BottomNavigationBar />}
-      rightElement={
-        <XMarkIcon className="w-6 h-6 mt-1" onClick={() => navigate(-1)} />
-      }
+      rightElement={<XButton />}
     >
       <div className="flex flex-col gap-12 w-full pb-24">
         <img
