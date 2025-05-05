@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { BaseLayout } from '../../common/BaseLayout';
-import { XMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { TrashIcon } from '@heroicons/react/24/outline';
 import { useProfileStore } from '../stores/useProfileStore';
 import { useUsers } from '../hooks/useUsers';
+import { XButton } from '../../common/components/XButton';
 
 interface ProfilePhotoPageProps {
   profileStore?: any;
@@ -14,7 +14,6 @@ export const ProfilePhotoPage = ({
   profileStore = useProfileStore(),
   existDeleteButton = true,
 }: ProfilePhotoPageProps) => {
-  const navigate = useNavigate();
   const { profileData, setProfileData } = profileStore;
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
@@ -85,11 +84,14 @@ export const ProfilePhotoPage = ({
 
   return (
     <BaseLayout
-      leftElement={
-        <XMarkIcon
-          className="w-6 h-6 text-gray-600 cursor-pointer"
-          onClick={() => navigate(-1)}
-        />
+      leftElement={<XButton textColor="text-white" />}
+      rightElement={
+        existDeleteButton && (
+          <TrashIcon
+            className="w-6 h-6 text-white cursor-pointer hover:text-red-500 transition-colors drop-shadow-lg"
+            onClick={handleDeletePhoto}
+          />
+        )
       }
       padding="p-1"
       height="h-screen"
@@ -110,33 +112,26 @@ export const ProfilePhotoPage = ({
             alt="프로필 사진"
             className="w-full h-full object-contain"
           />
-          {existDeleteButton && (
-            <TrashIcon
-              className="w-6 h-6 text-gray-600 cursor-pointer absolute top-4 right-4 hover:text-red-500 transition-colors drop-shadow-lg"
-              onClick={handleDeletePhoto}
-            />
-          )}
-          <div className="absolute bottom-0 left-0 right-0 flex justify-between p-4 text-sm bg-gradient-to-t from-black/30 to-transparent">
-            <div
-              className={`text-white cursor-pointer ${
-                currentPhotoIndex === 0 ? 'opacity-50' : ''
-              }`}
-              onClick={handlePrevPhoto}
-            >
-              이전
-            </div>
-            <div
-              className={`text-white cursor-pointer ${
-                currentPhotoIndex ===
-                (profileData?.profilePhotos?.length || 1) - 1
-                  ? 'opacity-50'
-                  : ''
-              }`}
-              onClick={handleNextPhoto}
-            >
-              다음
-            </div>
-          </div>
+        </div>
+      </div>
+      <div className="absolute bottom-2 left-2 right-2 flex justify-between p-4 text-sm bg-gradient-to-t from-black/30 to-transparent">
+        <div
+          className={`text-white cursor-pointer ${
+            currentPhotoIndex === 0 ? 'opacity-50' : ''
+          }`}
+          onClick={handlePrevPhoto}
+        >
+          이전
+        </div>
+        <div
+          className={`text-white cursor-pointer ${
+            currentPhotoIndex === (profileData?.profilePhotos?.length || 1) - 1
+              ? 'opacity-50'
+              : ''
+          }`}
+          onClick={handleNextPhoto}
+        >
+          다음
         </div>
       </div>
     </BaseLayout>
