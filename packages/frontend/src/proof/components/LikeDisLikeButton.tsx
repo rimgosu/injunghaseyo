@@ -25,7 +25,7 @@ const LikeDisLikeButton: React.FC<LikeDisLikeButtonProps> = ({
     ) : (
       <InactiveIcon className={iconClassName} onClick={onClick} />
     )}
-    {showCount && <span className="text-white">{count}</span>}
+    {showCount && <span className="text-white drop-shadow-lg">{count}</span>}
   </div>
 );
 

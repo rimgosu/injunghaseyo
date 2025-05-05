@@ -52,7 +52,7 @@ export const ProofPage = () => {
       height="h-screen"
     >
       <main className="bg-black flex justify-center items-center h-screen">
-        <img src={proof?.url} />
+        <img src={proof?.url} className="w-full" />
         <section className="absolute bottom-4 right-4 flex flex-col gap-4">
           <LikeDisLikeButton
             isActive={proof?.isLiked ?? false}
@@ -62,7 +62,7 @@ export const ProofPage = () => {
             }
             ActiveIcon={HandThumbUpIconSolid}
             InactiveIcon={HandThumbUpIconOutline}
-            iconClassName="w-8 h-8 text-white cursor-pointer"
+            iconClassName="w-8 h-8 text-white cursor-pointer drop-shadow-lg"
           />
           <LikeDisLikeButton
             isActive={proof?.isDisliked ?? false}
@@ -71,7 +71,7 @@ export const ProofPage = () => {
             }
             ActiveIcon={HandThumbDownIconSolid}
             InactiveIcon={HandThumbDownIconOutline}
-            iconClassName="w-8 h-8 text-white cursor-pointer"
+            iconClassName="w-8 h-8 text-white cursor-pointer drop-shadow-lg"
             showCount={false}
           />
           <div className="flex items-center flex-col">
