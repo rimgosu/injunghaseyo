@@ -2,6 +2,7 @@ import { ProofCommentItem, TypeEnum1 } from '@rimgosu/libs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LikeDisLikeButton } from '../core/LikeDisLikeButton';
 import {
+  ChevronDownIcon,
   HandThumbDownIcon as HandThumbDownIconOutline,
   HandThumbUpIcon as HandThumbUpIconOutline,
 } from '@heroicons/react/24/outline';
@@ -12,6 +13,8 @@ import {
 import { useProofHook } from '../../hooks/useProofHook';
 import { getRelativeTime } from '../../../common/common.util';
 import { useCommentStore } from '../../stores/useCommentStore';
+import { useState } from 'react';
+import { CommentInputBox } from './CommentInputBox';
 
 type TProofCommentElementProps = {
   item: ProofCommentItem;
@@ -22,6 +25,7 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
   const { interactionComment } = useProofHook();
   const { proofId } = useParams();
   const { setComments, comments } = useCommentStore();
+  const [isReplyOpen, setIsReplyOpen] = useState(false);
 
   const handleInteraction = async (type: TypeEnum1) => {
     await interactionComment({
@@ -81,14 +85,14 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
           navigate(`/user/${item.user.id}/profile`);
         }}
       />
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 w-full">
         <div className="text-sm flex gap-2">
           <span className="font-bold">@{item.user.nickname}</span>
           <span className="text-gray-500">
             {getRelativeTime(item.createdAt)} 전
           </span>
         </div>
-        <div className="text-sm">{item.contents}</div>
+        <div className="text-sm whitespace-pre-wrap">{item.contents}</div>
         <div className="flex gap-2 items-center">
           <LikeDisLikeButton
             isActive={item.isLiked}
@@ -114,8 +118,25 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
             showCount={false}
             flexDirection="flex-row"
           />
-          <p className="text-gray-700 ml-1 cursor-pointer text-sm">답글</p>
+          <p
+            className="text-gray-700 ml-1 text-sm cursor-pointer hover:bg-gray-100 rounded-xl p-2"
+            onClick={() => {
+              setIsReplyOpen(!isReplyOpen);
+            }}
+          >
+            답글
+          </p>
         </div>
+        {item.childCommentCount > 0 && (
+          <div className="flex gap-1 items-center text-gray-700 cursor-pointer hover:bg-gray-300 px-3 py-2 rounded-2xl w-fit">
+            <p>답글</p>
+            <p>{item.childCommentCount}개</p>
+            <ChevronDownIcon className="w-5 h-5" />
+          </div>
+        )}
+        {isReplyOpen && (
+          <CommentInputBox mode="reply" parentCommentId={item.id} />
+        )}
       </div>
     </article>
   );

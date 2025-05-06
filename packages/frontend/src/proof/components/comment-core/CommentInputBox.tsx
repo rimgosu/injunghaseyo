@@ -3,7 +3,15 @@ import { useCheckSignInStore } from '../../../auth/stores/useCheckSignInStore';
 import { useProofHook } from '../../hooks/useProofHook';
 import { useParams } from 'react-router-dom';
 
-export const CommentInputBox = () => {
+type TCommentInputBoxProps = {
+  mode?: 'reply' | 'comment';
+  parentCommentId?: number;
+};
+
+export const CommentInputBox = ({
+  mode = 'comment',
+  parentCommentId,
+}: TCommentInputBoxProps) => {
   const [focused, setFocused] = useState<boolean>(false);
   const { checkSignInRes } = useCheckSignInStore();
   const { createComment, getComments } = useProofHook();
@@ -24,7 +32,10 @@ export const CommentInputBox = () => {
   }, [contents]);
 
   const handleCreateComment = async () => {
-    await createComment({ proofId: Number(proofId) }, { contents });
+    await createComment(
+      { proofId: Number(proofId), parentCommentId },
+      { contents },
+    );
     await getComments({ proofId: Number(proofId) });
     setContents('');
     setFocused(false);
@@ -40,7 +51,9 @@ export const CommentInputBox = () => {
   };
 
   return (
-    <div className="flex items-center justify-center gap-2 border-t border-gray-300 py-2 px-4">
+    <div
+      className={`flex items-center justify-center gap-2 border-gray-300 py-2 px-4 ${mode === 'comment' && 'border-t'}`}
+    >
       <img
         src={checkSignInRes.profilePhoto}
         className="w-12 h-12 rounded-full border border-gray-400"
