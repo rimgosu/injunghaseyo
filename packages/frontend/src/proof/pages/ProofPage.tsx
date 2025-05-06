@@ -133,7 +133,10 @@ export const ProofPage = () => {
           </section>
           <section className="bg-white w-full h-2/3 rounded-t-2xl p-6 shadow-2xl flex flex-col gap-2">
             <header className="flex justify-between">
-              <div className="text-xl">댓글</div>
+              <div className="text-xl flex gap-2">
+                <p>댓글</p>
+                <p>{proof?.commentCount}</p>
+              </div>
               <XMarkIcon
                 className="w-6 h-6 text-black cursor-pointer"
                 onClick={() => {

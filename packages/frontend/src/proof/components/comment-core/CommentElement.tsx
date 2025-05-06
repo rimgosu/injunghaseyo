@@ -89,7 +89,7 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
           </span>
         </div>
         <div className="text-sm">{item.contents}</div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <LikeDisLikeButton
             isActive={item.isLiked}
             count={item.likeCount}
@@ -114,7 +114,7 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
             showCount={false}
             flexDirection="flex-row"
           />
-          <p className="text-gray-700 ml-1 cursor-pointer">답글</p>
+          <p className="text-gray-700 ml-1 cursor-pointer text-sm">답글</p>
         </div>
       </div>
     </article>
