@@ -38,6 +38,11 @@ export interface GetCheckSignIn {
   userStatus: GetCheckSignInUserStatusEnum;
   /** 레벨업 시 노출 정보 */
   checkLevelUpResult: CheckLevelUpReturnType | null;
+  /**
+   * 프로필 사진
+   * @example "https://example.com/profile.jpg"
+   */
+  profilePhoto: string;
 }
 
 export interface ReissueAtkRes {
