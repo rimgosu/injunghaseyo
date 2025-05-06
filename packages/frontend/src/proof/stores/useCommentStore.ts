@@ -15,6 +15,6 @@ export const useCommentStore = create<TCommentStore>((set) => ({
   setComments: (comments) => set({ comments }),
   cursor: undefined,
   setCursor: (cursor) => set({ cursor }),
-  hasNextPage: false,
+  hasNextPage: true,
   setHasNextPage: (hasNextPage) => set({ hasNextPage }),
 }));

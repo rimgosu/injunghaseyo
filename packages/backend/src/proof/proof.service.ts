@@ -178,11 +178,6 @@ export class ProofService {
       where: { proofId, deletedAt: null, parentId: null },
       orderBy: [
         {
-          commentInteraction: {
-            _count: 'desc',
-          },
-        },
-        {
           createdAt: 'desc',
         },
       ],
