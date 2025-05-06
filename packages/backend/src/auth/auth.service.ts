@@ -62,11 +62,24 @@ export class AuthService {
   }
 
   async checkSignIn(user: User): Promise<GetCheckSignIn> {
-    const checkLevelUpResult = await this.characterRewardService.rewardSignIn(
-      user.id,
-    );
+    const [checkLevelUpResult, profilePhoto] = await Promise.all([
+      this.characterRewardService.rewardSignIn(user.id),
+      this.prisma.profilePhoto.findFirst({
+        where: {
+          userId: user.id,
+          deletedAt: null,
+        },
+        select: {
+          url: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 1,
+      }),
+    ]);
 
-    return new GetCheckSignIn(user, checkLevelUpResult);
+    return new GetCheckSignIn(user, checkLevelUpResult, profilePhoto?.url);
   }
 
   async verifyPassword(params: VerifyPasswordParams) {
