@@ -3,33 +3,41 @@ import { useCheckSignInStore } from '../../../auth/stores/useCheckSignInStore';
 import { useProofHook } from '../../hooks/useProofHook';
 import { useParams } from 'react-router-dom';
 
-export const CommentBox = () => {
+export const CommentInputBox = () => {
   const [focused, setFocused] = useState<boolean>(false);
   const { checkSignInRes } = useCheckSignInStore();
-  const { createComment } = useProofHook();
+  const { createComment, getComments } = useProofHook();
   const [contents, setContents] = useState<string>('');
   const { proofId } = useParams();
 
   const handleCreateComment = async () => {
     await createComment({ proofId: Number(proofId) }, { contents });
+    await getComments({ proofId: Number(proofId) });
     setContents('');
     setFocused(false);
   };
 
+  const pressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleCreateComment();
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-2 border-t border-gray-300 py-2 px-4 ">
       <img
         src={checkSignInRes.profilePhoto}
-        className="w-16 h-16 rounded-full border border-gray-400"
+        className="w-12 h-12 rounded-full border border-gray-400"
       />
       <div className="flex-1 flex flex-col gap-2">
         <input
           type="text"
-          className="flex-1 w-full border-b border-gray-400 focus:outline-none focus:border-black text-lg"
+          className="flex-1 w-full border-b border-gray-400 focus:outline-none focus:border-black text-md"
           onFocus={() => setFocused(true)}
           placeholder={!focused ? '댓글 추가..' : ''}
           value={contents}
           onChange={(e) => setContents(e.target.value)}
+          onKeyDown={pressEnter}
         />
         {focused && (
           <div className="flex justify-end gap-2 text-lg">

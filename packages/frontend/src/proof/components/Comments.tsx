@@ -1,15 +1,20 @@
-import { ProofCommentItem } from '@rimgosu/libs';
 import { useProofHook } from '../hooks/useProofHook';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useCommentStore } from '../stores/useCommentStore';
+import { CommentElement } from './comment-core/CommentElement';
 
 export const Comments = () => {
   const { proofId } = useParams();
   const { getComments } = useProofHook();
-  const [comments, setComments] = useState<ProofCommentItem[] | null>(null);
-
-  const [cursor, setCursor] = useState<number | undefined>(undefined);
-  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
+  const {
+    comments,
+    setComments,
+    cursor,
+    setCursor,
+    hasNextPage,
+    setHasNextPage,
+  } = useCommentStore();
 
   const fetchComments = async () => {
     const res = await getComments({
@@ -32,5 +37,11 @@ export const Comments = () => {
     fetchComments();
   }, []);
 
-  return <div>{comments?.map((c) => <div key={c.id}>{c.contents}</div>)}</div>;
+  return (
+    <div className="flex flex-col gap-6 mb-16 mt-8">
+      {comments.map((c) => (
+        <CommentElement item={c} />
+      ))}
+    </div>
+  );
 };

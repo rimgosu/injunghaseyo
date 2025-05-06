@@ -8,9 +8,11 @@ interface LikeDisLikeButtonProps {
   InactiveIcon: React.ElementType;
   iconClassName?: string;
   showCount?: boolean;
+  countIconClassName?: string;
+  flexDirection?: 'flex-row' | 'flex-col';
 }
 
-const LikeDisLikeButton: React.FC<LikeDisLikeButtonProps> = ({
+export const LikeDisLikeButton: React.FC<LikeDisLikeButtonProps> = ({
   isActive,
   count,
   onClick,
@@ -18,15 +20,17 @@ const LikeDisLikeButton: React.FC<LikeDisLikeButtonProps> = ({
   InactiveIcon,
   iconClassName = '',
   showCount = true,
+  countIconClassName = 'text-white',
+  flexDirection = 'flex-col',
 }) => (
-  <div className="flex items-center flex-col">
+  <div className={`flex items-center ${flexDirection}`}>
     {isActive ? (
       <ActiveIcon className={iconClassName} onClick={onClick} />
     ) : (
       <InactiveIcon className={iconClassName} onClick={onClick} />
     )}
-    {showCount && <span className="text-white drop-shadow-lg">{count}</span>}
+    {showCount && (
+      <span className={`${countIconClassName} drop-shadow-lg`}>{count}</span>
+    )}
   </div>
 );
-
-export default LikeDisLikeButton;

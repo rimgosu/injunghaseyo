@@ -17,16 +17,18 @@ import {
   HandThumbDownIcon as HandThumbDownIconSolid,
   HandThumbUpIcon as HandThumbUpIconSolid,
 } from '@heroicons/react/24/solid';
-import LikeDisLikeButton from '../components/LikeDisLikeButton';
+import { LikeDisLikeButton } from '../components/core/LikeDisLikeButton';
 import { ReportModal } from '../components/ReportModal';
 import { Comments } from '../components/Comments';
-import { CommentBox } from '../components/core/CommentBox';
+import { CommentInputBox } from '../components/comment-core/CommentInputBox';
+import { useCommentStore } from '../stores/useCommentStore';
 
 type ProofMode = 'view' | 'comment';
 
 export const ProofPage = () => {
   const { getProof, interactionProof } = useProofHook();
   const { proofId } = useParams();
+  const { setComments } = useCommentStore();
   const [proof, setProof] = useState<GetProofRes | null>(null);
   const [proofMode, setProofMode] = useState<ProofMode>('view');
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -54,6 +56,7 @@ export const ProofPage = () => {
     <BaseLayout
       rightElement={proofMode === 'view' && <XButton textColor="text-white" />}
       padding=""
+      overflowY=""
       height="h-screen"
     >
       {proofMode === 'view' && (
@@ -128,20 +131,23 @@ export const ProofPage = () => {
           >
             <img src={proof?.url} className="w-full h-full" />
           </section>
-          <section className="bg-white w-full h-2/3 rounded-t-2xl p-6 shadow-2xl flex flex-col gap-12">
+          <section className="bg-white w-full h-2/3 rounded-t-2xl p-6 shadow-2xl flex flex-col gap-2">
             <header className="flex justify-between">
               <div className="text-xl">댓글</div>
               <XMarkIcon
                 className="w-6 h-6 text-black cursor-pointer"
-                onClick={() => setProofMode('view')}
+                onClick={() => {
+                  setProofMode('view');
+                  setComments([]);
+                }}
               />
             </header>
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-8 overflow-y-auto scrollbar-hide">
               <Comments />
             </div>
           </section>
-          <section className="w-full flex flex-col p-4 bg-white gap-2">
-            <CommentBox />
+          <section className="absolute bottom-0 w-full flex flex-col bg-white gap-2">
+            <CommentInputBox />
           </section>
         </main>
       )}

@@ -12661,6 +12661,11 @@ synckit@^0.9.1:
     "@pkgr/core" "^0.1.0"
     tslib "^2.6.2"
 
+tailwind-scrollbar-hide@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/tailwind-scrollbar-hide/-/tailwind-scrollbar-hide-2.0.0.tgz#2d25a3ba383cc7ec1bd516a4416759bb3428f88b"
+  integrity sha512-lqiIutHliEiODwBRHy4G2+Tcayo2U7+3+4frBmoMETD72qtah+XhOk5XcPzC1nJvXhXUdfl2ajlMhUc2qC6CIg==
+
 tailwindcss@^3.0.2:
   version "3.4.16"
   resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.4.16.tgz#35a7c3030844d6000fc271878db4096b6a8d2ec9"
