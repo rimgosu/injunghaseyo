@@ -13,8 +13,8 @@ import {
 import { useProofHook } from '../../hooks/useProofHook';
 import { getRelativeTime } from '../../../common/common.util';
 import { useCommentStore } from '../../stores/useCommentStore';
-import { useState } from 'react';
 import { CommentInputBox } from './CommentInputBox';
+import { useState } from 'react';
 
 type TProofCommentElementProps = {
   item: ProofCommentItem;
@@ -119,7 +119,7 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
             flexDirection="flex-row"
           />
           <p
-            className="text-gray-700 ml-1 text-sm cursor-pointer hover:bg-gray-100 rounded-xl p-2"
+            className="text-gray-700 ml-1 text-sm cursor-pointer hover:bg-gray-100 rounded-2xl py-3 px-4"
             onClick={() => {
               setIsReplyOpen(!isReplyOpen);
             }}
@@ -128,7 +128,7 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
           </p>
         </div>
         {item.childCommentCount > 0 && (
-          <div className="flex gap-1 items-center text-gray-700 cursor-pointer hover:bg-gray-300 px-3 py-2 rounded-2xl w-fit">
+          <div className="flex gap-1 items-center text-gray-700 cursor-pointer hover:bg-green-100 px-3 py-2 rounded-2xl w-fit">
             <p>답글</p>
             <p>{item.childCommentCount}개</p>
             <ChevronDownIcon className="w-5 h-5" />
