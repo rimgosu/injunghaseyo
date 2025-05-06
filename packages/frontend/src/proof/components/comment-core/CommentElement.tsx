@@ -135,7 +135,11 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
           </div>
         )}
         {isReplyOpen && (
-          <CommentInputBox mode="reply" parentCommentId={item.id} />
+          <CommentInputBox
+            mode="reply"
+            parentCommentId={item.id}
+            onComplete={() => setIsReplyOpen(false)}
+          />
         )}
       </div>
     </article>

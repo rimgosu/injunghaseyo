@@ -7,11 +7,13 @@ import { useCommentStore } from '../../stores/useCommentStore';
 type TCommentInputBoxProps = {
   mode?: 'reply' | 'comment';
   parentCommentId?: number;
+  onComplete?: () => void;
 };
 
 export const CommentInputBox = ({
   mode = 'comment',
   parentCommentId,
+  onComplete,
 }: TCommentInputBoxProps) => {
   const [focused, setFocused] = useState<boolean>(false);
   const { checkSignInRes } = useCheckSignInStore();
@@ -46,6 +48,7 @@ export const CommentInputBox = ({
 
     setContents('');
     setFocused(false);
+    onComplete && onComplete();
   };
 
   const pressEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
