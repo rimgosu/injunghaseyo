@@ -1,5 +1,5 @@
-import { ProofCommentItem } from '@rimgosu/libs';
-import { useNavigate } from 'react-router-dom';
+import { ProofCommentItem, TypeEnum1 } from '@rimgosu/libs';
+import { useNavigate, useParams } from 'react-router-dom';
 import { LikeDisLikeButton } from '../core/LikeDisLikeButton';
 import {
   HandThumbDownIcon as HandThumbDownIconOutline,
@@ -10,6 +10,8 @@ import {
   HandThumbUpIcon as HandThumbUpIconSolid,
 } from '@heroicons/react/24/solid';
 import { useProofHook } from '../../hooks/useProofHook';
+import { getRelativeTime } from '../../../common/common.util';
+import { useCommentStore } from '../../stores/useCommentStore';
 
 type TProofCommentElementProps = {
   item: ProofCommentItem;
@@ -17,7 +19,57 @@ type TProofCommentElementProps = {
 
 export const CommentElement = ({ item }: TProofCommentElementProps) => {
   const navigate = useNavigate();
-  const { createComment } = useProofHook();
+  const { interactionComment } = useProofHook();
+  const { proofId } = useParams();
+  const { setComments, comments } = useCommentStore();
+
+  const handleInteraction = async (type: TypeEnum1) => {
+    await interactionComment({
+      commentId: item.id,
+      proofId: Number(proofId),
+      type,
+    });
+    setComments(
+      comments.map((c) => {
+        if (c.id !== item.id) return c;
+
+        // 같은 타입을 다시 클릭한 경우 (삭제)
+        if (
+          (type === TypeEnum1.LIKE && c.isLiked) ||
+          (type === TypeEnum1.DISLIKE && c.isDisliked)
+        ) {
+          return {
+            ...c,
+            isLiked: false,
+            isDisliked: false,
+            likeCount: type === TypeEnum1.LIKE ? c.likeCount - 1 : c.likeCount,
+          };
+        }
+
+        // 다른 타입으로 변경하는 경우
+        if (
+          (type === TypeEnum1.LIKE && c.isDisliked) ||
+          (type === TypeEnum1.DISLIKE && c.isLiked)
+        ) {
+          return {
+            ...c,
+            isLiked: type === TypeEnum1.LIKE,
+            isDisliked: type === TypeEnum1.DISLIKE,
+            likeCount:
+              type === TypeEnum1.LIKE ? c.likeCount + 1 : c.likeCount - 1,
+          };
+        }
+
+        // 처음 인터랙션 하는 경우
+        return {
+          ...c,
+          isLiked: type === TypeEnum1.LIKE,
+          isDisliked: type === TypeEnum1.DISLIKE,
+          likeCount: type === TypeEnum1.LIKE ? c.likeCount + 1 : c.likeCount,
+        };
+      }),
+    );
+  };
 
   return (
     <article key={item.id} className="flex gap-4">
@@ -32,7 +84,9 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
       <div className="flex flex-col gap-1">
         <div className="text-sm flex gap-2">
           <span className="font-bold">@{item.user.nickname}</span>
-          <span className="text-gray-500">{item.createdAt}</span>
+          <span className="text-gray-500">
+            {getRelativeTime(item.createdAt)} 전
+          </span>
         </div>
         <div className="text-sm">{item.contents}</div>
         <div className="flex gap-2">
@@ -40,7 +94,7 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
             isActive={item.isLiked}
             count={item.likeCount}
             onClick={() => {
-              console.log('like');
+              handleInteraction(TypeEnum1.LIKE);
             }}
             ActiveIcon={HandThumbUpIconSolid}
             InactiveIcon={HandThumbUpIconOutline}
@@ -51,7 +105,7 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
           <LikeDisLikeButton
             isActive={item.isDisliked}
             onClick={() => {
-              console.log('dislike');
+              handleInteraction(TypeEnum1.DISLIKE);
             }}
             ActiveIcon={HandThumbDownIconSolid}
             InactiveIcon={HandThumbDownIconOutline}

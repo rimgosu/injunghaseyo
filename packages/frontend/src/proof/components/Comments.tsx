@@ -40,7 +40,7 @@ export const Comments = () => {
   return (
     <div className="flex flex-col gap-6 mb-16 mt-8">
       {comments.map((c) => (
-        <CommentElement item={c} />
+        <CommentElement key={c.id} item={c} />
       ))}
     </div>
   );
