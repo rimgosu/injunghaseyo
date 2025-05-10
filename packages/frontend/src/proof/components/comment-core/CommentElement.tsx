@@ -139,6 +139,7 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
             mode="reply"
             parentCommentId={item.id}
             onComplete={() => setIsReplyOpen(false)}
+            isFocused={true}
           />
         )}
       </div>

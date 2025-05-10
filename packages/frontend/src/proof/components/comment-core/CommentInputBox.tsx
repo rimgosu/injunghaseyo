@@ -9,15 +9,17 @@ type TCommentInputBoxProps = {
   mode?: 'reply' | 'comment';
   parentCommentId?: number;
   onComplete?: () => void;
+  isFocused?: boolean;
 };
 
 export const CommentInputBox = ({
   mode = 'comment',
   parentCommentId,
   onComplete,
+  isFocused = false,
 }: TCommentInputBoxProps) => {
   const { proofId } = useParams();
-  const [focused, setFocused] = useState<boolean>(false);
+  const [focused, setFocused] = useState<boolean>(isFocused);
   const { checkSignInRes } = useCheckSignInStore();
   const { createComment, getComments } = useProofHook();
   const { proof, setProof } = useProofStore(Number(proofId));
@@ -103,6 +105,7 @@ export const CommentInputBox = ({
               onClick={() => {
                 setFocused(false);
                 setContents('');
+                isFocused && onComplete && onComplete();
               }}
             >
               취소

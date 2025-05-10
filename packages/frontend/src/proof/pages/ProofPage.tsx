@@ -3,7 +3,7 @@ import { useProofHook } from '../hooks/useProofHook';
 import { useEffect, useState } from 'react';
 import { BaseLayout } from '../../common/BaseLayout';
 import { XButton } from '../../common/components/XButton';
-import { GetProofRes, TypeEnum } from '@rimgosu/libs';
+import { TypeEnum } from '@rimgosu/libs';
 import {
   ChatBubbleBottomCenterIcon,
   FlagIcon,
@@ -21,7 +21,6 @@ import { LikeDisLikeButton } from '../components/core/LikeDisLikeButton';
 import { ReportModal } from '../components/ReportModal';
 import { Comments } from '../components/Comments';
 import { CommentInputBox } from '../components/comment-core/CommentInputBox';
-import { useCommentStore } from '../stores/useCommentStore';
 import { useProofStore } from '../stores/useProofStore';
 
 type ProofMode = 'view' | 'comment';
@@ -29,7 +28,6 @@ type ProofMode = 'view' | 'comment';
 export const ProofPage = () => {
   const { getProof, interactionProof } = useProofHook();
   const { proofId } = useParams();
-  const { setComments } = useCommentStore(Number(proofId));
   const { proof, setProof } = useProofStore(Number(proofId));
   const [proofMode, setProofMode] = useState<ProofMode>('view');
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
