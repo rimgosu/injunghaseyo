@@ -127,7 +127,9 @@ export const ProofPage = () => {
         <main className="bg-black flex justify-center items-center h-screen flex-col">
           <section
             className="h-1/3 cursor-pointer"
-            onClick={() => setProofMode('view')}
+            onClick={() => {
+              setProofMode('view');
+            }}
           >
             <img src={proof?.url} className="w-full h-full" />
           </section>
@@ -141,7 +143,6 @@ export const ProofPage = () => {
                 className="w-6 h-6 text-black cursor-pointer"
                 onClick={() => {
                   setProofMode('view');
-                  setComments([]);
                 }}
               />
             </header>
