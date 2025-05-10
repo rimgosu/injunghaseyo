@@ -29,6 +29,7 @@ import { GetRepliesResDto } from './dtos/get-replies-res.dto';
 import { InteractionCommentQuery } from './dtos/interaction-comment-query.dto';
 import { UpdateCommentBody } from './dtos/update-comment-body.dto';
 import { GetProofQuery } from './dtos/get-proof-query.dto';
+import { CreateCommentResDto } from './dtos/create-comment-res.dto';
 
 @Controller('proofs')
 export class ProofController {
@@ -119,12 +120,17 @@ export class ProofController {
   @Post(':proofId/comments')
   @UseGuards(AtkGuard)
   @ApiBearerAuth('jwt')
+  @ApiResponse({
+    status: 200,
+    type: CreateCommentResDto,
+    description: '방금 생성된 댓글 정보',
+  })
   async createComment(
     @Param('proofId') proofId: number,
     @GetUser() user: User,
     @Body() body: CreateCommentBody,
     @Query() query: CreateCommentQuery,
-  ) {
+  ): Promise<CreateCommentResDto> {
     return this.proofService.createComment(proofId, user, body, query);
   }
 

@@ -4,27 +4,35 @@ import { useProofHook } from '../../hooks/useProofHook';
 import { useParams } from 'react-router-dom';
 import { useCommentStore } from '../../stores/useCommentStore';
 import { useProofStore } from '../../stores/useProofStore';
+import { useReplyStore } from '../../stores/useReplyStore';
 
 type TCommentInputBoxProps = {
-  mode?: 'reply' | 'comment';
+  mode?: 'reply' | 'comment' | 'reply-to-reply';
+  commentId?: number;
   parentCommentId?: number;
+  nickname?: string;
   onComplete?: () => void;
   isFocused?: boolean;
 };
 
 export const CommentInputBox = ({
   mode = 'comment',
+  commentId,
   parentCommentId,
+  nickname,
   onComplete,
   isFocused = false,
 }: TCommentInputBoxProps) => {
   const { proofId } = useParams();
   const [focused, setFocused] = useState<boolean>(isFocused);
   const { checkSignInRes } = useCheckSignInStore();
-  const { createComment, getComments } = useProofHook();
+  const { createComment } = useProofHook();
   const { proof, setProof } = useProofStore(Number(proofId));
-  const { setComments } = useCommentStore(Number(proofId));
-  const [contents, setContents] = useState<string>('');
+  const replyStore = commentId ? useReplyStore(commentId) : null;
+  const { comments, setComments } = useCommentStore(Number(proofId));
+  const [contents, setContents] = useState<string>(
+    nickname ? `@${nickname} ` : '',
+  );
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const adjustTextareaHeight = () => {
@@ -40,14 +48,30 @@ export const CommentInputBox = ({
   }, [contents]);
 
   const handleCreateComment = async () => {
-    await createComment(
-      { proofId: Number(proofId), parentCommentId },
+    const res = await createComment(
+      {
+        proofId: Number(proofId),
+        parentCommentId:
+          mode === 'reply-to-reply'
+            ? parentCommentId
+            : mode === 'reply'
+              ? commentId
+              : undefined,
+      },
       { contents },
     );
-    const res = await getComments({ proofId: Number(proofId), take: 15 });
+
+    console.log('res:', res.data);
+    console.log('replyStore:', replyStore?.replies);
+    console.log('comments:', comments);
 
     if (res.data) {
-      setComments(res.data.items);
+      if (replyStore) {
+        const { setReplies, replies } = replyStore;
+        setReplies([...replies, res.data]);
+      } else {
+        setComments([res.data, ...comments]);
+      }
       proof &&
         setProof({
           ...proof,

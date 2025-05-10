@@ -1,5 +1,6 @@
 import {
   CreateCommentBody,
+  CreateCommentResDto,
   GetCommentsResDto,
   GetProofRes,
   GetProofsRes,
@@ -20,9 +21,12 @@ export const useProofHook = () => {
   const interactionComment = async (
     query: ProofControllerInteractionCommentParams,
   ): Promise<ApiResponse<any>> => {
-    return await ApiSingleton.getInstance().proofs.proofControllerInteractionComment(
-      query,
-    );
+    return await ApiSingleton.getInstance()
+      .proofs.proofControllerInteractionComment(query)
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
   };
 
   const getReplies = async (
@@ -75,7 +79,7 @@ export const useProofHook = () => {
   const createComment = async (
     query: ProofControllerCreateCommentParams,
     body: CreateCommentBody,
-  ): Promise<ApiResponse<any>> => {
+  ): Promise<ApiResponse<CreateCommentResDto>> => {
     return await ApiSingleton.getInstance()
       .proofs.proofControllerCreateComment(query, body)
       .then((res) => ({ data: res.data }))
