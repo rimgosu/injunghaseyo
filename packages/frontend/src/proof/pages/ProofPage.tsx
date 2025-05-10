@@ -28,7 +28,7 @@ type ProofMode = 'view' | 'comment';
 export const ProofPage = () => {
   const { getProof, interactionProof } = useProofHook();
   const { proofId } = useParams();
-  const { setComments } = useCommentStore();
+  const { setComments } = useCommentStore(Number(proofId));
   const [proof, setProof] = useState<GetProofRes | null>(null);
   const [proofMode, setProofMode] = useState<ProofMode>('view');
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);

@@ -1,5 +1,5 @@
 import { ProofCommentItem } from '@rimgosu/libs';
-import { create } from 'zustand';
+import { createStore, useStore } from 'zustand';
 
 type TCommentStore = {
   comments: ProofCommentItem[];
@@ -10,11 +10,23 @@ type TCommentStore = {
   setHasNextPage: (hasNextPage: boolean) => void;
 };
 
-export const useCommentStore = create<TCommentStore>((set) => ({
-  comments: [],
-  setComments: (comments) => set({ comments }),
-  cursor: undefined,
-  setCursor: (cursor) => set({ cursor }),
-  hasNextPage: true,
-  setHasNextPage: (hasNextPage) => set({ hasNextPage }),
-}));
+const storeMap = new Map<number, ReturnType<typeof createCommentStore>>();
+
+const createCommentStore = () =>
+  createStore<TCommentStore>((set) => ({
+    comments: [],
+    setComments: (comments) => set({ comments }),
+    cursor: undefined,
+    setCursor: (cursor) => set({ cursor }),
+    hasNextPage: true,
+    setHasNextPage: (hasNextPage) => set({ hasNextPage }),
+  }));
+
+export const useCommentStore = (proofId: number) => {
+  if (!storeMap.has(proofId)) {
+    storeMap.set(proofId, createCommentStore());
+  }
+
+  const store = storeMap.get(proofId) as ReturnType<typeof createCommentStore>;
+  return useStore(store);
+};

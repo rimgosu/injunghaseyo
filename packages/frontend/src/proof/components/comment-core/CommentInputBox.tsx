@@ -15,12 +15,12 @@ export const CommentInputBox = ({
   parentCommentId,
   onComplete,
 }: TCommentInputBoxProps) => {
+  const { proofId } = useParams();
   const [focused, setFocused] = useState<boolean>(false);
   const { checkSignInRes } = useCheckSignInStore();
   const { createComment, getComments } = useProofHook();
-  const { setComments } = useCommentStore();
+  const { setComments } = useCommentStore(Number(proofId));
   const [contents, setContents] = useState<string>('');
-  const { proofId } = useParams();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const adjustTextareaHeight = () => {

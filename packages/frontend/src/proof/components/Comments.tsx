@@ -14,7 +14,7 @@ export const Comments = () => {
     setCursor,
     hasNextPage,
     setHasNextPage,
-  } = useCommentStore();
+  } = useCommentStore(Number(proofId));
   const observerTarget = useRef<HTMLDivElement>(null);
 
   const fetchComments = async () => {

@@ -24,7 +24,7 @@ export const CommentElement = ({ item }: TProofCommentElementProps) => {
   const navigate = useNavigate();
   const { interactionComment } = useProofHook();
   const { proofId } = useParams();
-  const { setComments, comments } = useCommentStore();
+  const { setComments, comments } = useCommentStore(Number(proofId));
   const [isReplyOpen, setIsReplyOpen] = useState(false);
 
   const handleInteraction = async (type: TypeEnum1) => {
