@@ -3,6 +3,7 @@ import { useCheckSignInStore } from '../../../auth/stores/useCheckSignInStore';
 import { useProofHook } from '../../hooks/useProofHook';
 import { useParams } from 'react-router-dom';
 import { useCommentStore } from '../../stores/useCommentStore';
+import { useProofStore } from '../../stores/useProofStore';
 
 type TCommentInputBoxProps = {
   mode?: 'reply' | 'comment';
@@ -19,6 +20,7 @@ export const CommentInputBox = ({
   const [focused, setFocused] = useState<boolean>(false);
   const { checkSignInRes } = useCheckSignInStore();
   const { createComment, getComments } = useProofHook();
+  const { proof, setProof } = useProofStore(Number(proofId));
   const { setComments } = useCommentStore(Number(proofId));
   const [contents, setContents] = useState<string>('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -44,6 +46,11 @@ export const CommentInputBox = ({
 
     if (res.data) {
       setComments(res.data.items);
+      proof &&
+        setProof({
+          ...proof,
+          commentCount: proof?.commentCount + 1,
+        });
     }
 
     setContents('');

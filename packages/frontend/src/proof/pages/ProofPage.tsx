@@ -22,6 +22,7 @@ import { ReportModal } from '../components/ReportModal';
 import { Comments } from '../components/Comments';
 import { CommentInputBox } from '../components/comment-core/CommentInputBox';
 import { useCommentStore } from '../stores/useCommentStore';
+import { useProofStore } from '../stores/useProofStore';
 
 type ProofMode = 'view' | 'comment';
 
@@ -29,7 +30,7 @@ export const ProofPage = () => {
   const { getProof, interactionProof } = useProofHook();
   const { proofId } = useParams();
   const { setComments } = useCommentStore(Number(proofId));
-  const [proof, setProof] = useState<GetProofRes | null>(null);
+  const { proof, setProof } = useProofStore(Number(proofId));
   const [proofMode, setProofMode] = useState<ProofMode>('view');
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -133,7 +134,7 @@ export const ProofPage = () => {
           >
             <img src={proof?.url} className="w-full h-full" />
           </section>
-          <section className="bg-white w-full h-2/3 rounded-t-2xl p-6 shadow-2xl flex flex-col gap-2">
+          <section className="bg-white w-full h-2/3 p-6 shadow-2xl flex flex-col gap-2 border-t border-gray-500">
             <header className="flex justify-between">
               <div className="text-xl flex gap-2">
                 <p>댓글</p>
