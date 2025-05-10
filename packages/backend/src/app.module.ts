@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CacheModule } from '@nestjs/cache-manager';
@@ -14,6 +14,7 @@ import { UserModule } from './user/user.module';
 import { S3Module } from './s3/s3.module';
 import { CharacterModule } from './character/character.module';
 import { ProofModule } from './proof/proof.module';
+import { DuplicateRequestMiddleware } from './common/duplicate-request.middleware';
 
 @Module({
   imports: [
@@ -49,4 +50,8 @@ import { ProofModule } from './proof/proof.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(DuplicateRequestMiddleware).forRoutes('*');
+  }
+}
