@@ -11,11 +11,8 @@ export const TodayGroupTopNavBar = ({
   setSelected,
 }: TodayGroupTopNavBarProps) => {
   return (
-    <div className="flex flex-col w-full gap-4">
-      <div className="flex justify-end p-1">
-        <XButton />
-      </div>
-      <div className="grid grid-cols-3 gap-3">
+    <div className="flex w-full gap-4 items-center">
+      <div className="grid grid-cols-3 gap-3 w-full">
         <button
           className={`rounded-lg border border-gray-300 px-4 py-3 text-center ${
             selected === TodayGroupTopNavBarEnum.PROOF
@@ -46,6 +43,9 @@ export const TodayGroupTopNavBar = ({
         >
           갤러리
         </button>
+      </div>
+      <div className="flex justify-end p-1">
+        <XButton />
       </div>
     </div>
   );
