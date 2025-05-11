@@ -135,8 +135,6 @@ export class CharacterRewardService {
       characterInfo: updatedMyCharacter.character.characterInfo,
     });
 
-    console.log('checkLevelUpResult', checkLevelUpResult);
-
     if (!checkLevelUpResult.levelUp) return;
 
     return checkLevelUpResult;

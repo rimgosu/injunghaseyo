@@ -164,6 +164,11 @@ export interface GetGroupRes {
   tags: string[];
   /** 참여자 목록 */
   participants: Participant[];
+  /**
+   * 내가 만든 것인지 여부
+   * @example true
+   */
+  canMutation: boolean;
 }
 
 export interface Proof {

@@ -50,8 +50,6 @@ export class GetGroupRes extends IntersectionType(
     }));
     this.tags = group.groupTagMap.map((tagMap) => tagMap.tag.name);
     this.groupPhoto = group.photo;
-    console.log('group.join:', group.join);
-
     this.canMutation =
       group.join.find((j) => j.joinRole === JoinRole.HOST).userId === user.id;
   }

@@ -40,7 +40,6 @@ export const setupSwagger = (app: INestApplication): void => {
     }
     const outputPath = path.join(sdkDir, 'swagger.json');
     fs.writeFileSync(outputPath, JSON.stringify(document, null, 2), 'utf8');
-    console.log('Swagger JSON generated at:', outputPath);
     app.close();
     process.exit(0);
   }

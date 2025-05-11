@@ -9,8 +9,6 @@ import {
 @ValidatorConstraint({ name: 'stringMatch', async: false })
 export class StringMatchConstraint implements ValidatorConstraintInterface {
   validate(auth: string) {
-    console.log(auth);
-
     return auth === 'tlaznd@0801';
   }
 

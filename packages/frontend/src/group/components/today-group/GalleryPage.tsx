@@ -17,8 +17,6 @@ const ImgByProofType = ({
   proof: ProofForGalleryProofTypeEnum;
   proofPhoto?: string | null;
 }) => {
-  console.log('proof:', proof, 'proofPhoto:', proofPhoto);
-
   switch (proof) {
     case ProofForGalleryProofTypeEnum.UPLOAD_PHOTO:
       if (!proofPhoto) {

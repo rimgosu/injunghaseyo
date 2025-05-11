@@ -49,8 +49,6 @@ export const CommentElement = ({
       targetItem: ProofCommentItem | ProofReplyItem,
       type: TypeEnum1,
     ) => {
-      console.log(targetItem, type);
-
       // 같은 타입을 다시 클릭한 경우 (삭제)
       if (
         (type === TypeEnum1.LIKE && targetItem.isLiked) ||
