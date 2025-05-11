@@ -55,7 +55,9 @@ export const BaseLayout = ({
               <p className="text-xl">인증하세요</p>
             </div>
           )}
-          {searchBar && <div className="w-2/3">{searchBar}</div>}
+          {searchBar && (
+            <div className="w-2/3 flex justify-center pr-4">{searchBar}</div>
+          )}
           {leftElement && (
             <div className="absolute top-0 left-0 p-6">{leftElement}</div>
           )}
