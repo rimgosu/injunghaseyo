@@ -572,6 +572,11 @@ export interface UserForComment {
 
 export interface CreateCommentResDto {
   /**
+   * 내가 만든 것인지 여부
+   * @example true
+   */
+  isMine: boolean;
+  /**
    * 댓글 id
    * @example 1
    */
@@ -618,6 +623,11 @@ export interface CreateCommentResDto {
 }
 
 export interface ProofCommentItem {
+  /**
+   * 내가 만든 것인지 여부
+   * @example true
+   */
+  isMine: boolean;
   /**
    * 댓글 id
    * @example 1
@@ -682,6 +692,11 @@ export interface UpdateCommentBody {
 }
 
 export interface ProofReplyItem {
+  /**
+   * 내가 만든 것인지 여부
+   * @example true
+   */
+  isMine: boolean;
   /**
    * 댓글 id
    * @example 1

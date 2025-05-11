@@ -166,13 +166,13 @@ export class ProofService {
     const items = hasNextPage ? replies.slice(0, -1) : replies;
     const nextCursor = hasNextPage ? replies[replies.length - 1].id : undefined;
 
-    return new GetRepliesResDto(items, hasNextPage, nextCursor);
+    return new GetRepliesResDto(items, hasNextPage, nextCursor, user);
   }
 
   async getComments(
     proofId: number,
-    user: User | undefined,
     query: BaseCursorPaginationQueryDto,
+    user?: User,
   ) {
     const { take, cursor } = query;
     const comments = await this.prisma.proofComment.findMany({
@@ -193,7 +193,7 @@ export class ProofService {
       ? comments[comments.length - 1].id
       : undefined;
 
-    return new GetCommentsResDto(items, hasNextPage, nextCursor);
+    return new GetCommentsResDto(items, hasNextPage, nextCursor, user);
   }
 
   private async checkProof(proofId: number) {

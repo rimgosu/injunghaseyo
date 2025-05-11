@@ -146,11 +146,11 @@ export class ProofController {
     description: '댓글 조회',
   })
   async getComments(
-    @GetOptionalUser() user: User | undefined,
     @Param('proofId') proofId: number,
     @Query() query: BaseCursorPaginationQueryDto,
+    @GetOptionalUser() user?: User,
   ): Promise<GetCommentsResDto> {
-    return this.proofService.getComments(proofId, user, query);
+    return this.proofService.getComments(proofId, query, user);
   }
 
   /**
@@ -203,7 +203,7 @@ export class ProofController {
     @Param('proofId') proofId: number,
     @Param('commentId') commentId: number,
     @Query() query: BaseCursorPaginationQueryDto,
-  ) {
+  ): Promise<GetRepliesResDto> {
     return this.proofService.getReplies(proofId, commentId, user, query);
   }
 

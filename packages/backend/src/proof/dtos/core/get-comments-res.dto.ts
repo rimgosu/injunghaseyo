@@ -1,7 +1,8 @@
 import { BaseCursorPaginationResDto } from '@/common/base-cursor-pagination-res.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import { ProofCommentWithInteraction } from '../../utils/types';
-import { InteractionType } from '@prisma/client';
+import { InteractionType, User } from '@prisma/client';
+import { BaseResDto } from '@/common/base-res.dto';
 
 class UserForComment {
   @ApiProperty({
@@ -26,7 +27,7 @@ class UserForComment {
   profilePhotoUrl: string;
 }
 
-export class ProofCommentItem {
+export class ProofCommentItem extends PickType(BaseResDto, ['canMutation']) {
   @ApiProperty({
     description: '댓글 id',
     example: 1,
@@ -89,7 +90,8 @@ export class ProofCommentItem {
   })
   user: UserForComment;
 
-  constructor(item: ProofCommentWithInteraction) {
+  constructor(item: ProofCommentWithInteraction, user?: User) {
+    super();
     this.id = item.id;
     this.contents = item.contents;
     this.childCommentCount = item._count.replies;
@@ -111,6 +113,8 @@ export class ProofCommentItem {
         (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
       )[0].url,
     };
+
+    this.canMutation = user?.id === item.user.id;
   }
 }
 
@@ -125,9 +129,10 @@ export class GetCommentsResDto extends BaseCursorPaginationResDto<ProofCommentIt
     items: ProofCommentWithInteraction[],
     hasNextPage: boolean,
     nextCursor: number,
+    user?: User,
   ) {
     const proofCommentItems = items.map((item) => {
-      return new ProofCommentItem(item);
+      return new ProofCommentItem(item, user);
     });
 
     super(proofCommentItems, hasNextPage, nextCursor);

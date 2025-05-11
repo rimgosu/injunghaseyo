@@ -2,10 +2,10 @@ import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { ProofCommentItem } from './core/get-comments-res.dto';
 import { BaseCursorPaginationResDto } from '@/common/base-cursor-pagination-res.dto';
 import { ProofCommentWithInteraction } from '../utils/types';
-import { InteractionType } from '@prisma/client';
+import { InteractionType, User } from '@prisma/client';
 
 class ProofReplyItem extends OmitType(ProofCommentItem, ['childCommentCount']) {
-  constructor(item: ProofCommentWithInteraction) {
+  constructor(item: ProofCommentWithInteraction, user?: User) {
     super();
     this.id = item.id;
     this.contents = item.contents;
@@ -27,6 +27,7 @@ class ProofReplyItem extends OmitType(ProofCommentItem, ['childCommentCount']) {
         (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
       )[0].url,
     };
+    this.canMutation = user?.id === item.user.id;
   }
 }
 
@@ -41,9 +42,10 @@ export class GetRepliesResDto extends BaseCursorPaginationResDto<ProofReplyItem>
     items: ProofCommentWithInteraction[],
     hasNextPage: boolean,
     nextCursor: number,
+    user?: User,
   ) {
     const proofReplyItems = items.map((item) => {
-      return new ProofReplyItem(item);
+      return new ProofReplyItem(item, user);
     });
 
     super(proofReplyItems, hasNextPage, nextCursor);
