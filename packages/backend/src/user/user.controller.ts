@@ -4,6 +4,8 @@ import {
   Get,
   Param,
   Post,
+  Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -23,10 +25,21 @@ import { GetProfileResDto } from './dtos/get-profile-res.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DeleteProfilePhotoParam } from './dtos/delete-profile-photo-param.dto';
 import { GetOtherProfileResDto } from './dtos/get-other-profile-res.dto';
+import { UpdateUserQuery } from './dtos/update-user-query.dto';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  /**
+   * @description 유저 정보를 수정합니다.
+   */
+  @Put()
+  @UseGuards(AtkGuard)
+  @ApiBearerAuth('jwt')
+  async updateUser(@GetUser() user: User, @Query() query: UpdateUserQuery) {
+    return this.userService.updateUser(user, query);
+  }
 
   /**
    * @description 유저 프로필을 조회합니다.

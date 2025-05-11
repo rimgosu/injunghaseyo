@@ -11,6 +11,7 @@ import { USER_FOR_PROFILE } from './utils/types';
 import { S3Service } from '@/s3/s3.service';
 import { DeleteProfilePhotoParam } from './dtos/delete-profile-photo-param.dto';
 import { GetOtherProfileResDto } from './dtos/get-other-profile-res.dto';
+import { UpdateUserQuery } from './dtos/update-user-query.dto';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,17 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly s3: S3Service,
   ) {}
+
+  async updateUser(user: User, query: UpdateUserQuery) {
+    const { introduction } = query;
+
+    return await this.prisma.user.update({
+      where: { id: user.id, deletedAt: null },
+      data: {
+        introduction,
+      },
+    });
+  }
 
   /**
    * @description 다른 유저의 프로필을 조회합니다.
