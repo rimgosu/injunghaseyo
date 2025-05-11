@@ -187,7 +187,7 @@ export const CommentElement = ({
         )}
         {isReplyInputOpen && (
           <CommentInputBox
-            mode={mode === 'reply' ? 'reply' : 'reply-to-reply'}
+            mode={mode === 'reply' ? 'reply-to-reply' : 'reply'}
             commentId={item.id}
             parentCommentId={parentCommentId}
             nickname={mode === 'reply' ? item.user.nickname : undefined}

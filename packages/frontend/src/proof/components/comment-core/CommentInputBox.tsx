@@ -28,7 +28,11 @@ export const CommentInputBox = ({
   const { checkSignInRes } = useCheckSignInStore();
   const { createComment } = useProofHook();
   const { proof, setProof } = useProofStore(Number(proofId));
-  const replyStore = commentId ? useReplyStore(commentId) : null;
+  const replyStore = parentCommentId
+    ? useReplyStore(parentCommentId)
+    : commentId
+      ? useReplyStore(commentId)
+      : null;
   const { comments, setComments } = useCommentStore(Number(proofId));
   const [contents, setContents] = useState<string>(
     nickname ? `@${nickname} ` : '',
@@ -48,6 +52,10 @@ export const CommentInputBox = ({
   }, [contents]);
 
   const handleCreateComment = async () => {
+    console.log('mode:', mode);
+    console.log('parentCommentId:', parentCommentId);
+    console.log('commentId:', commentId);
+
     const res = await createComment(
       {
         proofId: Number(proofId),
@@ -61,14 +69,15 @@ export const CommentInputBox = ({
       { contents },
     );
 
-    console.log('res:', res.data);
-    console.log('replyStore:', replyStore?.replies);
-    console.log('comments:', comments);
-
     if (res.data) {
       if (replyStore) {
         const { setReplies, replies } = replyStore;
         setReplies([...replies, res.data]);
+        comments.map((c) => {
+          if (c.id === parentCommentId) {
+            c.childCommentCount = c.childCommentCount + 1;
+          }
+        });
       } else {
         setComments([res.data, ...comments]);
       }
