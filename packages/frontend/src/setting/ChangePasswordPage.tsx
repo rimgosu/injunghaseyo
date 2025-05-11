@@ -56,7 +56,7 @@ export const ChangePasswordPage = () => {
   };
 
   return (
-    <BaseLayout title="비밀번호 변경" rightElement={<XButton />}>
+    <BaseLayout isMainLogo rightElement={<XButton />}>
       <div className="flex flex-col gap-12">
         <Input
           label="현재 비밀 번호"

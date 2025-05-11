@@ -27,6 +27,7 @@ import { GetRepliesResDto } from './dtos/get-replies-res.dto';
 import { InteractionCommentQuery } from './dtos/interaction-comment-query.dto';
 import { UpdateCommentBody } from './dtos/update-comment-body.dto';
 import { GetProofQuery } from './dtos/get-proof-query.dto';
+import { CreateCommentResDto } from './dtos/create-comment-res.dto';
 
 @Injectable()
 export class ProofService {
@@ -253,14 +254,24 @@ export class ProofService {
       this.checkParentComment({ parentCommentId, proofId }),
     ]);
 
-    return await this.prisma.proofComment.create({
-      data: {
-        proofId,
-        userId: user.id,
-        contents,
-        ...(parentCommentId && { parentId: parentCommentId }),
-      },
-    });
+    const [proofComment, userWithPhoto] = await Promise.all([
+      this.prisma.proofComment.create({
+        data: {
+          proofId,
+          userId: user.id,
+          contents,
+          ...(parentCommentId && { parentId: parentCommentId }),
+        },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: user.id },
+        include: {
+          profilePhoto: true,
+        },
+      }),
+    ]);
+
+    return new CreateCommentResDto(proofComment, userWithPhoto);
   }
 
   async reportProof(proofId: number, user: User, query: ReportProofQuery) {

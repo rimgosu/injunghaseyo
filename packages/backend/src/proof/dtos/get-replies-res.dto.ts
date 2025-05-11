@@ -1,4 +1,4 @@
-import { OmitType } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { ProofCommentItem } from './core/get-comments-res.dto';
 import { BaseCursorPaginationResDto } from '@/common/base-cursor-pagination-res.dto';
 import { ProofCommentWithInteraction } from '../utils/types';
@@ -31,6 +31,12 @@ class ProofReplyItem extends OmitType(ProofCommentItem, ['childCommentCount']) {
 }
 
 export class GetRepliesResDto extends BaseCursorPaginationResDto<ProofReplyItem> {
+  @ApiProperty({
+    description: '대댓글 목록',
+    type: [ProofReplyItem],
+  })
+  items: ProofReplyItem[];
+
   constructor(
     items: ProofCommentWithInteraction[],
     hasNextPage: boolean,

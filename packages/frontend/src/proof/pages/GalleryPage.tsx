@@ -56,7 +56,7 @@ export const GalleryPage = () => {
           <BottomNavigationBar />
         </div>
       }
-      title="갤러리"
+      isMainLogo
       padding=""
     >
       <div className="grid grid-cols-3 gap-1">

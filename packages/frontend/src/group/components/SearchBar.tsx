@@ -22,11 +22,11 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative flex w-full">
       <input
         type="text"
         placeholder="검색..."
-        className="w-full p-4 border rounded-lg pr-10 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400"
+        className="w-full p-3 border rounded-lg pr-10 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400"
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         value={inputValue}

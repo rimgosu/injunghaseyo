@@ -13,7 +13,7 @@ export class DuplicateRequestMiddleware implements NestMiddleware {
   constructor() {
     this.lruCache = new LRUCache({
       max: 10000,
-      ttl: 10 * 1000,
+      ttl: 100,
     });
   }
 

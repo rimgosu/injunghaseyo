@@ -570,6 +570,53 @@ export interface UserForComment {
   profilePhotoUrl: string;
 }
 
+export interface CreateCommentResDto {
+  /**
+   * 댓글 id
+   * @example 1
+   */
+  id: number;
+  /**
+   * 댓글 내용
+   * @example "댓글 내용"
+   */
+  contents: string;
+  /**
+   * 대댓글 갯수
+   * @example 5
+   */
+  childCommentCount: number;
+  /**
+   * 댓글 작성 시간
+   * @format date-time
+   * @example "2021-01-01T12:00:00Z"
+   */
+  createdAt: string;
+  /**
+   * 댓글 수정 시간
+   * @format date-time
+   * @example "2021-01-01T12:00:00Z"
+   */
+  updatedAt: string;
+  /**
+   * 내가 좋아요 했는지 여부
+   * @example true
+   */
+  isLiked: boolean;
+  /**
+   * 내가 싫어요 했는지 여부
+   * @example false
+   */
+  isDisliked: boolean;
+  /**
+   * 댓글 좋아요 수
+   * @example 10
+   */
+  likeCount: number;
+  /** 댓글 작성자 */
+  user: UserForComment;
+}
+
 export interface ProofCommentItem {
   /**
    * 댓글 id
@@ -634,9 +681,51 @@ export interface UpdateCommentBody {
   contents: string;
 }
 
+export interface ProofReplyItem {
+  /**
+   * 댓글 id
+   * @example 1
+   */
+  id: number;
+  /**
+   * 댓글 내용
+   * @example "댓글 내용"
+   */
+  contents: string;
+  /**
+   * 댓글 작성 시간
+   * @format date-time
+   * @example "2021-01-01T12:00:00Z"
+   */
+  createdAt: string;
+  /**
+   * 댓글 수정 시간
+   * @format date-time
+   * @example "2021-01-01T12:00:00Z"
+   */
+  updatedAt: string;
+  /**
+   * 내가 좋아요 했는지 여부
+   * @example true
+   */
+  isLiked: boolean;
+  /**
+   * 내가 싫어요 했는지 여부
+   * @example false
+   */
+  isDisliked: boolean;
+  /**
+   * 댓글 좋아요 수
+   * @example 10
+   */
+  likeCount: number;
+  /** 댓글 작성자 */
+  user: UserForComment;
+}
+
 export interface GetRepliesResDto {
-  /** 데이터 목록 */
-  items: string[];
+  /** 대댓글 목록 */
+  items: ProofReplyItem[];
   /** 다음 페이지 존재 여부 */
   hasNextPage: boolean;
   /** 다음 페이지 조회를 위한 커서 값 (다음 페이지가 없는 경우 null) */
@@ -2162,13 +2251,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data: CreateCommentBody,
       params: RequestParams = {},
     ) =>
-      this.request<void, any>({
+      this.request<CreateCommentResDto, any>({
         path: `/proofs/${proofId}/comments`,
         method: 'POST',
         query: query,
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: 'json',
         ...params,
       }),
 

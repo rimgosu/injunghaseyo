@@ -88,7 +88,7 @@ export const OauthPendingPage = () => {
   };
 
   return (
-    <BaseLayout title="추가 정보 입력">
+    <BaseLayout isMainLogo>
       <Input
         label="닉네임"
         type="text"

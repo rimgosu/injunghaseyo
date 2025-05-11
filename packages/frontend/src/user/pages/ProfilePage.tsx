@@ -94,8 +94,8 @@ export const ProfilePage = ({
 
   return (
     <BaseLayout
-      title="내 정보"
       rightElement={rightElement}
+      isMainLogo
       bottomNavBar={
         <div className="flex justify-center items-center">
           <BottomNavigationBar />

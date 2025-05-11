@@ -96,9 +96,10 @@ export const GroupPage = () => {
           <BottomNavigationBar />
         </div>
       }
-      title="모임 목록"
+      isMainLogo
+      searchBar={<SearchBar onSearch={handleSearch} />}
+      bottomLine={false}
     >
-      <SearchBar onSearch={handleSearch} />
       <div className="flex flex-col gap-4 w-full pb-24 mt-2">
         <div className="flex flex-col gap-8 mt-2">
           {groupsData?.items.map((group, index) => (

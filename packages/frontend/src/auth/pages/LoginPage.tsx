@@ -40,7 +40,7 @@ export const LoginPage = () => {
   };
 
   return (
-    <BaseLayout title="로그인">
+    <BaseLayout isMainLogo>
       <div className="flex flex-col gap-12">
         <div className="flex flex-col gap-4">
           <Input
