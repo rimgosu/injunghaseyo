@@ -89,7 +89,7 @@ export const GroupDetailPage = () => {
 
   if (isLoading) {
     return (
-      <BaseLayout title="모임 상세" bottomNavBar={<BottomNavigationBar />}>
+      <BaseLayout isMainLogo bottomNavBar={<BottomNavigationBar />}>
         <div className="flex justify-center items-center h-full">
           <div className="text-center">로딩 중...</div>
         </div>
@@ -99,7 +99,7 @@ export const GroupDetailPage = () => {
 
   if (!groupData) {
     return (
-      <BaseLayout title="모임 상세" bottomNavBar={<BottomNavigationBar />}>
+      <BaseLayout isMainLogo bottomNavBar={<BottomNavigationBar />}>
         <div className="flex justify-center items-center h-full">
           <div className="text-center">모임 정보를 찾을 수 없습니다.</div>
         </div>
@@ -111,7 +111,7 @@ export const GroupDetailPage = () => {
 
   return (
     <BaseLayout
-      title="모임 상세"
+      isMainLogo
       bottomNavBar={<BottomNavigationBar />}
       rightElement={<XButton />}
     >

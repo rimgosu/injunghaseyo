@@ -61,7 +61,7 @@ export const FindPasswordPage = () => {
   };
 
   return (
-    <BaseLayout title="비밀번호 찾기" rightElement={<XButton />}>
+    <BaseLayout isMainLogo rightElement={<XButton />}>
       <div className="flex flex-col gap-12">
         <Input
           label="이메일"

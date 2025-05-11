@@ -96,7 +96,7 @@ export const GroupPage = () => {
           <BottomNavigationBar />
         </div>
       }
-      title="모임 목록"
+      isMainLogo
     >
       <SearchBar onSearch={handleSearch} />
       <div className="flex flex-col gap-4 w-full pb-24 mt-2">

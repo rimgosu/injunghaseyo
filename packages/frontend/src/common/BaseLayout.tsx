@@ -1,10 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface BaseLayoutProps {
   children: React.ReactNode;
   bottomNavBar?: React.ReactNode;
   bottomButton?: React.ReactNode;
-  title?: string;
+  isMainLogo?: boolean;
   rightElement?: React.ReactNode;
   leftElement?: React.ReactNode;
   headerElement?: React.ReactNode;
@@ -18,7 +19,6 @@ export const BaseLayout = ({
   children,
   bottomNavBar,
   bottomButton,
-  title,
   rightElement,
   leftElement,
   headerElement,
@@ -26,7 +26,9 @@ export const BaseLayout = ({
   overflowY = 'overflow-y-auto',
   bgColor = 'bg-white ',
   height = '',
+  isMainLogo = false,
 }: BaseLayoutProps) => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div
@@ -34,7 +36,19 @@ export const BaseLayout = ({
       >
         <header>
           {headerElement && <div className="p-6">{headerElement}</div>}
-          {title && <div className="p-6 text-2xl font-semibold">{title}</div>}
+          {isMainLogo && (
+            <div
+              className="flex items-center p-4 border-b border-gray-200 cursor-pointer"
+              onClick={() => navigate('/group')}
+            >
+              <img
+                src="/navbaricon.png"
+                alt="navbaricon"
+                className="w-10 h-10"
+              />
+              <p className="text-xl">인증하세요</p>
+            </div>
+          )}
           {leftElement && (
             <div className="absolute top-0 left-0 p-6">{leftElement}</div>
           )}
