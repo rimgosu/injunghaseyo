@@ -6,7 +6,11 @@ interface PrivateRouteProps {
 }
 
 export const PrivateRoute = ({ children }: PrivateRouteProps) => {
-  const { isSignedIn } = useCheckSignInStore();
+  const { isSignedIn, isInitialized } = useCheckSignInStore();
+
+  if (!isInitialized) {
+    return null;
+  }
 
   if (!isSignedIn) {
     return <Navigate to="/auth/login" replace />;

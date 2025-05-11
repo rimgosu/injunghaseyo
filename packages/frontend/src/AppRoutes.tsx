@@ -20,7 +20,8 @@ export const AppRoutes = () => {
   const { checkSignIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { setCheckSignInRes, setIsSignedIn } = useCheckSignInStore();
+  const { setCheckSignInRes, setIsSignedIn, setIsInitialized } =
+    useCheckSignInStore();
 
   /**
    * @description 초기 유저의 경우 oauth-pending, select-character 페이지를 거쳐야 한다.
@@ -31,6 +32,7 @@ export const AppRoutes = () => {
     const publicPaths = ['/auth/init', '/auth/login'];
 
     if (publicPaths.includes(currentPath)) {
+      setIsInitialized(true);
       return;
     }
 
@@ -55,12 +57,14 @@ export const AppRoutes = () => {
           if (currentPath !== '/auth/oauth-pending') {
             navigate('/auth/oauth-pending');
           }
+          setIsInitialized(true);
           return;
 
         case GetCheckSignInUserStatusEnum.CHARACTER_CHOOSE:
           if (currentPath !== '/auth/select-character') {
             navigate('/auth/select-character');
           }
+          setIsInitialized(true);
           return;
 
         default:
@@ -69,15 +73,20 @@ export const AppRoutes = () => {
             currentPath === '/auth/select-character'
           ) {
             navigate('/group');
+            setIsInitialized(true);
             return;
           }
 
           if (currentPath === '/auth') {
             navigate('/group', { replace: true });
+            setIsInitialized(true);
             return;
           }
       }
     }
+
+    // API 호출이 완료되면 초기화 완료 상태로 설정
+    setIsInitialized(true);
   };
 
   /**
@@ -101,6 +110,9 @@ export const AppRoutes = () => {
     const storedToken = localStorage.getItem('accessToken');
     if (storedToken) {
       asyncCheckSignIn();
+    } else {
+      // 토큰이 없는 경우에도 초기화 완료 상태로 설정
+      setIsInitialized(true);
     }
   }, []);
 
