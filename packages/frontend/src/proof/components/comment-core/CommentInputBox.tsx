@@ -67,8 +67,8 @@ export const CommentInputBox = ({
 
     if (res.data) {
       if (replyStore) {
-        const { setReplies, replies } = replyStore;
-        setReplies([...replies, res.data]);
+        const { setReplies, replies, hasNextPage } = replyStore;
+        !hasNextPage && setReplies([...replies, res.data]);
         comments.map((c) => {
           if ([parentCommentId, commentId].includes(c.id)) {
             c.childCommentCount = c.childCommentCount + 1;
