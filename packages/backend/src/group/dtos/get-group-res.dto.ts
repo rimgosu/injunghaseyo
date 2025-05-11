@@ -1,24 +1,28 @@
-import { PickType } from '@nestjs/swagger';
+import { IntersectionType, PickType } from '@nestjs/swagger';
 import { BaseGroupRes } from './base-res.dto';
 import { GroupWith } from '../utils/types';
-import { User } from '@prisma/client';
+import { JoinRole, User } from '@prisma/client';
 import { JoinStatus, GroupStatus } from '../utils/enums';
 import { GroupDateHelper } from '../utils/group-date.helper';
+import { BaseResDto } from '@/common/base-res.dto';
 
-export class GetGroupRes extends PickType(BaseGroupRes, [
-  'id',
-  'title',
-  'price',
-  'description',
-  'proofMethods',
-  'status',
-  'startDate',
-  'endDate',
-  'joinStatus',
-  'tags',
-  'participants',
-  'groupPhoto',
-]) {
+export class GetGroupRes extends IntersectionType(
+  PickType(BaseGroupRes, [
+    'id',
+    'title',
+    'price',
+    'description',
+    'proofMethods',
+    'status',
+    'startDate',
+    'endDate',
+    'joinStatus',
+    'tags',
+    'participants',
+    'groupPhoto',
+  ]),
+  PickType(BaseResDto, ['canMutation']),
+) {
   constructor(group: GroupWith, user: User | undefined) {
     super();
     this.participants = group.join.map((join) => ({
@@ -46,6 +50,10 @@ export class GetGroupRes extends PickType(BaseGroupRes, [
     }));
     this.tags = group.groupTagMap.map((tagMap) => tagMap.tag.name);
     this.groupPhoto = group.photo;
+    console.log('group.join:', group.join);
+
+    this.canMutation =
+      group.join.find((j) => j.joinRole === JoinRole.HOST).userId === user.id;
   }
 
   /**

@@ -575,7 +575,7 @@ export interface CreateCommentResDto {
    * 내가 만든 것인지 여부
    * @example true
    */
-  isMine: boolean;
+  canMutation: boolean;
   /**
    * 댓글 id
    * @example 1
@@ -627,7 +627,7 @@ export interface ProofCommentItem {
    * 내가 만든 것인지 여부
    * @example true
    */
-  isMine: boolean;
+  canMutation: boolean;
   /**
    * 댓글 id
    * @example 1
@@ -696,7 +696,7 @@ export interface ProofReplyItem {
    * 내가 만든 것인지 여부
    * @example true
    */
-  isMine: boolean;
+  canMutation: boolean;
   /**
    * 댓글 id
    * @example 1
@@ -1076,6 +1076,14 @@ export interface GroupControllerUploadProofLocationParams {
    * @example 1
    */
   groupId: number;
+}
+
+export interface UserControllerUpdateUserParams {
+  /**
+   * 수정할 소개말
+   * @example "수정된 소개말입니다."
+   */
+  introduction?: string;
 }
 
 export interface UserMgmtControllerGetAdminRoleParams {
@@ -2007,6 +2015,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
   };
   users = {
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserControllerUpdateUser
+     * @request PUT:/users
+     * @secure
+     */
+    userControllerUpdateUser: (query: UserControllerUpdateUserParams, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/users`,
+        method: 'PUT',
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
     /**
      * No description
      *

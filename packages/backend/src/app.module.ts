@@ -52,6 +52,9 @@ import { DuplicateRequestMiddleware } from './common/duplicate-request.middlewar
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(DuplicateRequestMiddleware).forRoutes('*');
+    consumer
+      .apply(DuplicateRequestMiddleware)
+      .exclude('groups/validate-element')
+      .forRoutes('*');
   }
 }

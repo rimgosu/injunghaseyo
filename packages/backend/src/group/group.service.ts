@@ -588,7 +588,6 @@ export class GroupService {
       ...GROUP_WITH_INCLUDE,
     });
 
-    // 커서 페이지네이션
     const hasNextPage = groups.length > take;
     const items = hasNextPage ? groups.slice(0, -1) : groups;
     const nextCursor = hasNextPage ? groups[groups.length - 1].id : undefined;

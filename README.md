@@ -62,4 +62,4 @@ yarn dev
 
 ## 3. refs - 외부 공개용
 
-<https://excalidraw.com/#room=34381f295846e1bd7b81,--VWceRNTk4H76ekFOwe0w>
+<https://excalidraw.com/#room=f42e7d107f4dc98a053b,b2av6rW_c-21JDNjhls4xw>

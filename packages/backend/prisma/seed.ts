@@ -368,7 +368,7 @@ async function createAdminUser() {
 
   UserSeedData.users.admin = {
     ...admin,
-    joinRole: JoinRole.ATTENDEE,
+    joinRole: JoinRole.HOST,
   };
 
   logger.debug(`admin user created: ${admin.id}`);
