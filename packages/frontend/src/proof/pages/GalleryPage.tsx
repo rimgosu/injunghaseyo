@@ -52,7 +52,7 @@ export const GalleryPage = () => {
   return (
     <BaseLayout
       bottomNavBar={
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <BottomNavigationBar />
         </div>
       }
@@ -63,7 +63,7 @@ export const GalleryPage = () => {
         {proofs.map((proof) => (
           <div
             key={proof.proofId}
-            className="aspect-square relative cursor-pointer"
+            className="relative aspect-square cursor-pointer"
             onClick={() => {
               navigate(`/proof/${proof.proofId}`);
             }}
@@ -71,12 +71,12 @@ export const GalleryPage = () => {
             <img
               src={proof.url}
               alt={proof.proofId.toString()}
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
           </div>
         ))}
       </div>
-      <div ref={observerTarget} className="h-10 mt-16" />
+      <div ref={observerTarget} className="mt-16 h-10" />
     </BaseLayout>
   );
 };

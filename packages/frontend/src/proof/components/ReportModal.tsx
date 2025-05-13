@@ -48,7 +48,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           <div className="flex flex-col items-center gap-6 py-12">
             <div className="text-lg">신고해주셔서 감사합니다.</div>
             <div
-              className="text-lg text-blue-500 cursor-pointer"
+              className="cursor-pointer text-lg text-blue-500"
               onClick={handleConfirm}
             >
               확인
@@ -56,12 +56,12 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           </div>
         )}
         {!isReported && (
-          <main className="flex flex-col gap-12 mt-4">
-            <form className="flex flex-col gap-3 mt-4">
+          <main className="mt-4 flex flex-col gap-12">
+            <form className="mt-4 flex flex-col gap-3">
               {Object.values(ReasonEnum).map((reason) => (
                 <label
                   key={reason}
-                  className="flex gap-4 text-lg text-gray-700 items-center cursor-pointer"
+                  className="flex cursor-pointer items-center gap-4 text-lg text-gray-700"
                 >
                   <input
                     type="radio"
@@ -69,14 +69,14 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                     value={reason}
                     checked={selectedReason === reason}
                     onChange={() => setSelectedReason(reason as ReasonEnum)}
-                    className="w-4 h-4 "
+                    className="h-4 w-4"
                   />
                   {ReportReasonType[reason as ReasonEnum]}
                 </label>
               ))}
             </form>
             <div
-              className="flex justify-end text-blue-500 cursor-pointer"
+              className="flex cursor-pointer justify-end text-blue-500"
               onClick={handleReport}
             >
               신고하기

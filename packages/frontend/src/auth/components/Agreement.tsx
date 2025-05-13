@@ -15,14 +15,14 @@ const Checkbox: React.FC<CheckboxProps> = ({
   onChange,
   required,
 }) => (
-  <label className="flex items-center gap-2 cursor-pointer">
+  <label className="flex cursor-pointer items-center gap-2">
     <input
       type="checkbox"
       name={name}
       checked={checked}
       onChange={onChange}
       required={required}
-      className="w-4 h-4 border-gray-300 rounded focus:ring-green-500"
+      className="h-4 w-4 rounded border-gray-300 focus:ring-green-500"
     />
     <span className="text-sm text-gray-700">{label}</span>
   </label>
@@ -158,15 +158,15 @@ export const AgreementSection: React.FC<AgreementSectionProps> = ({
 
   return (
     <div className="flex flex-col gap-3">
-      <h3 className="text-base font-medium mb-2">약관 동의</h3>
-      <div className="flex flex-col gap-2 p-4 bg-gray-50 rounded-lg">
+      <h3 className="mb-2 text-base font-medium">약관 동의</h3>
+      <div className="flex flex-col gap-2 rounded-lg bg-gray-50 p-4">
         <Checkbox
           label="전체동의 (선택항목에 대한 동의 포함)"
           name="allAgree"
           checked={isAllAgreed}
           onChange={handleAllAgreeChange}
         />
-        <div className="w-full h-px bg-gray-200 my-2" />
+        <div className="my-2 h-px w-full bg-gray-200" />
         <Checkbox
           label="만 14세 이상입니다(필수)"
           name="ageAgree"

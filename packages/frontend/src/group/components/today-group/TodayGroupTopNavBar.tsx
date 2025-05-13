@@ -11,8 +11,8 @@ export const TodayGroupTopNavBar = ({
   setSelected,
 }: TodayGroupTopNavBarProps) => {
   return (
-    <div className="flex w-full gap-4 items-center">
-      <div className="grid grid-cols-3 gap-3 w-full">
+    <div className="flex w-full items-center gap-4">
+      <div className="grid w-full grid-cols-3 gap-3">
         <button
           className={`rounded-lg border border-gray-300 px-4 py-3 text-center ${
             selected === TodayGroupTopNavBarEnum.PROOF

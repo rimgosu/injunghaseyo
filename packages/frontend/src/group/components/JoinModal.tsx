@@ -14,10 +14,10 @@ export const JoinModal: React.FC<JoinModalProps> = ({
 }) => {
   return (
     <BaseModal isOpen={isOpen} onClose={onClose}>
-      <div className="text-center mb-8">
-        <div className="w-20 h-20 mx-auto mb-8 bg-green-100 rounded-full flex items-center justify-center border border-gray-300">
+      <div className="mb-8 text-center">
+        <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full border border-gray-300 bg-green-100">
           <svg
-            className="w-12 h-12 text-green-500 "
+            className="h-12 w-12 text-green-500"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -28,13 +28,13 @@ export const JoinModal: React.FC<JoinModalProps> = ({
             />
           </svg>
         </div>
-        <h3 className="text-xl font-bold mb-2">그룹 참여 완료</h3>
-        <p className="text-gray-500 text-md mb-4">{title}에 참여하였습니다.</p>
+        <h3 className="mb-2 text-xl font-bold">그룹 참여 완료</h3>
+        <p className="text-md mb-4 text-gray-500">{title}에 참여하였습니다.</p>
       </div>
-      <div className="flex gap-1 flex-col">
+      <div className="flex flex-col gap-1">
         <button
           onClick={onClose}
-          className="flex-1 px-4 py-3 bg-green-400 text-white rounded hover:bg-green-500"
+          className="flex-1 rounded bg-green-400 px-4 py-3 text-white hover:bg-green-500"
         >
           확인하러 가기
         </button>

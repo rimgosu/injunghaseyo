@@ -14,7 +14,7 @@ export const NavigationButtons = ({
   disabled = false,
 }: NavigationButtonsProps) => {
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <button onClick={onBack} className="flex items-center text-gray-600">
         <span className="mr-1">←</span> 뒤로
       </button>
@@ -22,9 +22,9 @@ export const NavigationButtons = ({
         <button
           onClick={onNext}
           disabled={disabled}
-          className={`w-full p-4 rounded-xl ${
+          className={`w-full rounded-xl p-4 ${
             disabled
-              ? 'bg-gray-300 cursor-not-allowed'
+              ? 'cursor-not-allowed bg-gray-300'
               : 'bg-green-400 text-white'
           }`}
         >

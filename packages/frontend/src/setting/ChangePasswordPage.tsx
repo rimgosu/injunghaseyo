@@ -94,7 +94,7 @@ export const ChangePasswordPage = () => {
         </div>
         <div className="flex flex-col gap-2">
           {errorMessage && (
-            <p className="text-red-500 text-sm text-right">{errorMessage}</p>
+            <p className="text-right text-sm text-red-500">{errorMessage}</p>
           )}
           <GreenButton
             text="변경하기"

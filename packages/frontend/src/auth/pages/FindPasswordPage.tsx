@@ -75,7 +75,7 @@ export const FindPasswordPage = () => {
         <div className="flex flex-col gap-2">
           <ValidationMessage message={errorMessage} />
           {completeMessage && (
-            <div className="text-gray-600 text-md text-right">
+            <div className="text-md text-right text-gray-600">
               {completeMessage}
             </div>
           )}

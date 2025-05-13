@@ -181,7 +181,7 @@ export const CreateGroupStep3 = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <button
           onClick={() => setCurrentMonth((prev) => prev.subtract(1, 'month'))}
           className="px-4 py-2"
@@ -215,8 +215,8 @@ export const CreateGroupStep3 = () => {
               </svg>
             </button>
             {showTooltip && (
-              <div className="absolute z-10 right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-4">
-                <ul className="text-sm text-gray-600 space-y-2">
+              <div className="absolute right-0 z-10 mt-2 w-64 rounded-lg border border-gray-200 bg-white p-4 shadow-lg">
+                <ul className="space-y-2 text-sm text-gray-600">
                   <li>• Shift + 클릭: 여러 날짜 선택</li>
                   <li>• 월-일: 해당 요일 선택 해제</li>
                 </ul>
@@ -236,7 +236,7 @@ export const CreateGroupStep3 = () => {
           <div
             key={day}
             onClick={() => handleDayHeaderClick(index)}
-            className={`text-center py-2 font-medium cursor-pointer hover:bg-gray-100 ${
+            className={`cursor-pointer py-2 text-center font-medium hover:bg-gray-100 ${
               index === 0 ? 'text-red-500' : ''
             }`}
           >
@@ -249,18 +249,13 @@ export const CreateGroupStep3 = () => {
             key={index}
             onClick={(e) => handleDateClick(item.date, item.isCurrentMonth, e)}
             disabled={!item.isSelectable}
-            className={`
-              rounded-lg p-2 text-center
-              ${!item.isCurrentMonth ? 'text-gray-300' : ''}
-              ${
-                !item.isSelectable
-                  ? 'text-gray-400 cursor-not-allowed'
-                  : item.isCurrentMonth && index % 7 === 0
-                    ? 'text-red-500'
-                    : ''
-              }
-              ${item.isSelected ? 'bg-green-100 text-green-600' : ''}
-            `}
+            className={`rounded-lg p-2 text-center ${!item.isCurrentMonth ? 'text-gray-300' : ''} ${
+              !item.isSelectable
+                ? 'cursor-not-allowed text-gray-400'
+                : item.isCurrentMonth && index % 7 === 0
+                  ? 'text-red-500'
+                  : ''
+            } ${item.isSelected ? 'bg-green-100 text-green-600' : ''} `}
           >
             {item.date}
           </button>
@@ -270,13 +265,13 @@ export const CreateGroupStep3 = () => {
         <div className="flex justify-end">
           <button
             onClick={handleReset}
-            className="p-3 text-sm border border-gray-300 rounded-md hover:bg-gray-100"
+            className="rounded-md border border-gray-300 p-3 text-sm hover:bg-gray-100"
           >
             초기화
           </button>
         </div>
         {dateRange && (
-          <div className="text-sm text-gray-600 text-right">
+          <div className="text-right text-sm text-gray-600">
             {dateRange.min} - {dateRange.max}
           </div>
         )}

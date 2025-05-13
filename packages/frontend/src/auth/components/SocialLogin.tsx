@@ -11,21 +11,21 @@ export const SocialLogin = () => {
       <div className="flex gap-2">
         <button
           onClick={googleLogin}
-          className="flex items-center justify-center p-2 border border-gray-300 rounded-lg w-16 h-16"
+          className="flex h-16 w-16 items-center justify-center rounded-lg border border-gray-300 p-2"
         >
-          <img src={googleIcon} alt="Google" className="w-10 h-10 p-1" />
+          <img src={googleIcon} alt="Google" className="h-10 w-10 p-1" />
         </button>
         <button
           onClick={kakaoLogin}
-          className="flex items-center justify-center p-2 border border-gray-300 rounded-lg w-16 h-16"
+          className="flex h-16 w-16 items-center justify-center rounded-lg border border-gray-300 p-2"
         >
-          <img src={kakaoIcon} alt="Kakao" className="w-10 h-10 p-1" />
+          <img src={kakaoIcon} alt="Kakao" className="h-10 w-10 p-1" />
         </button>
         <button
           onClick={naverLogin}
-          className="flex items-center justify-center p-2 border border-gray-300 rounded-lg w-16 h-16"
+          className="flex h-16 w-16 items-center justify-center rounded-lg border border-gray-300 p-2"
         >
-          <img src={naverIcon} alt="Naver" className="w-10 h-10 p-1" />
+          <img src={naverIcon} alt="Naver" className="h-10 w-10 p-1" />
         </button>
       </div>
     </div>

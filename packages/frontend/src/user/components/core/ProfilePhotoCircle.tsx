@@ -18,11 +18,11 @@ export const ProfilePhotoCircle = ({
   fileInputRef,
 }: ProfilePhotoCircleProps) => {
   return (
-    <div className="w-36 h-36 rounded-full relative border border-gray-300 cursor-pointer">
+    <div className="relative h-36 w-36 cursor-pointer rounded-full border border-gray-300">
       <img
         src={profileData?.profilePhotos?.[0]?.url}
         alt="프로필"
-        className="w-full h-full object-cover rounded-full"
+        className="h-full w-full rounded-full object-cover"
         onClick={handleProfilePhotoClick}
       />
       <input
@@ -34,10 +34,10 @@ export const ProfilePhotoCircle = ({
       />
       {showCameraButton && (
         <div
-          className="absolute bottom-0 right-0 p-1 border border-gray-400 bg-white rounded-full shadow-md cursor-pointer"
+          className="absolute bottom-0 right-0 cursor-pointer rounded-full border border-gray-400 bg-white p-1 shadow-md"
           onClick={handleCameraClick}
         >
-          <CameraIcon className="w-7 h-7" />
+          <CameraIcon className="h-7 w-7" />
         </div>
       )}
     </div>

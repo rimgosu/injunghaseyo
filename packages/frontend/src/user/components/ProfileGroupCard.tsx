@@ -16,14 +16,14 @@ export const ProfileGroupCard = ({
 }: ProfileGroupCardProps) => {
   return (
     <div
-      className="border rounded-lg px-4 py-6 flex items-center justify-center flex-col gap-1 text-center transition-all hover:shadow-lg cursor-pointer hover:border-gray-400"
+      className="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border px-4 py-6 text-center transition-all hover:border-gray-400 hover:shadow-lg"
       onClick={onClick}
     >
       <div className="text-2xl font-bold">{days}일</div>
       <div>{name}</div>
       {additionalInfo &&
         additionalInfo.map((info, index) => (
-          <div key={index} className="text-sm text-gray-500 mt-1">
+          <div key={index} className="mt-1 text-sm text-gray-500">
             {info.label}: {info.value}
           </div>
         ))}

@@ -17,7 +17,7 @@ export const OtherProfilePage = () => {
       userId={Number(userId)}
       rightElement={
         <XMarkIcon
-          className="w-6 h-6 text-gray-600 cursor-pointer"
+          className="h-6 w-6 cursor-pointer text-gray-600"
           onClick={handleClose}
         />
       }

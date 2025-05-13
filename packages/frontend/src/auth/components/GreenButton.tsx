@@ -13,13 +13,13 @@ export const GreenButton = ({
 }: GreenButtonProps) => {
   return (
     <div
-      className={`border p-2 rounded-xl ${disabled ? 'border-gray-300' : 'border-green-300'}`}
+      className={`rounded-xl border p-2 ${disabled ? 'border-gray-300' : 'border-green-300'}`}
     >
       <button
-        className={`w-full text-center py-2 rounded ${
+        className={`w-full rounded py-2 text-center ${
           !disabled
             ? 'text-green-600 hover:text-green-600'
-            : 'text-gray-500 cursor-not-allowed'
+            : 'cursor-not-allowed text-gray-500'
         } ${className}`}
         onClick={onClick}
         disabled={disabled}

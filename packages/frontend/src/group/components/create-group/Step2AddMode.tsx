@@ -82,7 +82,7 @@ export const CreateGroupStep2AddProofMethod = () => {
           onChange={(type) => setProofMethod({ ...proofMethod, type })}
         />
 
-        <div className="flex flex-col gap-6 my-4">
+        <div className="my-4 flex flex-col gap-6">
           <TimeIgnoreCheckbox
             isTimeIgnored={isTimeIgnored}
             onChange={(checked) => {
@@ -124,7 +124,7 @@ export const CreateGroupStep2AddProofMethod = () => {
         </div>
         {error && <ValidationMessage message={error} />}
         <button
-          className={`border p-4 rounded-lg ${isValid ? 'border-green-400 text-green-500' : 'border-gray-400 text-gray-400'}`}
+          className={`rounded-lg border p-4 ${isValid ? 'border-green-400 text-green-500' : 'border-gray-400 text-gray-400'}`}
           onClick={() => {
             addProofMethod(proofMethod);
             setMode('view');

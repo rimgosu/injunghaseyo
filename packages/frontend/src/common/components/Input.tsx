@@ -34,7 +34,7 @@ export class Input extends Component<InputProps> {
     } = this.props;
 
     return (
-      <div className="flex flex-col gap-1 w-full">
+      <div className="flex w-full flex-col gap-1">
         <label className="text-sm text-gray-600">{label}</label>
         <div className="flex items-center">
           <input
@@ -46,17 +46,17 @@ export class Input extends Component<InputProps> {
             name={name}
             placeholder={placeholder}
             required={required}
-            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            className="w-full rounded-lg border border-gray-300 p-4 [appearance:textfield] focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
           {suffix && (
-            <div className="flex-shrink-0 -ml-12 text-gray-500">{suffix}</div>
+            <div className="-ml-12 flex-shrink-0 text-gray-500">{suffix}</div>
           )}
           {addButton && (
             <button
               onClick={addButton.onClick}
               className={
                 addButton.className ||
-                'flex-shrink-0 -ml-10 p-1 text-gray-500 hover:text-gray-700'
+                '-ml-10 flex-shrink-0 p-1 text-gray-500 hover:text-gray-700'
               }
             >
               <svg

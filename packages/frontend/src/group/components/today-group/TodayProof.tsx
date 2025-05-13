@@ -100,7 +100,7 @@ export const TodayProof = ({
 
   return (
     <div className="flex flex-col gap-12">
-      <div className="h-full w-full flex flex-col gap-2">
+      <div className="flex h-full w-full flex-col gap-2">
         <h2 className="text-2xl font-bold">{todayGroup?.title}</h2>
         <p className="text-gray-500">{todayGroup?.description}</p>
       </div>
@@ -111,15 +111,13 @@ export const TodayProof = ({
             return (
               <button
                 key={index}
-                className={`flex gap-2 justify-between p-4 border rounded-2xl ${
+                className={`flex justify-between gap-2 rounded-2xl border p-4 ${
                   proof.proofElem ? 'border-green-300' : 'border-gray-300'
                 }`}
                 onClick={() => handleProofSubmit(proof)}
               >
                 <div
-                  className={
-                    'flex  gap-1 justify-center flex-col text-gray-600'
-                  }
+                  className={'flex flex-col justify-center gap-1 text-gray-600'}
                 >
                   <div
                     className={`flex gap-1 ${

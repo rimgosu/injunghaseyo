@@ -228,7 +228,7 @@ export const SignUpPage = () => {
         required
       />
 
-      <div className="border border-green-300 p-4 rounded">
+      <div className="rounded border border-green-300 p-4">
         <button className="text-green-500" onClick={handleEmailVerification}>
           이메일 인증하기
         </button>
@@ -236,20 +236,20 @@ export const SignUpPage = () => {
 
       {emailVerification.show && (
         <div
-          className={`mt-4 border border-gray-300 rounded p-4 ${
+          className={`mt-4 rounded border border-gray-300 p-4 ${
             emailVerification.isVerified && 'bg-gray-100'
           }`}
         >
-          <p className="text-sm text-gray-600 mb-2">
+          <p className="mb-2 text-sm text-gray-600">
             이메일로 받은 인증 코드를 입력해주세요
           </p>
-          <p className="text-sm text-gray-600 mb-2">
+          <p className="mb-2 text-sm text-gray-600">
             인증 코드가 도착하지 않았다면 스팸 메일함을 확인해주세요
           </p>
-          <div className="flex items-center gap-2 border border-gray-300 rounded p-2">
+          <div className="flex items-center gap-2 rounded border border-gray-300 p-2">
             <input
               type="text"
-              className={`p-2 flex-1 outline-none ${emailVerification.isVerified && 'text-gray-400'}`}
+              className={`flex-1 p-2 outline-none ${emailVerification.isVerified && 'text-gray-400'}`}
               placeholder="인증번호확인"
               value={emailVerification.code}
               onChange={handleVerificationCodeChange}
@@ -263,7 +263,7 @@ export const SignUpPage = () => {
               {formatTime(emailVerification.timer)}
             </span>
             <button
-              className={'px-4 py-2 rounded text-gray-400'}
+              className={'rounded px-4 py-2 text-gray-400'}
               onClick={handleVerifyEmailCode}
               disabled={emailVerification.isVerified}
             >

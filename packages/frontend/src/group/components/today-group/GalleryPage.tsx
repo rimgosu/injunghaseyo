@@ -79,14 +79,14 @@ export const GalleryPage = ({ groupId }: GalleryPageProps) => {
             <div className="text-xl">{ymd2Human(g.date)}</div>
             <div className="grid grid-cols-3 gap-3">
               {g.proofsForGallery.map((p) => (
-                <div className="flex items-center justify-center border border-gray-300 p-4 rounded-2xl relative">
+                <div className="relative flex items-center justify-center rounded-2xl border border-gray-300 p-4">
                   <ImgByProofType
                     key={p.id}
                     proof={p.proofType}
                     proofPhoto={p.proofPhoto}
                   />
                   <div
-                    className="absolute bottom-2 right-2 flex items-end gap-1 cursor-pointer"
+                    className="absolute bottom-2 right-2 flex cursor-pointer items-end gap-1"
                     onClick={() => handleParticipantClick(p.participant.id)}
                   >
                     <div className="text-md text-gray-500">
@@ -95,7 +95,7 @@ export const GalleryPage = ({ groupId }: GalleryPageProps) => {
                     <img
                       src={p.participant.profilePhoto}
                       alt="profile photo"
-                      className="w-10 h-10 rounded-full border-2 border-gray-500 object-cover"
+                      className="h-10 w-10 rounded-full border-2 border-gray-500 object-cover"
                     />
                   </div>
                 </div>

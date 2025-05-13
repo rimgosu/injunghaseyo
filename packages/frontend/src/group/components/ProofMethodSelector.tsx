@@ -16,7 +16,7 @@ export const ProofMethodSelector = ({
         {Object.entries(ProofMethodElemTypeEnum).map(([key, type]) => (
           <button
             key={type}
-            className={`px-4 py-2 rounded-lg border ${
+            className={`rounded-lg border px-4 py-2 ${
               value === type
                 ? 'border-green-500 bg-green-50 text-green-700'
                 : 'border-gray-300'

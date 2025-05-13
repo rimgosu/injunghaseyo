@@ -25,7 +25,7 @@ export const ProfilePage = ({
   showCameraButton = true,
   rightElement = (
     <Link to="/user/setting">
-      <Cog6ToothIcon className="w-6 h-6 text-gray-600 cursor-pointer" />
+      <Cog6ToothIcon className="h-6 w-6 cursor-pointer text-gray-600" />
     </Link>
   ),
   showCurrentGroups = true,
@@ -97,12 +97,12 @@ export const ProfilePage = ({
       rightElement={rightElement}
       isMainLogo
       bottomNavBar={
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <BottomNavigationBar />
         </div>
       }
     >
-      <div className="flex flex-col p-4 gap-12">
+      <div className="flex flex-col gap-12 p-4">
         {/* 상단 프로필 섹션 */}
         {isOtherProfile ? (
           <OtherProfileSection

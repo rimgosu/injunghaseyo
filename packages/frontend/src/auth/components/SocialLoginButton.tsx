@@ -22,7 +22,7 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
       onClick={() => onClick(provider)}
       className={`${baseStyles} ${className}`}
     >
-      <img src={icon} alt={provider} className="w-6 h-6" />
+      <img src={icon} alt={provider} className="h-6 w-6" />
       <span>{text}</span>
     </button>
   );

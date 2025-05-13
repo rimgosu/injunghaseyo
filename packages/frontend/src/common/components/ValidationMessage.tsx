@@ -5,5 +5,5 @@ interface ValidationMessageProps {
 export const ValidationMessage = ({ message }: ValidationMessageProps) => {
   if (!message) return null;
 
-  return <p className="text-red-500 text-sm text-right">{message}</p>;
+  return <p className="text-right text-sm text-red-500">{message}</p>;
 };

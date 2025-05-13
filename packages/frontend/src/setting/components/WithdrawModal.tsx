@@ -14,10 +14,10 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
 }) => {
   return (
     <BaseModal isOpen={isOpen} onClose={onClose}>
-      <div className="text-center mb-8">
-        <div className="w-20 h-20 mx-auto mb-8 bg-red-100 rounded-full flex items-center justify-center">
+      <div className="mb-8 text-center">
+        <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-red-100">
           <svg
-            className="w-12 h-12 text-red-500"
+            className="h-12 w-12 text-red-500"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -28,15 +28,15 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
             />
           </svg>
         </div>
-        <h3 className="text-xl font-bold mb-2">정말 탈퇴하시겠어요?</h3>
-        <p className="text-gray-500 text-md mb-4">
+        <h3 className="mb-2 text-xl font-bold">정말 탈퇴하시겠어요?</h3>
+        <p className="text-md mb-4 text-gray-500">
           탈퇴 버튼 선택 시, 계정은 삭제되며 복구되지 않습니다.
         </p>
       </div>
-      <div className="flex gap-1 flex-col">
+      <div className="flex flex-col gap-1">
         <button
           onClick={onConfirm}
-          className="flex-1 px-4 py-3 bg-red-500 text-white rounded hover:bg-red-600"
+          className="flex-1 rounded bg-red-500 px-4 py-3 text-white hover:bg-red-600"
         >
           탈퇴
         </button>

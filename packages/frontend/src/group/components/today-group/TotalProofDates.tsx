@@ -88,7 +88,7 @@ export const TotalProofDates = ({
           return (
             <div
               key={`empty-${index}`}
-              className="aspect-square flex items-center justify-center text-gray-300"
+              className="flex aspect-square items-center justify-center text-gray-300"
             >
               {new Date(currentDate).getDate()}
             </div>
@@ -99,16 +99,16 @@ export const TotalProofDates = ({
         return (
           <div
             key={date}
-            className={`aspect-square flex items-center justify-center rounded-lg border ${
+            className={`flex aspect-square items-center justify-center rounded-lg border ${
               isToday
                 ? isCompleted
-                  ? 'bg-green-100 border-green-500 border-2'
-                  : 'border-green-500 border-2'
+                  ? 'border-2 border-green-500 bg-green-100'
+                  : 'border-2 border-green-500'
                 : isFutureDate
-                  ? 'bg-white border-gray-200'
+                  ? 'border-gray-200 bg-white'
                   : isCompleted
-                    ? 'bg-green-100 border-green-200'
-                    : 'bg-gray-100 border-gray-200'
+                    ? 'border-green-200 bg-green-100'
+                    : 'border-gray-200 bg-gray-100'
             }`}
           >
             {new Date(date).getDate()}

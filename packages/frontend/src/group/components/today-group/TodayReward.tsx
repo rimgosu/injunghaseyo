@@ -12,9 +12,9 @@ type RewardProps = {
 };
 
 const InfoBox = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-center items-center gap-2 flex-col">
-    <p className="text-gray-500 text-2xl">{label}</p>
-    <p className="text-green-600 text-4xl">{value}</p>
+  <div className="flex flex-col items-center justify-center gap-2">
+    <p className="text-2xl text-gray-500">{label}</p>
+    <p className="text-4xl text-green-600">{value}</p>
   </div>
 );
 
@@ -42,7 +42,7 @@ export const TodayReward = ({
         value={number2Won(todayReward?.todayReward ?? 0)}
       />
       <div className="flex flex-col gap-8">
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <img
             src={myCharacter?.characterImage}
             alt="character"
@@ -53,19 +53,19 @@ export const TodayReward = ({
         <div className="flex flex-col gap-1 p-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <span className="text-green-500 text-xl">
+              <span className="text-xl text-green-500">
                 레벨 {myCharacter?.currentLevel}
               </span>
             </div>
             <div className="relative">
-              <div className="w-full h-12 border border-gray-300 rounded-lg relative">
+              <div className="relative h-12 w-full rounded-lg border border-gray-300">
                 <div
-                  className="h-full bg-green-300 rounded-lg flex items-center justify-center text-white text-center text-xl"
+                  className="flex h-full items-center justify-center rounded-lg bg-green-300 text-center text-xl text-white"
                   style={{
                     width: `${calculateProgress()}%`,
                   }}
                 ></div>
-                <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-xl">
+                <div className="absolute inset-0 flex items-center justify-center text-xl text-gray-500">
                   {myCharacter?.currentExp}exp
                 </div>
               </div>

@@ -35,10 +35,10 @@ const joinStatus2Color = (joinStatus: GroupElemJoinStatusEnum) => {
 
 export const GroupCard = ({ group, onClick }: GroupCardProps) => {
   return (
-    <div className="flex rounded-2xl cursor-pointer" onClick={onClick}>
-      <div className="flex-2 justify-center items-center mr-4 relative">
+    <div className="flex cursor-pointer rounded-2xl" onClick={onClick}>
+      <div className="flex-2 relative mr-4 items-center justify-center">
         <div
-          className={`absolute bottom-0 w-full p-1 rounded-b-3xl text-center shadow-sm ${joinStatus2Color(group.joinStatus)}`}
+          className={`absolute bottom-0 w-full rounded-b-3xl p-1 text-center shadow-sm ${joinStatus2Color(group.joinStatus)}`}
         >
           {joinStatus2Text(group.joinStatus)}
         </div>
@@ -48,21 +48,21 @@ export const GroupCard = ({ group, onClick }: GroupCardProps) => {
           className="w-44 rounded-3xl"
         />
       </div>
-      <div className="flex-1 flex-col gap-1 flex justify-center">
-        <div className="text-xl truncate max-w-[300px]">{group.title}</div>
+      <div className="flex flex-1 flex-col justify-center gap-1">
+        <div className="max-w-[300px] truncate text-xl">{group.title}</div>
         <div>
-          <div className="text-sm text-gray-500 flex gap-1">
+          <div className="flex gap-1 text-sm text-gray-500">
             <p>모임 개최일:</p>
             <p>
               {group.startDate} - {group.endDate}
             </p>
           </div>
-          <div className="text-sm text-gray-500 flex gap-1">
+          <div className="flex gap-1 text-sm text-gray-500">
             <p>참여 인원:</p>
             <p>{group.numberOfParticipants}명</p>
           </div>
         </div>
-        <div className="text-lg text-black flex gap-1 font-semibold">
+        <div className="flex gap-1 text-lg font-semibold text-black">
           <p>{group.price.toLocaleString()}원</p>
         </div>
       </div>

@@ -11,9 +11,9 @@ export const CreateButton = ({ path }: CreateButtonProps) => {
   return (
     <button
       onClick={() => navigate(path)}
-      className="absolute bottom-24 right-6 w-14 h-14 bg-green-400 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg z-10"
+      className="absolute bottom-24 right-6 z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-400 text-2xl text-white shadow-lg"
     >
-      <PlusIcon className="w-8 h-8" />
+      <PlusIcon className="h-8 w-8" />
     </button>
   );
 };

@@ -41,7 +41,7 @@ export const CharacterSelectPage = () => {
 
   return (
     <BaseLayout isMainLogo>
-      <div className="flex flex-col items-center mb-6">
+      <div className="mb-6 flex flex-col items-center">
         <div className="grid grid-cols-3 gap-4">
           {characters.map((character) => (
             <div
@@ -49,13 +49,12 @@ export const CharacterSelectPage = () => {
               onClick={() =>
                 handleSelectCharacter({ characterId: character.id })
               }
-              className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer hover:border-green-500 
-                ${selectedCharacter === character.id ? 'border-green-500' : ''}`}
+              className={`flex cursor-pointer flex-col items-center rounded-lg border p-4 hover:border-green-500 ${selectedCharacter === character.id ? 'border-green-500' : ''}`}
             >
               <img
                 src={character.characterInfos[0].photoUrl}
                 alt={character.name}
-                className="w-24 h-24 mb-2"
+                className="mb-2 h-24 w-24"
               />
               <div className="text-center font-medium">{character.name}</div>
             </div>

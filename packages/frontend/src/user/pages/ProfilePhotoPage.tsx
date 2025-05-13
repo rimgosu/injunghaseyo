@@ -88,7 +88,7 @@ export const ProfilePhotoPage = ({
       rightElement={
         existDeleteButton && (
           <TrashIcon
-            className="w-6 h-6 text-white cursor-pointer hover:text-red-500 transition-colors drop-shadow-lg"
+            className="h-6 w-6 cursor-pointer text-white drop-shadow-lg transition-colors hover:text-red-500"
             onClick={handleDeletePhoto}
           />
         )
@@ -97,12 +97,12 @@ export const ProfilePhotoPage = ({
       height="h-screen"
       overflowY=""
     >
-      <div className="p-4 text-center text-sm text-white absolute top-12 left-0 right-0">
+      <div className="absolute left-0 right-0 top-12 p-4 text-center text-sm text-white">
         {currentPhotoIndex + 1}/{profileData?.profilePhotos?.length || 1}
       </div>
-      <div className="flex items-center justify-center h-full bg-black">
+      <div className="flex h-full items-center justify-center bg-black">
         <div
-          className="flex-1 relative"
+          className="relative flex-1"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -110,13 +110,13 @@ export const ProfilePhotoPage = ({
           <img
             src={profileData?.profilePhotos?.[currentPhotoIndex]?.url}
             alt="프로필 사진"
-            className="w-full h-full object-contain"
+            className="h-full w-full object-contain"
           />
         </div>
       </div>
-      <div className="absolute bottom-2 left-2 right-2 flex justify-between p-4 text-sm bg-gradient-to-t from-black/30 to-transparent">
+      <div className="absolute bottom-2 left-2 right-2 flex justify-between bg-gradient-to-t from-black/30 to-transparent p-4 text-sm">
         <div
-          className={`text-white cursor-pointer ${
+          className={`cursor-pointer text-white ${
             currentPhotoIndex === 0 ? 'opacity-50' : ''
           }`}
           onClick={handlePrevPhoto}
@@ -124,7 +124,7 @@ export const ProfilePhotoPage = ({
           이전
         </div>
         <div
-          className={`text-white cursor-pointer ${
+          className={`cursor-pointer text-white ${
             currentPhotoIndex === (profileData?.profilePhotos?.length || 1) - 1
               ? 'opacity-50'
               : ''

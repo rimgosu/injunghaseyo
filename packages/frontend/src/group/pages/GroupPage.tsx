@@ -91,7 +91,7 @@ export const GroupPage = () => {
   return (
     <BaseLayout
       bottomNavBar={
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <CreateButton path={isSignedIn ? '/group/create' : '/auth/login'} />
           <BottomNavigationBar />
         </div>
@@ -100,8 +100,8 @@ export const GroupPage = () => {
       searchBar={<SearchBar onSearch={handleSearch} />}
       bottomLine={false}
     >
-      <div className="flex flex-col gap-4 w-full pb-24 mt-2">
-        <div className="flex flex-col gap-8 mt-2">
+      <div className="mt-2 flex w-full flex-col gap-4 pb-24">
+        <div className="mt-2 flex flex-col gap-8">
           {groupsData?.items.map((group, index) => (
             <div
               key={group.id}

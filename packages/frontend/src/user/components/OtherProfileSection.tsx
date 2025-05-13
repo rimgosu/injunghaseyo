@@ -19,7 +19,7 @@ export const OtherProfileSection = ({
 }: ProfileSectionProps) => {
   return (
     <div className="grid grid-cols-10">
-      <div className="col-span-6 flex gap-1 items-center flex-col">
+      <div className="col-span-6 flex flex-col items-center gap-1">
         <ProfilePhotoCircle
           profileData={profileData}
           showCameraButton={showCameraButton}
@@ -35,8 +35,8 @@ export const OtherProfileSection = ({
       {/* 인증 정보 카드 */}
       <div className="col-span-4 flex items-center justify-center">
         <div className="flex-1 p-4 text-center">
-          <div className="text-gray-600 text-lg">총 인증한 일수</div>
-          <div className="text-6xl text-green-400 font-bold">
+          <div className="text-lg text-gray-600">총 인증한 일수</div>
+          <div className="text-6xl font-bold text-green-400">
             {profileData?.totalProofDays}일
           </div>
         </div>

@@ -59,7 +59,7 @@ export const ProofPage = () => {
       height="h-screen"
     >
       {proofMode === 'view' && (
-        <main className="bg-black flex justify-center items-center h-screen">
+        <main className="flex h-screen items-center justify-center bg-black">
           <img src={proof?.url} className="w-full" />
           <section className="absolute bottom-4 right-4 flex flex-col gap-4">
             <LikeDisLikeButton
@@ -82,32 +82,32 @@ export const ProofPage = () => {
               iconClassName="w-8 h-8 text-white cursor-pointer drop-shadow-lg"
               showCount={false}
             />
-            <div className="flex items-center flex-col">
+            <div className="flex flex-col items-center">
               <ChatBubbleBottomCenterIcon
-                className="w-8 h-8 text-white cursor-pointer"
+                className="h-8 w-8 cursor-pointer text-white"
                 onClick={() => setProofMode('comment')}
               />
               <span className="text-white">{proof?.commentCount}</span>
             </div>
             <div
-              className="flex items-center flex-col cursor-pointer"
+              className="flex cursor-pointer flex-col items-center"
               onClick={() => setIsReportModalOpen(true)}
             >
-              <FlagIcon className="w-8 h-8 text-white" />
+              <FlagIcon className="h-8 w-8 text-white" />
             </div>
           </section>
           <section className="absolute bottom-4 left-4 flex flex-col gap-4">
             <div
-              className="flex items-center gap-2 cursor-pointer"
+              className="flex cursor-pointer items-center gap-2"
               onClick={() => {
                 navigate(`/user/${proof?.user.userId}/profile`);
               }}
             >
               <img
                 src={proof?.user.profilePhotoUrl}
-                className="rounded-full w-12 h-12 "
+                className="h-12 w-12 rounded-full"
               />
-              <span className="text-white text-md">
+              <span className="text-md text-white">
                 @{proof?.user.nickname}
               </span>
             </div>
@@ -123,23 +123,23 @@ export const ProofPage = () => {
         </main>
       )}
       {proofMode === 'comment' && (
-        <main className="bg-black flex justify-center items-center h-screen flex-col">
+        <main className="flex h-screen flex-col items-center justify-center bg-black">
           <section
             className="h-1/3 cursor-pointer"
             onClick={() => {
               setProofMode('view');
             }}
           >
-            <img src={proof?.url} className="w-full h-full" />
+            <img src={proof?.url} className="h-full w-full" />
           </section>
-          <section className="bg-white w-full h-2/3 p-6 shadow-2xl flex flex-col gap-2 border-t border-gray-500">
+          <section className="flex h-2/3 w-full flex-col gap-2 border-t border-gray-500 bg-white p-6 shadow-2xl">
             <header className="flex justify-between">
-              <div className="text-xl flex gap-2">
+              <div className="flex gap-2 text-xl">
                 <p>댓글</p>
                 <p>{proof?.commentCount}</p>
               </div>
               <XMarkIcon
-                className="w-6 h-6 text-black cursor-pointer"
+                className="h-6 w-6 cursor-pointer text-black"
                 onClick={() => {
                   setProofMode('view');
                 }}
@@ -149,7 +149,7 @@ export const ProofPage = () => {
               <Comments />
             </div>
           </section>
-          <section className="absolute bottom-0 w-full flex flex-col bg-white gap-2">
+          <section className="absolute bottom-0 flex w-full flex-col gap-2 bg-white">
             <CommentInputBox />
           </section>
         </main>

@@ -26,7 +26,7 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
       <input
         type="text"
         placeholder="검색..."
-        className="w-full p-3 border rounded-lg pr-10 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400"
+        className="w-full rounded-lg border p-3 pr-10 focus:border-green-400 focus:outline-none focus:ring-1 focus:ring-green-400"
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         value={inputValue}
@@ -36,7 +36,7 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
         className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
       >
         <svg
-          className="w-5 h-5 text-gray-400"
+          className="h-5 w-5 text-gray-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

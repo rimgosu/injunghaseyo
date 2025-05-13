@@ -28,7 +28,7 @@ export const CreateGroupStep2ViewMode = () => {
       ))}
 
       <button
-        className="w-full border rounded-lg p-4 text-blue-600 hover:bg-blue-50 transition-colors"
+        className="w-full rounded-lg border p-4 text-blue-600 transition-colors hover:bg-blue-50"
         onClick={() => setCreateProofMethodMode('add')}
       >
         + 인증 방법 추가하기

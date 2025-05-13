@@ -100,16 +100,16 @@ export const CommentInputBox = ({
 
   return (
     <div
-      className={`flex justify-center gap-2 border-gray-300 ${mode === 'comment' && 'border-t py-3 px-4 items-center'}`}
+      className={`flex justify-center gap-2 border-gray-300 ${mode === 'comment' && 'items-center border-t px-4 py-3'}`}
     >
       <img
         src={checkSignInRes.profilePhoto}
-        className={`w-12 h-12 rounded-full border border-gray-400 ${['reply', 'reply-to-reply'].includes(mode) && 'w-9 h-9'}`}
+        className={`h-12 w-12 rounded-full border border-gray-400 ${['reply', 'reply-to-reply'].includes(mode) && 'h-9 w-9'}`}
       />
-      <div className="flex-1 flex flex-col gap-2">
+      <div className="flex flex-1 flex-col gap-2">
         <textarea
           ref={textareaRef}
-          className="w-full border-b border-gray-400 focus:outline-none focus:border-black text-md resize-none min-h-[24px] max-h-[120px] box-border scrollbar-hide"
+          className="text-md box-border max-h-[120px] min-h-[24px] w-full resize-none border-b border-gray-400 scrollbar-hide focus:border-black focus:outline-none"
           onFocus={() => setFocused(true)}
           placeholder={
             !focused && mode === 'comment'
@@ -130,7 +130,7 @@ export const CommentInputBox = ({
             className={`flex justify-end gap-2 ${['reply', 'reply-to-reply'].includes(mode) && 'text-md'} ${mode === 'comment' && 'text-lg'}`}
           >
             <p
-              className={`text-gray-500 hover:bg-gray-100 rounded-3xl cursor-pointer ${['reply', 'reply-to-reply'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
+              className={`cursor-pointer rounded-3xl text-gray-500 hover:bg-gray-100 ${['reply', 'reply-to-reply'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
               onClick={() => {
                 setFocused(false);
                 setContents('');
@@ -140,7 +140,7 @@ export const CommentInputBox = ({
               취소
             </p>
             <p
-              className={`text-gray-500 bg-gray-300 rounded-3xl cursor-pointer ${contents.length > 0 && 'bg-green-400 text-white font-bold'} ${['reply', 'reply-to-reply'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
+              className={`cursor-pointer rounded-3xl bg-gray-300 text-gray-500 ${contents.length > 0 && 'bg-green-400 font-bold text-white'} ${['reply', 'reply-to-reply'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
               onClick={handleCreateComment}
             >
               댓글

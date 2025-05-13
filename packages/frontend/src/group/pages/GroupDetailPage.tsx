@@ -90,7 +90,7 @@ export const GroupDetailPage = () => {
   if (isLoading) {
     return (
       <BaseLayout isMainLogo bottomNavBar={<BottomNavigationBar />}>
-        <div className="flex justify-center items-center h-full">
+        <div className="flex h-full items-center justify-center">
           <div className="text-center">로딩 중...</div>
         </div>
       </BaseLayout>
@@ -100,7 +100,7 @@ export const GroupDetailPage = () => {
   if (!groupData) {
     return (
       <BaseLayout isMainLogo bottomNavBar={<BottomNavigationBar />}>
-        <div className="flex justify-center items-center h-full">
+        <div className="flex h-full items-center justify-center">
           <div className="text-center">모임 정보를 찾을 수 없습니다.</div>
         </div>
       </BaseLayout>
@@ -115,20 +115,20 @@ export const GroupDetailPage = () => {
       bottomNavBar={<BottomNavigationBar />}
       rightElement={<XButton />}
     >
-      <div className="flex flex-col gap-12 w-full pb-24">
+      <div className="flex w-full flex-col gap-12 pb-24">
         <img
           src={groupData.groupPhoto}
           alt="모임 사진"
-          className="w-full object-cover rounded-xl"
+          className="w-full rounded-xl object-cover"
         />
         <div className="flex justify-between">
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-bold">{groupData.title}</h2>
-            <p className="text-gray-600 text-md">{groupData.description}</p>
+            <p className="text-md text-gray-600">{groupData.description}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 border-green-300 border rounded-xl px-4 py-8">
+        <div className="grid grid-cols-2 gap-4 rounded-xl border border-green-300 px-4 py-8">
           <div className="flex flex-col gap-1">
             <span className="text-md text-gray-500">가격</span>
             <span className="text-xl font-semibold text-gray-800">
@@ -155,7 +155,7 @@ export const GroupDetailPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="mb-4 flex flex-wrap gap-2">
           {groupData.tags.map((tag) => (
             <Tag tag={tag} />
           ))}
@@ -171,18 +171,18 @@ export const GroupDetailPage = () => {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <h3 className="text-xl w-full mb-2">참여자</h3>
+          <h3 className="mb-2 w-full text-xl">참여자</h3>
           <div className="flex flex-wrap gap-2">
             {groupData.participants.map((participant) => (
               <div
                 key={participant.id}
-                className="w-16 h-16 rounded-full overflow-hidden cursor-pointer"
+                className="h-16 w-16 cursor-pointer overflow-hidden rounded-full"
                 onClick={() => navigate(`/user/${participant.id}/profile`)}
               >
                 <img
                   src={participant.profilePhoto}
                   alt="프로필"
-                  className="w-full h-full object-cover rounded-full border border-gray-800"
+                  className="h-full w-full rounded-full border border-gray-800 object-cover"
                 />
               </div>
             ))}
@@ -190,7 +190,7 @@ export const GroupDetailPage = () => {
         </div>
         <div className="flex flex-col gap-12">
           {remainingDays > 0 && (
-            <div className="flex flex-col gap-2 items-center">
+            <div className="flex flex-col items-center gap-2">
               <p className="text-xl">시작까지</p>
               <p className="text-4xl text-green-400">{remainingDays}일</p>
             </div>

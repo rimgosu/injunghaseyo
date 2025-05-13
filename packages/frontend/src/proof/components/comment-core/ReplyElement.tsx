@@ -53,8 +53,8 @@ export const ReplyElement = ({ parentCommentId }: TReplyElementProps) => {
         />
       ))}
       {hasNextPage && (
-        <div className="flex gap-2 items-center hover:bg-gray-300 rounded-2xl py-3 px-4 cursor-pointer w-fit">
-          <ArrowTurnDownRightIcon className="w-6 h-6" />
+        <div className="flex w-fit cursor-pointer items-center gap-2 rounded-2xl px-4 py-3 hover:bg-gray-300">
+          <ArrowTurnDownRightIcon className="h-6 w-6" />
           <button onClick={handleGetReplies}>더보기</button>
         </div>
       )}

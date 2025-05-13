@@ -118,22 +118,22 @@ export const CommentElement = ({
       <img
         src={item.user.profilePhotoUrl}
         alt="profile"
-        className={`w-12 h-12 rounded-full cursor-pointer ${
-          mode === 'reply' && 'w-9 h-9'
+        className={`h-12 w-12 cursor-pointer rounded-full ${
+          mode === 'reply' && 'h-9 w-9'
         }`}
         onClick={() => {
           navigate(`/user/${item.user.id}/profile`);
         }}
       />
-      <div className="flex flex-col gap-1 w-full">
-        <div className="text-sm flex gap-2">
+      <div className="flex w-full flex-col gap-1">
+        <div className="flex gap-2 text-sm">
           <span className="font-bold">@{item.user.nickname}</span>
           <span className="text-gray-500">
             {getRelativeTime(item.createdAt)} 전
           </span>
         </div>
-        <div className="text-sm whitespace-pre-wrap">{item.contents}</div>
-        <div className="flex gap-2 items-center">
+        <div className="whitespace-pre-wrap text-sm">{item.contents}</div>
+        <div className="flex items-center gap-2">
           <LikeDisLikeButton
             isActive={item.isLiked}
             count={item.likeCount}
@@ -159,7 +159,7 @@ export const CommentElement = ({
             flexDirection="flex-row"
           />
           <p
-            className="text-gray-700 ml-1 text-sm cursor-pointer hover:bg-gray-100 rounded-2xl py-3 px-4"
+            className="ml-1 cursor-pointer rounded-2xl px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
             onClick={() => {
               setIsReplyInputOpen(!isReplyInputOpen);
             }}
@@ -169,7 +169,7 @@ export const CommentElement = ({
         </div>
         {'childCommentCount' in item && item.childCommentCount > 0 && (
           <div
-            className="flex gap-1 items-center text-gray-700 cursor-pointer hover:bg-green-100 px-3 py-2 rounded-2xl w-fit"
+            className="flex w-fit cursor-pointer items-center gap-1 rounded-2xl px-3 py-2 text-gray-700 hover:bg-green-100"
             onClick={() => {
               setIsReplyOpen(!isReplyOpen);
             }}
@@ -177,9 +177,9 @@ export const CommentElement = ({
             <p>답글</p>
             <p>{item.childCommentCount}개</p>
             {isReplyOpen ? (
-              <ChevronUpIcon className="w-5 h-5" />
+              <ChevronUpIcon className="h-5 w-5" />
             ) : (
-              <ChevronDownIcon className="w-5 h-5" />
+              <ChevronDownIcon className="h-5 w-5" />
             )}
           </div>
         )}

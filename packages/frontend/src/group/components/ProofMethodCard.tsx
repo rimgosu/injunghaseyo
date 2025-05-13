@@ -12,27 +12,27 @@ export const ProofMethodCard = ({
   onDelete,
 }: ProofMethodCardProps) => {
   return (
-    <div className="border rounded-lg px-4 py-6 shadow-sm mb-3">
+    <div className="mb-3 rounded-lg border px-4 py-6 shadow-sm">
       <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-center">
-          <h3 className="font-semibold text-lg">{proofMethod.contents}</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">{proofMethod.contents}</h3>
           {onDelete && (
             <button
               onClick={() => onDelete(proofMethod)}
-              className="text-red-500 hover:text-red-700 px-2 py-1 rounded-md text-sm"
+              className="rounded-md px-2 py-1 text-sm text-red-500 hover:text-red-700"
             >
               삭제하기
             </button>
           )}
         </div>
-        <div className="text-gray-600 text-md">
-          <div className="flex justify-between items-center py-1">
+        <div className="text-md text-gray-600">
+          <div className="flex items-center justify-between py-1">
             <span>인증 유형:</span>
             <span className="font-medium">
               {ProofMethodTypeView[proofMethod.type]}
             </span>
           </div>
-          <div className="flex justify-between items-center py-1">
+          <div className="flex items-center justify-between py-1">
             <span>인증 가능 시간:</span>
             <span className="font-medium">
               {formatMinutesToTime(proofMethod.fromMin)} -{' '}

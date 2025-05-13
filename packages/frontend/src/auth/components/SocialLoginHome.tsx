@@ -22,14 +22,14 @@ export const SocialLoginHome = () => {
           provider="kakao"
           icon={kakaoIcon}
           text="카카오로 시작하기"
-          className="bg-[#FEE500] border border-[#FEE500] hover:bg-[#FDE300]"
+          className="border border-[#FEE500] bg-[#FEE500] hover:bg-[#FDE300]"
           onClick={kakaoLogin}
         />
         <SocialLoginButton
           provider="naver"
           icon={naverIcon}
           text="네이버로 시작하기"
-          className="bg-[#03C75A] border border-[#03C75A] hover:bg-[#02BD54] text-white"
+          className="border border-[#03C75A] bg-[#03C75A] text-white hover:bg-[#02BD54]"
           onClick={naverLogin}
         />
       </div>

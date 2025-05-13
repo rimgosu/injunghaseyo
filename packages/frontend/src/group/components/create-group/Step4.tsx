@@ -67,7 +67,7 @@ export const CreateGroupStep4 = () => {
         {formData.tags?.map((tag) => (
           <div
             key={tag}
-            className="flex items-center gap-1 px-6 py-2 bg-green-100 text-green-700 rounded-full"
+            className="flex items-center gap-1 rounded-full bg-green-100 px-6 py-2 text-green-700"
           >
             <span>{tag}</span>
             <button

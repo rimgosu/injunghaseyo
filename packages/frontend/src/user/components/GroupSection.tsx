@@ -24,7 +24,7 @@ export const GroupSection = ({
       <h2 className="mb-2 text-xl">{title}</h2>
       <div className={`grid grid-cols-${gridCols} gap-4`}>
         {groups.length === 0 ? (
-          <div className="text-gray-500 text-lg">{title}이 없습니다.</div>
+          <div className="text-lg text-gray-500">{title}이 없습니다.</div>
         ) : (
           groups.map((group, index) => (
             <ProfileGroupCard

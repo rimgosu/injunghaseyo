@@ -19,11 +19,11 @@ export const BottomNavigationBar = () => {
   };
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 p-6 bg-white flex justify-around items-center">
-      <div className="flex justify-around items-center w-full border p-4 rounded-lg">
+    <div className="absolute bottom-0 left-0 right-0 flex items-center justify-around bg-white p-6">
+      <div className="flex w-full items-center justify-around rounded-lg border p-4">
         <button
           onClick={() => navigate('/proof/gallery')}
-          className={`flex flex-col items-center w-1/3 ${
+          className={`flex w-1/3 flex-col items-center ${
             isActive('/proof/gallery') ? 'text-green-500' : 'text-gray-500'
           }`}
         >
@@ -31,7 +31,7 @@ export const BottomNavigationBar = () => {
         </button>
         <button
           onClick={() => navigate('/group')}
-          className={`flex flex-col items-center w-1/3 ${
+          className={`flex w-1/3 flex-col items-center ${
             isActive('/group') ? 'text-green-500' : 'text-gray-500'
           }`}
         >
@@ -39,7 +39,7 @@ export const BottomNavigationBar = () => {
         </button>
         <button
           onClick={handleProfileClick}
-          className={`flex flex-col items-center w-1/3 ${
+          className={`flex w-1/3 flex-col items-center ${
             isActive('/user/profile') ? 'text-green-500' : 'text-gray-500'
           }`}
         >
