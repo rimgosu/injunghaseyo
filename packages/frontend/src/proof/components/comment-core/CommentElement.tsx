@@ -4,8 +4,11 @@ import { LikeDisLikeButton } from '../core/LikeDisLikeButton';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
+  EllipsisVerticalIcon,
   HandThumbDownIcon as HandThumbDownIconOutline,
   HandThumbUpIcon as HandThumbUpIconOutline,
+  PencilIcon,
+  TrashIcon,
 } from '@heroicons/react/24/outline';
 import {
   HandThumbDownIcon as HandThumbDownIconSolid,
@@ -31,12 +34,13 @@ export const CommentElement = ({
   mode = 'comment',
 }: TProofCommentElementProps) => {
   const navigate = useNavigate();
-  const { interactionComment } = useProofHook();
+  const { interactionComment, deleteComment } = useProofHook();
   const { proofId } = useParams();
   const { setComments, comments } = useCommentStore(Number(proofId));
   const [isReplyInputOpen, setIsReplyInputOpen] = useState(false);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const replyStore = parentCommentId ? useReplyStore(parentCommentId) : null;
+  const [isEllipsisOpen, setIsEllipsisOpen] = useState<boolean>(false);
 
   const handleInteraction = async (type: TypeEnum1) => {
     await interactionComment({
@@ -113,8 +117,17 @@ export const CommentElement = ({
     }
   };
 
+  const handleDeleteComment = async () => {
+    const res = await deleteComment(Number(proofId), item.id);
+
+    if (res.data) {
+      setComments(comments.filter((c) => c.id !== item.id));
+    } else {
+    }
+  };
+
   return (
-    <article key={item.id} className="flex gap-4">
+    <article key={item.id} className="relative flex gap-4">
       <img
         src={item.user.profilePhotoUrl}
         alt="profile"
@@ -197,6 +210,32 @@ export const CommentElement = ({
           />
         )}
         {isReplyOpen && <ReplyElement parentCommentId={item.id} />}
+      </div>
+      <div className="absolute right-0 top-0">
+        <div className="relative">
+          <EllipsisVerticalIcon
+            className="h-7 w-7 cursor-pointer text-gray-500"
+            onClick={() => {
+              setIsEllipsisOpen(!isEllipsisOpen);
+            }}
+          />
+          {isEllipsisOpen && (
+            <div className="absolute right-0 mt-1 flex flex-col gap-2 rounded-2xl bg-white p-2 drop-shadow-lg">
+              <div className="flex cursor-pointer items-center justify-center gap-1 rounded-2xl px-4 py-2 hover:bg-gray-100">
+                <PencilIcon className="h-5 w-5 text-gray-500" />
+                <p className="cursor-pointer whitespace-nowrap rounded-2xl px-2 py-1">
+                  수정
+                </p>
+              </div>
+              <div className="flex cursor-pointer items-center justify-center gap-1 rounded-2xl p-2 hover:bg-gray-100">
+                <TrashIcon className="h-5 w-5 text-gray-500" />
+                <p className="cursor-pointer whitespace-nowrap rounded-2xl px-2 py-1">
+                  삭제
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </article>
   );
