@@ -2337,12 +2337,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data: UpdateCommentBody,
       params: RequestParams = {},
     ) =>
-      this.request<void, any>({
+      this.request<CreateCommentResDto, any>({
         path: `/proofs/${proofId}/comments/${commentId}`,
         method: 'PATCH',
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: 'json',
         ...params,
       }),
 

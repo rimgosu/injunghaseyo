@@ -30,6 +30,7 @@ import { InteractionCommentQuery } from './dtos/interaction-comment-query.dto';
 import { UpdateCommentBody } from './dtos/update-comment-body.dto';
 import { GetProofQuery } from './dtos/get-proof-query.dto';
 import { CreateCommentResDto } from './dtos/create-comment-res.dto';
+import { CommandCommentRes } from './dtos/command-comment-res.dto';
 
 @Controller('proofs')
 export class ProofController {
@@ -159,12 +160,17 @@ export class ProofController {
   @Patch(':proofId/comments/:commentId')
   @UseGuards(AtkGuard)
   @ApiBearerAuth('jwt')
+  @ApiResponse({
+    status: 200,
+    type: CreateCommentResDto,
+    description: '댓글 수정',
+  })
   async updateComment(
     @Param('proofId') proofId: number,
     @Param('commentId') commentId: number,
     @GetUser() user: User,
     @Body() body: UpdateCommentBody,
-  ) {
+  ): Promise<CommandCommentRes> {
     return this.proofService.updateComment({
       proofId,
       commentId,
@@ -183,7 +189,7 @@ export class ProofController {
     @Param('proofId') proofId: number,
     @Param('commentId') commentId: number,
     @GetUser() user: User,
-  ) {
+  ): Promise<CommandCommentRes> {
     return this.proofService.deleteComment({ proofId, commentId, user });
   }
 

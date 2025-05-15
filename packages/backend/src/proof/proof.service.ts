@@ -28,6 +28,7 @@ import { InteractionCommentQuery } from './dtos/interaction-comment-query.dto';
 import { UpdateCommentBody } from './dtos/update-comment-body.dto';
 import { GetProofQuery } from './dtos/get-proof-query.dto';
 import { CreateCommentResDto } from './dtos/create-comment-res.dto';
+import { CommandCommentRes } from './dtos/command-comment-res.dto';
 
 @Injectable()
 export class ProofService {
@@ -48,11 +49,14 @@ export class ProofService {
   }) {
     await this.checkMyComment({ proofId, commentId, user });
 
-    return await this.prisma.proofComment.update({
+    const deletedComment = await this.prisma.proofComment.update({
       where: { id: commentId },
       data: { deletedAt: new Date() },
     });
+
+    return new CommandCommentRes(deletedComment);
   }
+
   async updateComment({
     proofId,
     commentId,
@@ -63,15 +67,17 @@ export class ProofService {
     commentId: number;
     user: User;
     body: UpdateCommentBody;
-  }) {
+  }): Promise<CommandCommentRes> {
     const { contents } = body;
 
     await this.checkMyComment({ proofId, commentId, user });
 
-    return await this.prisma.proofComment.update({
+    const updatedComment = await this.prisma.proofComment.update({
       where: { id: commentId },
       data: { contents },
     });
+
+    return new CommandCommentRes(updatedComment);
   }
 
   private async checkMyComment({
