@@ -4,6 +4,7 @@ import { CreateGroupFlow } from './pages/CreateGroupFlow';
 import { GroupDetailPage } from './pages/GroupDetailPage';
 import { GroupTodayPage } from './pages/GroupTodayPage';
 import { PrivateRoute } from '../common/PrivateRoute';
+import { GroupEditPage } from './pages/GroupEditPage';
 
 export const GroupRoutes = () => {
   return (
@@ -30,7 +31,7 @@ export const GroupRoutes = () => {
         path="/:groupId/edit"
         element={
           <PrivateRoute>
-            <CreateGroupFlow />
+            <GroupEditPage />
           </PrivateRoute>
         }
       />

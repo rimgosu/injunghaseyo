@@ -1052,12 +1052,12 @@ export interface GroupControllerGetGroupsParams {
 export interface GroupControllerUpdateGroupParams {
   /**
    * 그룹 제목
-   * @example "그룹 제목"
+   * @example "수정된 그룹 제목입니다"
    */
   title?: string;
   /**
    * 그룹 설명
-   * @example "그룹 설명"
+   * @example "수정된 그룹 설명입니다"
    */
   description?: string;
   groupId: number;

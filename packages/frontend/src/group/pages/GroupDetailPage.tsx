@@ -12,6 +12,8 @@ import { GreenButton } from '../../auth/components/GreenButton';
 import { JoinModal } from '../components/JoinModal';
 import { XButton } from '../../common/components/XButton';
 import { PencilIcon } from '@heroicons/react/24/outline';
+import { MoreOptionsMenu } from '../../common/components/MoreOptionsMenu';
+import { useGroupStore } from '../stores/useGroupStore';
 
 const getJoinStatusMessage = (status: GetGroupResJoinStatusEnum) => {
   switch (status) {
@@ -40,10 +42,11 @@ const calculateRemainingDays = (startDate: string): number => {
 
 export const GroupDetailPage = () => {
   const { groupId } = useParams<{ groupId: string }>();
+  const groupIdNum = groupId ? parseInt(groupId) : 0;
   const { getGroup, joinGroup } = useGroups();
   const { isSignedIn } = useCheckSignInStore();
-  const [groupData, setGroupData] = useState<GetGroupRes | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { groupData, setGroupData, isLoading, setIsLoading } =
+    useGroupStore(groupIdNum);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -128,12 +131,16 @@ export const GroupDetailPage = () => {
             <p className="text-md text-gray-600">{groupData.description}</p>
           </div>
           {groupData.canMutation && (
-            <div
-              className="absolute right-0 top-0 flex cursor-pointer items-center justify-center p-2"
-              onClick={() => navigate(`/group/${groupId}/edit`)}
-            >
-              <PencilIcon className="h-6 w-6 text-gray-500" />
-            </div>
+            <MoreOptionsMenu
+              className="absolute right-0 top-0"
+              options={[
+                {
+                  icon: PencilIcon,
+                  label: '수정하기',
+                  onClick: () => navigate(`/group/${groupId}/edit`),
+                },
+              ]}
+            />
           )}
         </div>
 
