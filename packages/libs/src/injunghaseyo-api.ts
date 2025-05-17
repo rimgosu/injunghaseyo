@@ -625,6 +625,11 @@ export interface CreateCommentResDto {
   likeCount: number;
   /** 댓글 작성자 */
   user: UserForComment;
+  /**
+   * 댓글 부모 아이디
+   * @example 1
+   */
+  parentId: number | null;
 }
 
 export interface ProofCommentItem {
@@ -787,6 +792,11 @@ export interface ProofReplyItem {
   likeCount: number;
   /** 댓글 작성자 */
   user: UserForComment;
+  /**
+   * 댓글 부모 아이디
+   * @example 1
+   */
+  parentId: number;
 }
 
 export interface GetRepliesResDto {

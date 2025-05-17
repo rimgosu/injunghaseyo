@@ -5,6 +5,13 @@ import { ProofCommentWithInteraction } from '../utils/types';
 import { InteractionType, User } from '@prisma/client';
 
 class ProofReplyItem extends OmitType(ProofCommentItem, ['childCommentCount']) {
+  @ApiProperty({
+    description: '댓글 부모 아이디',
+    example: 1,
+    type: Number,
+  })
+  parentId: number;
+
   constructor(item: ProofCommentWithInteraction, user?: User) {
     super();
     this.id = item.id;
@@ -28,6 +35,7 @@ class ProofReplyItem extends OmitType(ProofCommentItem, ['childCommentCount']) {
       )[0].url,
     };
     this.canMutation = user?.id === item.user.id;
+    this.parentId = item.parentId;
   }
 }
 
