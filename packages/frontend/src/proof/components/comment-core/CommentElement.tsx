@@ -122,6 +122,18 @@ export const CommentElement = ({
 
     if (res.data) {
       setComments(comments.filter((c) => c.id !== res.data.id)); // 삭제 후 업데이트
+      if (replyStore) {
+        const { setReplies, replies } = replyStore;
+        setReplies(replies.filter((r) => r.id !== res.data.id));
+        setComments(
+          comments.map((c) => {
+            if (c.id === parentCommentId) {
+              c.childCommentCount = c.childCommentCount - 1;
+            }
+            return c;
+          }),
+        );
+      }
     }
   };
 
