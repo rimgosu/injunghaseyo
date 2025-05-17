@@ -12,6 +12,7 @@ type TCommentInputBoxProps = {
   parentCommentId?: number;
   nickname?: string;
   onComplete?: () => void;
+  onCancel?: () => void;
   isFocused?: boolean;
   value?: string;
 };
@@ -22,13 +23,14 @@ export const CommentInputBox = ({
   parentCommentId,
   nickname,
   onComplete,
+  onCancel,
   isFocused = false,
   value = '',
 }: TCommentInputBoxProps) => {
   const { proofId } = useParams();
   const [focused, setFocused] = useState<boolean>(isFocused);
   const { checkSignInRes } = useCheckSignInStore();
-  const { createComment } = useProofHook();
+  const { createComment, updateComment } = useProofHook();
   const { proof, setProof } = useProofStore(Number(proofId));
   const replyStore = parentCommentId
     ? useReplyStore(parentCommentId)
@@ -48,10 +50,6 @@ export const CommentInputBox = ({
       textareaRef.current.style.height = scrollHeight + 'px';
     }
   };
-
-  useEffect(() => {
-    adjustTextareaHeight();
-  }, [contents, value]);
 
   const handleCreateComment = async () => {
     const res = await createComment(
@@ -91,14 +89,39 @@ export const CommentInputBox = ({
     onComplete && onComplete();
   };
 
+  const handleUpdateComment = async () => {
+    const res = await updateComment(Number(proofId), commentId!, { contents });
+
+    if (res.data) {
+      setComments(
+        comments.map((c) => {
+          if (c.id === commentId) {
+            c.contents = res.data.contents;
+          }
+          return c;
+        }),
+      );
+    }
+  };
+
   const pressEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter') {
       if (!e.shiftKey) {
         e.preventDefault();
+        if (mode === 'edit') {
+          handleUpdateComment();
+          onComplete && onComplete();
+          return;
+        }
+
         handleCreateComment();
       }
     }
   };
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [contents, value]);
 
   return (
     <div
@@ -134,6 +157,11 @@ export const CommentInputBox = ({
             <p
               className={`cursor-pointer rounded-3xl text-gray-500 hover:bg-gray-100 ${['reply', 'reply-to-reply', 'edit'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
               onClick={() => {
+                if (mode === 'edit') {
+                  onCancel && onCancel();
+                  return;
+                }
+
                 setFocused(false);
                 setContents('');
                 isFocused && onComplete && onComplete();
@@ -143,7 +171,15 @@ export const CommentInputBox = ({
             </p>
             <p
               className={`cursor-pointer rounded-3xl bg-gray-300 text-gray-500 ${contents.length > 0 && 'bg-green-400 font-bold text-white'} ${['reply', 'reply-to-reply', 'edit'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
-              onClick={handleCreateComment}
+              onClick={() => {
+                if (mode === 'edit') {
+                  handleUpdateComment();
+                  onComplete && onComplete();
+                  return;
+                }
+
+                handleCreateComment();
+              }}
             >
               {mode === 'edit' ? '수정' : '댓글'}
             </p>
