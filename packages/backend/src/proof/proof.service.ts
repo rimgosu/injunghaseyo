@@ -49,12 +49,20 @@ export class ProofService {
   }) {
     await this.checkMyComment({ proofId, commentId, user });
 
-    const deletedComment = await this.prisma.proofComment.update({
-      where: { id: commentId },
-      data: { deletedAt: new Date() },
-    });
+    return await this.prisma.$transaction(async (tx) => {
+      const [deletedComment] = await Promise.all([
+        tx.proofComment.update({
+          where: { id: commentId },
+          data: { deletedAt: new Date() },
+        }),
+        tx.proofComment.updateMany({
+          where: { parentId: commentId },
+          data: { deletedAt: new Date() },
+        }),
+      ]);
 
-    return new CommandCommentRes(deletedComment);
+      return new CommandCommentRes(deletedComment);
+    });
   }
 
   async updateComment({

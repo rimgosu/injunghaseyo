@@ -16,7 +16,11 @@ export const PROOF_FOR_GET_PROOF = (userId?: number) => {
       createdAt: true,
       _count: {
         select: {
-          photoComment: true,
+          photoComment: {
+            where: {
+              deletedAt: null,
+            },
+          },
           proofInteraction: {
             where: {
               type: InteractionType.LIKE,
@@ -85,7 +89,11 @@ export const PROOF_COMMENT_WITH_INTERACTION = (
             },
           },
           ...(includeReplies && {
-            replies: true,
+            replies: {
+              where: {
+                deletedAt: null,
+              },
+            },
           }),
         },
       },
