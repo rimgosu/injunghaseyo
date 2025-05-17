@@ -18,7 +18,7 @@ import { useProofHook } from '../../hooks/useProofHook';
 import { getRelativeTime } from '../../../common/common.util';
 import { useCommentStore } from '../../stores/useCommentStore';
 import { CommentInputBox } from './CommentInputBox';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ReplyElement } from './ReplyElement';
 import { useReplyStore } from '../../stores/useReplyStore';
 
@@ -43,6 +43,26 @@ export const CommentElement = ({
   const [isEllipsisOpen, setIsEllipsisOpen] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isMoreButton, setIsMoreButton] = useState<boolean>(item.canMutation);
+  const ellipsisRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        ellipsisRef.current &&
+        !ellipsisRef.current.contains(event.target as Node)
+      ) {
+        setIsEllipsisOpen(false);
+      }
+    };
+
+    if (isEllipsisOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isEllipsisOpen]);
 
   const handleInteraction = async (type: TypeEnum1) => {
     await interactionComment({
@@ -248,7 +268,7 @@ export const CommentElement = ({
       )}
       {isMoreButton && (
         <div className="absolute right-0 top-0">
-          <div className="relative">
+          <div className="relative" ref={ellipsisRef}>
             <EllipsisVerticalIcon
               className="h-7 w-7 cursor-pointer text-gray-500"
               onClick={() => {
