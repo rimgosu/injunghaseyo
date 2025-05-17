@@ -4,7 +4,6 @@ import { LikeDisLikeButton } from '../core/LikeDisLikeButton';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
-  EllipsisVerticalIcon,
   HandThumbDownIcon as HandThumbDownIconOutline,
   HandThumbUpIcon as HandThumbUpIconOutline,
   PencilIcon,
@@ -18,9 +17,13 @@ import { useProofHook } from '../../hooks/useProofHook';
 import { getRelativeTime } from '../../../common/common.util';
 import { useCommentStore } from '../../stores/useCommentStore';
 import { CommentInputBox } from './CommentInputBox';
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { ReplyElement } from './ReplyElement';
 import { useReplyStore } from '../../stores/useReplyStore';
+import {
+  MoreOptionsMenu,
+  MoreOptionsMenuOption,
+} from '../../../common/components/MoreOptionsMenu';
 
 type TProofCommentElementProps = {
   item: ProofCommentItem | ProofReplyItem;
@@ -40,29 +43,8 @@ export const CommentElement = ({
   const [isReplyInputOpen, setIsReplyInputOpen] = useState(false);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const replyStore = parentCommentId ? useReplyStore(parentCommentId) : null;
-  const [isEllipsisOpen, setIsEllipsisOpen] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isMoreButton, setIsMoreButton] = useState<boolean>(item.canMutation);
-  const ellipsisRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        ellipsisRef.current &&
-        !ellipsisRef.current.contains(event.target as Node)
-      ) {
-        setIsEllipsisOpen(false);
-      }
-    };
-
-    if (isEllipsisOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isEllipsisOpen]);
 
   const handleInteraction = async (type: TypeEnum1) => {
     await interactionComment({
@@ -267,42 +249,23 @@ export const CommentElement = ({
         />
       )}
       {isMoreButton && (
-        <div className="absolute right-0 top-0">
-          <div className="relative" ref={ellipsisRef}>
-            <EllipsisVerticalIcon
-              className="h-7 w-7 cursor-pointer text-gray-500"
-              onClick={() => {
-                setIsEllipsisOpen(!isEllipsisOpen);
-              }}
-            />
-            {isEllipsisOpen && (
-              <div className="absolute right-0 z-10 mt-1 flex flex-col gap-2 rounded-2xl bg-white p-2 drop-shadow-lg">
-                <div
-                  className="flex cursor-pointer items-center justify-center gap-1 rounded-2xl px-4 py-2 hover:bg-gray-100"
-                  onClick={() => {
-                    setIsEdit(!isEdit);
-                    setIsEllipsisOpen(false);
-                    setIsMoreButton(false);
-                  }}
-                >
-                  <PencilIcon className="h-5 w-5 text-gray-500" />
-                  <p className="cursor-pointer whitespace-nowrap rounded-2xl px-2 py-1">
-                    수정
-                  </p>
-                </div>
-                <div
-                  className="flex cursor-pointer items-center justify-center gap-1 rounded-2xl p-2 hover:bg-gray-100"
-                  onClick={handleDeleteComment}
-                >
-                  <TrashIcon className="h-5 w-5 text-gray-500" />
-                  <p className="cursor-pointer whitespace-nowrap rounded-2xl px-2 py-1">
-                    삭제
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <MoreOptionsMenu
+          options={[
+            {
+              icon: PencilIcon,
+              label: '수정',
+              onClick: () => {
+                setIsEdit(true);
+                setIsMoreButton(false);
+              },
+            },
+            {
+              icon: TrashIcon,
+              label: '삭제',
+              onClick: handleDeleteComment,
+            },
+          ]}
+        />
       )}
     </article>
   );
