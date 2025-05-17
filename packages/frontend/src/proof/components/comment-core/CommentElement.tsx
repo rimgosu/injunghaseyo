@@ -230,7 +230,19 @@ export const CommentElement = ({
       )}
       {isEdit && (
         <>
-          <CommentInputBox mode="edit" value={item.contents} />
+          <CommentInputBox
+            mode="edit"
+            value={item.contents}
+            commentId={item.id}
+            onCancel={() => {
+              setIsEdit(false);
+              setIsMoreOpen(true);
+            }}
+            onComplete={() => {
+              setIsEdit(false);
+              setIsMoreOpen(true);
+            }}
+          />
         </>
       )}
       {isMoreOpen && (
