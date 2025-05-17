@@ -41,6 +41,8 @@ export const CommentElement = ({
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const replyStore = parentCommentId ? useReplyStore(parentCommentId) : null;
   const [isEllipsisOpen, setIsEllipsisOpen] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isMoreOpen, setIsMoreOpen] = useState<boolean>(item.canMutation);
 
   const handleInteraction = async (type: TypeEnum1) => {
     await interactionComment({
@@ -139,90 +141,99 @@ export const CommentElement = ({
 
   return (
     <article key={item.id} className="relative flex gap-4">
-      <img
-        src={item.user.profilePhotoUrl}
-        alt="profile"
-        className={`h-12 w-12 cursor-pointer rounded-full ${
-          mode === 'reply' && 'h-9 w-9'
-        }`}
-        onClick={() => {
-          navigate(`/user/${item.user.id}/profile`);
-        }}
-      />
-      <div className="flex w-full flex-col gap-1">
-        <div className="flex gap-2 text-sm">
-          <span className="font-bold">@{item.user.nickname}</span>
-          <span className="text-gray-500">
-            {getRelativeTime(item.createdAt)} 전
-          </span>
-        </div>
-        <div className="whitespace-pre-wrap text-sm">{item.contents}</div>
-        <div className="flex items-center gap-2">
-          <LikeDisLikeButton
-            isActive={item.isLiked}
-            count={item.likeCount}
+      {!isEdit && (
+        <>
+          <img
+            src={item.user.profilePhotoUrl}
+            alt="profile"
+            className={`h-12 w-12 cursor-pointer rounded-full ${
+              mode === 'reply' && 'h-9 w-9'
+            }`}
             onClick={() => {
-              handleInteraction(TypeEnum1.LIKE);
+              navigate(`/user/${item.user.id}/profile`);
             }}
-            ActiveIcon={HandThumbUpIconSolid}
-            InactiveIcon={HandThumbUpIconOutline}
-            iconClassName="w-5 h-5 text-gray-700 cursor-pointer drop-shadow-lg"
-            countIconClassName="text-gray-700 ml-1"
-            flexDirection="flex-row"
           />
-          <LikeDisLikeButton
-            isActive={item.isDisliked}
-            onClick={() => {
-              handleInteraction(TypeEnum1.DISLIKE);
-            }}
-            ActiveIcon={HandThumbDownIconSolid}
-            InactiveIcon={HandThumbDownIconOutline}
-            iconClassName="w-5 h-5 text-gray-700 cursor-pointer drop-shadow-lg"
-            countIconClassName="text-gray-700 ml-1"
-            showCount={false}
-            flexDirection="flex-row"
-          />
-          <p
-            className="ml-1 cursor-pointer rounded-2xl px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
-            onClick={() => {
-              setIsReplyInputOpen(!isReplyInputOpen);
-            }}
-          >
-            답글
-          </p>
-        </div>
-        {'childCommentCount' in item && item.childCommentCount > 0 && (
-          <div
-            className="flex w-fit cursor-pointer items-center gap-1 rounded-2xl px-3 py-2 text-gray-700 hover:bg-green-100"
-            onClick={() => {
-              setIsReplyOpen(!isReplyOpen);
-            }}
-          >
-            <p>답글</p>
-            <p>{item.childCommentCount}개</p>
-            {isReplyOpen ? (
-              <ChevronUpIcon className="h-5 w-5" />
-            ) : (
-              <ChevronDownIcon className="h-5 w-5" />
+          <div className="flex w-full flex-col gap-1">
+            <div className="flex gap-2 text-sm">
+              <span className="font-bold">@{item.user.nickname}</span>
+              <span className="text-gray-500">
+                {getRelativeTime(item.createdAt)} 전
+              </span>
+            </div>
+            <div className="whitespace-pre-wrap text-sm">{item.contents}</div>
+            <div className="flex items-center gap-2">
+              <LikeDisLikeButton
+                isActive={item.isLiked}
+                count={item.likeCount}
+                onClick={() => {
+                  handleInteraction(TypeEnum1.LIKE);
+                }}
+                ActiveIcon={HandThumbUpIconSolid}
+                InactiveIcon={HandThumbUpIconOutline}
+                iconClassName="w-5 h-5 text-gray-700 cursor-pointer drop-shadow-lg"
+                countIconClassName="text-gray-700 ml-1"
+                flexDirection="flex-row"
+              />
+              <LikeDisLikeButton
+                isActive={item.isDisliked}
+                onClick={() => {
+                  handleInteraction(TypeEnum1.DISLIKE);
+                }}
+                ActiveIcon={HandThumbDownIconSolid}
+                InactiveIcon={HandThumbDownIconOutline}
+                iconClassName="w-5 h-5 text-gray-700 cursor-pointer drop-shadow-lg"
+                countIconClassName="text-gray-700 ml-1"
+                showCount={false}
+                flexDirection="flex-row"
+              />
+              <p
+                className="ml-1 cursor-pointer rounded-2xl px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+                onClick={() => {
+                  setIsReplyInputOpen(!isReplyInputOpen);
+                }}
+              >
+                답글
+              </p>
+            </div>
+            {'childCommentCount' in item && item.childCommentCount > 0 && (
+              <div
+                className="flex w-fit cursor-pointer items-center gap-1 rounded-2xl px-3 py-2 text-gray-700 hover:bg-green-100"
+                onClick={() => {
+                  setIsReplyOpen(!isReplyOpen);
+                }}
+              >
+                <p>답글</p>
+                <p>{item.childCommentCount}개</p>
+                {isReplyOpen ? (
+                  <ChevronUpIcon className="h-5 w-5" />
+                ) : (
+                  <ChevronDownIcon className="h-5 w-5" />
+                )}
+              </div>
             )}
+            {isReplyInputOpen && (
+              <CommentInputBox
+                mode={mode === 'reply' ? 'reply-to-reply' : 'reply'}
+                commentId={item.id}
+                parentCommentId={parentCommentId}
+                nickname={mode === 'reply' ? item.user.nickname : undefined}
+                onComplete={() => {
+                  setIsReplyInputOpen(false);
+                  setIsReplyOpen(true);
+                }}
+                isFocused={true}
+              />
+            )}
+            {isReplyOpen && <ReplyElement parentCommentId={item.id} />}
           </div>
-        )}
-        {isReplyInputOpen && (
-          <CommentInputBox
-            mode={mode === 'reply' ? 'reply-to-reply' : 'reply'}
-            commentId={item.id}
-            parentCommentId={parentCommentId}
-            nickname={mode === 'reply' ? item.user.nickname : undefined}
-            onComplete={() => {
-              setIsReplyInputOpen(false);
-              setIsReplyOpen(true);
-            }}
-            isFocused={true}
-          />
-        )}
-        {isReplyOpen && <ReplyElement parentCommentId={item.id} />}
-      </div>
-      {item.canMutation && (
+        </>
+      )}
+      {isEdit && (
+        <>
+          <CommentInputBox mode="edit" value={item.contents} />
+        </>
+      )}
+      {isMoreOpen && (
         <div className="absolute right-0 top-0">
           <div className="relative">
             <EllipsisVerticalIcon
@@ -233,7 +244,14 @@ export const CommentElement = ({
             />
             {isEllipsisOpen && (
               <div className="absolute right-0 z-10 mt-1 flex flex-col gap-2 rounded-2xl bg-white p-2 drop-shadow-lg">
-                <div className="flex cursor-pointer items-center justify-center gap-1 rounded-2xl px-4 py-2 hover:bg-gray-100">
+                <div
+                  className="flex cursor-pointer items-center justify-center gap-1 rounded-2xl px-4 py-2 hover:bg-gray-100"
+                  onClick={() => {
+                    setIsEdit(!isEdit);
+                    setIsEllipsisOpen(false);
+                    setIsMoreOpen(false);
+                  }}
+                >
                   <PencilIcon className="h-5 w-5 text-gray-500" />
                   <p className="cursor-pointer whitespace-nowrap rounded-2xl px-2 py-1">
                     수정

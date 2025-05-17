@@ -7,12 +7,13 @@ import { useProofStore } from '../../stores/useProofStore';
 import { useReplyStore } from '../../stores/useReplyStore';
 
 type TCommentInputBoxProps = {
-  mode?: 'reply' | 'comment' | 'reply-to-reply';
+  mode?: 'reply' | 'comment' | 'reply-to-reply' | 'edit';
   commentId?: number;
   parentCommentId?: number;
   nickname?: string;
   onComplete?: () => void;
   isFocused?: boolean;
+  value?: string;
 };
 
 export const CommentInputBox = ({
@@ -22,6 +23,7 @@ export const CommentInputBox = ({
   nickname,
   onComplete,
   isFocused = false,
+  value = '',
 }: TCommentInputBoxProps) => {
   const { proofId } = useParams();
   const [focused, setFocused] = useState<boolean>(isFocused);
@@ -35,7 +37,7 @@ export const CommentInputBox = ({
       : null;
   const { comments, setComments } = useCommentStore(Number(proofId));
   const [contents, setContents] = useState<string>(
-    nickname ? `@${nickname} ` : '',
+    nickname ? `@${nickname} ` : value || '',
   );
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -49,7 +51,7 @@ export const CommentInputBox = ({
 
   useEffect(() => {
     adjustTextareaHeight();
-  }, [contents]);
+  }, [contents, value]);
 
   const handleCreateComment = async () => {
     const res = await createComment(
@@ -100,7 +102,7 @@ export const CommentInputBox = ({
 
   return (
     <div
-      className={`flex justify-center gap-2 border-gray-300 ${mode === 'comment' && 'items-center border-t px-4 py-3'}`}
+      className={`flex justify-center gap-2 border-gray-300 ${mode === 'comment' && 'items-center border-t px-4 py-3'} ${mode === 'edit' && 'w-full pr-4'}`}
     >
       <img
         src={checkSignInRes.profilePhoto}
@@ -127,10 +129,10 @@ export const CommentInputBox = ({
         />
         {(focused || contents.length > 0) && (
           <div
-            className={`flex justify-end gap-2 ${['reply', 'reply-to-reply'].includes(mode) && 'text-md'} ${mode === 'comment' && 'text-lg'}`}
+            className={`flex justify-end gap-2 ${['reply', 'reply-to-reply', 'edit'].includes(mode) && 'text-md'} ${mode === 'comment' && 'text-lg'}`}
           >
             <p
-              className={`cursor-pointer rounded-3xl text-gray-500 hover:bg-gray-100 ${['reply', 'reply-to-reply'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
+              className={`cursor-pointer rounded-3xl text-gray-500 hover:bg-gray-100 ${['reply', 'reply-to-reply', 'edit'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
               onClick={() => {
                 setFocused(false);
                 setContents('');
@@ -140,10 +142,10 @@ export const CommentInputBox = ({
               취소
             </p>
             <p
-              className={`cursor-pointer rounded-3xl bg-gray-300 text-gray-500 ${contents.length > 0 && 'bg-green-400 font-bold text-white'} ${['reply', 'reply-to-reply'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
+              className={`cursor-pointer rounded-3xl bg-gray-300 text-gray-500 ${contents.length > 0 && 'bg-green-400 font-bold text-white'} ${['reply', 'reply-to-reply', 'edit'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
               onClick={handleCreateComment}
             >
-              댓글
+              {mode === 'edit' ? '수정' : '댓글'}
             </p>
           </div>
         )}
