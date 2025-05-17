@@ -1,4 +1,5 @@
 import {
+  CommandCommentRes,
   CreateCommentBody,
   CreateCommentResDto,
   GetCommentsResDto,
@@ -43,7 +44,7 @@ export const useProofHook = () => {
   const deleteComment = async (
     proofId: number,
     commentId: number,
-  ): Promise<ApiResponse<any>> => {
+  ): Promise<ApiResponse<CommandCommentRes>> => {
     return await ApiSingleton.getInstance()
       .proofs.proofControllerDeleteComment(proofId, commentId)
       .then((res) => ({ data: res.data }))

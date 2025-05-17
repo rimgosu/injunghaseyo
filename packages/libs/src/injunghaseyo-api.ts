@@ -696,6 +696,52 @@ export interface UpdateCommentBody {
   contents: string;
 }
 
+export interface CommandCommentRes {
+  /**
+   * 댓글 아이디
+   * @example 1
+   */
+  id: number;
+  /**
+   * 댓글 내용
+   * @example "댓글 내용"
+   */
+  contents: string;
+  /**
+   * 댓글 작성자 아이디
+   * @example 1
+   */
+  userId: number;
+  /**
+   * 댓글 부모 아이디
+   * @example 1
+   */
+  parentId: number | null;
+  /**
+   * 댓글 proof 아이디
+   * @example 1
+   */
+  proofId: number;
+  /**
+   * 댓글 생성일
+   * @format date-time
+   * @example "2021-01-01"
+   */
+  createdAt: string;
+  /**
+   * 댓글 삭제일
+   * @format date-time
+   * @example "2021-01-01"
+   */
+  deletedAt: string | null;
+  /**
+   * 댓글 수정일
+   * @format date-time
+   * @example "2021-01-01"
+   */
+  updatedAt: string;
+}
+
 export interface ProofReplyItem {
   /**
    * 내가 만든 것인지 여부
@@ -2356,10 +2402,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     proofControllerDeleteComment: (proofId: number, commentId: number, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<CommandCommentRes, any>({
         path: `/proofs/${proofId}/comments/${commentId}`,
         method: 'DELETE',
         secure: true,
+        format: 'json',
         ...params,
       }),
 

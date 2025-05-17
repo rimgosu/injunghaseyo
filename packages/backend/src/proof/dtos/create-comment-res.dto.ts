@@ -1,12 +1,13 @@
 import { ProofComment } from '@prisma/client';
 import { ProofCommentItem } from './core/get-comments-res.dto';
 import { UserWithPhoto } from '@/group/utils/types';
-import { IntersectionType } from '@nestjs/swagger';
+import { IntersectionType, PickType } from '@nestjs/swagger';
+import { BaseResDto } from '@/common/base-res.dto';
 
-/**
- * ProofCommentItem의 constructor를 사용하고 싶지 않아 IntersectionType을 사용함
- */
-export class CreateCommentResDto extends IntersectionType(ProofCommentItem) {
+export class CreateCommentResDto extends IntersectionType(
+  ProofCommentItem,
+  PickType(BaseResDto, ['canMutation']),
+) {
   constructor(proofComment: ProofComment, user: UserWithPhoto) {
     super();
     this.childCommentCount = 0;
@@ -23,5 +24,6 @@ export class CreateCommentResDto extends IntersectionType(ProofCommentItem) {
         (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
       )[0].url,
     };
+    this.canMutation = true;
   }
 }

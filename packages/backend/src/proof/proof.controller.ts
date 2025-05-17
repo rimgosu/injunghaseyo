@@ -184,6 +184,11 @@ export class ProofController {
    */
   @Delete(':proofId/comments/:commentId')
   @UseGuards(AtkGuard)
+  @ApiResponse({
+    status: 200,
+    type: CommandCommentRes,
+    description: '댓글 삭제',
+  })
   @ApiBearerAuth('jwt')
   async deleteComment(
     @Param('proofId') proofId: number,
