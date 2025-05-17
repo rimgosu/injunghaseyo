@@ -26,6 +26,14 @@ export const GroupRoutes = () => {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/:groupId/edit"
+        element={
+          <PrivateRoute>
+            <CreateGroupFlow />
+          </PrivateRoute>
+        }
+      />
     </Routes>
   );
 };

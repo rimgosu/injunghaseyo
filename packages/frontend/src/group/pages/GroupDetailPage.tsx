@@ -11,6 +11,7 @@ import { errorMessage2String } from '../../common/common.util';
 import { GreenButton } from '../../auth/components/GreenButton';
 import { JoinModal } from '../components/JoinModal';
 import { XButton } from '../../common/components/XButton';
+import { PencilIcon } from '@heroicons/react/24/outline';
 
 const getJoinStatusMessage = (status: GetGroupResJoinStatusEnum) => {
   switch (status) {
@@ -121,11 +122,19 @@ export const GroupDetailPage = () => {
           alt="모임 사진"
           className="w-full rounded-xl object-cover"
         />
-        <div className="flex justify-between">
+        <div className="relative flex justify-between">
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-bold">{groupData.title}</h2>
             <p className="text-md text-gray-600">{groupData.description}</p>
           </div>
+          {groupData.canMutation && (
+            <div
+              className="absolute right-0 top-0 flex cursor-pointer items-center justify-center p-2"
+              onClick={() => navigate(`/group/${groupId}/edit`)}
+            >
+              <PencilIcon className="h-6 w-6 text-gray-500" />
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 rounded-xl border border-green-300 px-4 py-8">
