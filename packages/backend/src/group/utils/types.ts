@@ -191,7 +191,7 @@ export type UserWithPhoto = Prisma.UserGetPayload<{
   };
 }>;
 
-export type GroupWithJoin = Prisma.GroupGetPayload<{
+export type GroupWithJoinForReward = Prisma.GroupGetPayload<{
   include: {
     groupDate: {
       include: {
@@ -223,3 +223,15 @@ export const GROUP_PROGRESS_WITH_METHOD =
 export type GroupProgressWithMethod = Prisma.GroupProgressGetPayload<
   typeof GROUP_PROGRESS_WITH_METHOD
 >;
+
+export const GROUP_WITH_JOIN = Prisma.validator<Prisma.GroupDefaultArgs>()({
+  include: {
+    join: {
+      where: {
+        deletedAt: null,
+      },
+    },
+  },
+});
+
+export type GroupWithJoin = Prisma.GroupGetPayload<typeof GROUP_WITH_JOIN>;

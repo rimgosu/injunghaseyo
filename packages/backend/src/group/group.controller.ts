@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   UploadedFile,
   UseGuards,
@@ -47,6 +48,8 @@ import { GetGroupsQueryDto } from './dtos/get-groups-query.dto';
 import { UploadProofRes } from './dtos/upload-proof-res.dto';
 import { GetGalleryParam } from './dtos/get-gallery-param.dto';
 import { GetGalleryRes } from './dtos/get-gallery-res.dto';
+import { getFileValidationPipe } from '@/common/files';
+import { UpdateGroupQuery } from './dtos/update-group-query.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -64,6 +67,41 @@ export class GroupController {
     @Body() body: CreateGroupBody,
   ) {
     return this.groupService.createGroup(user, params, body);
+  }
+
+  /**
+   * @description 그룹 수정
+   */
+  @Put(':groupId')
+  @ApiBearerAuth('jwt')
+  @UseGuards(AtkGuard)
+  @UseInterceptors(FileInterceptor('groupPhoto'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    required: false,
+    schema: {
+      type: 'object',
+      properties: {
+        groupPhoto: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async updateGroup(
+    @GetUser() user: User,
+    @Param('groupId') groupId: number,
+    @Query() query: UpdateGroupQuery,
+    @UploadedFile(getFileValidationPipe({ fileIsRequired: false }))
+    groupPhoto?: Express.Multer.File,
+  ) {
+    return await this.groupService.updateGroup(
+      user,
+      query,
+      groupId,
+      groupPhoto,
+    );
   }
 
   /**
@@ -215,7 +253,8 @@ export class GroupController {
     @Param() param: UploadProofParam,
     @Query() query: UploadProofQuery,
     @GetUser() user: User,
-    @UploadedFile() proofPhoto: Express.Multer.File,
+    @UploadedFile(getFileValidationPipe({ fileIsRequired: true }))
+    proofPhoto: Express.Multer.File,
   ) {
     return this.groupService.uploadProofPhoto(param, query, proofPhoto, user);
   }

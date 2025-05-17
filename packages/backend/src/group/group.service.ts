@@ -20,8 +20,10 @@ import { JoinGroupParam } from './dtos/join-group-param.dto';
 import {
   GROUP_DATE_FOR_GALLERY,
   GROUP_WITH_INCLUDE,
+  GROUP_WITH_JOIN,
   GroupProgressWithMethod,
   GroupWith,
+  GroupWithJoin,
   GroupWithProgress,
   GroupWithToday,
 } from './utils/types';
@@ -58,6 +60,7 @@ import { CharacterRewardService } from '@/character/character-reward.service';
 import { UploadProofRes } from './dtos/upload-proof-res.dto';
 import { GetGalleryParam } from './dtos/get-gallery-param.dto';
 import { GetGalleryRes } from './dtos/get-gallery-res.dto';
+import { UpdateGroupQuery } from './dtos/update-group-query.dto';
 
 @Injectable()
 export class GroupService {
@@ -70,6 +73,71 @@ export class GroupService {
     private readonly s3: S3Service,
     private readonly characterService: CharacterRewardService,
   ) {}
+
+  /**
+   * 그룹 mutation 권한 체크
+   *
+   * @description 그룹을 mutation할 수 있는 권한이 있는 지 확인합니다.
+   */
+  private async checkGroupHost(
+    groupId: number,
+    user: User,
+  ): Promise<GroupWithJoin> {
+    const group = await this.prisma.group.findUnique({
+      where: { id: groupId, deletedAt: null },
+      ...GROUP_WITH_JOIN,
+    });
+
+    if (!group) throw new NotFoundException('그룹이 존재하지 않습니다.');
+    if (group.join.length === 0)
+      throw new NotFoundException('누구도 참여하지 않았습니다.');
+    if (!group.join.find((j) => j.joinRole === JoinRole.HOST)) {
+      this.logger.warn('그룹에 호스트가 한 명도 존재하지 않습니다.');
+      throw new ForbiddenException('그룹 호스트가 존재하지 않습니다.');
+    }
+    if (
+      group.join.find((j) => j.userId === user.id).joinRole !== JoinRole.HOST
+    ) {
+      this.logger.warn('호스트가 아닌 사람이 그룹 수정을 시도하였습니다.');
+      throw new ForbiddenException('그룹 호스트가 아닙니다.');
+    }
+
+    return group;
+  }
+
+  /**
+   * @description 그룹 수정
+   *
+   * title, description, photo
+   */
+  async updateGroup(
+    user: User,
+    query: UpdateGroupQuery,
+    groupId: number,
+    groupPhoto?: Express.Multer.File,
+  ) {
+    const { title, description } = query;
+
+    const checkedGroup = await this.checkGroupHost(groupId, user);
+
+    // 사진이 있다면 s3 업데이트
+    let photo: string | undefined;
+    if (groupPhoto) {
+      photo = await this.s3.uploadFile(
+        groupPhoto,
+        `${this.s3.groupPhotoDir}/${checkedGroup.title}:${new Date().toISOString()}`,
+      );
+    }
+
+    return await this.prisma.group.update({
+      where: { id: groupId, deletedAt: null },
+      data: {
+        ...(title && { title }),
+        ...(description && { description }),
+        ...(groupPhoto && photo && { photo }),
+      },
+    });
+  }
 
   /**
    * @description 갤러리 조회
