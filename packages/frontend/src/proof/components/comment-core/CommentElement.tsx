@@ -42,7 +42,7 @@ export const CommentElement = ({
   const replyStore = parentCommentId ? useReplyStore(parentCommentId) : null;
   const [isEllipsisOpen, setIsEllipsisOpen] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [isMoreOpen, setIsMoreOpen] = useState<boolean>(item.canMutation);
+  const [isMoreButton, setIsMoreButton] = useState<boolean>(item.canMutation);
 
   const handleInteraction = async (type: TypeEnum1) => {
     await interactionComment({
@@ -229,23 +229,24 @@ export const CommentElement = ({
         </>
       )}
       {isEdit && (
-        <>
-          <CommentInputBox
-            mode="edit"
-            value={item.contents}
-            commentId={item.id}
-            onCancel={() => {
-              setIsEdit(false);
-              setIsMoreOpen(true);
-            }}
-            onComplete={() => {
-              setIsEdit(false);
-              setIsMoreOpen(true);
-            }}
-          />
-        </>
+        <CommentInputBox
+          mode={'parentId' in item && item.parentId ? 'edit-reply' : 'edit'}
+          value={item.contents}
+          commentId={item.id}
+          parentCommentId={
+            'parentId' in item ? (item.parentId as number) : undefined
+          }
+          onCancel={() => {
+            setIsEdit(false);
+            setIsMoreButton(true);
+          }}
+          onComplete={() => {
+            setIsEdit(false);
+            setIsMoreButton(true);
+          }}
+        />
       )}
-      {isMoreOpen && (
+      {isMoreButton && (
         <div className="absolute right-0 top-0">
           <div className="relative">
             <EllipsisVerticalIcon
@@ -261,7 +262,7 @@ export const CommentElement = ({
                   onClick={() => {
                     setIsEdit(!isEdit);
                     setIsEllipsisOpen(false);
-                    setIsMoreOpen(false);
+                    setIsMoreButton(false);
                   }}
                 >
                   <PencilIcon className="h-5 w-5 text-gray-500" />

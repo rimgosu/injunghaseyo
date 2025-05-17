@@ -5,9 +5,10 @@ import { useParams } from 'react-router-dom';
 import { useCommentStore } from '../../stores/useCommentStore';
 import { useProofStore } from '../../stores/useProofStore';
 import { useReplyStore } from '../../stores/useReplyStore';
+import { ProofReplyItem } from '@rimgosu/libs';
 
 type TCommentInputBoxProps = {
-  mode?: 'reply' | 'comment' | 'reply-to-reply' | 'edit';
+  mode?: 'reply' | 'comment' | 'reply-to-reply' | 'edit' | 'edit-reply';
   commentId?: number;
   parentCommentId?: number;
   nickname?: string;
@@ -68,7 +69,7 @@ export const CommentInputBox = ({
     if (res.data) {
       if (replyStore) {
         const { setReplies, replies, hasNextPage } = replyStore;
-        !hasNextPage && setReplies([...replies, res.data]);
+        !hasNextPage && setReplies([...replies, res.data] as ProofReplyItem[]);
         comments.map((c) => {
           if ([parentCommentId, commentId].includes(c.id)) {
             c.childCommentCount = c.childCommentCount + 1;
@@ -95,10 +96,23 @@ export const CommentInputBox = ({
     if (res.data) {
       setComments(
         comments.map((c) => {
-          if (c.id === commentId) {
+          if (c.id === res.data.id) {
             c.contents = res.data.contents;
           }
           return c;
+        }),
+      );
+    }
+
+    if (replyStore) {
+      const { setReplies, replies } = replyStore;
+
+      setReplies(
+        replies.map((r) => {
+          if (r.id === res.data.id) {
+            r.contents = res.data.contents;
+          }
+          return r;
         }),
       );
     }
@@ -108,7 +122,7 @@ export const CommentInputBox = ({
     if (e.key === 'Enter') {
       if (!e.shiftKey) {
         e.preventDefault();
-        if (mode === 'edit') {
+        if (['edit', 'edit-reply'].includes(mode)) {
           handleUpdateComment();
           onComplete && onComplete();
           return;
@@ -125,11 +139,11 @@ export const CommentInputBox = ({
 
   return (
     <div
-      className={`flex justify-center gap-2 border-gray-300 ${mode === 'comment' && 'items-center border-t px-4 py-3'} ${mode === 'edit' && 'w-full pr-4'}`}
+      className={`flex justify-center gap-2 border-gray-300 ${mode === 'comment' && 'items-center border-t px-4 py-3'} ${['edit', 'edit-reply'].includes(mode) && 'w-full pr-4'}`}
     >
       <img
         src={checkSignInRes.profilePhoto}
-        className={`h-12 w-12 rounded-full border border-gray-400 ${['reply', 'reply-to-reply'].includes(mode) && 'h-9 w-9'}`}
+        className={`h-12 w-12 rounded-full border border-gray-400 ${['reply', 'reply-to-reply', 'edit-reply'].includes(mode) && 'h-9 w-9'}`}
       />
       <div className="flex flex-1 flex-col gap-2">
         <textarea
@@ -155,9 +169,9 @@ export const CommentInputBox = ({
             className={`flex justify-end gap-2 ${['reply', 'reply-to-reply', 'edit'].includes(mode) && 'text-md'} ${mode === 'comment' && 'text-lg'}`}
           >
             <p
-              className={`cursor-pointer rounded-3xl text-gray-500 hover:bg-gray-100 ${['reply', 'reply-to-reply', 'edit'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
+              className={`cursor-pointer rounded-3xl text-gray-500 hover:bg-gray-100 ${['reply', 'reply-to-reply', 'edit', 'edit-reply'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
               onClick={() => {
-                if (mode === 'edit') {
+                if (['edit', 'edit-reply'].includes(mode)) {
                   onCancel && onCancel();
                   return;
                 }
@@ -170,9 +184,9 @@ export const CommentInputBox = ({
               취소
             </p>
             <p
-              className={`cursor-pointer rounded-3xl bg-gray-300 text-gray-500 ${contents.length > 0 && 'bg-green-400 font-bold text-white'} ${['reply', 'reply-to-reply', 'edit'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
+              className={`cursor-pointer rounded-3xl bg-gray-300 text-gray-500 ${contents.length > 0 && 'bg-green-400 font-bold text-white'} ${['reply', 'reply-to-reply', 'edit', 'edit-reply'].includes(mode) && 'p-1 px-3'} ${mode === 'comment' && 'p-2 px-4'}`}
               onClick={() => {
-                if (mode === 'edit') {
+                if (['edit', 'edit-reply'].includes(mode)) {
                   handleUpdateComment();
                   onComplete && onComplete();
                   return;
@@ -181,7 +195,7 @@ export const CommentInputBox = ({
                 handleCreateComment();
               }}
             >
-              {mode === 'edit' ? '수정' : '댓글'}
+              {['edit', 'edit-reply'].includes(mode) ? '수정' : '댓글'}
             </p>
           </div>
         )}
