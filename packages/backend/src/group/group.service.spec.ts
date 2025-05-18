@@ -1052,7 +1052,7 @@ describe('GroupService', () => {
       ).rejects.toThrow(new BadRequestException('환불할 수 없는 모임입니다.'));
     });
 
-    it('호스트가 다른 참여자가 있는 상태에서 1시간 이후에', async () => {
+    it('호스트가 다른 참여자가 있는 상태에서 1시간 이후에 탈퇴 시도 에러', async () => {
       // Given
       const currentTime = new Date('2024-03-10T12:00:00Z');
       const joinTimeBefore2Hours = new Date(

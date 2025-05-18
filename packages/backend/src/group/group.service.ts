@@ -596,7 +596,7 @@ export class GroupService {
     if (
       join.createdAt < new Date(new Date().getTime() - 1000 * 60 * 60) &&
       group.join.find((j) => j.joinRole === JoinRole.HOST).userId === user.id &&
-      group.join.length > 2
+      group.join.length > 1
     )
       throw new BadRequestException(
         '다른 사람이 참여했을 경우 주최자는 탈퇴할 수 없습니다. 관리자에게 문의해주세요.',
