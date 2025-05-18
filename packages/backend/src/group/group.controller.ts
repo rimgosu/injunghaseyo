@@ -196,6 +196,9 @@ export class GroupController {
    * - 모임 등록 1시간 이내면 무조건 환불
    * - 모임 시작 24시간 전 이전 환불 불가
    * - 모임 시작 24시간 전 이후 환불 가능
+   *
+   * * host인 경우
+   * - 다른 사람이 참여할 경우 탈퇴가 불가능하다.
    */
   @Delete(':groupId/leave')
   @ApiBearerAuth('jwt')

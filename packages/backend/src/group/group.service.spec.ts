@@ -16,7 +16,11 @@ import {
   WalletHistoryReason,
 } from '@prisma/client';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
-import { NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { S3Service } from '@/s3/s3.service';
 import { createMock } from '@golevelup/ts-jest';
 import { GroupWith, GroupWithProofDate } from './utils/types';
@@ -61,6 +65,7 @@ describe('GroupService', () => {
             group: {
               findMany: jest.fn(),
               findUnique: jest.fn(),
+              delete: jest.fn(),
             },
             wallet: {
               findUnique: jest.fn(),
@@ -69,6 +74,7 @@ describe('GroupService', () => {
             join: {
               findFirst: jest.fn(),
               create: jest.fn(),
+              delete: jest.fn(),
             },
             groupProgress: {
               createMany: jest.fn(),
@@ -750,6 +756,409 @@ describe('GroupService', () => {
 
       // 생성된 GroupProgress 개수 확인 (3개 날짜 * 2개 인증방법 = 6개)
       expect(expectedGroupProgressData).toHaveLength(6);
+    });
+  });
+
+  /**
+   * @description leaveGroup 테스트
+   */
+  describe('leaveGroup', () => {
+    const mockLeaveGroupParam = { groupId: mockGroupId };
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2024-03-10T12:00:00Z'));
+    });
+
+    it('모임 탈퇴 성공 (일반 참여자)', async () => {
+      // Given
+      const mockGroup = createMock<
+        Group & { join: Join[]; groupDate: GroupDate[] }
+      >({
+        id: mockGroupId,
+        title: '테스트 모임',
+        price: 30000,
+        description: '테스트 모임입니다',
+        join: [
+          {
+            id: 1,
+            userId: 2, // 호스트
+            groupId: mockGroupId,
+            joinRole: JoinRole.HOST,
+          },
+          {
+            id: 2,
+            userId: mockUser.id, // 일반 참여자
+            groupId: mockGroupId,
+            joinRole: JoinRole.ATTENDEE,
+          },
+        ],
+        groupDate: [
+          {
+            id: 1,
+            groupId: mockGroupId,
+            date: '2024-03-20', // 미래 날짜
+          },
+        ],
+      });
+
+      const mockJoin = createMock<Join>({
+        id: 2,
+        userId: mockUser.id,
+        groupId: mockGroupId,
+        joinRole: JoinRole.ATTENDEE,
+        createdAt: new Date('2024-03-09T12:00:00Z'), // 어제 참여
+      });
+
+      const mockWallet = createMock<Wallet>({
+        id: 1,
+        userId: mockUser.id,
+        money: 50000,
+      });
+
+      const mockDeletedJoin = {
+        ...mockJoin,
+        groupProgress: [],
+      };
+
+      const mockUpdatedWallet = {
+        ...mockWallet,
+        money: mockWallet.money + mockGroup.price,
+      };
+
+      jest
+        .spyOn(prismaService.group, 'findUnique')
+        .mockResolvedValue(mockGroup);
+      jest.spyOn(prismaService.join, 'findFirst').mockResolvedValue(mockJoin);
+      jest
+        .spyOn(prismaService.wallet, 'findUnique')
+        .mockResolvedValue(mockWallet);
+      jest
+        .spyOn(prismaService.join, 'delete')
+        .mockResolvedValue(mockDeletedJoin);
+      jest
+        .spyOn(prismaService.wallet, 'update')
+        .mockResolvedValue(mockUpdatedWallet);
+      jest.spyOn(prismaService.group, 'delete').mockResolvedValue(null);
+
+      // When
+      const result = await service.leaveGroup(mockUser, mockLeaveGroupParam);
+
+      // Then
+      expect(result).toEqual({
+        deletedJoin: mockDeletedJoin,
+        deletedGroup: false,
+        updatedWallet: mockUpdatedWallet,
+      });
+
+      expect(prismaService.join.delete).toHaveBeenCalledWith({
+        where: { id: mockJoin.id, deletedAt: null },
+        include: {
+          groupProgress: true,
+        },
+      });
+
+      expect(prismaService.wallet.update).toHaveBeenCalledWith({
+        where: { userId: mockUser.id, deletedAt: null },
+        data: {
+          money: { increment: mockGroup.price },
+          walletHistory: {
+            create: {
+              previousMoney: mockWallet.money,
+              currentMoney: mockWallet.money + mockGroup.price,
+              reason: WalletHistoryReason.REFUND,
+              joinId: mockGroup.join[0].id,
+            },
+          },
+        },
+      });
+
+      expect(prismaService.group.delete).not.toHaveBeenCalled();
+    });
+
+    it('모임 탈퇴 성공 (마지막 참여자이면 모임도 삭제됨)', async () => {
+      // Given
+      const mockGroup = createMock<
+        Group & { join: Join[]; groupDate: GroupDate[] }
+      >({
+        id: mockGroupId,
+        title: '테스트 모임',
+        price: 30000,
+        description: '테스트 모임입니다',
+        join: [
+          {
+            id: 1,
+            userId: mockUser.id, // 유일한 참여자(호스트)
+            groupId: mockGroupId,
+            joinRole: JoinRole.HOST,
+          },
+        ],
+        groupDate: [
+          {
+            id: 1,
+            groupId: mockGroupId,
+            date: '2024-03-20', // 미래 날짜
+          },
+        ],
+      });
+
+      const mockJoin = createMock<Join>({
+        id: 1,
+        userId: mockUser.id,
+        groupId: mockGroupId,
+        joinRole: JoinRole.HOST,
+        createdAt: new Date('2024-03-09T12:00:00Z'), // 어제 참여
+      });
+
+      const mockWallet = createMock<Wallet>({
+        id: 1,
+        userId: mockUser.id,
+        money: 50000,
+      });
+
+      const mockDeletedJoin = {
+        ...mockJoin,
+        groupProgress: [],
+      };
+
+      const mockUpdatedWallet = {
+        ...mockWallet,
+        money: mockWallet.money + mockGroup.price,
+      };
+
+      const mockDeletedGroup = {
+        ...mockGroup,
+        groupTagMap: [],
+        proofMethod: [],
+      };
+
+      jest
+        .spyOn(prismaService.group, 'findUnique')
+        .mockResolvedValue(mockGroup);
+      jest.spyOn(prismaService.join, 'findFirst').mockResolvedValue(mockJoin);
+      jest
+        .spyOn(prismaService.wallet, 'findUnique')
+        .mockResolvedValue(mockWallet);
+      jest
+        .spyOn(prismaService.join, 'delete')
+        .mockResolvedValue(mockDeletedJoin);
+      jest
+        .spyOn(prismaService.wallet, 'update')
+        .mockResolvedValue(mockUpdatedWallet);
+      jest
+        .spyOn(prismaService.group, 'delete')
+        .mockResolvedValue(mockDeletedGroup);
+
+      // When
+      const result = await service.leaveGroup(mockUser, mockLeaveGroupParam);
+
+      // Then
+      expect(result).toEqual({
+        deletedJoin: mockDeletedJoin,
+        deletedGroup: mockDeletedGroup,
+        updatedWallet: mockUpdatedWallet,
+      });
+
+      expect(prismaService.group.delete).toHaveBeenCalledWith({
+        where: { id: mockGroupId },
+        include: {
+          groupTagMap: true,
+          proofMethod: true,
+          groupDate: true,
+        },
+      });
+    });
+
+    it('존재하지 않는 모임일 경우 에러 발생', async () => {
+      // Given
+      jest.spyOn(prismaService.group, 'findUnique').mockResolvedValue(null);
+
+      // When & Then
+      await expect(
+        service.leaveGroup(mockUser, mockLeaveGroupParam),
+      ).rejects.toThrow(new NotFoundException('모임이 존재하지 않습니다.'));
+    });
+
+    it('참여하지 않은 모임일 경우 에러 발생', async () => {
+      // Given
+      const mockGroup = createMock<
+        Group & { join: Join[]; groupDate: GroupDate[] }
+      >({
+        id: mockGroupId,
+        join: [],
+        groupDate: [],
+      });
+
+      jest
+        .spyOn(prismaService.group, 'findUnique')
+        .mockResolvedValue(mockGroup);
+      jest.spyOn(prismaService.join, 'findFirst').mockResolvedValue(null);
+
+      // When & Then
+      await expect(
+        service.leaveGroup(mockUser, mockLeaveGroupParam),
+      ).rejects.toThrow(new NotFoundException('참여자가 존재하지 않습니다.'));
+    });
+
+    it('환불 불가능한 모임일 경우 에러 발생', async () => {
+      // Given
+      const mockGroup = createMock<
+        Group & { join: Join[]; groupDate: GroupDate[] }
+      >({
+        id: mockGroupId,
+        price: 30000,
+        join: [
+          {
+            id: 1,
+            userId: mockUser.id,
+            groupId: mockGroupId,
+            joinRole: JoinRole.ATTENDEE,
+          },
+        ],
+        groupDate: [
+          {
+            id: 1,
+            groupId: mockGroupId,
+            date: '2024-03-11', // 내일 날짜 (모임 시작 24시간 이내)
+          },
+        ],
+      });
+
+      const mockJoin = createMock<Join>({
+        id: 1,
+        userId: mockUser.id,
+        groupId: mockGroupId,
+        joinRole: JoinRole.ATTENDEE,
+        createdAt: new Date('2024-03-08T12:00:00Z'), // 참여한지 2일 지남
+      });
+
+      const mockWallet = createMock<Wallet>({
+        id: 1,
+        userId: mockUser.id,
+        money: 50000,
+      });
+
+      jest
+        .spyOn(prismaService.group, 'findUnique')
+        .mockResolvedValue(mockGroup);
+      jest.spyOn(prismaService.join, 'findFirst').mockResolvedValue(mockJoin);
+      jest
+        .spyOn(prismaService.wallet, 'findUnique')
+        .mockResolvedValue(mockWallet);
+
+      // When & Then
+      await expect(
+        service.leaveGroup(mockUser, mockLeaveGroupParam),
+      ).rejects.toThrow(new BadRequestException('환불할 수 없는 모임입니다.'));
+    });
+
+    it('호스트가 다른 참여자가 있는 상태에서 1시간 이후에', async () => {
+      // Given
+      const currentTime = new Date('2024-03-10T12:00:00Z');
+      const joinTimeBefore2Hours = new Date(
+        currentTime.getTime() - 2 * 60 * 60 * 1000,
+      ); // 2시간 전
+
+      const mockGroup = createMock<
+        Group & { join: Join[]; groupDate: GroupDate[] }
+      >({
+        id: mockGroupId,
+        price: 30000,
+        join: [
+          {
+            id: 1,
+            userId: mockUser.id,
+            groupId: mockGroupId,
+            joinRole: JoinRole.HOST,
+          },
+          {
+            id: 2,
+            userId: 2, // 다른 참여자
+            groupId: mockGroupId,
+            joinRole: JoinRole.ATTENDEE,
+          },
+          {
+            id: 3,
+            userId: 3, // 다른 참여자
+            groupId: mockGroupId,
+            joinRole: JoinRole.ATTENDEE,
+          },
+        ],
+        groupDate: [
+          {
+            id: 1,
+            groupId: mockGroupId,
+            date: '2024-03-20', // 미래 날짜
+          },
+        ],
+      });
+
+      const mockJoin = createMock<Join>({
+        id: 1,
+        userId: mockUser.id,
+        groupId: mockGroupId,
+        joinRole: JoinRole.HOST,
+        createdAt: joinTimeBefore2Hours,
+      });
+
+      const mockWallet = createMock<Wallet>({
+        id: 1,
+        userId: mockUser.id,
+        money: 50000,
+      });
+
+      jest
+        .spyOn(prismaService.group, 'findUnique')
+        .mockResolvedValue(mockGroup);
+      jest.spyOn(prismaService.join, 'findFirst').mockResolvedValue(mockJoin);
+      jest
+        .spyOn(prismaService.wallet, 'findUnique')
+        .mockResolvedValue(mockWallet);
+
+      // When & Then
+      await expect(
+        service.leaveGroup(mockUser, mockLeaveGroupParam),
+      ).rejects.toThrow(
+        new BadRequestException(
+          '다른 사람이 참여했을 경우 주최자는 탈퇴할 수 없습니다. 관리자에게 문의해주세요.',
+        ),
+      );
+    });
+
+    it('지갑이 존재하지 않을 경우 에러 발생', async () => {
+      // Given
+      const mockGroup = createMock<
+        Group & { join: Join[]; groupDate: GroupDate[] }
+      >({
+        id: mockGroupId,
+        join: [
+          {
+            id: 1,
+            userId: mockUser.id,
+            groupId: mockGroupId,
+            joinRole: JoinRole.ATTENDEE,
+          },
+        ],
+        groupDate: [],
+      });
+
+      const mockJoin = createMock<Join>({
+        id: 1,
+        userId: mockUser.id,
+        groupId: mockGroupId,
+        joinRole: JoinRole.ATTENDEE,
+      });
+
+      jest
+        .spyOn(prismaService.group, 'findUnique')
+        .mockResolvedValue(mockGroup);
+      jest.spyOn(prismaService.join, 'findFirst').mockResolvedValue(mockJoin);
+      jest.spyOn(prismaService.wallet, 'findUnique').mockResolvedValue(null);
+
+      // When & Then
+      await expect(
+        service.leaveGroup(mockUser, mockLeaveGroupParam),
+      ).rejects.toThrow(new NotFoundException('지갑이 존재하지 않습니다.'));
     });
   });
 });
