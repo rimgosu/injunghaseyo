@@ -36,7 +36,7 @@ const joinStatus2Color = (joinStatus: GroupElemJoinStatusEnum) => {
 export const GroupCard = ({ group, onClick }: GroupCardProps) => {
   return (
     <div className="flex cursor-pointer rounded-2xl" onClick={onClick}>
-      <div className="flex-2 relative mr-4 items-center justify-center">
+      <div className="relative mr-4 w-1/3 items-center justify-center">
         <div
           className={`absolute bottom-0 w-full rounded-b-3xl p-1 text-center shadow-sm ${joinStatus2Color(group.joinStatus)}`}
         >
@@ -45,10 +45,10 @@ export const GroupCard = ({ group, onClick }: GroupCardProps) => {
         <img
           src={group.groupPhoto}
           alt="group photo"
-          className="w-44 rounded-3xl"
+          className="aspect-[3/2] rounded-3xl object-cover"
         />
       </div>
-      <div className="flex flex-1 flex-col justify-center gap-1">
+      <div className="flex w-2/3 flex-1 flex-col justify-center gap-1">
         <div className="max-w-[300px] truncate text-xl">{group.title}</div>
         <div>
           <div className="flex gap-1 text-sm text-gray-500">

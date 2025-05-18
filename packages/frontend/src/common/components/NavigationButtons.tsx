@@ -1,6 +1,8 @@
+import { GreenButton } from '../../auth/components/GreenButton';
+
 interface NavigationButtonsProps {
+  onNext: () => void;
   onBack?: () => void;
-  onNext?: () => void;
   mode?: 'add' | 'view';
   nextButtonText?: string;
   disabled?: boolean;
@@ -19,17 +21,12 @@ export const NavigationButtons = ({
         <span className="mr-1">←</span> 뒤로
       </button>
       {mode !== 'add' && (
-        <button
+        <GreenButton
+          text={nextButtonText || ''}
           onClick={onNext}
           disabled={disabled}
-          className={`w-full rounded-xl p-4 ${
-            disabled
-              ? 'cursor-not-allowed bg-gray-300'
-              : 'bg-green-400 text-white'
-          }`}
-        >
-          {nextButtonText}
-        </button>
+          className="w-full rounded-xl p-4"
+        />
       )}
     </div>
   );

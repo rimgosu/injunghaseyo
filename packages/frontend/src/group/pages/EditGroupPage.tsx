@@ -47,18 +47,6 @@ export const EditGroupPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (groupData) {
-      setFormData({
-        title: groupData.title || '',
-        description: groupData.description || '',
-        tags: groupData.tags || [],
-        photo: null,
-        photoPreview: groupData.groupPhoto || '',
-      });
-    }
-  }, [groupData]);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -98,14 +86,32 @@ export const EditGroupPage = () => {
     fileInputRef.current?.click();
   };
 
+  useEffect(() => {
+    if (groupData) {
+      setFormData({
+        title: groupData.title || '',
+        description: groupData.description || '',
+        tags: groupData.tags || [],
+        photo: null,
+        photoPreview: groupData.groupPhoto || '',
+      });
+    }
+  }, [groupData]);
+
   return (
-    <BaseLayout isMainLogo rightElement={<XButton />}>
-      <div className="relative flex flex-col gap-6">
+    <BaseLayout
+      isMainLogo
+      rightElement={<XButton />}
+      bottomButton={
+        <GreenButton text="수정 완료" onClick={handleUpdateGroup} />
+      }
+    >
+      <div className="relative flex flex-col gap-12">
         <div className="relative">
           <img
             src={formData.photoPreview || groupData?.groupPhoto}
             alt="그룹 이미지"
-            className="h-48 w-full cursor-pointer rounded-2xl object-cover"
+            className="aspect-[3/2] w-full cursor-pointer rounded-2xl object-cover"
             onClick={handleImageClick}
           />
           <input
@@ -117,23 +123,25 @@ export const EditGroupPage = () => {
           />
         </div>
 
-        <Input
-          label="그룹 제목"
-          type="text"
-          value={formData.title}
-          name="title"
-          onChange={handleInputChange}
-          placeholder="수정할 그룹 제목을 입력해주세요"
-        />
+        <div className="flex flex-col gap-4">
+          <Input
+            label="그룹 제목"
+            type="text"
+            value={formData.title}
+            name="title"
+            onChange={handleInputChange}
+            placeholder="수정할 그룹 제목을 입력해주세요"
+          />
 
-        <Input
-          label="추가 설명"
-          type="text"
-          value={formData.description}
-          name="description"
-          onChange={handleInputChange}
-          placeholder="수정할 그룹 설명을 입력해주세요"
-        />
+          <Input
+            label="추가 설명"
+            type="text"
+            value={formData.description}
+            name="description"
+            onChange={handleInputChange}
+            placeholder="수정할 그룹 설명을 입력해주세요"
+          />
+        </div>
 
         <TagSelector
           selectedTags={formData.tags}
@@ -142,13 +150,7 @@ export const EditGroupPage = () => {
           getTagsFn={getTags}
         />
 
-        <div className="mt-4">
-          <GreenButton
-            text="수정 완료"
-            onClick={handleUpdateGroup}
-            className="py-4 font-semibold"
-          />
-        </div>
+        <div className="mt-4"></div>
       </div>
     </BaseLayout>
   );

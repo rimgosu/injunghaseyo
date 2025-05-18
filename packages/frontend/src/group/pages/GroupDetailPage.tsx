@@ -123,7 +123,7 @@ export const GroupDetailPage = () => {
         <img
           src={groupData.groupPhoto}
           alt="모임 사진"
-          className="w-full rounded-xl object-cover"
+          className="aspect-[3/2] w-full rounded-xl object-cover"
         />
         <div className="relative flex justify-between">
           <div className="flex flex-col gap-1">
