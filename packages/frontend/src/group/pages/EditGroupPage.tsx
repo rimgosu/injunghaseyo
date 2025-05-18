@@ -37,6 +37,7 @@ export const EditGroupPage = () => {
         groupId: Number(groupId),
         title: formData.title,
         description: formData.description,
+        tags: formData.tags,
       },
       formData.photo,
     );

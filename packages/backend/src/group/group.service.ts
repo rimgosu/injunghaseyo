@@ -108,7 +108,7 @@ export class GroupService {
   /**
    * @description 그룹 수정
    *
-   * title, description, photo
+   * title, description, photo, tags
    */
   async updateGroup(
     user: User,
@@ -933,6 +933,9 @@ export class GroupService {
 
   private async createTags(tags?: string[]): Promise<Tag[]> {
     if (!tags) return [];
+    if (tags.length === 0) return [];
+    if (tags.length > 10)
+      throw new BadRequestException('태그는 최대 10개까지 설정할 수 있습니다.');
 
     const existingTags = await this.prisma.tag.findMany({
       where: {
