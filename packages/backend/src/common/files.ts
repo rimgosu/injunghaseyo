@@ -4,12 +4,17 @@ import {
   ParseFilePipe,
 } from '@nestjs/common';
 
-export const getFileValidationPipe = () => {
+export const getFileValidationPipe = ({
+  fileIsRequired = true,
+}: {
+  fileIsRequired?: boolean;
+}) => {
   return new ParseFilePipe({
     validators: [
       new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
       new CustomFileTypeValidator({}),
     ],
+    fileIsRequired,
   });
 };
 
@@ -25,10 +30,6 @@ export class CustomFileTypeValidator extends FileValidator {
   ];
 
   isValid(file?: Express.Multer.File): boolean {
-    if (!file) {
-      return false;
-    }
-
     return this.allowedMimeTypes.includes(file.mimetype);
   }
 

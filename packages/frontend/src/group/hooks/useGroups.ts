@@ -9,6 +9,7 @@ import {
   GroupControllerGetGroupsParams,
   GroupControllerGetTagsParams,
   GroupControllerGetTodayParams,
+  GroupControllerUpdateGroupParams,
   GroupControllerUploadProofButtonParams,
   GroupControllerUploadProofLocationParams,
   GroupControllerUploadProofPhotoParams,
@@ -21,6 +22,23 @@ import { ApiErrorType, ApiResponse } from '../../common/types';
 import { useCallback } from 'react';
 
 export const useGroups = () => {
+  const updateGroup = async (
+    query: GroupControllerUpdateGroupParams,
+    groupPhoto: File | null,
+  ): Promise<ApiResponse<any>> => {
+    return await ApiSingleton.getInstance()
+      .groups.groupControllerUpdateGroup(
+        { ...query },
+        {
+          groupPhoto: groupPhoto ?? undefined,
+        },
+      )
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
   const getGallery = async (
     groupId: number,
   ): Promise<ApiResponse<GetGalleryRes[]>> => {
@@ -174,5 +192,6 @@ export const useGroups = () => {
     getTodayReward,
     joinGroup,
     getGallery,
+    updateGroup,
   };
 };

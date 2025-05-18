@@ -11,6 +11,9 @@ import { errorMessage2String } from '../../common/common.util';
 import { GreenButton } from '../../auth/components/GreenButton';
 import { JoinModal } from '../components/JoinModal';
 import { XButton } from '../../common/components/XButton';
+import { PencilIcon } from '@heroicons/react/24/outline';
+import { MoreOptionsMenu } from '../../common/components/MoreOptionsMenu';
+import { useGroupStore } from '../stores/useGroupStore';
 
 const getJoinStatusMessage = (status: GetGroupResJoinStatusEnum) => {
   switch (status) {
@@ -39,10 +42,11 @@ const calculateRemainingDays = (startDate: string): number => {
 
 export const GroupDetailPage = () => {
   const { groupId } = useParams<{ groupId: string }>();
+  const groupIdNum = groupId ? parseInt(groupId) : 0;
   const { getGroup, joinGroup } = useGroups();
   const { isSignedIn } = useCheckSignInStore();
-  const [groupData, setGroupData] = useState<GetGroupRes | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { groupData, setGroupData, isLoading, setIsLoading } =
+    useGroupStore(groupIdNum);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -119,13 +123,25 @@ export const GroupDetailPage = () => {
         <img
           src={groupData.groupPhoto}
           alt="모임 사진"
-          className="w-full rounded-xl object-cover"
+          className="aspect-[3/2] w-full rounded-xl object-cover"
         />
-        <div className="flex justify-between">
+        <div className="relative flex justify-between">
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-bold">{groupData.title}</h2>
             <p className="text-md text-gray-600">{groupData.description}</p>
           </div>
+          {groupData.canMutation && (
+            <MoreOptionsMenu
+              className="absolute right-0 top-0"
+              options={[
+                {
+                  icon: PencilIcon,
+                  label: '수정하기',
+                  onClick: () => navigate(`/group/${groupId}/edit`),
+                },
+              ]}
+            />
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 rounded-xl border border-green-300 px-4 py-8">

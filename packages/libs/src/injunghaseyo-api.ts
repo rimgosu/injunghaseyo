@@ -1049,6 +1049,25 @@ export interface GroupControllerGetGroupsParams {
   q?: string;
 }
 
+export interface GroupControllerUpdateGroupParams {
+  /**
+   * 그룹 제목
+   * @example "수정된 그룹 제목입니다"
+   */
+  title?: string;
+  /**
+   * 그룹 설명
+   * @example "수정된 그룹 설명입니다"
+   */
+  description?: string;
+  /**
+   * 그룹 태그
+   * @example ["태그1","태그2"]
+   */
+  tags?: string[];
+  groupId: number;
+}
+
 export interface GroupControllerGetTagsParams {
   /**
    * 태그 검색
@@ -1874,6 +1893,47 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Group
+     * @name GroupControllerUpdateGroup
+     * @request PUT:/groups/{groupId}
+     * @secure
+     */
+    groupControllerUpdateGroup: (
+      { groupId, ...query }: GroupControllerUpdateGroupParams,
+      data?: {
+        /** @format binary */
+        groupPhoto?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/groups/${groupId}`,
+        method: 'PUT',
+        query: query,
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
+     * @name GroupControllerGetGroup
+     * @request GET:/groups/{groupId}
+     */
+    groupControllerGetGroup: (groupId: number, params: RequestParams = {}) =>
+      this.request<GetGroupRes, any>({
+        path: `/groups/${groupId}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Group
      * @name GroupControllerValidateCreateGroupElement
      * @summary 그룹 생성 요소 검증
      * @request POST:/groups/validate-element
@@ -1920,21 +1980,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/groups/${groupId}/join`,
         method: 'POST',
         secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Group
-     * @name GroupControllerGetGroup
-     * @request GET:/groups/{groupId}
-     */
-    groupControllerGetGroup: (groupId: number, params: RequestParams = {}) =>
-      this.request<GetGroupRes, any>({
-        path: `/groups/${groupId}`,
-        method: 'GET',
-        format: 'json',
         ...params,
       }),
 

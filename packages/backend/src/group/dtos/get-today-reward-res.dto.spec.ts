@@ -1,13 +1,13 @@
 import { GroupProgressStatus } from '@prisma/client';
 import { GetTodayRewardRes } from './get-today-reward-res.dto';
-import { GroupWithJoin } from '../utils/types';
+import { GroupWithJoinForReward } from '../utils/types';
 import { createMock } from '@golevelup/ts-jest';
 
 describe('GetTodayRewardRes', () => {
   describe('constructor', () => {
     it('복잡한 상황에서도 보상이 올바르게 계산되어야 함', () => {
       // Given
-      const mockGroup = createMock<GroupWithJoin>({
+      const mockGroup = createMock<GroupWithJoinForReward>({
         price: 100000,
         proofMethod: [{ id: 1 }, { id: 2 }],
         join: [{ id: 1 }],
@@ -60,7 +60,7 @@ describe('GetTodayRewardRes', () => {
 
     it('모두 성공할 시 NET * groupPrice여야 한다.', () => {
       // Given
-      const mockGroup = createMock<GroupWithJoin>({
+      const mockGroup = createMock<GroupWithJoinForReward>({
         price: 100000,
         proofMethod: [{ id: 1 }, { id: 2 }],
         join: [{ id: 1 }],
@@ -102,7 +102,7 @@ describe('GetTodayRewardRes', () => {
 
     it('일일 보상을 올바르게 계산해야 함', () => {
       // Given
-      const mockGroup = createMock<GroupWithJoin>({
+      const mockGroup = createMock<GroupWithJoinForReward>({
         price: 30000,
         proofMethod: [{ id: 1 }, { id: 2 }],
         join: [{ id: 1 }],
@@ -166,7 +166,7 @@ describe('GetTodayRewardRes', () => {
 
     it('인증에 실패한 경우 보상을 받지 않아야 함', () => {
       // Given
-      const mockGroup = createMock<GroupWithJoin>({
+      const mockGroup = createMock<GroupWithJoinForReward>({
         price: 30000,
         proofMethod: [{ id: 1 }, { id: 2 }],
         join: [{ id: 1 }],
@@ -196,7 +196,7 @@ describe('GetTodayRewardRes', () => {
 
     it('참여자가 없는 경우 보상은 0이어야 함', () => {
       // Given
-      const mockGroup = createMock<GroupWithJoin>({
+      const mockGroup = createMock<GroupWithJoinForReward>({
         price: 30000,
         proofMethod: [{ id: 1 }],
         join: [{ id: 1 }],
@@ -217,7 +217,7 @@ describe('GetTodayRewardRes', () => {
 
     it('모든 인증 방법을 완료해야 보상을 받을 수 있음', () => {
       // Given
-      const mockGroup = createMock<GroupWithJoin>({
+      const mockGroup = createMock<GroupWithJoinForReward>({
         price: 30000,
         proofMethod: [{ id: 1 }, { id: 2 }],
         join: [{ id: 1 }],

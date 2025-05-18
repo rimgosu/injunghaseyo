@@ -8,6 +8,8 @@ export class S3Service {
 
   readonly profilePhotoDir = 'profile-photo';
   readonly proofPhotoDir = 'proof-photo';
+  readonly groupPhotoDir = 'group-photo';
+
   constructor() {
     this.s3Client = new S3Client({
       region: process.env.AWS_REGION,

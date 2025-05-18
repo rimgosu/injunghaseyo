@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/swagger';
 import { BaseGroup } from './base.dto';
-import { GroupWithJoin } from '../utils/types';
+import { GroupWithJoinForReward } from '../utils/types';
 import { GroupProgressStatus } from '@prisma/client';
 
 export class GetTodayRewardRes extends PickType(BaseGroup, ['todayReward']) {
@@ -13,7 +13,7 @@ export class GetTodayRewardRes extends PickType(BaseGroup, ['todayReward']) {
    *   - MY_DAILY_REWARD: 특정 날짜에 인증 성공한 사람들끼리 DAILY_POOL 균등 분배
    *   - MY_TOTAL_REWARD: ∑(MY_DAILY_REWARD)
    */
-  constructor(groupWithJoin: GroupWithJoin) {
+  constructor(groupWithJoin: GroupWithJoinForReward) {
     super();
     const NET = 0.8;
     const myJoinId = groupWithJoin.join[0].id;
