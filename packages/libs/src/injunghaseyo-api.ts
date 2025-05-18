@@ -1060,6 +1060,11 @@ export interface GroupControllerUpdateGroupParams {
    * @example "수정된 그룹 설명입니다"
    */
   description?: string;
+  /**
+   * 그룹 태그
+   * @example ["태그1","태그2"]
+   */
+  tags?: string[];
   groupId: number;
 }
 

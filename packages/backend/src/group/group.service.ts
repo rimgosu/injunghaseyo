@@ -116,7 +116,7 @@ export class GroupService {
     groupId: number,
     groupPhoto?: Express.Multer.File,
   ) {
-    const { title, description } = query;
+    const { title, description, tags } = query;
 
     const checkedGroup = await this.checkGroupHost(groupId, user);
 
@@ -129,13 +129,30 @@ export class GroupService {
       );
     }
 
-    return await this.prisma.group.update({
-      where: { id: groupId, deletedAt: null },
-      data: {
-        ...(title && { title }),
-        ...(description && { description }),
-        ...(groupPhoto && photo && { photo }),
-      },
+    const allTags = await this.createTags(tags);
+
+    return await this.prisma.$transaction(async (tx) => {
+      const updatedGroup = await tx.group.update({
+        where: { id: groupId, deletedAt: null },
+        data: {
+          ...(title && { title }),
+          ...(description && { description }),
+          ...(groupPhoto && photo && { photo }),
+        },
+      });
+
+      await tx.groupTagMap.deleteMany({
+        where: { groupId },
+      });
+
+      const updatedGroupTagMap = await tx.groupTagMap.createMany({
+        data: allTags.map((tag) => ({
+          groupId,
+          tagId: tag.id,
+        })),
+      });
+
+      return { updatedGroup, updatedGroupTagMap };
     });
   }
 

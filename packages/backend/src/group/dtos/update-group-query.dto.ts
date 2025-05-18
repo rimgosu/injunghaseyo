@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateGroupQuery {
   @ApiProperty({
@@ -23,4 +23,16 @@ export class UpdateGroupQuery {
   @IsNotEmpty()
   @IsOptional()
   description?: string;
+
+  @ApiProperty({
+    description: '그룹 태그',
+    example: ['태그1', '태그2'],
+    type: [String],
+    required: false,
+  })
+  @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  @IsOptional()
+  tags?: string[];
 }
