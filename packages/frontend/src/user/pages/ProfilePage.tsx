@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BaseLayout } from '../../common/BaseLayout';
 import { useUsers } from '../hooks/useUsers';
 import { BottomNavigationBar } from '../../common/components/BottomNavigationBar';
-import { Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { Cog6ToothIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useProfileStore } from '../stores/useProfileStore';
 import { GroupSection } from '../components/GroupSection';
 import { ProfileSection } from '../components/ProfileSection';
@@ -24,9 +24,14 @@ interface ProfilePageProps {
 export const ProfilePage = ({
   showCameraButton = true,
   rightElement = (
-    <Link to="/user/setting">
-      <Cog6ToothIcon className="h-6 w-6 cursor-pointer text-gray-600" />
-    </Link>
+    <div className="flex items-center gap-4">
+      <Link to="/user/edit">
+        <PencilSquareIcon className="h-6 w-6 cursor-pointer text-gray-600" />
+      </Link>
+      <Link to="/user/setting">
+        <Cog6ToothIcon className="h-6 w-6 cursor-pointer text-gray-600" />
+      </Link>
+    </div>
   ),
   showCurrentGroups = true,
   showReservedGroups = true,

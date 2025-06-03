@@ -7,6 +7,17 @@ import { ApiSingleton } from '../../common/apiSingleton';
 import { ApiErrorType, ApiResponse } from '../../common/types';
 
 export const useUsers = () => {
+  const editProfile = async (
+    introduction: string,
+  ): Promise<ApiResponse<void>> => {
+    return await ApiSingleton.getInstance()
+      .users.userControllerUpdateUser({ introduction })
+      .then((res) => ({ data: res.data }))
+      .catch(async (error: Response) => {
+        return { error: (await error.json()) as ApiErrorType };
+      });
+  };
+
   const fetchOtherProfile = async (
     userId: number,
   ): Promise<ApiResponse<GetOtherProfileResDto>> => {
@@ -69,5 +80,6 @@ export const useUsers = () => {
     uploadProfilePhoto,
     deleteProfilePhoto,
     fetchOtherProfile,
+    editProfile,
   };
 };
