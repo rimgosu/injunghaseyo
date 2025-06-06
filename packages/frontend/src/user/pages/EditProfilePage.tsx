@@ -4,6 +4,7 @@ import { BaseLayout } from '../../common/BaseLayout';
 import { useUsers } from '../hooks/useUsers';
 import { Textarea } from '../../common/components/Textarea';
 import { useNavigate } from 'react-router-dom';
+import { XButton } from '../../common/components/XButton';
 
 export const EditProfilePage = () => {
   const { fetchProfile, editProfile } = useUsers();
@@ -47,6 +48,7 @@ export const EditProfilePage = () => {
           }}
         />
       }
+      rightElement={<XButton />}
     >
       <div className="flex flex-col gap-4">
         <Textarea
