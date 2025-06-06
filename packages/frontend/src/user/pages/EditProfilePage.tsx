@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { GreenButton } from '../../auth/components/GreenButton';
 import { BaseLayout } from '../../common/BaseLayout';
 import { useUsers } from '../hooks/useUsers';
@@ -9,6 +9,7 @@ export const EditProfilePage = () => {
   const { fetchProfile, editProfile } = useUsers();
   const [introduction, setIntroduction] = useState('');
   const navigate = useNavigate();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleFetchProfile = async () => {
     const res = await fetchProfile();
@@ -23,6 +24,13 @@ export const EditProfilePage = () => {
       navigate('/user/profile');
     }
   };
+
+  // 텍스트가 설정된 후 textarea를 맨 아래로 스크롤
+  useEffect(() => {
+    if (textareaRef.current && introduction) {
+      textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
+    }
+  }, [introduction]);
 
   useEffect(() => {
     handleFetchProfile();
@@ -42,6 +50,7 @@ export const EditProfilePage = () => {
     >
       <div className="flex flex-col gap-4">
         <Textarea
+          ref={textareaRef}
           label="소개"
           value={introduction}
           name="introduction"

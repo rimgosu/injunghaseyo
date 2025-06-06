@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { forwardRef } from 'react';
 
 interface TextareaProps {
   label: string;
@@ -17,42 +17,45 @@ interface TextareaProps {
   };
 }
 
-export class Textarea extends Component<TextareaProps> {
-  handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // 엔터키가 눌렸을 때 기본 동작(줄바꿈) 허용
-    if (e.key === 'Enter') {
-      // 기본 동작을 막지 않음 (줄바꿈 허용)
-    }
-
-    // 부모 컴포넌트에서 전달한 onKeyDown 핸들러가 있다면 실행
-    if (this.props.onKeyDown) {
-      this.props.onKeyDown(e);
-    }
-  };
-
-  render() {
-    const {
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
+  (
+    {
       label,
       value,
       onChange,
       onKeyPress,
+      onKeyDown,
       name,
       placeholder,
       required,
       rows = 4,
       suffix,
       addButton,
-    } = this.props;
+    },
+    ref,
+  ) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      // 엔터키가 눌렸을 때 기본 동작(줄바꿈) 허용
+      if (e.key === 'Enter') {
+        // 기본 동작을 막지 않음 (줄바꿈 허용)
+      }
+
+      // 부모 컴포넌트에서 전달한 onKeyDown 핸들러가 있다면 실행
+      if (onKeyDown) {
+        onKeyDown(e);
+      }
+    };
 
     return (
       <div className="flex w-full flex-col gap-1">
         <label className="text-sm text-gray-600">{label}</label>
         <div className="flex items-start">
           <textarea
+            ref={ref}
             value={value}
             onChange={onChange}
             onKeyPress={onKeyPress}
-            onKeyDown={this.handleKeyDown}
+            onKeyDown={handleKeyDown}
             name={name}
             placeholder={placeholder}
             required={required}
@@ -91,5 +94,7 @@ export class Textarea extends Component<TextareaProps> {
         </div>
       </div>
     );
-  }
-}
+  },
+);
+
+Textarea.displayName = 'Textarea';
