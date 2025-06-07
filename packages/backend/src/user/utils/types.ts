@@ -6,6 +6,9 @@ export const USER_FOR_PROFILE = (userId: number) => {
       wallet: true,
       profilePhoto: true,
       join: {
+        where: {
+          deletedAt: null,
+        },
         include: {
           group: {
             include: {

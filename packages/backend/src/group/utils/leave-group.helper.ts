@@ -74,7 +74,7 @@ export class LeaveGroupHelper {
         }),
         tx.join.updateMany({
           where: {
-            id: this.groupId,
+            groupId: this.groupId,
           },
           data: {
             deletedAt: new Date(),
