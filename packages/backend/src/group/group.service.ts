@@ -19,6 +19,7 @@ import { GetTagsRes } from './dtos/get-tags-res.dto';
 import { JoinGroupParam } from './dtos/join-group-param.dto';
 import {
   GROUP_DATE_FOR_GALLERY,
+  GROUP_FOR_LEAVE,
   GROUP_WITH_INCLUDE,
   GROUP_WITH_JOIN,
   GroupProgressWithMethod,
@@ -26,6 +27,7 @@ import {
   GroupWithJoin,
   GroupWithProgress,
   GroupWithToday,
+  JOIN_FOR_LEAVE,
 } from './utils/types';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import {
@@ -569,13 +571,11 @@ export class GroupService {
     const [group, join, wallet] = await Promise.all([
       this.prisma.group.findUnique({
         where: { id: groupId, deletedAt: null },
-        include: {
-          join: true,
-          groupDate: true,
-        },
+        ...GROUP_FOR_LEAVE,
       }),
       this.prisma.join.findFirst({
         where: { userId: user.id, groupId, deletedAt: null },
+        ...JOIN_FOR_LEAVE,
       }),
       this.prisma.wallet.findUnique({
         where: { userId: user.id, deletedAt: null },

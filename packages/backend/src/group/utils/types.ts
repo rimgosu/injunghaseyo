@@ -15,6 +15,27 @@ import {
   MinLength,
 } from 'class-validator';
 
+export const JOIN_FOR_LEAVE = Prisma.validator<Prisma.JoinDefaultArgs>()({
+  include: {
+    groupProgress: {
+      where: {
+        status: GroupProgressStatus.COMPLETED,
+      },
+    },
+  },
+});
+
+export type JoinForLeave = Prisma.JoinGetPayload<typeof JOIN_FOR_LEAVE>;
+
+export const GROUP_FOR_LEAVE = Prisma.validator<Prisma.GroupDefaultArgs>()({
+  include: {
+    join: true,
+    groupDate: true,
+  },
+});
+
+export type GroupForLeave = Prisma.GroupGetPayload<typeof GROUP_FOR_LEAVE>;
+
 export const GROUP_PROGRESS_WITH_USER =
   Prisma.validator<Prisma.GroupProgressDefaultArgs>()({
     include: {
