@@ -90,27 +90,3 @@ export const validateGroupDates = (
 
   return true;
 };
-
-/**
- * @description 환불 가능 여부 확인 (KST)
- *
- * - 모임 시작 24시간 전까지 환불 가능
- * - 모임 시작 24시간 전 이후 환불 불가능
- * - 참여 후 1시간 이내 환불 가능
- */
-export const canRefund = (
-  joinDate: Date,
-  dates: string[],
-  timeZone: 'kst' | 'utc' = 'kst',
-): boolean => {
-  const firstDayTimestamp = getFirstDay(dates);
-  const now =
-    timeZone === 'kst'
-      ? new Date().getTime() + NINE_HOURS_IN_MS
-      : new Date().getTime();
-
-  if (firstDayTimestamp - now >= 1000 * 60 * 60 * 24) return true;
-  if (now - joinDate.getTime() <= 1000 * 60 * 60) return true;
-
-  return false;
-};

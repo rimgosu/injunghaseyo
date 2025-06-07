@@ -31,7 +31,6 @@ import {
 } from './utils/types';
 import { GetGroupsRes } from './dtos/get-groups-res.dto';
 import {
-  canRefund,
   getLastDayNight,
   getToday,
   isBetweenMinutes,
@@ -63,6 +62,7 @@ import { UploadProofRes } from './dtos/upload-proof-res.dto';
 import { GetGalleryParam } from './dtos/get-gallery-param.dto';
 import { GetGalleryRes } from './dtos/get-gallery-res.dto';
 import { UpdateGroupQuery } from './dtos/update-group-query.dto';
+import { LeaveGroupHelper } from './utils/leave-group.helper';
 
 @Injectable()
 export class GroupService {
@@ -585,12 +585,10 @@ export class GroupService {
     if (!group) throw new NotFoundException('모임이 존재하지 않습니다.');
     if (!join) throw new NotFoundException('참여자가 존재하지 않습니다.');
     if (!wallet) throw new NotFoundException('지갑이 존재하지 않습니다.');
-    if (
-      !canRefund(
-        join.createdAt,
-        group.groupDate.map((date) => date.date),
-      )
-    )
+
+    const leaveGroupHelper = new LeaveGroupHelper(join, group);
+
+    if (!leaveGroupHelper.canRefund())
       throw new BadRequestException('환불할 수 없는 모임입니다.');
 
     if (
