@@ -165,6 +165,9 @@ export const GROUP_WITH_INCLUDE = Prisma.validator<Prisma.GroupDefaultArgs>()({
       },
     },
     join: {
+      where: {
+        deletedAt: null,
+      },
       include: {
         user: {
           include: {
