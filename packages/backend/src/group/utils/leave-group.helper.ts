@@ -1,9 +1,9 @@
 import { JoinRole } from '@prisma/client';
 import { GroupForLeave, JoinForLeave } from './types';
 import { UnprocessableEntityException } from '@nestjs/common';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
+import * as dayjs from 'dayjs';
+import * as utc from 'dayjs/plugin/utc';
+import * as timezone from 'dayjs/plugin/timezone';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -52,7 +52,7 @@ export class LeaveGroupHelper {
     );
     if (!joinNextGroupDate) {
       throw new UnprocessableEntityException(
-        '참여 이후 진행될 그룹 날짜가 없습니다. 데이터 무결성을 확인해주세요.',
+        '참여 이후 진행될 그룹 날짜가 없습니다. 서버의 참여 로직이 잘못되었습니다.',
       );
     }
 
