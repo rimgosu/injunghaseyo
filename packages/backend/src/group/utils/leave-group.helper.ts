@@ -1,4 +1,4 @@
-import { JoinRole, WalletHistoryReason } from '@prisma/client';
+import { JoinRole, Wallet, WalletHistoryReason } from '@prisma/client';
 import { GroupForLeave, JoinForLeave } from './types';
 import {
   ForbiddenException,
@@ -8,6 +8,7 @@ import * as dayjs from 'dayjs';
 import * as utc from 'dayjs/plugin/utc';
 import * as timezone from 'dayjs/plugin/timezone';
 import { PrismaService } from '@/prisma/prisma.service';
+import { VisibleForTesting } from '@/common/visible-for-testing.decorator';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -27,7 +28,16 @@ export class LeaveGroupHelper {
   private readonly groupForLeave: GroupForLeave;
   private readonly groupPrice: number;
 
-  constructor(join: JoinForLeave, group: GroupForLeave, prisma: PrismaService) {
+  // leave group
+  private readonly joinId: number;
+  private readonly myWallet: Wallet;
+
+  constructor(
+    join: JoinForLeave,
+    group: GroupForLeave,
+    wallet: Wallet,
+    prisma: PrismaService,
+  ) {
     this.groupDates = group.groupDate
       .map((d) => dayjs(d.date).tz('Asia/Seoul'))
       .sort((a, b) => a.valueOf() - b.valueOf());
@@ -40,7 +50,66 @@ export class LeaveGroupHelper {
     this.groupDateIds = group.groupDate.map((d) => d.id);
     this.groupPrice = group.price;
     this.groupForLeave = group;
+    this.joinId = join.id;
+    this.myWallet = wallet;
     this.now = dayjs().tz('Asia/Seoul');
+  }
+
+  /**
+   * 그룹 떠나기 & 환불
+   */
+  async leaveGroup() {
+    if (this.joinRole !== JoinRole.ATTENDEE)
+      throw new ForbiddenException('attendee만 그룹을 떠날 수 있습니다.');
+    if (this.existMyProof)
+      throw new UnprocessableEntityException('이미 인증을 완료한 모임입니다.');
+    if (!this.canRefund())
+      throw new UnprocessableEntityException('환불할 수 없는 모임입니다.');
+
+    return await this.prisma.$transaction(async (tx) => {
+      const deletedGroupProgress = await tx.groupProgress.deleteMany({
+        where: {
+          joinId: this.joinId,
+          groupDateId: {
+            in: this.groupDateIds,
+          },
+        },
+      });
+
+      const deletedAndRefund = await Promise.all([
+        tx.join.update({
+          where: {
+            id: this.joinId,
+          },
+          data: {
+            deletedAt: new Date(),
+          },
+        }),
+        tx.wallet.update({
+          where: {
+            id: this.myWallet.id,
+          },
+          data: {
+            money: {
+              increment: this.groupPrice,
+            },
+            walletHistory: {
+              create: {
+                previousMoney: this.myWallet.money,
+                currentMoney: this.myWallet.money + this.groupPrice,
+                reason: WalletHistoryReason.REFUND,
+                joinId: this.joinId,
+              },
+            },
+          },
+        }),
+      ]);
+
+      return {
+        deletedGroupProgress,
+        deletedAndRefund,
+      };
+    });
   }
 
   /**
@@ -50,9 +119,11 @@ export class LeaveGroupHelper {
     if (this.joinRole !== JoinRole.HOST)
       throw new ForbiddenException('host만 그룹을 삭제할 수 있습니다.');
     if (this.existProof || this.now.isAfter(this.groupDates[0]))
-      throw new ForbiddenException(
+      throw new UnprocessableEntityException(
         '이미 진행 중인 모임입니다. 모임을 삭제할 수 없습니다.',
       );
+    if (!this.canRefund())
+      throw new UnprocessableEntityException('환불할 수 없는 모임입니다.');
 
     return await this.prisma.$transaction(async (tx) => {
       const deletedGroupProgress = await tx.groupProgress.deleteMany({
@@ -135,7 +206,8 @@ export class LeaveGroupHelper {
    * 모임 진행 후
    * - 모임 참여 후 다음날이 되기 전까지
    */
-  canRefund(): boolean {
+  @VisibleForTesting()
+  protected canRefund(): boolean {
     if (this.existMyProof) return false;
     if (this.now.diff(this.joinedAt, 'hour') < 1) return true;
 

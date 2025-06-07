@@ -586,14 +586,16 @@ export class GroupService {
     if (!join) throw new NotFoundException('참여자가 존재하지 않습니다.');
     if (!wallet) throw new NotFoundException('지갑이 존재하지 않습니다.');
 
-    const leaveGroupHelper = new LeaveGroupHelper(join, group, this.prisma);
-
-    if (!leaveGroupHelper.canRefund())
-      throw new BadRequestException('환불할 수 없는 모임입니다.');
+    const leaveGroupHelper = new LeaveGroupHelper(
+      join,
+      group,
+      wallet,
+      this.prisma,
+    );
 
     return join.joinRole === JoinRole.HOST
       ? leaveGroupHelper.deleteGroup()
-      : null;
+      : leaveGroupHelper.leaveGroup();
   }
 
   /**

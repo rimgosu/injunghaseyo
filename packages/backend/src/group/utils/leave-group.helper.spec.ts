@@ -4,10 +4,26 @@ import {
   GroupProgressStatus,
   GroupProgress,
   GroupDate,
+  Wallet,
 } from '@prisma/client';
 import { LeaveGroupHelper } from './leave-group.helper';
 import { JoinForLeave, GroupForLeave } from './types';
 import { PrismaService } from '@/prisma/prisma.service';
+
+class LeaveGroupHelperForTest extends LeaveGroupHelper {
+  constructor(
+    join: JoinForLeave,
+    group: GroupForLeave,
+    wallet: Wallet,
+    prisma: PrismaService,
+  ) {
+    super(join, group, wallet, prisma);
+  }
+
+  canRefund(): boolean {
+    return super.canRefund();
+  }
+}
 
 describe('LeaveGroupHelper', () => {
   const prisma = createMock<PrismaService>();
@@ -38,6 +54,8 @@ describe('LeaveGroupHelper', () => {
       ),
     });
 
+  const mockWallet = createMock<Wallet>();
+
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -63,7 +81,12 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
+      const helper = new LeaveGroupHelperForTest(
+        mockJoin,
+        mockGroup,
+        mockWallet,
+        prisma,
+      );
 
       // Then
       expect(helper.canRefund()).toBe(false);
@@ -86,7 +109,12 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
+      const helper = new LeaveGroupHelperForTest(
+        mockJoin,
+        mockGroup,
+        mockWallet,
+        prisma,
+      );
 
       // Then
       expect(helper.canRefund()).toBe(true);
@@ -109,7 +137,12 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
+      const helper = new LeaveGroupHelperForTest(
+        mockJoin,
+        mockGroup,
+        mockWallet,
+        prisma,
+      );
 
       // Then
       expect(helper.canRefund()).toBe(false);
@@ -132,7 +165,12 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
+      const helper = new LeaveGroupHelperForTest(
+        mockJoin,
+        mockGroup,
+        mockWallet,
+        prisma,
+      );
 
       // Then
       expect(helper.canRefund()).toBe(true);
@@ -155,7 +193,12 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
+      const helper = new LeaveGroupHelperForTest(
+        mockJoin,
+        mockGroup,
+        mockWallet,
+        prisma,
+      );
 
       // Then
       expect(helper.canRefund()).toBe(true);
@@ -178,7 +221,12 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
+      const helper = new LeaveGroupHelperForTest(
+        mockJoin,
+        mockGroup,
+        mockWallet,
+        prisma,
+      );
 
       // Then
       expect(helper.canRefund()).toBe(false);
