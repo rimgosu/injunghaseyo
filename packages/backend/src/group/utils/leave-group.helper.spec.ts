@@ -7,8 +7,11 @@ import {
 } from '@prisma/client';
 import { LeaveGroupHelper } from './leave-group.helper';
 import { JoinForLeave, GroupForLeave } from './types';
+import { PrismaService } from '@/prisma/prisma.service';
 
 describe('LeaveGroupHelper', () => {
+  const prisma = createMock<PrismaService>();
+
   const createMockJoin = (
     createdAt: Date,
     joinRole: JoinRole = JoinRole.ATTENDEE,
@@ -60,7 +63,7 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup);
+      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
 
       // Then
       expect(helper.canRefund()).toBe(false);
@@ -83,7 +86,7 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup);
+      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
 
       // Then
       expect(helper.canRefund()).toBe(true);
@@ -106,7 +109,7 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup);
+      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
 
       // Then
       expect(helper.canRefund()).toBe(false);
@@ -129,7 +132,7 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup);
+      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
 
       // Then
       expect(helper.canRefund()).toBe(true);
@@ -152,7 +155,7 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup);
+      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
 
       // Then
       expect(helper.canRefund()).toBe(true);
@@ -175,7 +178,7 @@ describe('LeaveGroupHelper', () => {
       ]);
 
       // When
-      const helper = new LeaveGroupHelper(mockJoin, mockGroup);
+      const helper = new LeaveGroupHelper(mockJoin, mockGroup, prisma);
 
       // Then
       expect(helper.canRefund()).toBe(false);

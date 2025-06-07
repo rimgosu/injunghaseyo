@@ -29,8 +29,24 @@ export type JoinForLeave = Prisma.JoinGetPayload<typeof JOIN_FOR_LEAVE>;
 
 export const GROUP_FOR_LEAVE = Prisma.validator<Prisma.GroupDefaultArgs>()({
   include: {
-    join: true,
-    groupDate: true,
+    join: {
+      include: {
+        user: {
+          include: {
+            wallet: true,
+          },
+        },
+      },
+    },
+    groupDate: {
+      include: {
+        groupProgress: {
+          where: {
+            status: GroupProgressStatus.COMPLETED,
+          },
+        },
+      },
+    },
   },
 });
 

@@ -586,52 +586,14 @@ export class GroupService {
     if (!join) throw new NotFoundException('참여자가 존재하지 않습니다.');
     if (!wallet) throw new NotFoundException('지갑이 존재하지 않습니다.');
 
-    const leaveGroupHelper = new LeaveGroupHelper(join, group);
+    const leaveGroupHelper = new LeaveGroupHelper(join, group, this.prisma);
 
     if (!leaveGroupHelper.canRefund())
       throw new BadRequestException('환불할 수 없는 모임입니다.');
 
-    return await this.prisma.$transaction(async (tx) => {
-      const deletedJoin = await tx.join.delete({
-        where: { id: join.id, deletedAt: null },
-        include: {
-          groupProgress: true,
-        },
-      });
-
-      const updatedWallet = await tx.wallet.update({
-        where: { userId: user.id, deletedAt: null },
-        data: {
-          money: { increment: group.price },
-          walletHistory: {
-            create: {
-              previousMoney: wallet.money,
-              currentMoney: wallet.money + group.price,
-              reason: WalletHistoryReason.REFUND,
-              joinId: group.join[0].id,
-            },
-          },
-        },
-      });
-
-      // 참여자 1명일 경우 모임 삭제
-      const deletedGroup =
-        group.join.length <= 1 &&
-        (await tx.group.delete({
-          where: { id: groupId },
-          include: {
-            groupTagMap: true,
-            proofMethod: true,
-            groupDate: true,
-          },
-        }));
-
-      return {
-        deletedJoin,
-        deletedGroup,
-        updatedWallet,
-      };
-    });
+    return join.joinRole === JoinRole.HOST
+      ? leaveGroupHelper.deleteGroup()
+      : null;
   }
 
   /**
