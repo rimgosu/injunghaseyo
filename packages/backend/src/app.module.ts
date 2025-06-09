@@ -15,6 +15,7 @@ import { S3Module } from './s3/s3.module';
 import { CharacterModule } from './character/character.module';
 import { ProofModule } from './proof/proof.module';
 import { DuplicateRequestMiddleware } from './common/duplicate-request.middleware';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { DuplicateRequestMiddleware } from './common/duplicate-request.middlewar
     S3Module,
     CharacterModule,
     ProofModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
