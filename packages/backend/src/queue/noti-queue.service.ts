@@ -1,14 +1,23 @@
-import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
+import { Process, Processor } from '@nestjs/bull';
+import { Job } from 'bull';
+import { NOTIFICATION_PROCESSOR } from './utils/constants';
 import { CreateDeletedGroupNotiParams } from './utils/types';
+import { PrismaService } from '@/prisma/prisma.service';
 import { NotificationType } from '@prisma/client';
 
 @Injectable()
-export class NotificationStoreService {
+@Processor(NOTIFICATION_PROCESSOR.QUEUE)
+export class NotiQueueService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createDeletedGroupNoti(params: CreateDeletedGroupNotiParams) {
-    const { userId, groupId, refundAmount, groupName } = params;
+  @Process(NOTIFICATION_PROCESSOR.MISSION.DELETED_ROOM)
+  async processDeletedGroupNotification(
+    job: Job<CreateDeletedGroupNotiParams>,
+  ) {
+    const { data } = job;
+
+    const { userId, groupId, refundAmount, groupName } = data;
 
     return await this.prisma.notification.create({
       data: {
