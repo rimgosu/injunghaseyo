@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { NotiQueueService } from './noti-queue.service';
 import { NOTIFICATION_PROCESSOR } from './utils/constants';
 
+@Global()
 @Module({
   imports: [
     BullModule.registerQueue({
@@ -10,6 +11,6 @@ import { NOTIFICATION_PROCESSOR } from './utils/constants';
     }),
   ],
   providers: [NotiQueueService],
-  exports: [NotiQueueService],
+  exports: [BullModule],
 })
 export class QueueModule {}

@@ -63,6 +63,9 @@ import { GetGalleryParam } from './dtos/get-gallery-param.dto';
 import { GetGalleryRes } from './dtos/get-gallery-res.dto';
 import { UpdateGroupQuery } from './dtos/update-group-query.dto';
 import { LeaveGroupHelper } from './utils/leave-group.helper';
+import { InjectQueue } from '@nestjs/bull';
+import { NOTIFICATION_PROCESSOR } from '@/queue/utils/constants';
+import { Queue } from 'bull';
 
 @Injectable()
 export class GroupService {
@@ -74,6 +77,8 @@ export class GroupService {
     private readonly prisma: PrismaService,
     private readonly s3: S3Service,
     private readonly characterService: CharacterRewardService,
+    @InjectQueue(NOTIFICATION_PROCESSOR.QUEUE)
+    private readonly notiQueue: Queue,
   ) {}
 
   /**
@@ -591,6 +596,7 @@ export class GroupService {
       group,
       wallet,
       this.prisma,
+      this.notiQueue,
     );
 
     return join.joinRole === JoinRole.HOST
