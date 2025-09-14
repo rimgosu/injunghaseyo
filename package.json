@@ -20,7 +20,9 @@
     "gen:sdk": "yarn workspace @monorepo/backend gen:swagger && yarn workspace @monorepo/backend gen:sdk && cp ./packages/backend/sdk/injunghaseyo-api.ts ./packages/libs/src && yarn workspace @rimgosu/libs build",
     "format": "yarn workspace @monorepo/backend format && yarn workspace @monorepo/frontend format",
     "prisma:generate": "yarn workspace @monorepo/backend prisma generate",
-    "fast": "docker compose -f docker-compose.db.yaml down && docker compose -f docker-compose.db.yaml up -d && yarn install && yarn prisma:setting && yarn gen:sdk && yarn dev"
+    "env": "git clone https://github.com/rimgosu/injunghaseyo-envs.git && cp -r ./injunghaseyo-envs/packages/backend/envs/ ./packages/backend/ && rm -rf ./injunghaseyo-envs",
+    "fast": "docker compose -f docker-compose.db.yaml down && docker compose -f docker-compose.db.yaml up -d && yarn install && yarn prisma:setting && yarn gen:sdk && yarn dev",
+    "fast:env": "yarn env && yarn fast"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
