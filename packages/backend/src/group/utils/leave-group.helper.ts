@@ -9,6 +9,7 @@ import * as utc from 'dayjs/plugin/utc';
 import * as timezone from 'dayjs/plugin/timezone';
 import { PrismaService } from '@/prisma/prisma.service';
 import { VisibleForTesting } from '@/common/visible-for-testing.decorator';
+import { Queue } from 'bull';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -31,12 +32,14 @@ export class LeaveGroupHelper {
   // leave group
   private readonly joinId: number;
   private readonly myWallet: Wallet;
+  private readonly notiQueue: Queue;
 
   constructor(
     join: JoinForLeave,
     group: GroupForLeave,
     wallet: Wallet,
     prisma: PrismaService,
+    notiQueue: Queue,
   ) {
     this.groupDates = group.groupDate
       .map((d) => dayjs(d.date).tz('Asia/Seoul'))
@@ -53,6 +56,7 @@ export class LeaveGroupHelper {
     this.joinId = join.id;
     this.myWallet = wallet;
     this.now = dayjs().tz('Asia/Seoul');
+    this.notiQueue = notiQueue;
   }
 
   /**
@@ -210,6 +214,10 @@ export class LeaveGroupHelper {
   protected canRefund(): boolean {
     if (this.existMyProof) return false;
     if (this.now.diff(this.joinedAt, 'hour') < 1) return true;
+
+    if (this.groupDates.length === 0) {
+      throw new UnprocessableEntityException('그룹 날짜가 없습니다.');
+    }
 
     const earliestGroupDate = this.groupDates[0];
 

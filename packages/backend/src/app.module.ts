@@ -16,6 +16,8 @@ import { CharacterModule } from './character/character.module';
 import { ProofModule } from './proof/proof.module';
 import { DuplicateRequestMiddleware } from './common/duplicate-request.middleware';
 import { NotificationModule } from './notification/notification.module';
+import { QueueModule } from './queue/queue.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -24,6 +26,16 @@ import { NotificationModule } from './notification/notification.module';
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
+    }),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => ({
+        redis: {
+          host: config.get('redis.host'),
+          port: config.get('redis.port'),
+          password: config.get('redis.password'),
+        },
+      }),
     }),
     CacheModule.registerAsync({
       isGlobal: true,
@@ -48,6 +60,7 @@ import { NotificationModule } from './notification/notification.module';
     CharacterModule,
     ProofModule,
     NotificationModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],
